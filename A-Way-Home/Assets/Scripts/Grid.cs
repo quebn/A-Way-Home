@@ -68,12 +68,14 @@ public class Grid : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _NodeDiameter = NodeRadius * 2;
         _GridSizeX = Mathf.RoundToInt(GridSize.x / _NodeDiameter);
         _GridSizeY = Mathf.RoundToInt(GridSize.y / _NodeDiameter);
         CreateGrid();
+        // foreach (Node node in _Grid)
+            // print("Node(" + node.GridX + ", " + node.GridY + ") WorldPos:" + node.WorldPosition);
     }
     // Update is called once per frame
     void Update()
@@ -81,7 +83,6 @@ public class Grid : MonoBehaviour
         
     }
 
-    public List<Node> path;
     void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(GridSize.x, GridSize.y, 0));
@@ -92,8 +93,6 @@ public class Grid : MonoBehaviour
             {
                 Gizmos.color = (node.IsWalkable)?Color.white : Color.red;
 
-                if (path != null && path.Contains(node))
-                    Gizmos.color = Color.green;
                 Gizmos.DrawCube(node.WorldPosition, new Vector3( _NodeDiameter - .1f, _NodeDiameter - .1f, 0));
             }
         }            
