@@ -33,8 +33,8 @@ public class Grid : MonoBehaviour
     }
     public Node NodeWorldPointPos(Vector3 worldpos)
     {
-        float percentX = ((byte)(worldpos.x + GridSize.x / 2)) /  GridSize.x;
-        float percentY = ((byte)(worldpos.y + GridSize.y / 2)) /  GridSize.y;
+        float percentX = (worldpos.x + GridSize.x / 2) /  GridSize.x;
+        float percentY = (worldpos.y + GridSize.y / 2) /  GridSize.y;
 
         percentX = Mathf.Clamp01(percentX);
         percentY = Mathf.Clamp01(percentY);
@@ -78,11 +78,14 @@ public class Grid : MonoBehaviour
             // print("Node(" + node.GridX + ", " + node.GridY + ") WorldPos:" + node.WorldPosition);
     }
     // Update is called once per frame
-    void Update()
+    void Start()
     {
-        
+        // foreach (Node node in path)
+        // {
+        //     Debug.Log("Grid PathNode(" + node.GridX +", " + node.GridY + ") WorldPos: "+ node.WorldPosition);
+        // }
     }
-
+    public List<Node> path;
     void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(GridSize.x, GridSize.y, 0));
@@ -92,7 +95,8 @@ public class Grid : MonoBehaviour
             foreach (Node node in _Grid)
             {
                 Gizmos.color = (node.IsWalkable)?Color.white : Color.red;
-
+                if (path != null && path.Contains(node))
+                    Gizmos.color = Color.green;
                 Gizmos.DrawCube(node.WorldPosition, new Vector3( _NodeDiameter - .1f, _NodeDiameter - .1f, 0));
             }
         }            
