@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,19 +7,48 @@ public class Grid : MonoBehaviour
     public Vector2 GridSize;
     public float NodeRadius;
     
-    Node[,] _Grid;
-    float _NodeDiameter;
-    int _GridSizeX, _GridSizeY;
+    private List<Node> _Path;
+    private Node[,] _Grid;
+    private float _NodeDiameter;
+    private int _GridSizeX, _GridSizeY;
 
     public int  MaxSize{
         get {return _GridSizeX * _GridSizeY ; }
     }
+    public List<Node> Path{
+        get {return _Path;}
+        set {_Path = value;}
+    }
+    private void Awake()
+    {
+        _NodeDiameter = NodeRadius * 2;
+        _GridSizeX = Mathf.RoundToInt(GridSize.x / _NodeDiameter);
+        _GridSizeY = Mathf.RoundToInt(GridSize.y / _NodeDiameter);
+        CreateGrid();
+    }
+    private void FixedUpdate()
+    {
+        UpdateGrid();
+    }
 
-    void CreateGrid()
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(transform.position, new Vector3(GridSize.x, GridSize.y, 0));
+        if (_Grid != null)
+        {
+            foreach (Node node in _Grid)
+            {
+                Gizmos.color = (node.IsWalkable)?Color.white : Color.red;
+                if (Path != null && Path.Contains(node))
+                    Gizmos.color = Color.green;
+                Gizmos.DrawCube(node.WorldPosition, new Vector3( _NodeDiameter - .1f, _NodeDiameter - .1f, 0));
+            }
+        }            
+    }
+    private void CreateGrid()
     {
         _Grid = new Node[_GridSizeX, _GridSizeY];
         Vector3 worldBottomLeft = transform.position - Vector3.right * GridSize.x / 2 - Vector3.up * GridSize.y / 2;
-        
         for (int x = 0; x < _GridSizeX; x++)
         {
             for (int y = 0; y < _GridSizeY; y++)
@@ -31,6 +59,19 @@ public class Grid : MonoBehaviour
             }
         }
     }
+
+    public void UpdateGrid()
+    {
+        for (int x = 0; x < _GridSizeX; x++)
+        {
+            for (int y = 0; y < _GridSizeY; y++)
+            {
+                Vector3 NodeWorldPos = _Grid[x, y].WorldPosition;
+                _Grid[x, y].IsWalkable = !(Physics2D.OverlapCircle(NodeWorldPos, NodeRadius, UnwakableMask));
+            }
+        }
+    }
+
     public Node NodeWorldPointPos(Vector3 worldpos)
     {
         float percentX = (worldpos.x + GridSize.x / 2) /  GridSize.x;
@@ -67,38 +108,4 @@ public class Grid : MonoBehaviour
         return neighbors;
     }
 
-    // Start is called before the first frame update
-    void Awake()
-    {
-        _NodeDiameter = NodeRadius * 2;
-        _GridSizeX = Mathf.RoundToInt(GridSize.x / _NodeDiameter);
-        _GridSizeY = Mathf.RoundToInt(GridSize.y / _NodeDiameter);
-        CreateGrid();
-        // foreach (Node node in _Grid)
-            // print("Node(" + node.GridX + ", " + node.GridY + ") WorldPos:" + node.WorldPosition);
-    }
-    // Update is called once per frame
-    void Start()
-    {
-        // foreach (Node node in path)
-        // {
-        //     Debug.Log("Grid PathNode(" + node.GridX +", " + node.GridY + ") WorldPos: "+ node.WorldPosition);
-        // }
-    }
-    public List<Node> path;
-    void OnDrawGizmos()
-    {
-        Gizmos.DrawWireCube(transform.position, new Vector3(GridSize.x, GridSize.y, 0));
-        // Debug.Assert(_Grid != null);
-        if (_Grid != null)
-        {
-            foreach (Node node in _Grid)
-            {
-                Gizmos.color = (node.IsWalkable)?Color.white : Color.red;
-                if (path != null && path.Contains(node))
-                    Gizmos.color = Color.green;
-                Gizmos.DrawCube(node.WorldPosition, new Vector3( _NodeDiameter - .1f, _NodeDiameter - .1f, 0));
-            }
-        }            
-    }
 }

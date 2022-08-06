@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.InputSystem;
 public class Character : MonoBehaviour
 {
     // Public
@@ -9,13 +7,13 @@ public class Character : MonoBehaviour
     public float Speed = 20.0f;
  
     // Private
-    int _TargetIndex;
-    Vector3[] _Path;
-    Pathfinding _Pathfinding;
-    bool _IsPressed = false;
-    Vector3 _CurrentTargetPos;
+    private int _TargetIndex;
+    private Vector3[] _Path;
+    private Pathfinding _Pathfinding;
+    private bool _IsPressed = false;
+    private Vector3 _CurrentTargetPos;
 
-    // GetSet
+    // GetSets
     public Vector3[] Path{
         get {return _Path;}
         set {_Path = value;}
@@ -29,24 +27,26 @@ public class Character : MonoBehaviour
         get {return Home.position;}
     }
 
-    void Awake()
+    private void Awake()
     {
         _Pathfinding = GameObject.Find("Algorithm").GetComponent<Pathfinding>();
         Debug.Log("StartPos: " + StartPos);
         Debug.Log("TargetPos: " + TargetPos);
     }
 
-    void Update()
+    private void Update()
     {
-        if (Input.GetButtonDown("Jump"))
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             _Path = _Pathfinding.FindPath(StartPos, TargetPos);
+            if (_Path.Length <=0)
+                return;
             _CurrentTargetPos =_Path[0];
             _TargetIndex = 0;
             _IsPressed = true;
         }
     }
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (_IsPressed)
         {
@@ -54,7 +54,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    void GoHome()
+    private void GoHome()
     {
         if (_Path.Length <= 0)
             return;

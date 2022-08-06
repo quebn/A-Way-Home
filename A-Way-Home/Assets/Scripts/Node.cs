@@ -1,21 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Node
 {
+    // Public
     public bool IsWalkable;
-    
     public Vector3 WorldPosition;
-
     public int GridX;
     public int GridY;
     public int Gcost;
     public int Hcost;
-    Node _Parent;
+    
+    // Private
+    private Node _Parent;
 
-    public int Fcost
-    {
+    // GetSets
+    public int Fcost{
         get{ return Gcost + Hcost ;}
     }
 
