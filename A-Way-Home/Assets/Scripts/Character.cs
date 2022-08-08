@@ -5,7 +5,8 @@ public class Character : MonoBehaviour
     // Public
     public Transform Home;
     public float Speed = 20.0f;
- 
+    public uint Energy = 0;
+
     // Private
     private int _TargetIndex;
     private Vector3[] _Path;
@@ -19,7 +20,7 @@ public class Character : MonoBehaviour
         set {_Path = value;}
     }
 
-    public Vector3 StartPos{
+    public Vector3 CurrentPos{
         get {return transform.position;}
     }
 
@@ -30,15 +31,15 @@ public class Character : MonoBehaviour
     private void Awake()
     {
         _Pathfinding = GameObject.Find("Algorithm").GetComponent<Pathfinding>();
-        Debug.Log("StartPos: " + StartPos);
-        Debug.Log("TargetPos: " + TargetPos);
+        Debug.Log("Character StartingPos: " + CurrentPos);
+        Debug.Log("Character TargetPos: " + TargetPos);
     }
 
     private void Update()
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            _Path = _Pathfinding.FindPath(StartPos, TargetPos);
+            _Path = _Pathfinding.FindPath(CurrentPos, TargetPos);
             if (_Path.Length <=0)
                 return;
             _CurrentTargetPos =_Path[0];
@@ -56,10 +57,9 @@ public class Character : MonoBehaviour
 
     private void GoHome()
     {
-        if (_Path.Length <= 0)
-            return;
-        if (StartPos == _CurrentTargetPos)
+        if (CurrentPos == _CurrentTargetPos)
         {
+            Energy--;
             _TargetIndex++;
             if (_TargetIndex >= _Path.Length)
             {
@@ -68,7 +68,14 @@ public class Character : MonoBehaviour
             }
             _CurrentTargetPos = _Path[_TargetIndex];
         }
-        transform.position = Vector3.MoveTowards(transform.position, _CurrentTargetPos, Speed * Time.deltaTime);
+        if (Energy == 0)
+        {
+            _IsPressed = false;
+            Debug.Log("Ending Pos: " + CurrentPos);
+            Debug.Log("GAME OVER! \n Character ran out of energy!!");
+            return;
+        }
+        transform.position = Vector3.MoveTowards(CurrentPos, _CurrentTargetPos, Speed * Time.deltaTime);
     }
 
 }
