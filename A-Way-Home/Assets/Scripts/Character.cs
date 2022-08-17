@@ -15,6 +15,9 @@ public class Character : MonoBehaviour
     private Vector3 _CurrentTargetPos;
 
     // GetSets
+    public bool IsPressed{
+        get { return _IsPressed; }
+    }
     public Vector3[] Path{
         get {return _Path;}
         set {_Path = value;}
@@ -35,31 +38,30 @@ public class Character : MonoBehaviour
         Debug.Log("Character TargetPos: " + TargetPos);
     }
 
-    private void Update()
-    {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            _Path = _Pathfinding.FindPath(CurrentPos, TargetPos);
-            if (_Path.Length <=0)
-                return;
-            _CurrentTargetPos =_Path[0];
-            _TargetIndex = 0;
-            _IsPressed = true;
-        }
-    }
-    private void FixedUpdate()
-    {
-        if (_IsPressed)
-        {
-            GoHome();
-        }
-    }
 
-    private void GoHome()
+    public void InitCharacter()
+    {
+        _Path = _Pathfinding.FindPath(CurrentPos, TargetPos);
+        if (_Path.Length <=0)
+            return;
+        _CurrentTargetPos =_Path[0];
+        _TargetIndex = 0;
+        _IsPressed = true;        
+    }
+    
+    public void GoHome()
     {
         if (CurrentPos == _CurrentTargetPos)
         {
             Energy--;
+            // CharacterInfo.SetEnergy(Energy);
+            if (Energy == 0)
+            {
+                _IsPressed = false;
+                Debug.Log("Ending Pos: " + CurrentPos);
+                Debug.Log("GAME OVER!\n Character ran out of energy!!");
+                return;
+            }
             _TargetIndex++;
             if (_TargetIndex >= _Path.Length)
             {
@@ -67,13 +69,6 @@ public class Character : MonoBehaviour
                 return;
             }
             _CurrentTargetPos = _Path[_TargetIndex];
-        }
-        if (Energy == 0)
-        {
-            _IsPressed = false;
-            Debug.Log("Ending Pos: " + CurrentPos);
-            Debug.Log("GAME OVER! \n Character ran out of energy!!");
-            return;
         }
         transform.position = Vector3.MoveTowards(CurrentPos, _CurrentTargetPos, Speed * Time.deltaTime);
     }
