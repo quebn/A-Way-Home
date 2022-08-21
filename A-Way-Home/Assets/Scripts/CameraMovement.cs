@@ -10,12 +10,14 @@ public class CameraMovement : MonoBehaviour
     public float MaxZoom = 8f;
 
     // Privates
+    private Camera _Camera;
     private float _Zoom;
     private float _MapMinX, _MapMaxX, _MapMinY, _MapMaxY;
 
     private void Awake()
     {   
-        _Zoom = Camera.main.orthographicSize;
+        _Camera = Camera.main;
+        _Zoom = _Camera.orthographicSize;
 
         _MapMinX = Platform.transform.position.x - Platform.bounds.size.x * 0.5f;
         _MapMaxX = Platform.transform.position.x + Platform.bounds.size.x * 0.5f;
@@ -67,14 +69,14 @@ public class CameraMovement : MonoBehaviour
         _Zoom -= Scroll * ZoomSpeed * Time.deltaTime;
         _Zoom = Mathf.Clamp(_Zoom, MinZoom, MaxZoom);
 
-        Camera.main.orthographicSize = _Zoom;
-        Camera.main.transform.position = ClampCamera(Camera.main.transform.position);
+        _Camera.orthographicSize = _Zoom;
+        _Camera.transform.position = ClampCamera(_Camera.transform.position);
     }
 
     private Vector3 ClampCamera(Vector3 TargetPos)
     {
-        float CamHeight = Camera.main.orthographicSize;
-        float CamWidth = Camera.main.orthographicSize * Camera.main.aspect;
+        float CamHeight = _Camera.orthographicSize;
+        float CamWidth = _Camera.orthographicSize * _Camera.aspect;
 
         Vector2 Max = new Vector2(_MapMaxX - CamWidth, _MapMaxY - CamHeight);
         Vector2 Min = new Vector2(_MapMinX + CamWidth, _MapMinY + CamHeight);

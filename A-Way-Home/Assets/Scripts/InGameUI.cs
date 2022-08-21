@@ -12,11 +12,12 @@ public class InGameUI : MonoBehaviour
     public TextMeshProUGUI MovesLeft;
     public Manipulation Manipulation;
     public Character Character;
-    public GameObject OptionsUI;
+    public GameObject OptionUI;
 
     void Start()
     {
-        Debug.Log("Level Loaded!");
+        Debug.Assert(!s_IsPaused);
+        Debug.Log("InGameUI Loaded!");
         MovesLeft.text = Manipulation.Moves.ToString();
         InitCharacterEnergy(Character.Energy);
     }
@@ -51,6 +52,10 @@ public class InGameUI : MonoBehaviour
 
 
     // Action Bar
+    public void UndoAction()
+    {
+        Debug.Log("Pressed Undo Button!");        
+    }
     public void ReloadAction()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -67,17 +72,30 @@ public class InGameUI : MonoBehaviour
     // Options
     public void HelpButton()
     {
-
+        Debug.Log("Pressed Help Button!");
+        // Should Pause the game
     }
     
     public void OptionsButton()
     {
-        Debug.Assert(s_IsPaused == false);
+        PauseGame();
+        OptionsUI.s_IsActive = true;
+        OptionUI.SetActive(true);
+    }
+
+    public void PauseGame()
+    {
+        Debug.Assert(!s_IsPaused);
         s_IsPaused = true;
-        OptionsUI.SetActive(true);
         Time.timeScale = 0f;
     }
 
+    public void UnpauseGame()
+    {
+        Debug.Assert(s_IsPaused);
+        s_IsPaused = false;
+        Time.timeScale = 1f;
+    }
 
     // ToolBar
     public void SetToolNone() 

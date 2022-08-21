@@ -54,17 +54,11 @@ public class Character : MonoBehaviour
         if (CurrentPos == _CurrentTargetPos)
         {
             Energy--;
-            // CharacterInfo.SetEnergy(Energy);
-            if (Energy == 0)
-            {
-                _IsPressed = false;
-                Debug.Log("Ending Pos: " + CurrentPos);
-                Debug.Log("GAME OVER!\n Character ran out of energy!!");
-                return;
-            }
             _TargetIndex++;
-            if (_TargetIndex >= _Path.Length)
+            if (_TargetIndex >= _Path.Length || Energy == 0)
             {
+                Debug.Log("Ending Pos: " + CurrentPos);
+                Debug.Log("GAME OVER!");
                 _IsPressed = false;
                 return;
             }
