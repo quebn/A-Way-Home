@@ -42,9 +42,9 @@ public class SavedSlotUI : MonoBehaviour
     {
         // TODO: Implement function
         // Delete the exisiting file and replace it with the new save;
-        if (!this.HasData.activeSelf && GameData.SaveFileDataList[this.SlotIndexNumber] == null)
+        if (!this.HasData.activeSelf || GameData.SaveFileDataList[this.SlotIndexNumber] == null)
         {
-            Debug.LogError("Error: Save Overwrite Failed!");
+            Debug.Log("No Data to be Overwritten!");
             return;
         }
         FileNameToBeDeleted = this.FileName.text;

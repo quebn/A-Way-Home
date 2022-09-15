@@ -53,7 +53,7 @@ public static class PlayerActions
             {
                 string ObstacleID = hit2D.collider.gameObject.GetComponent<ObstacleData>().ID;
                 hit2D.collider.gameObject.SetActive(false);
-                PlayerLevelData.Instance.RemovedObstacles.Add(ObstacleID, false);
+                PlayerLevelData.Instance.RemovedObstacles.Add(ObstacleID, false);//should be true not false
                 PlayerLevelData.Instance.PlayerMoves--;
                 Debug.Log(hit2D.collider.gameObject + " was Destroyed");
                 Debug.Log("Moves Left: " + PlayerLevelData.Instance.PlayerMoves);

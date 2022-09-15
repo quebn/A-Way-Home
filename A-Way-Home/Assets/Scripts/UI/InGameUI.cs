@@ -11,12 +11,12 @@ public class InGameUI : MonoBehaviour
     public Slider EnergySlider;
     public TextMeshProUGUI MovesLeftTMP;
     public TextMeshProUGUI EnergyLeftTMP;
+    public TextMeshProUGUI LivesLeftTMP;
     public GameObject OptionUI;
     
     
     private void Start()
     {
-        
         Debug.Assert(PlayerLevelData.Instance != null, "Error: No PlayerLevelData instance found!");
         Debug.Assert(PlayerLevelData.Instance.Character != null, "Error: No character found!");
 
@@ -24,6 +24,7 @@ public class InGameUI : MonoBehaviour
 
         Debug.Assert(!s_IsPaused, "Game is Paused");
         MovesLeftTMP.text = PlayerLevelData.Instance.PlayerMoves.ToString();
+        LivesLeftTMP.text = PlayerLevelData.Instance.PlayerLives.ToString();
         InitCharacterEnergy(PlayerLevelData.Instance.Character.Energy);
     }
     // TODO: Player input should be handled in player input script

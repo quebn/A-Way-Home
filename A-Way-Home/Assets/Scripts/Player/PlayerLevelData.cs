@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum LevelLoadType{ NewGame, LoadGame}
+public enum LevelLoadType{ NewGame, LoadGame}// <- should not exist
 public class PlayerLevelData : MonoBehaviour
 {
     public static PlayerLevelData Instance;
@@ -34,7 +34,7 @@ public class PlayerLevelData : MonoBehaviour
     
     public void Start()
     {
-        if (GameData.LoadType == LevelLoadType.LoadGame)
+        if (GameData.LoadType == LevelLoadType.LoadGame) //<- should not exist
             LoadGame();
     }
 
@@ -42,6 +42,7 @@ public class PlayerLevelData : MonoBehaviour
     {
         PlayerLives = GameData.LoadedLevelData.PlayerLives;
         PlayerMoves = GameData.LoadedLevelData.PlayerMoves;
+        RemovedObstacles = GameData.LoadedLevelData.RemovedObstacles;
     }
 
 }
