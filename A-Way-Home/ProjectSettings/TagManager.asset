@@ -7,7 +7,7 @@ TagManager:
   - RockObstacle
   - WoodObstacle
   - WaterObstacle
-  - Platform
+  - StructureObstacle
   layers:
   - Default
   - TransparentFX
@@ -44,4 +44,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3879246389
+    locked: 0
+  - name: Foreground
+    uniqueID: 3137582259
+    locked: 0
+  - name: UI
+    uniqueID: 2109664055
     locked: 0
