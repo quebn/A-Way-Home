@@ -31,21 +31,7 @@ public class MainMenuUI : MonoBehaviour
         Debug.Log(GameData.SaveFileDataList.Count);
         s_SelectedCharacter = CharacterType.None;
     }
-    // General window functions
-    private void SetWindowInactive(GameObject window)
-    {
-        Debug.Assert(!s_IsActive, "Main Menu is Active");
-        Debug.Assert(window.activeSelf, window + " is not active!");
-        s_IsActive = true;
-        window.SetActive(false);
-    }
-    private void SetWindowActive(GameObject Window)
-    {
-        Debug.Assert(s_IsActive, "Main menu is not Active");
-        s_IsActive = false;
-        Window.SetActive(true);
-    }
-    
+
     #region MainMenu button functions
     public void PlayGame()
     {
@@ -139,7 +125,7 @@ public class MainMenuUI : MonoBehaviour
         GameData.LoadType = LevelLoadType.NewGame;
         if (!GameData.Instance.UnlockLevels.Contains(scenelevelname))
         {
-            Debug.LogError(scenelevelname + " Does not Exist");
+            Debug.Log(scenelevelname + " Does not Exist");
             return;
         }
         SceneManager.LoadScene(scenelevelname);
@@ -187,4 +173,20 @@ public class MainMenuUI : MonoBehaviour
     }
 
     #endregion
+
+    // General window functions
+    private void SetWindowInactive(GameObject window)
+    {
+        Debug.Assert(!s_IsActive, "Main Menu is Active");
+        Debug.Assert(window.activeSelf, window + " is not active!");
+        s_IsActive = true;
+        window.SetActive(false);
+    }
+    private void SetWindowActive(GameObject Window)
+    {
+        Debug.Assert(s_IsActive, "Main menu is not Active");
+        s_IsActive = false;
+        Window.SetActive(true);
+    }
+    
 }

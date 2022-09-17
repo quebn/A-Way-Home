@@ -16,11 +16,12 @@ public class OptionsUI : MonoBehaviour
     public GameObject DeleteConfirmLoadWindow;
     public GameObject ConfirmOverwriteWindow;
 
-    public InGameUI InGameUI;
-    public static bool s_IsActive = false;
+    // public InGameUI InGameUI;
+    private bool isActive;
 
     private void Start()
     {
+        isActive = true;
         Debug.Assert(ConfirmOverwriteWindow != null, $"{ConfirmOverwriteWindow} is null");
         Debug.Assert(OverwriteNameInput != null, $"{OverwriteNameInput} is null");
         if (Instance == null)
@@ -31,8 +32,8 @@ public class OptionsUI : MonoBehaviour
     #region Pause button functions
     public void Resume()
     {
-        InGameUI.UnpauseGame();
-        InGameUI.OptionUI.SetActive(false);
+        InGameUI.Instance.UnpauseGame();
+        InGameUI.Instance.OptionUI.SetActive(false);
 
     }
 
@@ -52,7 +53,7 @@ public class OptionsUI : MonoBehaviour
 
     public void MainMenu()
     {
-        InGameUI.UnpauseGame();
+        InGameUI.Instance.UnpauseGame();
         SceneManager.LoadScene("MainMenu");
         MainMenuUI.s_IsActive = true;
     }
@@ -156,14 +157,14 @@ public class OptionsUI : MonoBehaviour
 
     private void SetWindowActive(GameObject window)
     {
-        Debug.Assert(s_IsActive, "Error: OptionsUI is not active!");
+        Debug.Assert(isActive, "Error: OptionsUI is not active!");
         window.SetActive(true);
-        s_IsActive = false;
+        isActive = false;
     }
     private void SetWindowInactive(GameObject window)
     {
-        Debug.Assert(!s_IsActive, "Error: OptionsUI is active!");
+        Debug.Assert(!isActive, "Error: OptionsUI is active!");
         window.SetActive(false);
-        s_IsActive = true;
+        isActive = true;
     }
 }

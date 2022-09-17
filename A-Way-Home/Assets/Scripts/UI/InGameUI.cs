@@ -6,7 +6,8 @@ using TMPro;
 
 public class InGameUI : MonoBehaviour
 {
-    public static bool s_IsPaused = false;
+    public static InGameUI Instance {get; private set;}
+    private bool isPaused = false;
     
     public Slider EnergySlider;
     public TextMeshProUGUI MovesLeftTMP;
@@ -17,20 +18,23 @@ public class InGameUI : MonoBehaviour
     
     private void Start()
     {
+
         Debug.Assert(PlayerLevelData.Instance != null, "Error: No PlayerLevelData instance found!");
         Debug.Assert(PlayerLevelData.Instance.Character != null, "Error: No character found!");
 
         PlayerActions.CurrentManipulationType = ManipulationType.None;
 
-        Debug.Assert(!s_IsPaused, "Game is Paused");
+        Debug.Assert(!isPaused, "Game is Paused");
         MovesLeftTMP.text = PlayerLevelData.Instance.PlayerMoves.ToString();
         LivesLeftTMP.text = PlayerLevelData.Instance.PlayerLives.ToString();
         InitCharacterEnergy(PlayerLevelData.Instance.Character.Energy);
+        if (Instance == null)
+            Instance = this;
     }
     // TODO: Player input should be handled in player input script
     private void Update()
     {
-        if (s_IsPaused || PlayerLevelData.Instance.Character.IsHome)
+        if (isPaused || PlayerLevelData.Instance.Character.IsHome)
             return;
         PlayerActions.SetCurrentTool();
         PlayerActions.ClearItem();
@@ -90,24 +94,21 @@ public class InGameUI : MonoBehaviour
     public void OptionsButton()
     {
         PauseGame();
-        if (s_IsPaused)
-        {
+        if (isPaused)
             OptionUI.SetActive(true);
-            OptionsUI.s_IsActive = true;
-        }
     }
 
     public void PauseGame()
     {
-        Debug.Assert(!s_IsPaused, "Game is Already Paused");
-        s_IsPaused = true;
+        Debug.Assert(!isPaused, "Game is Already Paused");
+        isPaused = true;
         Time.timeScale = 0f;
     }
 
     public void UnpauseGame()
     {
-        Debug.Assert(s_IsPaused, "Game is not Paused");
-        s_IsPaused = false;
+        Debug.Assert(isPaused, "Game is not Paused");
+        isPaused = false;
         Time.timeScale = 1f;
     }
     #endregion
