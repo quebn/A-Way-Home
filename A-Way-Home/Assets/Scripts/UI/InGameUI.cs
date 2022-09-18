@@ -7,60 +7,48 @@ using TMPro;
 public class InGameUI : MonoBehaviour
 {
     public static InGameUI Instance {get; private set;}
-    private bool isPaused = false;
+    public bool isPaused = false;
     
-    public Slider EnergySlider;
-    public TextMeshProUGUI MovesLeftTMP;
-    public TextMeshProUGUI EnergyLeftTMP;
-    public TextMeshProUGUI LivesLeftTMP;
-    public GameObject OptionUI;
-    
-    
+    [SerializeField] private GameObject optionsWindow;
+    [SerializeField] private Slider energySlider;
+    [SerializeField] private TextMeshProUGUI movesLeftTMP;
+    [SerializeField] private TextMeshProUGUI energyLeftTMP;
+    [SerializeField] private TextMeshProUGUI livesLeftTMP;
     private void Start()
     {
 
         Debug.Assert(PlayerLevelData.Instance != null, "Error: No PlayerLevelData instance found!");
-        Debug.Assert(PlayerLevelData.Instance.Character != null, "Error: No character found!");
-
-        PlayerActions.CurrentManipulationType = ManipulationType.None;
+        Debug.Assert(PlayerLevelData.Instance.character != null, "Error: No character found!");
 
         Debug.Assert(!isPaused, "Game is Paused");
-        MovesLeftTMP.text = PlayerLevelData.Instance.PlayerMoves.ToString();
-        LivesLeftTMP.text = PlayerLevelData.Instance.PlayerLives.ToString();
-        InitCharacterEnergy(PlayerLevelData.Instance.Character.Energy);
+        movesLeftTMP.text = PlayerLevelData.Instance.playerMoves.ToString();
+        livesLeftTMP.text = PlayerLevelData.Instance.playerLives.ToString();
+        InitCharacterEnergy(PlayerLevelData.Instance.character.energy);
         if (Instance == null)
             Instance = this;
     }
-    // TODO: Player input should be handled in player input script
     private void Update()
     {
-        if (isPaused || PlayerLevelData.Instance.Character.IsHome)
-            return;
-        PlayerActions.SetCurrentTool();
-        PlayerActions.ClearItem();
-        if (Keyboard.current.rKey.wasPressedThisFrame)
-            ReloadAction();
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-            PlayerLevelData.Instance.Character.InitCharacter();
-        if (Mouse.current.leftButton.wasPressedThisFrame && PlayerActions.CurrentManipulationType != ManipulationType.None)
-            MovesLeftTMP.text = PlayerLevelData.Instance.PlayerMoves.ToString();
-        if (PlayerLevelData.Instance.Character.IsPressed)
+        if (PlayerLevelData.Instance.character.isPressed)
         {
-            PlayerLevelData.Instance.Character.GoHome();
-            SetCharacterEnergy(PlayerLevelData.Instance.Character.Energy);
+            PlayerLevelData.Instance.character.GoHome();
+            SetCharacterEnergy(PlayerLevelData.Instance.character.energy);
         }
     }
-
+    public void SetPlayerMoves()
+    {
+        this.movesLeftTMP.text = PlayerLevelData.Instance.playerMoves.ToString();
+    }
     private void InitCharacterEnergy(uint energy)
     {
-        EnergySlider.maxValue = energy;
+        energySlider.maxValue = energy;
         SetCharacterEnergy(energy);
     }
 
     private void SetCharacterEnergy(uint energy)
     {
-        EnergyLeftTMP.text = energy.ToString();
-        EnergySlider.value = energy;
+        energyLeftTMP.text = energy.ToString();
+        energySlider.value = energy;
     }
 
 
@@ -71,16 +59,12 @@ public class InGameUI : MonoBehaviour
     }
     public void ReloadAction()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(PlayerLevelData.Instance.levelSceneName);
     }
 
     public void PlayAction()
     {
-        PlayerLevelData.Instance.Character.InitCharacter();
-        if (PlayerLevelData.Instance.Character.IsPressed)
-        {
-            PlayerLevelData.Instance.Character.GoHome();
-        }
+        PlayerLevelData.Instance.character.InitCharacter();
     }
 
     #endregion
@@ -94,8 +78,10 @@ public class InGameUI : MonoBehaviour
     public void OptionsButton()
     {
         PauseGame();
+        // Debug.Assert(OptionsUI.Instance != null, "OptionsUi instance is null");
         if (isPaused)
-            OptionUI.SetActive(true);
+            this.optionsWindow.SetActive(true);
+            // OptionsUI.Instance.gameObject.SetActive(true);
     }
 
     public void PauseGame()
@@ -115,23 +101,23 @@ public class InGameUI : MonoBehaviour
     #region ToolBar
     public void SetTool(int toolindex)
     {
-        PlayerActions.CurrentManipulationType = (ManipulationType)toolindex;
-        Debug.Log("Current Tool index: " + PlayerActions.CurrentManipulationType);
+        PlayerActions.Instance.currentManipulationType = (ManipulationType)toolindex;
+        Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
     }
     public void SetToolNone() 
     {
-        PlayerActions.CurrentManipulationType = ManipulationType.None; 
+        PlayerActions.Instance.currentManipulationType = ManipulationType.None; 
         Debug.Log("Current Tool: None");
     }
     public void SetToolPickAxe() 
     {
-        PlayerActions.CurrentManipulationType = ManipulationType.Pickaxe;
+        PlayerActions.Instance.currentManipulationType = ManipulationType.Pickaxe;
         Debug.Log("Current Tool: Pickaxe");
 
     }
     public void SetToolWoodAxe() 
     {
-        PlayerActions.CurrentManipulationType = ManipulationType.WoodAxe;
+        PlayerActions.Instance.currentManipulationType = ManipulationType.WoodAxe;
         Debug.Log("Current Tool: Woodaxe");
     }
 

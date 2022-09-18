@@ -7,71 +7,72 @@ public enum CharacterType { None , Character1, Character2, Character3 }
 public class MainMenuUI : MonoBehaviour
 {
     public static MainMenuUI Instance {get; private set;}
-    [SerializeField] private GameObject CharacterSelectionWindow;
-    [SerializeField] private GameObject LoadSelectionWindow;
-    [SerializeField] private GameObject LevelSelectionwindow;
-    [SerializeField] private GameObject SettingsWindow;
-    [SerializeField] private GameObject CloseGameWindow;
-    [SerializeField] private GameObject LeaderboardsWindow;
-    [SerializeField] private GameObject HowtoPlayWindow;
+    [SerializeField] private GameObject characterSelectionWindow;
+    [SerializeField] private GameObject loadSelectionWindow;
+    [SerializeField] private GameObject levelSelectionwindow;
+    [SerializeField] private GameObject settingsWindow;
+    [SerializeField] private GameObject closeGameWindow;
+    [SerializeField] private GameObject leaderboardsWindow;
+    [SerializeField] private GameObject howtoPlayWindow;
 
-    public GameObject DeleteConfirmWindow;
+    public GameObject deleteConfirmWindow;
 
     public static bool s_IsActive = true;
-    public static CharacterType s_SelectedCharacter;
+    public CharacterType selectedCharacter;
     
     private void Start()
     {
+        selectedCharacter = CharacterType.None;
         if (Instance == null)
             Instance = this;
         Debug.Assert(Instance != null, "Error: MainMenuUI instance is null");
         if (GameData.Instance == null)
             GameData.InitGameDataInstance();
-        GameData.SaveFileDataList = new List<SaveFileData>(5);
-        Debug.Log(GameData.SaveFileDataList.Count);
-        s_SelectedCharacter = CharacterType.None;
+        Debug.Assert(GameData.Instance != null, "Error: GameData instance is null");
+        GameData.saveFileDataList = new List<SaveFileData>(5);
+        Debug.Log(GameData.saveFileDataList.Count);
     }
 
     #region MainMenu button functions
     public void PlayGame()
     {
-        SetWindowActive(CharacterSelectionWindow);
+        SetWindowActive(characterSelectionWindow);
     }
 
     public void LoadGame()
     {
-        GameData.SaveFileDataList =  SaveSystem.InitAllSavedData();
-        SetWindowActive(LoadSelectionWindow);
+        GameData.saveFileDataList =  SaveSystem.InitAllSavedData();
+        SetWindowActive(loadSelectionWindow);
         Debug.Log("Pressed LoadGame Button");
     }
 
     public void SelectLevel()
     {
-        SetWindowActive(LevelSelectionwindow);
+        SetWindowActive(levelSelectionwindow);
         Debug.Log("Pressed SelectLevel Button");
     }
     
     public void Settings()
     {
-        SetWindowActive(SettingsWindow);
+        SetWindowActive(settingsWindow);
         Debug.Log("Pressed Settings Button");
     }
 
     public void HowtoPlay()
     {
-        SetWindowActive(HowtoPlayWindow);
+        SetWindowActive(howtoPlayWindow);
         Debug.Log("Pressed HowToPlay Button");
     }
 
     public void Leaderboards()
     {
-        SetWindowActive(LeaderboardsWindow);
+        SetWindowActive(leaderboardsWindow);
         Debug.Log("Pressed Leaderboards Button");
     }
 
     public void CloseGame()
     {
-        SetWindowActive(CloseGameWindow);
+        SetWindowActive(closeGameWindow);
         Debug.Log("Pressed CloseGame Button");
     }
     #endregion
@@ -79,24 +80,25 @@ public class MainMenuUI : MonoBehaviour
     public void SelectCharButton(int charactertype)
     {
         Debug.Assert(charactertype <= 3, "Error: Character number exceeded at 3!");
-        s_SelectedCharacter = (CharacterType)charactertype;
-        Debug.Log("Character Selected: " + s_SelectedCharacter);
+        selectedCharacter = (CharacterType)charactertype;
+        Debug.Log("Character Selected: " + selectedCharacter);
     }
     public void CloseCharWindow()
     {
-        s_SelectedCharacter = CharacterType.None;
-        SetWindowInactive(CharacterSelectionWindow);
+        selectedCharacter = CharacterType.None;
+        SetWindowInactive(characterSelectionWindow);
     }
 
     public void StartGame()
     {
-        if (s_SelectedCharacter == CharacterType.None)
+        if (selectedCharacter == CharacterType.None)
         {
             Debug.Log("No Character Selected");
             return;
         }
-        int CharacterIndex = (int)s_SelectedCharacter - 1;
-        NewLevel(GameData.Instance.CurrentCharacterLevel[CharacterIndex]);
+        int characterIndex = (int)this.selectedCharacter;
+        
+        NewLevel(GameData.Instance.currentCharacterLevel[characterIndex - 1]);
     }
 
     #endregion
@@ -110,20 +112,20 @@ public class MainMenuUI : MonoBehaviour
     }
     public void CancelDeleteSlot()
     {
-        Debug.Assert(DeleteConfirmWindow != null, "Error: Load slot confrimation window not found!");
-        DeleteConfirmWindow.SetActive(false);
+        Debug.Assert(deleteConfirmWindow != null, "Error: Load slot confrimation window not found!");
+        deleteConfirmWindow.SetActive(false);
     }
     public void CloseLoadWindow()
     {
-        SetWindowInactive(LoadSelectionWindow);
+        SetWindowInactive(loadSelectionWindow);
     }
     #endregion
     #region Level selection window button functions
     public void NewLevel(string scenelevelname)
     {
-        // Debug.Assert(GameData.Instance.UnlockLevels.Contains(scenelevelname), "Error: Scene does not exist");
-        GameData.LoadType = LevelLoadType.NewGame;
-        if (!GameData.Instance.UnlockLevels.Contains(scenelevelname))
+        // Debug.Assert(GameData.Instance.unlockLevels.Contains(scenelevelname), "Error: Scene does not exist");
+        GameData.loadType = LevelLoadType.NewGame;
+        if (!GameData.Instance.unlockLevels.Contains(scenelevelname))
         {
             Debug.Log(scenelevelname + " Does not Exist");
             return;
@@ -132,14 +134,14 @@ public class MainMenuUI : MonoBehaviour
     }
     public void CloseLevelWindow()
     {
-        SetWindowInactive(LevelSelectionwindow);
+        SetWindowInactive(levelSelectionwindow);
     }
     #endregion
     #region Settings window button functions
 
-    public void CloseSettingsWindow()
+    public void ClosesettingsWindow()
     {
-        SetWindowInactive(SettingsWindow);
+        SetWindowInactive(settingsWindow);
     }
 
     #endregion 
@@ -154,22 +156,22 @@ public class MainMenuUI : MonoBehaviour
 
     public void CloseGameNo()
     {
-        SetWindowInactive(CloseGameWindow);
+        SetWindowInactive(closeGameWindow);
     }
 
     #endregion
     #region Leaderboards window button functions
-    public void CloseLeaderboardsWindow()
+    public void CloseleaderboardsWindow()
     {
-        SetWindowInactive(LeaderboardsWindow);
+        SetWindowInactive(leaderboardsWindow);
     }
 
     #endregion
     #region HowtoPlay window button functions
 
-    public void CloseHowtoPlayWindow()
+    public void ClosehowtoPlayWindow()
     {
-        SetWindowInactive(HowtoPlayWindow);
+        SetWindowInactive(howtoPlayWindow);
     }
 
     #endregion

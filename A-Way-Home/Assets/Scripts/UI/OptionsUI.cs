@@ -5,16 +5,16 @@ using TMPro;
 public class OptionsUI : MonoBehaviour
 {
     public static OptionsUI Instance {get; private set;}
-    [SerializeField] private GameObject SaveGameWindow;
-    [SerializeField] private GameObject CreateNewFileWindow;
-    [SerializeField] private GameObject LoadGameWindow;
-    [SerializeField] private GameObject QuitGameWindow;
-    [SerializeField] private TMP_InputField FileNameInput;
-    [SerializeField] private TMP_InputField OverwriteNameInput;
+    [SerializeField] private GameObject saveGameWindow;
+    [SerializeField] private GameObject createNewFileWindow;
+    [SerializeField] private GameObject loadGameWindow;
+    [SerializeField] private GameObject quitGameWindow;
+    [SerializeField] private TMP_InputField fileNameInput;
+    [SerializeField] private TMP_InputField overwriteNameInput;
     // Confirm delete windows
-    public GameObject DeleteConfirmSaveWindow;
-    public GameObject DeleteConfirmLoadWindow;
-    public GameObject ConfirmOverwriteWindow;
+    public GameObject deleteConfirmSaveWindow;
+    public GameObject deleteConfirmLoadWindow;
+    public GameObject confirmOverwriteWindow;
 
     // public InGameUI InGameUI;
     private bool isActive;
@@ -22,8 +22,8 @@ public class OptionsUI : MonoBehaviour
     private void Start()
     {
         isActive = true;
-        Debug.Assert(ConfirmOverwriteWindow != null, $"{ConfirmOverwriteWindow} is null");
-        Debug.Assert(OverwriteNameInput != null, $"{OverwriteNameInput} is null");
+        Debug.Assert(confirmOverwriteWindow != null, $"{confirmOverwriteWindow} is null");
+        Debug.Assert(overwriteNameInput != null, $"{overwriteNameInput} is null");
         if (Instance == null)
             Instance = this;
         Debug.Assert(Instance != null, "Error: OptionsUI instance is null");
@@ -33,21 +33,21 @@ public class OptionsUI : MonoBehaviour
     public void Resume()
     {
         InGameUI.Instance.UnpauseGame();
-        InGameUI.Instance.OptionUI.SetActive(false);
+        this.gameObject.SetActive(false);
 
     }
 
     public void SaveGame()
     {
-        GameData.SaveFileDataList = SaveSystem.InitAllSavedData();
-        SetWindowActive(SaveGameWindow);
+        GameData.saveFileDataList = SaveSystem.InitAllSavedData();
+        SetWindowActive(saveGameWindow);
         Debug.Log("Pressed SaveGame Button!");
     }
 
     public void LoadGame()
     {
-        GameData.SaveFileDataList = SaveSystem.InitAllSavedData();
-        SetWindowActive(LoadGameWindow);
+        GameData.saveFileDataList = SaveSystem.InitAllSavedData();
+        SetWindowActive(loadGameWindow);
         Debug.Log("Pressed LoadGame Button");
     }
 
@@ -60,48 +60,48 @@ public class OptionsUI : MonoBehaviour
 
     public void QuitGame()
     {
-        SetWindowActive(QuitGameWindow);
+        SetWindowActive(quitGameWindow);
     }
     #endregion
     #region SaveGame window button functions
 
     public void CreateNewSaveFile()
     {
-        CreateNewFileWindow.SetActive(true);
+        createNewFileWindow.SetActive(true);
     }
     public void CloseSaveGameWindow()
     {
-        SetWindowInactive(SaveGameWindow);
+        SetWindowInactive(saveGameWindow);
     }
     public void ConfirmNewSaveFile()//TODO: fix bug where new saved file does not show when refreshed
     {
-        if (GameData.SaveFileDataList.Count > 5)
+        if (GameData.saveFileDataList.Count > 5)
         {
             Debug.LogWarning("SavedSlots is full delete/overwrite an existing slot");
             return;
         }
-        SaveSystem.SaveLevelData(FileNameInput.text);
+        SaveSystem.SaveLevelData(fileNameInput.text);
         CancelNewSaveFile();
-        Debug.Log($"Saved data as {FileNameInput.text}.save");
+        Debug.Log($"Saved data as {fileNameInput.text}.save");
         SavedSlotUI.RefreshSaveSlots();
     }
     public void CancelNewSaveFile()
     {
-        FileNameInput.text = "";
-        CreateNewFileWindow.SetActive(false);
+        fileNameInput.text = "";
+        createNewFileWindow.SetActive(false);
     }
     public void ConfirmOverwriteFile()
     {
         SaveSystem.DeleteFileData(SavedSlotUI.FileNameToBeDeleted);
-        SaveSystem.SaveLevelData(OverwriteNameInput.text);
+        SaveSystem.SaveLevelData(overwriteNameInput.text);
         CloseConfirmOverwriteWindow();
-        Debug.Log($"{SavedSlotUI.FileNameToBeDeleted} was overwritten by {OverwriteNameInput.text}");
+        Debug.Log($"{SavedSlotUI.FileNameToBeDeleted} was overwritten by {overwriteNameInput.text}");
         SavedSlotUI.RefreshSaveSlots();
     }
     public void CloseConfirmOverwriteWindow()
     {
-        OverwriteNameInput.text = "";
-        ConfirmOverwriteWindow.SetActive(false);
+        overwriteNameInput.text = "";
+        confirmOverwriteWindow.SetActive(false);
     }
     #endregion
     #region LoadGame window button functions
@@ -112,13 +112,13 @@ public class OptionsUI : MonoBehaviour
         // Debug.Assert(LoadedData != null, "Load FileData is null");
         // PlayerLevelData.Instance.LoadLevel(LoadedData);
         // // Should be Level Reload
-        // CloseLoadGameWindow();
+        // CloseloadGameWindow();
         // Resume();
         // Debug.Log("Loaded data from test.sav");
     // }
     public void CloseLoadGameWindow()
     {
-        SetWindowInactive(LoadGameWindow);
+        SetWindowInactive(loadGameWindow);
     }
     
     #endregion
@@ -131,10 +131,10 @@ public class OptionsUI : MonoBehaviour
     }
     public void QuitWindowNo()
     {
-        SetWindowInactive(QuitGameWindow);
+        SetWindowInactive(quitGameWindow);
     }
     #endregion
-
+    
     public void ConfirmDeleteSlot(string windoworigin)
     {
         SaveSystem.DeleteFileData(SavedSlotUI.FileNameToBeDeleted);
@@ -147,10 +147,10 @@ public class OptionsUI : MonoBehaviour
         switch(windoworigin)
         {
             case "ingame-save":
-                DeleteConfirmSaveWindow.SetActive(false);
+                deleteConfirmSaveWindow.SetActive(false);
                 break;
             case "ingame-load":
-                DeleteConfirmLoadWindow.SetActive(false);
+                deleteConfirmLoadWindow.SetActive(false);
                 break;
         }
     }

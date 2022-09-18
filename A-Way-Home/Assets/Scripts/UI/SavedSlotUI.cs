@@ -7,15 +7,15 @@ using UnityEngine.SceneManagement;
 public class SavedSlotUI : MonoBehaviour
 {
     // create a static list of SaveSlotUI instances
-    [SerializeField] private int SlotIndexNumber;
-    [SerializeField] private GameObject HasData;
-    [SerializeField] private GameObject NoData;
+    [SerializeField] private int slotIndexNumber;
+    [SerializeField] private GameObject hasData;
+    [SerializeField] private GameObject noData;
 
-    #region HasData SerializedField Components
-    // 8 components Image/Filename/Energy/Moves/Lives/LevelNum/Time/Date
-    [SerializeField] private TextMeshProUGUI FileName;  
-    [SerializeField] private TextMeshProUGUI Energy;  
-    [SerializeField] private TextMeshProUGUI Moves;  
+    #region hasData SerializedField Components
+    // 8 components Image/Filename/energy/moves/Lives/LevelNum/Time/Date
+    [SerializeField] private TextMeshProUGUI fileName;  
+    [SerializeField] private TextMeshProUGUI energy;  
+    [SerializeField] private TextMeshProUGUI moves;  
     // [SerializeField] private TextMeshProUGUI Lives;  
     // [SerializeField] private TextMeshProUGUI LevelNum;  
     // [SerializeField] private TextMeshProUGUI Time;  
@@ -26,29 +26,29 @@ public class SavedSlotUI : MonoBehaviour
     public static string FileNameToBeDeleted;
     private void Start()
     {
-        Debug.Log($"Slot Number {SaveSlotsUIList.Count + 1} => SlotIndexNumber: {SlotIndexNumber}");
-        SaveSlotsUIList.Insert(SlotIndexNumber, this);
+        Debug.Log($"Slot Number {SaveSlotsUIList.Count + 1} => slotIndexNumber: {slotIndexNumber}");
+        SaveSlotsUIList.Insert(slotIndexNumber, this);
         InitData();
     }
 
     public void LoadGame()
     {
-        GameData.LoadedLevelData = GameData.SaveFileDataList[SlotIndexNumber];
-        GameData.LoadType = LevelLoadType.LoadGame;
-        SceneManager.LoadScene(GameData.LoadedLevelData.LevelSceneName);
+        GameData.loadedLevelData = GameData.saveFileDataList[slotIndexNumber];
+        GameData.loadType = LevelLoadType.LoadGame;
+        SceneManager.LoadScene(GameData.loadedLevelData.levelSceneName);
     }
 
     public void OverwriteFile()
     {
         // TODO: Implement function
         // Delete the exisiting file and replace it with the new save;
-        if (!this.HasData.activeSelf || GameData.SaveFileDataList[this.SlotIndexNumber] == null)
+        if (!this.hasData.activeSelf || GameData.saveFileDataList[this.slotIndexNumber] == null)
         {
             Debug.Log("No Data to be Overwritten!");
             return;
         }
-        FileNameToBeDeleted = this.FileName.text;
-        OptionsUI.Instance.ConfirmOverwriteWindow.SetActive(true);
+        FileNameToBeDeleted = this.fileName.text;
+        OptionsUI.Instance.confirmOverwriteWindow.SetActive(true);
     }
 
     public void DeleteButton(string buttonlocation)
@@ -57,52 +57,52 @@ public class SavedSlotUI : MonoBehaviour
         switch(buttonlocation)
         {
             case "mainmenu":
-                MainMenuUI.Instance.DeleteConfirmWindow.SetActive(true);
+                MainMenuUI.Instance.deleteConfirmWindow.SetActive(true);
                 break;
             case "ingame-save":
-                OptionsUI.Instance.DeleteConfirmSaveWindow.SetActive(true);
+                OptionsUI.Instance.deleteConfirmSaveWindow.SetActive(true);
                 break;
             case "ingame-load":
-                OptionsUI.Instance.DeleteConfirmLoadWindow.SetActive(true);
+                OptionsUI.Instance.deleteConfirmLoadWindow.SetActive(true);
                 break;
             default:
                 Debug.LogError("no confirm window found");
                 break;
         }
-        if (NoData.activeSelf)
+        if (noData.activeSelf)
             return;
-        FileNameToBeDeleted = this.FileName.text;
+        FileNameToBeDeleted = this.fileName.text;
         Debug.Log($"{FileNameToBeDeleted} is to be deleted!");
     }
 
     private void InitData()
     {
         int Size = 0;
-        Size = GameData.SaveFileDataList.Count;
-        if (Size == 0 || SlotIndexNumber >= Size )
+        Size = GameData.saveFileDataList.Count;
+        if (Size == 0 || slotIndexNumber >= Size )
         {
-            if (this.HasData.activeSelf)
+            if (this.hasData.activeSelf)
             {
-                this.HasData.SetActive(false);
-                this.NoData.SetActive(true);
+                this.hasData.SetActive(false);
+                this.noData.SetActive(true);
             }
-            Debug.Log($"Slot number {SlotIndexNumber + 1} is empty and has no data");
+            Debug.Log($"Slot number {slotIndexNumber + 1} is empty and has no data");
             return;
         }
-        this.NoData.SetActive(false);
-        this.HasData.SetActive(true);
-        SetValues(GameData.SaveFileDataList[SlotIndexNumber]);
+        this.noData.SetActive(false);
+        this.hasData.SetActive(true);
+        SetValues(GameData.saveFileDataList[slotIndexNumber]);
     }
     
     private void SetValues(SaveFileData slotdata)
     {
-        FileName.text = slotdata.FileName;
-        Moves.text = slotdata.PlayerMoves.ToString();
+        fileName.text = slotdata.fileName;
+        moves.text = slotdata.playerMoves.ToString();
     }
 
     public static void RefreshSaveSlots()
     {
-        GameData.SaveFileDataList = SaveSystem.InitAllSavedData();
+        GameData.saveFileDataList = SaveSystem.InitAllSavedData();
         for(int i = 0; i < 5; i++)
         {
             SaveSlotsUIList[i].InitData();

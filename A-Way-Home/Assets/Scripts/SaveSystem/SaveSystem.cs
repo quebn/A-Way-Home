@@ -6,32 +6,32 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public static class SaveSystem
 {
-    private static string FilePathDir = Application.persistentDataPath;
-    private static BinaryFormatter Formatter = new BinaryFormatter(); 
+    private static string filePathDir = Application.persistentDataPath;
+    private static BinaryFormatter formatter = new BinaryFormatter(); 
     
     // public static Dictionary<string, SaveFileData> SavedStateFileData = new Dictionary<string, SaveFileData>(5); 
     public static void DeleteFileData(string filename)
     {
-        string Path = $"{FilePathDir}/SavedFiles/{filename}.save";
+        string path = $"{filePathDir}/SavedFiles/{filename}.save";
 
-        if (!File.Exists(Path))
+        if (!File.Exists(path))
         {
-            Debug.LogError($"{filename}.save does not exist in path: {FilePathDir}/SavedFiles/");
+            Debug.LogError($"{filename}.save does not exist in path: {filePathDir}/SavedFiles/");
             return;
         }
-        File.Delete(Path);
+        File.Delete(path);
         Debug.Log($"{filename}.save deleted successfully!");
     }
 
     public static void SaveLevelData(string savefilename)
     {
-        string Path = $"{FilePathDir}/SavedFiles/{savefilename}.save";
+        string path = $"{filePathDir}/SavedFiles/{savefilename}.save";
         
-        FileStream Stream = new FileStream(Path, FileMode.Create);
+        FileStream stream = new FileStream(path, FileMode.Create);
 
-        SaveFileData FileData = new SaveFileData(savefilename, PlayerLevelData.Instance);
-        Formatter.Serialize(Stream, FileData);
-        Stream.Close();
+        SaveFileData fileData = new SaveFileData(savefilename, PlayerLevelData.Instance);
+        formatter.Serialize(stream, fileData);
+        stream.Close();
         SaveGameData();
     }
 
@@ -42,17 +42,17 @@ public static class SaveSystem
             Debug.Log($"{filepath} does not exist!");
             return null;
         }
-        FileStream Stream = new FileStream(filepath, FileMode.Open);
-        SaveFileData FileData = Formatter.Deserialize(Stream) as SaveFileData;
-        Stream.Close(); 
+        FileStream stream = new FileStream(filepath, FileMode.Open);
+        SaveFileData fileData = formatter.Deserialize(stream) as SaveFileData;
+        stream.Close(); 
 
-        return FileData;
+        return fileData;
     }
 
     public static List<SaveFileData> InitAllSavedData()
     {
         List<SaveFileData> list = new List<SaveFileData>(5);
-        string path = $"{FilePathDir}/SavedFiles/";
+        string path = $"{filePathDir}/SavedFiles/";
         string[] fileArray = Directory.GetFiles(path, "*.save");
         if (fileArray.Length == 0)
             return list;
@@ -67,25 +67,25 @@ public static class SaveSystem
 
     public static void SaveGameData()//should be implemented in every file saving functions
     {
-        string Path = $"{FilePathDir}/GameData.data";
-        FileStream Stream = new FileStream(Path, FileMode.Create);
-        Formatter.Serialize(Stream, GameData.Instance);
-        Stream.Close();
-        Debug.Log($"GameData saved to {Path}");
+        string path = $"{filePathDir}/GameData.data";
+        FileStream stream = new FileStream(path, FileMode.Create);
+        formatter.Serialize(stream, GameData.Instance);
+        stream.Close();
+        Debug.Log($"GameData saved to {path}");
     }
 
     public static GameData LoadGameData()
     {
-        string Path = $"{FilePathDir}/GameData.data";
-        if (!File.Exists(Path))
+        string path = $"{filePathDir}/GameData.data";
+        if (!File.Exists(path))
         {
-            Debug.Log($"{Path} does not exist!");
+            Debug.Log($"{path} does not exist!");
             return null;
         }
-        FileStream Stream = new FileStream(Path, FileMode.Open);
-        GameData FileData = Formatter.Deserialize(Stream) as GameData;
-        Stream.Close(); 
+        FileStream stream = new FileStream(path, FileMode.Open);
+        GameData fileData = formatter.Deserialize(stream) as GameData;
+        stream.Close(); 
 
-        return FileData;
+        return fileData;
     }
 }

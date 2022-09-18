@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    [HideInInspector] public bool IsHome = false;
-    [HideInInspector] public float Speed = 0f;
-    [HideInInspector] public Vector3[] Path;
-    public Transform Home;
-    public uint Energy;
+    [HideInInspector] public bool isHome = false;
+    [HideInInspector] public float speed = 0f;
+    [HideInInspector] public Vector3[] path;
+    public Transform home;
+    public uint energy;
 
     // Private
     private Pathfinding _Pathfinding;
@@ -14,8 +14,8 @@ public class Character : MonoBehaviour
     private bool _IsPressed = false;
     private int _TargetIndex;
 
-    public bool IsPressed       { get{return _IsPressed;} }
-    public Vector3 CurrentPos   { get{return transform.position;} }
+    public bool isPressed       { get{return _IsPressed;} }
+    public Vector3 currentPos   { get{return transform.position;} }
 
     private void Awake()
     {
@@ -24,39 +24,39 @@ public class Character : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Character StartingPos: " + CurrentPos);
-        Debug.Log("Character Home Position: " + Home.position);
-        Debug.Assert(Home != null, "Error: Home of Chracter is not found!");
+        Debug.Log("Character StartingPos: " + currentPos);
+        Debug.Log("Character home Position: " + home.position);
+        Debug.Assert(home != null, "Error: home of Chracter is not found!");
     }
 
     public void InitCharacter()
     {
-        Path = _Pathfinding.FindPath(CurrentPos, Home.position);
-        Debug.Log(Path.Length);
-        if (Path.Length <=0)
+        path = _Pathfinding.FindPath(currentPos, home.position);
+        Debug.Log(path.Length);
+        if (path.Length <=0)
             return;
-        _CurrentTargetPos =Path[0];
+        _CurrentTargetPos =path[0];
         _TargetIndex = 0;
         _IsPressed = true;        
     }
     
     public void GoHome()
     {
-        if (CurrentPos == _CurrentTargetPos)
+        if (currentPos == _CurrentTargetPos)
         {
-            Energy--;
+            energy--;
             _TargetIndex++;
-            if (_TargetIndex >= Path.Length || Energy == 0)
+            if (_TargetIndex >= path.Length || energy == 0)
             {
-                Debug.Log("Ending Pos: " + CurrentPos);
+                Debug.Log("Ending Pos: " + currentPos);
                 Debug.Log("GAME OVER!");
-                IsHome = true;
+                isHome = true;
                 _IsPressed = false;
                 return;
             }
-            _CurrentTargetPos = Path[_TargetIndex];
+            _CurrentTargetPos = path[_TargetIndex];
         }
-        transform.position = Vector3.MoveTowards(CurrentPos, _CurrentTargetPos, Speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(currentPos, _CurrentTargetPos, speed * Time.deltaTime);
     }
 
 }

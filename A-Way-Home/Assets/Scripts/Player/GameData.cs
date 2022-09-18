@@ -7,13 +7,13 @@ public class GameData
     public static GameData Instance;
     // Settings Data
     // LeaderBoards Data
-    public string[] CurrentCharacterLevel;
+    public string[] currentCharacterLevel;
 
-    public List<string> UnlockLevels;
+    public List<string> unlockLevels;
 
-    public static List<SaveFileData> SaveFileDataList ;
-    public static SaveFileData LoadedLevelData = null;
-    public static LevelLoadType ?LoadType = null;
+    public static List<SaveFileData> saveFileDataList ;
+    public static SaveFileData loadedLevelData = null;
+    public static LevelLoadType? loadType = null;
     // public static string SelectedFile;
     
 
@@ -32,7 +32,11 @@ public class GameData
     // TODO: add a function to be saved in a file for game data persistence
     private GameData()
     {
-        CurrentCharacterLevel = new string[3]{"Char1Level1", "Char2Level1", "Char3Level1"};
-        UnlockLevels = new List<string>{CurrentCharacterLevel[0], CurrentCharacterLevel[1], CurrentCharacterLevel[2]};
+        Debug.Log("Creating new Gamedata");
+        currentCharacterLevel = new string[3]{"Char1Level1", "Char2Level1", "Char3Level1"};
+        Debug.Log(currentCharacterLevel[0] + " is instantiated in currentCharacterLevel array");
+        Debug.Log(currentCharacterLevel[1] + " is instantiated in currentCharacterLevel array");
+        Debug.Log(currentCharacterLevel[2] + " is instantiated in currentCharacterLevel array");
+        unlockLevels = new List<string>{currentCharacterLevel[0], currentCharacterLevel[1], currentCharacterLevel[2]};
     }
 }

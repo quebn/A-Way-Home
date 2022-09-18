@@ -6,20 +6,20 @@ using System.Collections.Generic;
 [System.Serializable]
 public class SaveFileData 
 {
-    public string FileName;
-    public string LevelSceneName;
-    public uint PlayerLives;
-    public uint PlayerMoves;
-    public Dictionary<string, bool> RemovedObstacles;
+    public string fileName;
+    public string levelSceneName;
+    public uint playerLives;
+    public uint playerMoves;
+    public Dictionary<string, bool> removedObstacles;
 
 
 
     public SaveFileData(string filename, PlayerLevelData leveldata)
     {
-        this.FileName = filename;
-        this.LevelSceneName = leveldata.LevelSceneName;
-        this.PlayerLives = leveldata.PlayerLives;
-        this.PlayerMoves = leveldata.PlayerMoves;
-        this.RemovedObstacles = leveldata.RemovedObstacles; 
+        this.fileName = filename;
+        this.levelSceneName = leveldata.levelSceneName;
+        this.playerLives = leveldata.playerLives;
+        this.playerMoves = leveldata.playerMoves;
+        this.removedObstacles = leveldata.removedObstacles; 
     }
 }

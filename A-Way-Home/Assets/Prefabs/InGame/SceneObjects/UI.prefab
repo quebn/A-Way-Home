@@ -2776,16 +2776,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3f3ad1c4bbc4df4eacca47fdfac1ed2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SaveGameWindow: {fileID: 7946426460063065992}
-  CreateNewFileWindow: {fileID: 1403119847923189676}
-  LoadGameWindow: {fileID: 7946426459295583257}
-  QuitGameWindow: {fileID: 7946426458278652265}
-  FileNameInput: {fileID: 1403119847268586372}
-  OverwriteNameInput: {fileID: 1255965196088536074}
-  DeleteConfirmSaveWindow: {fileID: 5622499410308571152}
-  DeleteConfirmLoadWindow: {fileID: 570719389206283041}
-  ConfirmOverwriteWindow: {fileID: 5210984105720584114}
-  InGameUI: {fileID: 7946426458618690555}
+  saveGameWindow: {fileID: 7946426460063065992}
+  createNewFileWindow: {fileID: 1403119847923189676}
+  loadGameWindow: {fileID: 7946426459295583257}
+  quitGameWindow: {fileID: 7946426458278652265}
+  fileNameInput: {fileID: 1403119847268586372}
+  overwriteNameInput: {fileID: 1255965196088536074}
+  deleteConfirmSaveWindow: {fileID: 5622499410308571152}
+  deleteConfirmLoadWindow: {fileID: 570719389206283041}
+  confirmOverwriteWindow: {fileID: 5210984105720584114}
 --- !u!1 &7946426458476285328
 GameObject:
   m_ObjectHideFlags: 0
@@ -2872,11 +2871,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 686cdaed440e8b442b9701cd29079ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnergySlider: {fileID: 7946426459196479862}
-  MovesLeftTMP: {fileID: 7946426458669752833}
-  EnergyLeftTMP: {fileID: 3243561978260046570}
-  LivesLeftTMP: {fileID: 6876103772829610540}
-  OptionUI: {fileID: 7946426458339522854}
+  optionsWindow: {fileID: 7946426458339522854}
+  energySlider: {fileID: 7946426459196479862}
+  movesLeftTMP: {fileID: 7946426458669752833}
+  energyLeftTMP: {fileID: 3243561978260046570}
+  livesLeftTMP: {fileID: 6876103772829610540}
 --- !u!1 &7946426458680142248
 GameObject:
   m_ObjectHideFlags: 0
@@ -5076,6 +5075,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ingame-save
       objectReference: {fileID: 0}
+    - target: {fileID: 4486582860068709687, guid: a014bde95151ef542b9f6577ad868dcc, type: 3}
+      propertyPath: slotIndexNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4919387034660982212, guid: a014bde95151ef542b9f6577ad868dcc, type: 3}
+      propertyPath: slotIndexNumber
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 4947678068051539123, guid: a014bde95151ef542b9f6577ad868dcc, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -5103,6 +5110,10 @@ PrefabInstance:
     - target: {fileID: 5372094229463526021, guid: a014bde95151ef542b9f6577ad868dcc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ConfirmOverwriteFile
+      objectReference: {fileID: 0}
+    - target: {fileID: 5448244720032138809, guid: a014bde95151ef542b9f6577ad868dcc, type: 3}
+      propertyPath: slotIndexNumber
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5462679144525957292, guid: a014bde95151ef542b9f6577ad868dcc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -5367,6 +5378,10 @@ PrefabInstance:
     - target: {fileID: 9182622711196944995, guid: a014bde95151ef542b9f6577ad868dcc, type: 3}
       propertyPath: m_VerticalScrollbarVisibility
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9218242985359909742, guid: a014bde95151ef542b9f6577ad868dcc, type: 3}
+      propertyPath: slotIndexNumber
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a014bde95151ef542b9f6577ad868dcc, type: 3}
@@ -7314,6 +7329,10 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0.39790672
       objectReference: {fileID: 0}
+    - target: {fileID: 3894883223631478060, guid: e5f60d98b9ed21a4284ef89b84bcb69a, type: 3}
+      propertyPath: slotIndexNumber
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3997967173287673388, guid: e5f60d98b9ed21a4284ef89b84bcb69a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ingame-load
@@ -7321,6 +7340,14 @@ PrefabInstance:
     - target: {fileID: 4514576576164652796, guid: e5f60d98b9ed21a4284ef89b84bcb69a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: ingame-load
+      objectReference: {fileID: 0}
+    - target: {fileID: 5169376133978896343, guid: e5f60d98b9ed21a4284ef89b84bcb69a, type: 3}
+      propertyPath: slotIndexNumber
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647530119898443527, guid: e5f60d98b9ed21a4284ef89b84bcb69a, type: 3}
+      propertyPath: slotIndexNumber
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5698963283542338567, guid: e5f60d98b9ed21a4284ef89b84bcb69a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
@@ -7373,6 +7400,10 @@ PrefabInstance:
     - target: {fileID: 6515083391365715221, guid: e5f60d98b9ed21a4284ef89b84bcb69a, type: 3}
       propertyPath: m_VerticalScrollbarVisibility
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8678955634563178590, guid: e5f60d98b9ed21a4284ef89b84bcb69a, type: 3}
+      propertyPath: slotIndexNumber
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8843437581125717682, guid: e5f60d98b9ed21a4284ef89b84bcb69a, type: 3}
       propertyPath: m_IsActive

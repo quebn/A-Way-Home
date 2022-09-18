@@ -2,13 +2,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class CameraMovement : MonoBehaviour
 {
-    public SpriteRenderer Platform;
-    public float PanSpeed = 20f;
-    public float PanBorderWidth = 10f;
-    public float ZoomSpeed = 5f;
-    public float MinZoom = 4.5f;
-    public float MaxZoom = 8f;
-
+    public SpriteRenderer platform;
+    public float panSpeed = 20f;
+    public float panBorderWidth = 10f;
+    public float zoomSpeed = 5f;
+    public float minZoom = 4.5f;
+    public float maxZoom = 8f;
+    public bool keyboard  = true; 
+    public bool mouse  = false; 
     // Privates
     private Camera _Camera;
     private float _Zoom;
@@ -19,35 +20,45 @@ public class CameraMovement : MonoBehaviour
         _Camera = Camera.main;
         _Zoom = _Camera.orthographicSize;
 
-        _MapMinX = Platform.transform.position.x - Platform.bounds.size.x * 0.5f;
-        _MapMaxX = Platform.transform.position.x + Platform.bounds.size.x * 0.5f;
+        _MapMinX = platform.transform.position.x - platform.bounds.size.x * 0.5f;
+        _MapMaxX = platform.transform.position.x + platform.bounds.size.x * 0.5f;
 
-        _MapMinY = Platform.transform.position.y - Platform.bounds.size.y * 0.5f;
-        _MapMaxY = Platform.transform.position.y + Platform.bounds.size.y * 0.5f;
+        _MapMinY = platform.transform.position.y - platform.bounds.size.y * 0.5f;
+        _MapMaxY = platform.transform.position.y + platform.bounds.size.y * 0.5f;
     }
+
 
     private void Update()
     {
         MoveCamera();
         ZoomCamera();
     }
-
     private void MoveCamera()
     {
         Vector3 CameraPos = transform.position;
-
-        if (Keyboard.current.wKey.isPressed)
-            CameraPos.y += PanSpeed * Time.deltaTime;
-
-        if (Keyboard.current.sKey.isPressed)
-            CameraPos.y -= PanSpeed * Time.deltaTime;
-
-        if (Keyboard.current.dKey.isPressed)
-            CameraPos.x += PanSpeed * Time.deltaTime;
-            
-        if (Keyboard.current.aKey.isPressed)
-            CameraPos.x -= PanSpeed * Time.deltaTime;
-
+        if (mouse)
+        {
+            Vector2 MousePos = Mouse.current.position.ReadValue();
+            if (Keyboard.current.wKey.isPressed || MousePos.y >= Screen.height - panBorderWidth)
+                CameraPos.y += panSpeed * Time.deltaTime;
+            if (Keyboard.current.sKey.isPressed || MousePos.y <= panBorderWidth)
+                CameraPos.y -= panSpeed * Time.deltaTime;
+            if (Keyboard.current.dKey.isPressed || MousePos.x >= Screen.width - panBorderWidth)
+                CameraPos.x += panSpeed * Time.deltaTime;
+            if (Keyboard.current.aKey.isPressed || MousePos.x <= panBorderWidth)
+                CameraPos.x -= panSpeed * Time.deltaTime;
+        }
+        if (keyboard)
+        {
+            if (Keyboard.current.wKey.isPressed)
+                CameraPos.y += panSpeed * Time.deltaTime;
+            if (Keyboard.current.sKey.isPressed)
+                CameraPos.y -= panSpeed * Time.deltaTime;
+            if (Keyboard.current.dKey.isPressed)
+                CameraPos.x += panSpeed * Time.deltaTime;
+            if (Keyboard.current.aKey.isPressed)
+                CameraPos.x -= panSpeed * Time.deltaTime;
+        }
         transform.position = ClampCamera(CameraPos);
     }
     
@@ -66,8 +77,8 @@ public class CameraMovement : MonoBehaviour
         if (Scroll == 0)
             return;
         // -------------
-        _Zoom -= Scroll * ZoomSpeed * Time.deltaTime;
-        _Zoom = Mathf.Clamp(_Zoom, MinZoom, MaxZoom);
+        _Zoom -= Scroll * zoomSpeed * Time.deltaTime;
+        _Zoom = Mathf.Clamp(_Zoom, minZoom, maxZoom);
 
         _Camera.orthographicSize = _Zoom;
         _Camera.transform.position = ClampCamera(_Camera.transform.position);
@@ -89,15 +100,3 @@ public class CameraMovement : MonoBehaviour
 
 
     // Move Camera Code
-    // Vector2 MousePos = Mouse.current.position.ReadValue();
-    // if (Keyboard.current.wKey.isPressed || MousePos.y >= Screen.height - PanBorderWidth)
-    //     CameraPos.y += PanSpeed * Time.deltaTime;
-
-    // if (Keyboard.current.sKey.isPressed || MousePos.y <= PanBorderWidth)
-    //     CameraPos.y -= PanSpeed * Time.deltaTime;
-
-    // if (Keyboard.current.dKey.isPressed || MousePos.x >= Screen.width - PanBorderWidth)
-    //     CameraPos.x += PanSpeed * Time.deltaTime;
-        
-    // if (Keyboard.current.aKey.isPressed || MousePos.x <= PanBorderWidth)
-        // CameraPos.x -= PanSpeed * Time.deltaTime;
