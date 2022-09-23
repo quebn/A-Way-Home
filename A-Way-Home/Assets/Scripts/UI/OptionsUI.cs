@@ -39,6 +39,7 @@ public class OptionsUI : MonoBehaviour
 
     public void SaveGame()
     {
+        // List<SaveFileData> list = SaveSystem.InitAllSavedData();
         GameData.saveFileDataList = SaveSystem.InitAllSavedData();
         SetWindowActive(saveGameWindow);
         Debug.Log("Pressed SaveGame Button!");
@@ -55,7 +56,6 @@ public class OptionsUI : MonoBehaviour
     {
         InGameUI.Instance.UnpauseGame();
         SceneManager.LoadScene("MainMenu");
-        MainMenuUI.s_IsActive = true;
     }
 
     public void QuitGame()
@@ -105,17 +105,6 @@ public class OptionsUI : MonoBehaviour
     }
     #endregion
     #region LoadGame window button functions
-    // public void LoadSavedFile(int slotnumber)
-    // {
-        // string SlotFileName = GameData.Instance.SavedStateFileNames[slotnumber];
-        // SaveFileData LoadedData =  SaveSystem.LoadLevelData(SlotFileName);
-        // Debug.Assert(LoadedData != null, "Load FileData is null");
-        // PlayerLevelData.Instance.LoadLevel(LoadedData);
-        // // Should be Level Reload
-        // CloseloadGameWindow();
-        // Resume();
-        // Debug.Log("Loaded data from test.sav");
-    // }
     public void CloseLoadGameWindow()
     {
         SetWindowInactive(loadGameWindow);
@@ -125,6 +114,7 @@ public class OptionsUI : MonoBehaviour
     #region QuitGame window button functions
     public void QuitWindowYes()
     {
+        SetWindowInactive(quitGameWindow);
         SaveSystem.SaveGameData();
         Debug.Log("Quit A-Way Home Game!");
         Application.Quit();

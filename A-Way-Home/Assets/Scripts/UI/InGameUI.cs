@@ -1,15 +1,14 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
 public class InGameUI : MonoBehaviour
 {
     public static InGameUI Instance {get; private set;}
-    public bool isPaused = false;
-    
+    [HideInInspector] public bool isPaused = false; //TODO: should be in GameEvent.cs
+    [HideInInspector] public EndGameType endGameType;
     [SerializeField] private GameObject optionsWindow;
+    [SerializeField] private GameObject gameEndWindow;
     [SerializeField] private Slider energySlider;
     [SerializeField] private TextMeshProUGUI movesLeftTMP;
     [SerializeField] private TextMeshProUGUI energyLeftTMP;
@@ -17,24 +16,15 @@ public class InGameUI : MonoBehaviour
     private void Start()
     {
 
-        Debug.Assert(PlayerLevelData.Instance != null, "Error: No PlayerLevelData instance found!");
-        Debug.Assert(PlayerLevelData.Instance.character != null, "Error: No character found!");
-
         Debug.Assert(!isPaused, "Game is Paused");
         movesLeftTMP.text = PlayerLevelData.Instance.playerMoves.ToString();
         livesLeftTMP.text = PlayerLevelData.Instance.playerLives.ToString();
         InitCharacterEnergy(PlayerLevelData.Instance.character.energy);
+        endGameType = EndGameType.None;
         if (Instance == null)
             Instance = this;
     }
-    private void Update()
-    {
-        if (PlayerLevelData.Instance.character.isPressed)
-        {
-            PlayerLevelData.Instance.character.GoHome();
-            SetCharacterEnergy(PlayerLevelData.Instance.character.energy);
-        }
-    }
+
     public void SetPlayerMoves()
     {
         this.movesLeftTMP.text = PlayerLevelData.Instance.playerMoves.ToString();
@@ -45,7 +35,7 @@ public class InGameUI : MonoBehaviour
         SetCharacterEnergy(energy);
     }
 
-    private void SetCharacterEnergy(uint energy)
+    public void SetCharacterEnergy(uint energy)
     {
         energyLeftTMP.text = energy.ToString();
         energySlider.value = energy;
@@ -59,7 +49,9 @@ public class InGameUI : MonoBehaviour
     }
     public void ReloadAction()
     {
-        SceneManager.LoadScene(PlayerLevelData.Instance.levelSceneName);
+        // Reloading the Level should consume a Player Life.
+        // GameEvent.instance.RestartGame();
+        GameEvent.RestartGame();
     }
 
     public void PlayAction()
@@ -84,14 +76,14 @@ public class InGameUI : MonoBehaviour
             // OptionsUI.Instance.gameObject.SetActive(true);
     }
 
-    public void PauseGame()
+    public void PauseGame()//TODO: should be in GameEvent.cs
     {
         Debug.Assert(!isPaused, "Game is Already Paused");
         isPaused = true;
         Time.timeScale = 0f;
     }
 
-    public void UnpauseGame()
+    public void UnpauseGame()//TODO: should be in GameEvent.cs
     {
         Debug.Assert(isPaused, "Game is not Paused");
         isPaused = false;
@@ -122,4 +114,13 @@ public class InGameUI : MonoBehaviour
     }
 
     #endregion
+    
+    public static void SetEndWindowActive(EndGameType endGameType)
+    {
+        Debug.Assert(Instance != false, $"ERROR:{Instance.gameObject.name} instance is null");
+        Debug.Assert(Instance.gameEndWindow != false, $"ERROR: Game End window is null/not found!");
+        Instance.gameEndWindow.SetActive(true);
+        Instance.endGameType = endGameType;
+    }
+
 }

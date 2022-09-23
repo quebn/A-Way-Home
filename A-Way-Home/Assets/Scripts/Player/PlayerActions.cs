@@ -1,5 +1,4 @@
 using UnityEngine;
-// using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
@@ -82,8 +81,8 @@ public class PlayerActions : MonoBehaviour
 
     private void RestartLevel( InputAction.CallbackContext context)
     {
-        
-        InGameUI.Instance.ReloadAction();
+        // GameEvent.instance.RestartGame();  
+        GameEvent.RestartGame();      
     }
 
     private void ClearObstacle(string obstacletag)
@@ -103,7 +102,6 @@ public class PlayerActions : MonoBehaviour
             hit2D.collider.gameObject.SetActive(false);
             PlayerLevelData.Instance.removedObstacles.Add(ObstacleID, false);//should be true not false
             PlayerLevelData.Instance.playerMoves--;
-            // playermovetext should update 
             InGameUI.Instance.SetPlayerMoves();
             Debug.Log(hit2D.collider.gameObject + " was Destroyed");
             Debug.Log("Moves Left: " + PlayerLevelData.Instance.playerMoves);

@@ -19,7 +19,7 @@ public class ObstacleData : MonoBehaviour
     
     private void InitObstacle()
     {
-        if (GameData.loadType == LevelLoadType.NewGame)
+        if (GameEvent.loadType == LevelLoadType.NewGame)
             return;
         if (!PlayerLevelData.Instance.removedObstacles.ContainsKey(this.ID))
         {

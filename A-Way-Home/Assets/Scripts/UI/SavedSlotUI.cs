@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class SavedSlotUI : MonoBehaviour
 {
@@ -22,20 +20,24 @@ public class SavedSlotUI : MonoBehaviour
     // [SerializeField] private TextMeshProUGUI Date;  
     #endregion
 
-    public static List<SavedSlotUI> SaveSlotsUIList = new List<SavedSlotUI>(5);
+    public static List<SavedSlotUI> saveSlotsUIList = new List<SavedSlotUI>(5); 
     public static string FileNameToBeDeleted;
     private void Start()
     {
-        Debug.Log($"Slot Number {SaveSlotsUIList.Count + 1} => slotIndexNumber: {slotIndexNumber}");
-        SaveSlotsUIList.Insert(slotIndexNumber, this);
+        Debug.Assert(false, " TODO: Fix the saveslotUIList capacity increasing");
+
+        // SavedSlotUI temp = saveSlotsUIList[slotIndexNumber];
+        Debug.Assert(saveSlotsUIList.Capacity == 5, "ERROR: Exceed max amount of savedSlotList List");
+        Debug.Log($"Slot Number {saveSlotsUIList.Count} => slotIndexNumber: {slotIndexNumber} Capacity = {saveSlotsUIList.Capacity}");
+        // Debug.Log($"{slotIndexNumber}=>{temp.gameObject.name}");
+        saveSlotsUIList.Insert(slotIndexNumber, this);
         InitData();
     }
 
     public void LoadGame()
     {
-        GameData.loadedLevelData = GameData.saveFileDataList[slotIndexNumber];
-        GameData.loadType = LevelLoadType.LoadGame;
-        SceneManager.LoadScene(GameData.loadedLevelData.levelSceneName);
+        // GameEvent.instance.LoadGame(slotIndexNumber);
+        GameEvent.LoadGame(slotIndexNumber);
     }
 
     public void OverwriteFile()
@@ -86,7 +88,7 @@ public class SavedSlotUI : MonoBehaviour
                 this.hasData.SetActive(false);
                 this.noData.SetActive(true);
             }
-            Debug.Log($"Slot number {slotIndexNumber + 1} is empty and has no data");
+            // Debug.Log($"Slot number {slotIndexNumber + 1} is empty and has no data");
             return;
         }
         this.noData.SetActive(false);
@@ -105,7 +107,7 @@ public class SavedSlotUI : MonoBehaviour
         GameData.saveFileDataList = SaveSystem.InitAllSavedData();
         for(int i = 0; i < 5; i++)
         {
-            SaveSlotsUIList[i].InitData();
+            saveSlotsUIList[i].InitData();
         }
     }
 }

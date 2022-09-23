@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
 
 public enum CharacterType { None , Character1, Character2, Character3 }
 public class MainMenuUI : MonoBehaviour
@@ -15,13 +13,14 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject leaderboardsWindow;
     [SerializeField] private GameObject howtoPlayWindow;
 
+    private bool isActive;
     public GameObject deleteConfirmWindow;
-
-    public static bool s_IsActive = true;
     public CharacterType selectedCharacter;
     
+
     private void Start()
     {
+        isActive = true;
         selectedCharacter = CharacterType.None;
         if (Instance == null)
             Instance = this;
@@ -42,6 +41,7 @@ public class MainMenuUI : MonoBehaviour
     public void LoadGame()
     {
         GameData.saveFileDataList =  SaveSystem.InitAllSavedData();
+        // Debug.Log();
         SetWindowActive(loadSelectionWindow);
         Debug.Log("Pressed LoadGame Button");
     }
@@ -97,8 +97,8 @@ public class MainMenuUI : MonoBehaviour
             return;
         }
         int characterIndex = (int)this.selectedCharacter;
-        
-        NewLevel(GameData.Instance.currentCharacterLevel[characterIndex - 1]);
+        // GameEvent.instance.NewGame(GameData.Instance.currentCharacterLevel[characterIndex - 1]);
+        GameEvent.NewGame(GameData.Instance.currentCharacterLevel[characterIndex - 1]);
     }
 
     #endregion
@@ -123,14 +123,16 @@ public class MainMenuUI : MonoBehaviour
     #region Level selection window button functions
     public void NewLevel(string scenelevelname)
     {
+        // GameEvent.instance.NewGame(scenelevelname);
+        GameEvent.NewGame(scenelevelname);
         // Debug.Assert(GameData.Instance.unlockLevels.Contains(scenelevelname), "Error: Scene does not exist");
-        GameData.loadType = LevelLoadType.NewGame;
-        if (!GameData.Instance.unlockLevels.Contains(scenelevelname))
-        {
-            Debug.Log(scenelevelname + " Does not Exist");
-            return;
-        }
-        SceneManager.LoadScene(scenelevelname);
+        // GameData.loadType = LevelLoadType.NewGame;
+        // if (!GameData.Instance.unlockLevels.Contains(scenelevelname))
+        // {
+        //     Debug.Log(scenelevelname + " Does not Exist");
+        //     return;
+        // }
+        // SceneManager.LoadScene(scenelevelname);
     }
     public void CloseLevelWindow()
     {
@@ -139,7 +141,7 @@ public class MainMenuUI : MonoBehaviour
     #endregion
     #region Settings window button functions
 
-    public void ClosesettingsWindow()
+    public void CloseSettingsWindow()
     {
         SetWindowInactive(settingsWindow);
     }
@@ -161,7 +163,7 @@ public class MainMenuUI : MonoBehaviour
 
     #endregion
     #region Leaderboards window button functions
-    public void CloseleaderboardsWindow()
+    public void CloseLeaderboardsWindow()
     {
         SetWindowInactive(leaderboardsWindow);
     }
@@ -169,7 +171,7 @@ public class MainMenuUI : MonoBehaviour
     #endregion
     #region HowtoPlay window button functions
 
-    public void ClosehowtoPlayWindow()
+    public void CloseHowtoPlayWindow()
     {
         SetWindowInactive(howtoPlayWindow);
     }
@@ -179,16 +181,16 @@ public class MainMenuUI : MonoBehaviour
     // General window functions
     private void SetWindowInactive(GameObject window)
     {
-        Debug.Assert(!s_IsActive, "Main Menu is Active");
+        Debug.Assert(!isActive, "Main Menu is Active");
         Debug.Assert(window.activeSelf, window + " is not active!");
-        s_IsActive = true;
+        isActive = true;
         window.SetActive(false);
     }
-    private void SetWindowActive(GameObject Window)
+    private void SetWindowActive(GameObject window)
     {
-        Debug.Assert(s_IsActive, "Main menu is not Active");
-        s_IsActive = false;
-        Window.SetActive(true);
+        Debug.Assert(isActive, "Main menu is not Active");
+        isActive = false;
+        window.SetActive(true);
     }
     
 }

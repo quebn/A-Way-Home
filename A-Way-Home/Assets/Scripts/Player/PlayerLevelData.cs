@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum LevelLoadType{ NewGame, LoadGame}// <- should not exist
 public class PlayerLevelData : MonoBehaviour
 {
     public static PlayerLevelData Instance;
@@ -15,10 +13,9 @@ public class PlayerLevelData : MonoBehaviour
     [HideInInspector] public Dictionary<string, bool> removedObstacles;
     [HideInInspector] public string levelSceneName;
 
-
     public void Awake()
     {
-        Debug.Assert(GameData.loadType != null, "Error: loadType is null!");
+        // Debug.Assert(GameEvent.loadType != null, "Error: loadType is null!");
         character.home = characterHome;
         character.energy = characterEnergy;
         character.speed = 10f;
@@ -34,7 +31,7 @@ public class PlayerLevelData : MonoBehaviour
     
     public void Start()
     {
-        if (GameData.loadType == LevelLoadType.LoadGame) //<- should not exist
+        if (GameEvent.loadType == LevelLoadType.LoadGame) //<- should not exist
             LoadGame();
     }
 
@@ -44,5 +41,6 @@ public class PlayerLevelData : MonoBehaviour
         playerMoves = GameData.loadedLevelData.playerMoves;
         removedObstacles = GameData.loadedLevelData.removedObstacles;
     }
+
 
 }

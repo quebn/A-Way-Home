@@ -8957,6 +8957,8 @@ MonoBehaviour:
   zoomSpeed: 15
   minZoom: 4.5
   maxZoom: 8
+  keyboard: 1
+  mouse: 0
 --- !u!1001 &1193148844
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11804,9 +11806,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1844335603}
     - target: {fileID: 5128997143235302239, guid: b377498b6b0a14b40886bc9eb8cc81c5, type: 3}
+      propertyPath: playerLives
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5128997143235302239, guid: b377498b6b0a14b40886bc9eb8cc81c5, type: 3}
       propertyPath: characterHome
       value: 
       objectReference: {fileID: 1844335600}
+    - target: {fileID: 5128997143235302239, guid: b377498b6b0a14b40886bc9eb8cc81c5, type: 3}
+      propertyPath: characterEnergy
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 8273750093252133552, guid: b377498b6b0a14b40886bc9eb8cc81c5, type: 3}
       propertyPath: cameraMovement
       value: 
