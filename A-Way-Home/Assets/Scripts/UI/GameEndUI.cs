@@ -49,7 +49,7 @@ public class GameEndUI : MonoBehaviour
     private void InitLivesUI()
     {
         livesUI.SetActive(true);
-        livesValueText.text = (PlayerLevelData.Instance.playerLives - 1).ToString();
+        livesValueText.text = (PlayerLevelData.Instance.levelData.lives - 1).ToString();
     }
 
     public void NextLevel()

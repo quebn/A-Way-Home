@@ -41,7 +41,6 @@ public class MainMenuUI : MonoBehaviour
     public void LoadGame()
     {
         GameData.saveFileDataList =  SaveSystem.InitAllSavedData();
-        // Debug.Log();
         SetWindowActive(loadSelectionWindow);
         Debug.Log("Pressed LoadGame Button");
     }

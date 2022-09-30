@@ -62,7 +62,7 @@ public class Character : MonoBehaviour
             }
             if (energy == 0)
             {
-                if (PlayerLevelData.Instance.playerLives == 1)
+                if (PlayerLevelData.Instance.levelData.lives == 1)
                 {
                     StopCharacter();
                     InGameUI.SetEndWindowActive(EndGameType.GameOver);

@@ -19,14 +19,14 @@ public class ObstacleData : MonoBehaviour
     
     private void InitObstacle()
     {
-        if (GameEvent.loadType == LevelLoadType.NewGame)
+        if (GameEvent.loadType == LevelLoadType.NewGame || GameEvent.loadType == LevelLoadType.RestartGame)
             return;
-        if (!PlayerLevelData.Instance.removedObstacles.ContainsKey(this.ID))
+        if (!PlayerLevelData.Instance.levelData.removedObstacles.ContainsKey(this.ID))
         {
-            Debug.Log($"Removed obstacle list count: {PlayerLevelData.Instance.removedObstacles.Count}");
+            Debug.Log($"Removed obstacle list count: {PlayerLevelData.Instance.levelData.removedObstacles.Count}");
             return;
         }
-        IsNotRemoved = PlayerLevelData.Instance.removedObstacles[this.ID];
+        IsNotRemoved = PlayerLevelData.Instance.levelData.removedObstacles[this.ID];
         this.gameObject.SetActive(IsNotRemoved);
     }
 }

@@ -124,7 +124,7 @@ public class OptionsUI : MonoBehaviour
         SetWindowInactive(quitGameWindow);
     }
     #endregion
-    
+    #region Class none button Functions
     public void ConfirmDeleteSlot(string windoworigin)
     {
         SaveSystem.DeleteFileData(SavedSlotUI.FileNameToBeDeleted);
@@ -157,4 +157,5 @@ public class OptionsUI : MonoBehaviour
         window.SetActive(false);
         isActive = true;
     }
+    #endregion
 }

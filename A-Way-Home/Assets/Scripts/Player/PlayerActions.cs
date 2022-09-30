@@ -87,7 +87,7 @@ public class PlayerActions : MonoBehaviour
 
     private void ClearObstacle(string obstacletag)
     {
-        if (PlayerLevelData.Instance.playerMoves == 0)
+        if (PlayerLevelData.Instance.levelData.moves == 0)
         {
             Debug.Log("No moves Left");
             return;
@@ -100,11 +100,11 @@ public class PlayerActions : MonoBehaviour
         {
             string ObstacleID = hit2D.collider.gameObject.GetComponent<ObstacleData>().ID;
             hit2D.collider.gameObject.SetActive(false);
-            PlayerLevelData.Instance.removedObstacles.Add(ObstacleID, false);//should be true not false
-            PlayerLevelData.Instance.playerMoves--;
+            PlayerLevelData.Instance.levelData.removedObstacles.Add(ObstacleID, false);//should be true not false
+            PlayerLevelData.Instance.levelData.moves--;
             InGameUI.Instance.SetPlayerMoves();
             Debug.Log(hit2D.collider.gameObject + " was Destroyed");
-            Debug.Log("Moves Left: " + PlayerLevelData.Instance.playerMoves);
+            Debug.Log("Moves Left: " + PlayerLevelData.Instance.levelData.moves);
             Debug.Log($"Added Obstacle with id of {ObstacleID} to Removed Obstacles Dictionary!");
             
         }

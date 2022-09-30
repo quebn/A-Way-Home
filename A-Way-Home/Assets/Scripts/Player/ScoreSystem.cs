@@ -1,7 +1,7 @@
 using UnityEngine;
 public static class ScoreSystem
 {
-    private const float REMAIMING_MOVES_MULTIPLIER = .5f;
+    private const float RemainingMovesMult = .5f;
     private static PlayerLevelData playerLevelData;
     
     public static uint CalculateScore()

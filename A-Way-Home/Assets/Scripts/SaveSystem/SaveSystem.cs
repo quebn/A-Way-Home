@@ -29,7 +29,7 @@ public static class SaveSystem
         
         FileStream stream = new FileStream(path, FileMode.Create);
 
-        SaveFileData fileData = new SaveFileData(savefilename, PlayerLevelData.Instance);
+        SaveFileData fileData = new SaveFileData(savefilename, PlayerLevelData.Instance.levelData);
         formatter.Serialize(stream, fileData);
         stream.Close();
         SaveGameData();

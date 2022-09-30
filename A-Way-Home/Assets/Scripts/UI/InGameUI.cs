@@ -15,10 +15,9 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI livesLeftTMP;
     private void Start()
     {
-
         Debug.Assert(!isPaused, "Game is Paused");
-        movesLeftTMP.text = PlayerLevelData.Instance.playerMoves.ToString();
-        livesLeftTMP.text = PlayerLevelData.Instance.playerLives.ToString();
+        movesLeftTMP.text = PlayerLevelData.Instance.levelData.moves.ToString();
+        livesLeftTMP.text = PlayerLevelData.Instance.levelData.lives.ToString();
         InitCharacterEnergy(PlayerLevelData.Instance.character.energy);
         endGameType = EndGameType.None;
         if (Instance == null)
@@ -27,7 +26,7 @@ public class InGameUI : MonoBehaviour
 
     public void SetPlayerMoves()
     {
-        this.movesLeftTMP.text = PlayerLevelData.Instance.playerMoves.ToString();
+        this.movesLeftTMP.text = PlayerLevelData.Instance.levelData.moves.ToString();
     }
     private void InitCharacterEnergy(uint energy)
     {

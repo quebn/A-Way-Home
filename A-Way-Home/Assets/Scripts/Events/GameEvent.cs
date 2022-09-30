@@ -7,7 +7,7 @@ public static class GameEvent
 {
     private static PlayerLevelData endData;
     public static LevelLoadType loadType;
-    private static int restartCounter;
+    public static uint restartCounter;
     // private static
     public static void LoadEndScene()
     {
@@ -36,7 +36,7 @@ public static class GameEvent
     {
         loadType = LevelLoadType.RestartGame;
         restartCounter++;       
-        SceneManager.LoadScene(PlayerLevelData.Instance.levelSceneName);
+        SceneManager.LoadScene(PlayerLevelData.Instance.levelData.sceneName);
     }
 
     public static void LoadGame(int slotNumber)
@@ -44,7 +44,7 @@ public static class GameEvent
         loadType = LevelLoadType.LoadGame;
         restartCounter = 0;
         GameData.loadedLevelData = GameData.saveFileDataList[slotNumber];
-        SceneManager.LoadScene(GameData.loadedLevelData.levelSceneName);
+        SceneManager.LoadScene(GameData.loadedLevelData.levelData.sceneName);
     }
 
 }
