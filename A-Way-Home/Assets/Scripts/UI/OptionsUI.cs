@@ -32,7 +32,7 @@ public class OptionsUI : MonoBehaviour
     #region Pause button functions
     public void Resume()
     {
-        InGameUI.Instance.UnpauseGame();
+        GameEvent.UnpauseGame();
         this.gameObject.SetActive(false);
 
     }
@@ -54,7 +54,7 @@ public class OptionsUI : MonoBehaviour
 
     public void MainMenu()
     {
-        InGameUI.Instance.UnpauseGame();
+        GameEvent.UnpauseGame();
         SceneManager.LoadScene("MainMenu");
     }
 

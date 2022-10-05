@@ -13,6 +13,9 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI movesLeftTMP;
     [SerializeField] private TextMeshProUGUI energyLeftTMP;
     [SerializeField] private TextMeshProUGUI livesLeftTMP;
+
+    public GameObject getGameEndWindow { get { return gameEndWindow; } }
+
     private void Start()
     {
         Debug.Assert(!isPaused, "Game is Paused");
@@ -44,12 +47,13 @@ public class InGameUI : MonoBehaviour
     #region Action Bar
     public void UndoAction()
     {
-        Debug.Log("Pressed Undo Button!");        
+        Debug.Log("Pressed Undo Button!");     
+        // +1 player moves
+        // revert last player action
+        // -1 character energy   
     }
     public void ReloadAction()
     {
-        // Reloading the Level should consume a Player Life.
-        // GameEvent.instance.RestartGame();
         GameEvent.RestartGame();
     }
 
@@ -68,26 +72,14 @@ public class InGameUI : MonoBehaviour
     
     public void OptionsButton()
     {
-        PauseGame();
+        GameEvent.PauseGame();
         // Debug.Assert(OptionsUI.Instance != null, "OptionsUi instance is null");
         if (isPaused)
             this.optionsWindow.SetActive(true);
             // OptionsUI.Instance.gameObject.SetActive(true);
     }
 
-    public void PauseGame()//TODO: should be in GameEvent.cs
-    {
-        Debug.Assert(!isPaused, "Game is Already Paused");
-        isPaused = true;
-        Time.timeScale = 0f;
-    }
 
-    public void UnpauseGame()//TODO: should be in GameEvent.cs
-    {
-        Debug.Assert(isPaused, "Game is not Paused");
-        isPaused = false;
-        Time.timeScale = 1f;
-    }
     #endregion
     #region ToolBar
     public void SetTool(int toolindex)
@@ -114,12 +106,6 @@ public class InGameUI : MonoBehaviour
 
     #endregion
     
-    public static void SetEndWindowActive(EndGameType endGameType)
-    {
-        Debug.Assert(Instance != false, $"ERROR:{Instance.gameObject.name} instance is null");
-        Debug.Assert(Instance.gameEndWindow != false, $"ERROR: Game End window is null/not found!");
-        Instance.gameEndWindow.SetActive(true);
-        Instance.endGameType = endGameType;
-    }
+
 
 }

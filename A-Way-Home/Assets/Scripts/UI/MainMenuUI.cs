@@ -29,7 +29,7 @@ public class MainMenuUI : MonoBehaviour
             GameData.InitGameDataInstance();
         Debug.Assert(GameData.Instance != null, "Error: GameData instance is null");
         GameData.saveFileDataList = new List<SaveFileData>(5);
-        Debug.Log(GameData.saveFileDataList.Count);
+        // Debug.Log(GameData.saveFileDataList.Count);
     }
 
     #region MainMenu button functions

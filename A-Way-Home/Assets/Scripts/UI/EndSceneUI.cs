@@ -10,8 +10,7 @@ public class EndSceneUI : MonoBehaviour
     [SerializeField] private TMP_InputField playerNameInput;
     [SerializeField] private Image characterImage;
     [SerializeField] private TextMeshProUGUI characterName;
-
-
+    private bool isSaved;
 
     private void Start()
     {
@@ -20,12 +19,27 @@ public class EndSceneUI : MonoBehaviour
 
     private void InitPlayerEndScore()
     {
-
+        // PlayerLevelData data = ScoreSystem.playerLevelData;
+        Debug.Assert(ScoreSystem.characterName != null);
+        // characterImage = data.character.image;
+        characterName.text = ScoreSystem.characterName;
+        scoreValueText.text = ScoreSystem.scoreLevelData.score.ToString();
+        isSaved = false;
     }
 
     public void SaveToLeaderboard()
     {
+        if (isSaved)
+            return;
         Debug.Log("Saved to Leaderboard");
+        if (playerNameInput.text == "")
+        {
+            Debug.Log("Input is empty");
+            return;
+        }
+        ScoreSystem.SaveScoreData(playerNameInput.text);
+        playerNameInput.text = "";
+        isSaved = true;
     }
     public void MainMenu()
     {

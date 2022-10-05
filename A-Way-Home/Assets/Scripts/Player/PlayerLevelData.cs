@@ -7,6 +7,7 @@ public class PlayerLevelData : MonoBehaviour
     public static PlayerLevelData Instance;
     public Character character;
     public Transform characterHome;
+    [SerializeField] private string characterName;
     [SerializeField] private uint characterEnergy;
     [SerializeField] private uint playerLives;
     [SerializeField] private uint playerMoves;
@@ -15,19 +16,24 @@ public class PlayerLevelData : MonoBehaviour
     public void Awake()
     {
         // Debug.Assert(GameEvent.loadType != null, "Error: loadType is null!");
-        character.home = characterHome;
-        character.energy = characterEnergy;
-        character.speed = 10f;
-
+        InitCharacter();
         if (Instance != null)
             return;
         Instance  = this;
         Debug.Assert(character.home != null, "Error: characterHome is null!");
-    }
-    
+    }    
     public void Start()
     {
         Initialize();
+    }
+
+    private void InitCharacter()
+    {
+        character.charName = characterName;
+        character.home = characterHome;
+        character.energy = characterEnergy;
+        // character.speed = GameData.Instance.gameSpeed;
+        character.speed = 10f;
     }
 
     private void Initialize()
@@ -48,8 +54,6 @@ public class PlayerLevelData : MonoBehaviour
 
     private void RestartGame()
     {
-        // Debug.Assert(false, "TODO: PlayerLevelData RestartGame function not implemented!");
-        // Restart Game should be the same to new game buts retains the score and updates the player lives.
         levelData = new LevelData {
             sceneName = SceneManager.GetActiveScene().name,
             lives = playerLives - GameEvent.restartCounter,
@@ -57,6 +61,7 @@ public class PlayerLevelData : MonoBehaviour
             score = 0, //<-TODO: score should be retained from previous game
             removedObstacles = new Dictionary<string, bool>()
         };
+        Debug.Assert(playerLives > 0, "ERROR: Lives is less than 1");
         
     }
     private void NewGame()

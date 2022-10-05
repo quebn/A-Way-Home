@@ -19,7 +19,7 @@ public class Pathfinding : MonoBehaviour
 
         if (!startnode.IsWalkable && !targetnode.IsWalkable)
         {    
-            Debug.Log("No Path Found!");
+            // Debug.Log("No Path Found!");
             return path;
         }
         List<Node> OpenSet = new List<Node>();
@@ -40,7 +40,7 @@ public class Pathfinding : MonoBehaviour
             if (CurrentNode == targetnode)
             {
                 path = RetracePath(startnode, targetnode).ToArray();
-                Debug.Log("Path Found! Path Total Nodes: " + path.Length);
+                // Debug.Log("Path Found! Path Total Nodes: " + path.Length);
                 break;
             }
             // 
@@ -61,8 +61,9 @@ public class Pathfinding : MonoBehaviour
                 }
             }
         }
-        if (path.Length <= 0)
-            Debug.Log("path is null");
+        // if (path.Length <= 0)
+            // return;
+            // Debug.Log("path is null");
         return path;
         
     }

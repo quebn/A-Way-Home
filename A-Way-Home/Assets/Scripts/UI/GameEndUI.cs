@@ -15,8 +15,13 @@ public class GameEndUI : MonoBehaviour
     private void Start()
     {
         InitGameEndUI();
+        GameEvent.PauseGame();
+        PlayerLevelData.Instance.levelData.score = ScoreSystem.CalculateScore();
     }
-
+    private void OnDisable()
+    {
+        GameEvent.UnpauseGame();
+    }
     private void InitGameEndUI()
     {   
         EndGameType type = InGameUI.Instance.endGameType;
@@ -31,11 +36,11 @@ public class GameEndUI : MonoBehaviour
                 break;
             case EndGameType.LevelClear:
                 SetActiveEndGameUI(levelClearUI, new Color32(0, 219, 43, 255));
-                InitLivesUI();
+                InitLivesUI(PlayerLevelData.Instance.levelData.lives);
                 break;
             case EndGameType.NoEnergy:
                 SetActiveEndGameUI(zeroEnergysUI, Color.white);
-                InitLivesUI();
+                InitLivesUI(PlayerLevelData.Instance.levelData.lives - 1);
                 break;
         }
     }
@@ -46,10 +51,10 @@ public class GameEndUI : MonoBehaviour
         ui.SetActive(true);
     }
 
-    private void InitLivesUI()
+    private void InitLivesUI(uint life)
     {
         livesUI.SetActive(true);
-        livesValueText.text = (PlayerLevelData.Instance.levelData.lives - 1).ToString();
+        livesValueText.text = life.ToString();
     }
 
     public void NextLevel()
@@ -77,6 +82,7 @@ public class GameEndUI : MonoBehaviour
 
     public void ConfirmEndRun()
     {
+        ScoreSystem.InitScoreData();
         GameEvent.LoadEndScene();
     }
     

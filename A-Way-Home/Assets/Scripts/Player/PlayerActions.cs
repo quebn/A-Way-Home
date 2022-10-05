@@ -22,12 +22,19 @@ public class PlayerActions : MonoBehaviour
     private InputAction start;
     private InputAction reset;
     
-    private void Awake()
+    private void Start()
     {
         InitPlayerActions();
+        SubscribeFunctions();
         if (Instance == null)
             Instance = this;
     }
+        
+    private void OnDisable()
+    {
+        UnsubscribeFunctions();
+    }
+    
     private void RemoveObstacle(InputAction.CallbackContext context)
     {
         if (InGameUI.Instance.isPaused || PlayerLevelData.Instance.character.isHome)
@@ -79,10 +86,14 @@ public class PlayerActions : MonoBehaviour
         InGameUI.Instance.PlayAction();
     }
 
-    private void RestartLevel( InputAction.CallbackContext context)
+    private void RestartLevel(InputAction.CallbackContext context)
     {
         // GameEvent.instance.RestartGame();  
-        GameEvent.RestartGame();      
+        if (context.started)
+        {
+            Debug.Log("Pressed R");
+            GameEvent.RestartGame();      
+        }
     }
 
     private void ClearObstacle(string obstacletag)
@@ -128,7 +139,10 @@ public class PlayerActions : MonoBehaviour
         tool5 = playerInput.actions["Tool5"];
         start = playerInput.actions["Start"];
         reset = playerInput.actions["Reset"];
+    }
 
+    private void SubscribeFunctions()
+    {
         removeObstacle.started += RemoveObstacle;
         cancelTool.started += SetCurrentTool;
         tool1.started += SetCurrentTool;
@@ -138,6 +152,18 @@ public class PlayerActions : MonoBehaviour
         tool5.started += SetCurrentTool;
         start.started += StartCharacter;
         reset.started += RestartLevel;
+    }
 
+    private void UnsubscribeFunctions()
+    {
+        removeObstacle.started  -= RemoveObstacle;
+        cancelTool.started      -= SetCurrentTool;
+        tool1.started           -= SetCurrentTool;
+        tool2.started           -= SetCurrentTool;
+        tool3.started           -= SetCurrentTool;
+        tool4.started           -= SetCurrentTool;
+        tool5.started           -= SetCurrentTool;
+        start.started           -= StartCharacter;
+        reset.started           -= RestartLevel;
     }
 }

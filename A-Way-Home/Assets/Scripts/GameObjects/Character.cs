@@ -1,13 +1,14 @@
 using UnityEngine;
-
+// using UnityEngine.UI;
 public class Character : MonoBehaviour
 {
     [HideInInspector] public bool isHome = false;
     [HideInInspector] public float speed = 0f;
     [HideInInspector] public Vector3[] path;
-    public Transform home;
-    public uint energy;
-
+    // public Image image;
+    [HideInInspector] public string charName;
+    [HideInInspector] public Transform home;
+    [HideInInspector] public uint energy;
     // Private
     private Pathfinding _Pathfinding;
     private Vector3 _CurrentTargetPos;   
@@ -24,8 +25,8 @@ public class Character : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Character StartingPos: " + currentPos);
-        Debug.Log("Character home Position: " + home.position);
+        // Debug.Log("Character StartingPos: " + currentPos);
+        // Debug.Log("Character home Position: " + home.position);
         Debug.Assert(home != null, "Error: home of Chracter is not found!");
     }
     private void Update()
@@ -57,7 +58,7 @@ public class Character : MonoBehaviour
             {
                 StopCharacter();
                 // Set EndGame window active with level clear as context
-                InGameUI.SetEndWindowActive(EndGameType.LevelClear);
+                GameEvent.SetEndWindowActive(EndGameType.LevelClear);
                 return;
             }
             if (energy == 0)
@@ -65,11 +66,11 @@ public class Character : MonoBehaviour
                 if (PlayerLevelData.Instance.levelData.lives == 1)
                 {
                     StopCharacter();
-                    InGameUI.SetEndWindowActive(EndGameType.GameOver);
+                    GameEvent.SetEndWindowActive(EndGameType.GameOver);
                     return;
                 }
                 StopCharacter();
-                InGameUI.SetEndWindowActive(EndGameType.NoEnergy);
+                GameEvent.SetEndWindowActive(EndGameType.NoEnergy);
                 return;   
             }
             _CurrentTargetPos = path[_TargetIndex];
@@ -79,7 +80,7 @@ public class Character : MonoBehaviour
 
     private void StopCharacter()
     {
-        Debug.Log("Ending Pos: " + currentPos);
+        // Debug.Log("Ending Pos: " + currentPos);
         isHome = true;
         _IsPressed = false;
     }
