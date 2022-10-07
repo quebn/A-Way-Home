@@ -33,6 +33,7 @@ public class CameraMovement : MonoBehaviour
         MoveCamera();
         ZoomCamera();
     }
+    // TODO: Camera movement should just me draggable with right click rather than a RTS type Camera movement.
     private void MoveCamera()
     {
         Vector3 CameraPos = transform.position;

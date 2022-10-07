@@ -7,6 +7,7 @@ public class PlayerLevelData : MonoBehaviour
     public static PlayerLevelData Instance;
     public Character character;
     public Transform characterHome;
+    [SerializeField] private uint characterLevel;
     [SerializeField] private string characterName;
     [SerializeField] private uint characterEnergy;
     [SerializeField] private uint playerLives;
@@ -16,7 +17,6 @@ public class PlayerLevelData : MonoBehaviour
     public void Awake()
     {
         // Debug.Assert(GameEvent.loadType != null, "Error: loadType is null!");
-        InitCharacter();
         if (Instance != null)
             return;
         Instance  = this;
@@ -25,15 +25,16 @@ public class PlayerLevelData : MonoBehaviour
     public void Start()
     {
         Initialize();
+        InitCharacter();
+        Debug.Assert(levelData.level != 0, "ERROR: level is 0");
     }
 
     private void InitCharacter()
     {
         character.charName = characterName;
         character.home = characterHome;
-        character.energy = characterEnergy;
-        // character.speed = GameData.Instance.gameSpeed;
-        character.speed = 10f;
+        character.speed = GameData.Instance.gameSpeed;
+        character.energy = levelData.characterEnergy;
     }
 
     private void Initialize()
@@ -54,8 +55,11 @@ public class PlayerLevelData : MonoBehaviour
 
     private void RestartGame()
     {
+        uint currentLevel = this.characterLevel;
         levelData = new LevelData {
             sceneName = SceneManager.GetActiveScene().name,
+            level = currentLevel,
+            characterEnergy = this.characterEnergy,
             lives = playerLives - GameEvent.restartCounter,
             moves = playerMoves,
             score = 0, //<-TODO: score should be retained from previous game
@@ -66,8 +70,11 @@ public class PlayerLevelData : MonoBehaviour
     }
     private void NewGame()
     {
+        uint currentLevel = this.characterLevel;
         levelData = new LevelData {
             sceneName = SceneManager.GetActiveScene().name,
+            level = currentLevel,
+            characterEnergy = this.characterEnergy,
             lives = playerLives,
             moves = playerMoves,
             score = 0,
@@ -77,6 +84,7 @@ public class PlayerLevelData : MonoBehaviour
     public void LoadGame()
     {
         levelData = GameData.loadedLevelData.levelData;
+        Debug.Assert(this.characterLevel == levelData.level, "ERROR: Level does not match");
     }
 }
 
@@ -84,6 +92,8 @@ public class PlayerLevelData : MonoBehaviour
 public struct LevelData
 {
     public string sceneName;
+    public uint level;
+    public uint characterEnergy; 
     public uint lives;
     public uint moves;
     public uint score;

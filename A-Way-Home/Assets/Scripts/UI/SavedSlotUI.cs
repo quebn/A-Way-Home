@@ -1,5 +1,6 @@
-using System.Collections.Generic;
+// using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class SavedSlotUI : MonoBehaviour
@@ -11,13 +12,14 @@ public class SavedSlotUI : MonoBehaviour
 
     #region hasData SerializedField Components
     // 8 components Image/Filename/energy/moves/Lives/LevelNum/Time/Date
+    // [SerializeField] private Image characterImage;
     [SerializeField] private TextMeshProUGUI fileName;  
     [SerializeField] private TextMeshProUGUI energy;  
     [SerializeField] private TextMeshProUGUI moves;  
-    // [SerializeField] private TextMeshProUGUI Lives;  
-    // [SerializeField] private TextMeshProUGUI LevelNum;  
-    // [SerializeField] private TextMeshProUGUI Time;  
-    // [SerializeField] private TextMeshProUGUI Date;  
+    [SerializeField] private TextMeshProUGUI lives;  
+    [SerializeField] private TextMeshProUGUI level;  
+    [SerializeField] private TextMeshProUGUI date;  
+    [SerializeField] private TextMeshProUGUI time;  
     #endregion
 
     public static string FileNameToBeDeleted;
@@ -101,7 +103,12 @@ public class SavedSlotUI : MonoBehaviour
     private void SetValues(SaveFileData slotdata)
     {
         fileName.text = slotdata.fileName;
+        energy.text = slotdata.levelData.characterEnergy.ToString();
         moves.text = slotdata.levelData.moves.ToString();
+        lives.text = slotdata.levelData.lives.ToString();
+        level.text = slotdata.levelData.level.ToString();
+        date.text = slotdata.date;
+        time.text = slotdata.time;
     }
 
     public static void RefreshSaveSlots()

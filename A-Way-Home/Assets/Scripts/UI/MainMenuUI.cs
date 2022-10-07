@@ -12,10 +12,10 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject closeGameWindow;
     [SerializeField] private GameObject leaderboardsWindow;
     [SerializeField] private GameObject howtoPlayWindow;
+    [HideInInspector] public CharacterType selectedCharacter;
 
     private bool isActive;
     public GameObject deleteConfirmWindow;
-    public CharacterType selectedCharacter;
     
 
     private void Start()

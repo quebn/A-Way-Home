@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 public class SettingsUI : MonoBehaviour
 {
+    [SerializeField] private InputActionAsset inputActions;
     [SerializeField] private Toggle fullscreenToggle;
     [SerializeField] private Toggle animationToggle;
     [SerializeField] private Slider audioSlider;
@@ -55,5 +57,9 @@ public class SettingsUI : MonoBehaviour
         this.audioValue.text = this.audioSlider.value.ToString();
         this.gameSpeedSlider.value = 20;
         this.gameSpeedValue.text = this.gameSpeedSlider.value.ToString();
+
+        foreach (InputActionMap map in inputActions.actionMaps)
+            map.RemoveAllBindingOverrides();
+        PlayerPrefs.DeleteKey("rebinds");
     }
 }
