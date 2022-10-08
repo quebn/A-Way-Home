@@ -2,67 +2,80 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class CameraMovement : MonoBehaviour
 {
+    public static CameraMovement Instance {get; private set;}
     public SpriteRenderer platform;
-    public float panSpeed = 20f;
-    public float panBorderWidth = 10f;
     public float zoomSpeed = 5f;
     public float minZoom = 4.5f;
     public float maxZoom = 8f;
-    public bool keyboard  = true; 
-    public bool mouse  = false; 
+
+
+
     // Privates
-    private Camera _Camera;
-    private float _Zoom;
-    private float _MapMinX, _MapMaxX, _MapMinY, _MapMaxY;
+    private Vector3 origin;
+    private Vector3 difference;
+    private Vector3 resetCamera;
+    private Camera mainCamera;
+    private float zoom;
+    private float mapMinX, mapMaxX, mapMinY, mapMaxY;
+    private bool drag = false;
 
     private void Awake()
     {   
-        _Camera = Camera.main;
-        _Zoom = _Camera.orthographicSize;
+        mainCamera = Camera.main;
+        zoom = mainCamera.orthographicSize;
 
-        _MapMinX = platform.transform.position.x - platform.bounds.size.x * 0.5f;
-        _MapMaxX = platform.transform.position.x + platform.bounds.size.x * 0.5f;
+        mapMinX = platform.transform.position.x - platform.bounds.size.x * 0.5f;
+        mapMaxX = platform.transform.position.x + platform.bounds.size.x * 0.5f;
 
-        _MapMinY = platform.transform.position.y - platform.bounds.size.y * 0.5f;
-        _MapMaxY = platform.transform.position.y + platform.bounds.size.y * 0.5f;
+        mapMinY = platform.transform.position.y - platform.bounds.size.y * 0.5f;
+        mapMaxY = platform.transform.position.y + platform.bounds.size.y * 0.5f;
     }
 
 
     private void Update()
     {
-        MoveCamera();
         ZoomCamera();
     }
-    // TODO: Camera movement should just me draggable with right click rather than a RTS type Camera movement.
-    private void MoveCamera()
+
+    private void Start()
     {
-        Vector3 CameraPos = transform.position;
-        if (mouse)
-        {
-            Vector2 MousePos = Mouse.current.position.ReadValue();
-            if (Keyboard.current.wKey.isPressed || MousePos.y >= Screen.height - panBorderWidth)
-                CameraPos.y += panSpeed * Time.deltaTime;
-            if (Keyboard.current.sKey.isPressed || MousePos.y <= panBorderWidth)
-                CameraPos.y -= panSpeed * Time.deltaTime;
-            if (Keyboard.current.dKey.isPressed || MousePos.x >= Screen.width - panBorderWidth)
-                CameraPos.x += panSpeed * Time.deltaTime;
-            if (Keyboard.current.aKey.isPressed || MousePos.x <= panBorderWidth)
-                CameraPos.x -= panSpeed * Time.deltaTime;
-        }
-        if (keyboard)
-        {
-            if (Keyboard.current.wKey.isPressed)
-                CameraPos.y += panSpeed * Time.deltaTime;
-            if (Keyboard.current.sKey.isPressed)
-                CameraPos.y -= panSpeed * Time.deltaTime;
-            if (Keyboard.current.dKey.isPressed)
-                CameraPos.x += panSpeed * Time.deltaTime;
-            if (Keyboard.current.aKey.isPressed)
-                CameraPos.x -= panSpeed * Time.deltaTime;
-        }
-        transform.position = ClampCamera(CameraPos);
+        resetCamera = mainCamera.transform.position;
+        if (Instance == null)
+            Instance = this;
     }
     
+    private void LateUpdate()
+    {
+        NewMoveCamera();
+    }
+
+    // TODO: rewrite this block of code someday
+    public void NewMoveCamera()
+    {
+        Vector3 cameraPos = transform.position;
+        if (Mouse.current.rightButton.isPressed)
+        {
+            difference = (mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue())) - mainCamera.transform.position;
+            if (!drag)
+            {
+                drag = true;
+                origin = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            }
+        }
+        else    
+            drag = false;
+
+        if (drag)
+            cameraPos = origin - difference;
+            transform.position = ClampCamera(cameraPos);
+            
+        if(Keyboard.current.lKey.wasPressedThisFrame)
+        {
+            mainCamera.transform.position = resetCamera;    
+        }
+    }
+    // End of Block
+
     private void ZoomCamera()
     {
         float Scroll = 0;
@@ -78,20 +91,20 @@ public class CameraMovement : MonoBehaviour
         if (Scroll == 0)
             return;
         // -------------
-        _Zoom -= Scroll * zoomSpeed * Time.deltaTime;
-        _Zoom = Mathf.Clamp(_Zoom, minZoom, maxZoom);
+        zoom -= Scroll * zoomSpeed * Time.deltaTime;
+        zoom = Mathf.Clamp(zoom, minZoom, maxZoom);
 
-        _Camera.orthographicSize = _Zoom;
-        _Camera.transform.position = ClampCamera(_Camera.transform.position);
+        mainCamera.orthographicSize = zoom;
+        mainCamera.transform.position = ClampCamera(mainCamera.transform.position);
     }
 
     private Vector3 ClampCamera(Vector3 TargetPos)
     {
-        float CamHeight = _Camera.orthographicSize;
-        float CamWidth = _Camera.orthographicSize * _Camera.aspect;
+        float CamHeight = mainCamera.orthographicSize;
+        float CamWidth = mainCamera.orthographicSize * mainCamera.aspect;
 
-        Vector2 Max = new Vector2(_MapMaxX - CamWidth, _MapMaxY - CamHeight);
-        Vector2 Min = new Vector2(_MapMinX + CamWidth, _MapMinY + CamHeight);
+        Vector2 Max = new Vector2(mapMaxX - CamWidth, mapMaxY - CamHeight);
+        Vector2 Min = new Vector2(mapMinX + CamWidth, mapMinY + CamHeight);
 
         Vector2 ClampedPos = new Vector2(Mathf.Clamp(TargetPos.x, Min.x, Max.x), Mathf.Clamp(TargetPos.y, Min.y, Max.y));
 

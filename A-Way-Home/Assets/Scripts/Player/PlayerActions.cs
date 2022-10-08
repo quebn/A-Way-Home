@@ -13,7 +13,6 @@ public class PlayerActions : MonoBehaviour
     private PlayerInput playerInput;
     
     private InputAction removeObstacle; 
-    private InputAction cancelTool; 
     private InputAction tool1; 
     private InputAction tool2; 
     private InputAction tool3; 
@@ -131,7 +130,6 @@ public class PlayerActions : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         Debug.Assert(playerInput != null, "GetComponent failed!");
         removeObstacle = playerInput.actions["Remove"];
-        cancelTool = playerInput.actions["Cancel"];
         tool1 = playerInput.actions["Tool1"];
         tool2 = playerInput.actions["Tool2"];
         tool3 = playerInput.actions["Tool3"];
@@ -144,7 +142,6 @@ public class PlayerActions : MonoBehaviour
     private void SubscribeFunctions()
     {
         removeObstacle.started += RemoveObstacle;
-        cancelTool.started += SetCurrentTool;
         tool1.started += SetCurrentTool;
         tool2.started += SetCurrentTool;
         tool3.started += SetCurrentTool;
@@ -157,7 +154,6 @@ public class PlayerActions : MonoBehaviour
     private void UnsubscribeFunctions()
     {
         removeObstacle.started  -= RemoveObstacle;
-        cancelTool.started      -= SetCurrentTool;
         tool1.started           -= SetCurrentTool;
         tool2.started           -= SetCurrentTool;
         tool3.started           -= SetCurrentTool;
