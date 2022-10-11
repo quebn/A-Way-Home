@@ -17,7 +17,11 @@ public class MainMenuUI : MonoBehaviour
     private bool isActive;
     public GameObject deleteConfirmWindow;
     
-
+    private void Awake()
+    {
+        if (GameData.Instance == null)
+            GameData.InitGameDataInstance();
+    }
     private void Start()
     {
         isActive = true;
@@ -25,8 +29,6 @@ public class MainMenuUI : MonoBehaviour
         if (Instance == null)
             Instance = this;
         Debug.Assert(Instance != null, "Error: MainMenuUI instance is null");
-        if (GameData.Instance == null)
-            GameData.InitGameDataInstance();
         Debug.Assert(GameData.Instance != null, "Error: GameData instance is null");
         GameData.saveFileDataList = new List<SaveFileData>(5);
         // Debug.Log(GameData.saveFileDataList.Count);

@@ -7,34 +7,40 @@ public class PlayerLevelData : MonoBehaviour
     public static PlayerLevelData Instance;
     public Character character;
     public Transform characterHome;
+    public bool sandboxMode;
     [SerializeField] private uint characterLevel;
     [SerializeField] private string characterName;
     [SerializeField] private uint characterEnergy;
     [SerializeField] private uint playerLives;
     [SerializeField] private uint playerMoves;
     [HideInInspector] public LevelData levelData;
-
-    public void Awake()
+    
+    private void Awake()
     {
-        // Debug.Assert(GameEvent.loadType != null, "Error: loadType is null!");
+
         if (Instance != null)
             return;
         Instance  = this;
-        Debug.Assert(character.home != null, "Error: characterHome is null!");
-    }    
-    public void Start()
-    {
+        if (sandboxMode)
+            GameEvent.loadType = LevelLoadType.Sandbox;
         Initialize();
         InitCharacter();
         Debug.Assert(levelData.level != 0, "ERROR: level is 0");
+        Debug.Assert(character.home != null, "Error: characterHome is null!");
     }
 
     private void InitCharacter()
     {
         character.charName = characterName;
         character.home = characterHome;
-        character.speed = GameData.Instance.gameSpeed;
+        // Debug.Log(GameData.Instance.gameSpeed);
         character.energy = levelData.characterEnergy;
+        if (sandboxMode)
+        {
+            character.speed = 20f;    
+            return;
+        }
+        character.speed = GameData.Instance.gameSpeed;
     }
 
     private void Initialize()
@@ -50,9 +56,11 @@ public class PlayerLevelData : MonoBehaviour
             case LevelLoadType.RestartGame:
                 RestartGame();
                 break;
+            case LevelLoadType.Sandbox:
+                NewGame();
+                break;
         }
     }
-
     private void RestartGame()
     {
         uint currentLevel = this.characterLevel;

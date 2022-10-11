@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum LevelLoadType{ NewGame, LoadGame, RestartGame}// <- should not exist
+public enum LevelLoadType{ NewGame, LoadGame, RestartGame, Sandbox}// <- should not exist
 
 public static class GameEvent
 {
@@ -37,6 +37,11 @@ public static class GameEvent
 
     public static void RestartGame()
     {
+        if (loadType == LevelLoadType.Sandbox)
+        {
+            SceneManager.LoadScene(PlayerLevelData.Instance.levelData.sceneName);
+            return;
+        }
         if (PlayerLevelData.Instance.levelData.lives > 1)
         {
             loadType = LevelLoadType.RestartGame;
@@ -58,6 +63,8 @@ public static class GameEvent
 
     public static void SetEndWindowActive(EndGameType endGameType)
     {
+        if(loadType == LevelLoadType.Sandbox)
+            return;
         InGameUI inGameUI = InGameUI.Instance;
         Debug.Assert(inGameUI != false, $"ERROR:{inGameUI.gameObject.name} instance is null");
         Debug.Assert(inGameUI.getGameEndWindow != false, $"ERROR: Game End window is null/not found!");

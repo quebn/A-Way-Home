@@ -13,6 +13,7 @@ public class PlayerActions : MonoBehaviour
     private PlayerInput playerInput;
     
     private InputAction removeObstacle; 
+    private InputAction revealPath;
     private InputAction tool1; 
     private InputAction tool2; 
     private InputAction tool3; 
@@ -82,6 +83,8 @@ public class PlayerActions : MonoBehaviour
     
     private void StartCharacter(InputAction.CallbackContext context)
     {
+        if (PlayerLevelData.Instance.character.isGoingHome)
+            return;
         InGameUI.Instance.PlayAction();
     }
 
@@ -125,11 +128,16 @@ public class PlayerActions : MonoBehaviour
         return EventSystem.current.IsPointerOverGameObject();
     }
 
+    private void RevealPath(InputAction.CallbackContext context)
+    {
+        PlayerLevelData.Instance.character.DisplayPath();
+    }
     private void InitPlayerActions()
     {
         playerInput = GetComponent<PlayerInput>();
         Debug.Assert(playerInput != null, "GetComponent failed!");
         removeObstacle = playerInput.actions["Remove"];
+        revealPath = playerInput.actions["RevealPath"];
         tool1 = playerInput.actions["Tool1"];
         tool2 = playerInput.actions["Tool2"];
         tool3 = playerInput.actions["Tool3"];
@@ -142,6 +150,7 @@ public class PlayerActions : MonoBehaviour
     private void SubscribeFunctions()
     {
         removeObstacle.started += RemoveObstacle;
+        revealPath.started += RevealPath;
         tool1.started += SetCurrentTool;
         tool2.started += SetCurrentTool;
         tool3.started += SetCurrentTool;
@@ -154,6 +163,7 @@ public class PlayerActions : MonoBehaviour
     private void UnsubscribeFunctions()
     {
         removeObstacle.started  -= RemoveObstacle;
+        revealPath.started      -= RevealPath;
         tool1.started           -= SetCurrentTool;
         tool2.started           -= SetCurrentTool;
         tool3.started           -= SetCurrentTool;

@@ -13,7 +13,6 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI movesLeftTMP;
     [SerializeField] private TextMeshProUGUI energyLeftTMP;
     [SerializeField] private TextMeshProUGUI livesLeftTMP;
-
     public GameObject getGameEndWindow { get { return gameEndWindow; } }
 
     private void Start()
@@ -42,7 +41,10 @@ public class InGameUI : MonoBehaviour
         energyLeftTMP.text = energy.ToString();
         energySlider.value = energy;
     }
-
+    // public void ShowCurrentPath()
+    // {
+    //     PlayerLevelData.Instance.character.DisplayPath();
+    // }
 
     #region Action Bar
     public void UndoAction()

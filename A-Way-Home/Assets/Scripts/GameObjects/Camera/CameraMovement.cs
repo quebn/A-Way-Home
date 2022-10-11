@@ -52,6 +52,8 @@ public class CameraMovement : MonoBehaviour
     // TODO: rewrite this block of code someday
     public void NewMoveCamera()
     {
+        if (PlayerLevelData.Instance.character.isHome)
+            return;
         Vector3 cameraPos = transform.position;
         if (Mouse.current.rightButton.isPressed)
         {
@@ -111,6 +113,3 @@ public class CameraMovement : MonoBehaviour
         return new Vector3(ClampedPos.x, ClampedPos.y, TargetPos.z);
     }
 }
-
-
-    // Move Camera Code

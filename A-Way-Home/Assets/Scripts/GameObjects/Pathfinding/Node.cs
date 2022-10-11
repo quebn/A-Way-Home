@@ -4,31 +4,28 @@ using UnityEngine;
 public class Node
 {
     // Public
-    public bool IsWalkable;
-    public Node Parent;
-    public Vector3 WorldPosition;
-    public Vector2Int GridPos;
-    public int Gcost;
-    public int Hcost;
+    public bool isWalkable;
+    public Node parent;
+    public Vector3 worldPosition;
+    public Vector2Int gridPos;
+    public int gCost;
+    public int hCost;
     
-    // GetSets
-    public int Fcost{
-        get{ return Gcost + Hcost ;}
-    }
+    public int fCost{ get{ return gCost + hCost ;} }
 
     public Node(bool walkable, Vector3 worldpos, Vector2Int grid)
     {
-        IsWalkable = walkable;
-        WorldPosition = worldpos;
-        GridPos = grid;
+        isWalkable = walkable;
+        worldPosition = worldpos;
+        gridPos = grid;
     }
 
     public int  CompareNode(Node node)
     {
-        int compare = Fcost.CompareTo(node.Fcost);
+        int compare = fCost.CompareTo(node.fCost);
 
         if (compare == 0)
-            compare = Hcost.CompareTo(node.Hcost);
+            compare = hCost.CompareTo(node.hCost);
         return -compare;
     }
     
@@ -45,8 +42,8 @@ public class Node
                 if (x == y || x + y == 0)
                     continue;
                     
-                int checkx = node.GridPos.x + x;
-                int checky = node.GridPos.y + y;
+                int checkx = node.gridPos.x + x;
+                int checky = node.gridPos.y + y;
 
                 if (checkx >= 0 && checkx < gridsize.x && checky >=0 && checky < gridsize.y)
                     neighbors.Add(grid[checkx, checky]);
