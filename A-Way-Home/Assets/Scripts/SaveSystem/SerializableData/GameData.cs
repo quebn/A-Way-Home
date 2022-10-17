@@ -46,7 +46,7 @@ public class GameData {
         isFullscreen = true;
         hasAnimations = true;
         audio = 100;
-        gameSpeed = 20;
+        gameSpeed = 5;
         Debug.Log($"Game data settings [isFullscreen:{isFullscreen}| hasAnimations:{hasAnimations}| audio:{audio}| gameSpeed:{gameSpeed}]");
         currentCharacterLevel = new string[3]{"Char1Level1", "Char2Level1", "Char3Level1"};
         unlockLevels = new List<string>{currentCharacterLevel[0], currentCharacterLevel[1], currentCharacterLevel[2]};

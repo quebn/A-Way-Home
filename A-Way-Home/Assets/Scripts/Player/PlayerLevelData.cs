@@ -7,6 +7,7 @@ public class PlayerLevelData : MonoBehaviour
     public static PlayerLevelData Instance;
     public Character character;
     public Transform characterHome;
+    public Animator homeAnimator;
     public bool sandboxMode;
     [SerializeField] private uint characterLevel;
     [SerializeField] private string characterName;
@@ -37,7 +38,7 @@ public class PlayerLevelData : MonoBehaviour
         character.energy = levelData.characterEnergy;
         if (sandboxMode)
         {
-            character.speed = 20f;    
+            character.speed = 5f;    
             return;
         }
         character.speed = GameData.Instance.gameSpeed;

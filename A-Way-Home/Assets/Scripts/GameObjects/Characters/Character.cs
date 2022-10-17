@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
-// using UnityEngine.UI;
+using UnityEngine.UI;
+
 public class Character : MonoBehaviour
 {
-    //[HideInInspector] public Image image;
+
+    [SerializeField] private Animator animator;
+    [HideInInspector] public Image image;
     [HideInInspector] public Transform home;
     [HideInInspector] public string charName;
     [HideInInspector] public uint energy;
@@ -20,6 +23,7 @@ public class Character : MonoBehaviour
     {
         if (isGoingHome)
         {
+            animator.SetBool("isWalk", true);
             GoHome();
             InGameUI.Instance.SetCharacterEnergy(energy);
         }
@@ -52,6 +56,10 @@ public class Character : MonoBehaviour
             if (targetIndex >= path.Length)
             {
                 isGoingHome = false;
+                PlayerLevelData.Instance.homeAnimator.SetBool("Reached", true);
+                this.gameObject.SetActive(false);
+                // TODO: Execute Window if animation of clodes is finished
+                // PlayerLevelData.Instance.homeAnimator.;
                 GameEvent.SetEndWindowActive(EndGameType.LevelClear);
                 return;
             }
@@ -71,4 +79,5 @@ public class Character : MonoBehaviour
         }
         transform.position = Vector3.MoveTowards(currentPos, currentTargetPos, speed * Time. deltaTime);
     }
+
 }
