@@ -369,7 +369,7 @@ GameObject:
   - component: {fileID: 897719141268755612}
   m_Layer: 3
   m_Name: Boulder
-  m_TagString: RockObstacle
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -437,4 +437,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 
-  IsNotRemoved: 1
+  toolType: 2
+  isRemoved: 0

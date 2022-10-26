@@ -4,10 +4,9 @@ public class CameraMovement : MonoBehaviour
 {
     public static CameraMovement Instance {get; private set;}
     public SpriteRenderer platform;
-    public float zoomSpeed = 5f;
+    public float zoomSpeed = 25f;
     public float minZoom = 4.5f;
     public float maxZoom = 8f;
-
 
 
     // Privates
@@ -52,8 +51,8 @@ public class CameraMovement : MonoBehaviour
     // TODO: rewrite this block of code someday
     public void NewMoveCamera()
     {
-        if (PlayerLevelData.Instance.character.isHome)
-            return;
+        // if (PlayerLevelData.Instance.character.isHome)
+        //     return;
         Vector3 cameraPos = transform.position;
         if (Mouse.current.rightButton.isPressed)
         {

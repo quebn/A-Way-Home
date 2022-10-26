@@ -4,26 +4,43 @@ using TMPro;
 
 public class InGameUI : MonoBehaviour
 {
+    
     public static InGameUI Instance {get; private set;}
-    [HideInInspector] public bool isPaused = false; //TODO: should be in GameEvent.cs
+    // [HideInInspector] public bool isPaused = false; //TODO: should be in GameEvent.cs
     [HideInInspector] public EndGameType endGameType;
     [SerializeField] private GameObject optionsWindow;
     [SerializeField] private GameObject gameEndWindow;
+    [SerializeField] public Image characterImage;
     [SerializeField] private Slider energySlider;
+    [SerializeField] private TextMeshProUGUI characterNameTMP;
     [SerializeField] private TextMeshProUGUI movesLeftTMP;
     [SerializeField] private TextMeshProUGUI energyLeftTMP;
     [SerializeField] private TextMeshProUGUI livesLeftTMP;
+    [SerializeField] private TextMeshProUGUI skillCounter;
     public GameObject getGameEndWindow { get { return gameEndWindow; } }
 
+
+    public uint SkillCounter{
+        set { this.skillCounter.text = $"{value}";}
+    }
+    
     private void Start()
     {
-        Debug.Assert(!isPaused, "Game is Paused");
-        movesLeftTMP.text = PlayerLevelData.Instance.levelData.moves.ToString();
-        livesLeftTMP.text = PlayerLevelData.Instance.levelData.lives.ToString();
-        InitCharacterEnergy(PlayerLevelData.Instance.character.energy);
+        PlayerLevelData playerLevelData = PlayerLevelData.Instance;
+        InitCharacterUI(playerLevelData.levelData, playerLevelData.character);
         endGameType = EndGameType.None;
         if (Instance == null)
             Instance = this;
+    }
+
+    private void InitCharacterUI(LevelData levelData, Character character)
+    {
+        this.characterImage.sprite  = character.characterImage.sprite;
+        this.characterNameTMP.text  = levelData.characterName;
+        this.movesLeftTMP.text      = levelData.moves.ToString();
+        this.livesLeftTMP.text      = levelData.lives.ToString();
+        this.skillCounter.text      = levelData.skillCount.ToString();
+        InitCharacterEnergy(character.energy);
     }
 
     public void SetPlayerMoves()
@@ -75,10 +92,8 @@ public class InGameUI : MonoBehaviour
     public void OptionsButton()
     {
         GameEvent.PauseGame();
-        // Debug.Assert(OptionsUI.Instance != null, "OptionsUi instance is null");
-        if (isPaused)
-            this.optionsWindow.SetActive(true);
-            // OptionsUI.Instance.gameObject.SetActive(true);
+        Debug.Assert(GameEvent.isPaused, "ERROR: Game is not paused!");
+        this.optionsWindow.SetActive(true);
     }
 
 
@@ -86,26 +101,14 @@ public class InGameUI : MonoBehaviour
     #region ToolBar
     public void SetTool(int toolindex)
     {
+        if (toolindex > 3)
+        {
+            Debug.LogWarning("Tool not yet added in Manipulation enum");
+            return;
+        }
         PlayerActions.Instance.currentManipulationType = (ManipulationType)toolindex;
         Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
     }
-    public void SetToolNone() 
-    {
-        PlayerActions.Instance.currentManipulationType = ManipulationType.None; 
-        Debug.Log("Current Tool: None");
-    }
-    public void SetToolPickAxe() 
-    {
-        PlayerActions.Instance.currentManipulationType = ManipulationType.Pickaxe;
-        Debug.Log("Current Tool: Pickaxe");
-
-    }
-    public void SetToolWoodAxe() 
-    {
-        PlayerActions.Instance.currentManipulationType = ManipulationType.WoodAxe;
-        Debug.Log("Current Tool: Woodaxe");
-    }
-
     #endregion
     
 

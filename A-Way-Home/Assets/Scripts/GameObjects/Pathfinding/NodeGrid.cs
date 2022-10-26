@@ -5,11 +5,12 @@ public class NodeGrid : MonoBehaviour
 {
     public static NodeGrid Instance {get; private set;}
     public LayerMask unwakableMask;
+    public LayerMask walkablePlatform;
     public Vector2 gridSize;
     public float nodeRadius;
     public GameObject revealedTile;
     [HideInInspector] public Vector2Int gridSizeInt;
-    [HideInInspector] public Node[,] grid;
+    [HideInInspector] public Dictionary<Vector2, Node> grid;
     [HideInInspector] public List<Node> path;
     private float nodeDiameter;
 
@@ -24,54 +25,54 @@ public class NodeGrid : MonoBehaviour
         gridSizeInt.y = Mathf.RoundToInt(gridSize.y / nodeDiameter);
         CreateGrid();
     }
+
     private void Start()
     {
         if (Instance == null)   
             Instance = this;
     }
-    private void FixedUpdate()
-    {
-        UpdateGrid();
-    }
-    
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(gridSize.x, gridSize.y, 0));
         if (grid != null)
         {
-            foreach (Node node in grid)
+            foreach (KeyValuePair<Vector2, Node> pair in grid)
             {
-                Gizmos.color = (node.isWalkable)?Color.white : Color.red;
-                if (path != null && path.Contains(node))
+                Gizmos.color = (pair.Value.isWalkable)?Color.white : Color.red;
+                if (path != null && path.Contains(pair.Value))
                     Gizmos.color = Color.green;
-                Gizmos.DrawCube(node.worldPosition, new Vector3( nodeDiameter - .1f, nodeDiameter - .1f, 0));
+                Gizmos.DrawCube(pair.Value.worldPosition, new Vector3( nodeDiameter - .1f, nodeDiameter - .1f, 0));
             }
         }            
     }
+
     private void CreateGrid()
     {
-        grid = new Node[gridSizeInt.x, gridSizeInt.y];
+        grid = new Dictionary<Vector2, Node>(gridSizeInt.x * gridSizeInt.y);
         Vector3 worldBottomLeft = transform.position - Vector3.right * gridSize.x / 2 - Vector3.up * gridSize.y / 2;
         for (int x = 0; x < gridSizeInt.x; x++)
         {
             for (int y = 0; y < gridSizeInt.y; y++)
             {
+                Vector2 gridCoord = new Vector2(x, y);
                 Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.up * (y * nodeDiameter + nodeRadius);
                 bool walkable = !(Physics2D.OverlapCircle(worldPoint, nodeRadius, unwakableMask));
-                grid[x, y] = new Node(walkable, worldPoint, new Vector2Int(x, y));
+                grid[gridCoord] = new Node(walkable, worldPoint, new Vector2Int(x, y));
             }
         }
     }
-
+    // UpdateGrid() should be called every player actions that places an obstacle
     public void UpdateGrid()
     {
-        for (int x = 0; x < gridSizeInt.x; x++)
+        foreach (KeyValuePair<Vector2, Node> pair in grid)
         {
-            for (int y = 0; y < gridSizeInt.y; y++)
-            {
-                Vector3 NodeWorldPos = grid[x, y].worldPosition;
-                grid[x, y].isWalkable = !(Physics2D.OverlapCircle(NodeWorldPos, nodeRadius, unwakableMask));
-            }
+            Vector3 nodeWorldPos = pair.Value.worldPosition;
+            bool hasPlatform = Physics2D.OverlapCircle(nodeWorldPos, nodeRadius, walkablePlatform);
+            if(hasPlatform)
+                pair.Value.isWalkable = hasPlatform;
+            else    
+                pair.Value.isWalkable = !(Physics2D.OverlapCircle(nodeWorldPos, nodeRadius, unwakableMask));
         }
     }
 
@@ -86,7 +87,7 @@ public class NodeGrid : MonoBehaviour
         int x = Mathf.RoundToInt((gridSizeInt.x - 1) * percentX);
         int y = Mathf.RoundToInt((gridSizeInt.y - 1) * percentY);
 
-        return grid[x, y];
+        return grid[new Vector2(x, y)];
     }
 
 }

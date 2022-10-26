@@ -12,7 +12,7 @@ public static class Pathfinding
 
         if (!startnode.isWalkable && !targetnode.isWalkable)
         {    
-            // Debug.Log("No Path Found!");
+            Debug.Log("No Path Found!");
             return path;
         }
         List<Node> OpenSet = new List<Node>();
@@ -33,7 +33,7 @@ public static class Pathfinding
             if (CurrentNode == targetnode)
             {
                 path = RetracePath(startnode, targetnode).ToArray();
-                // Debug.Log("Path Found! Path Total Nodes: " + path.Length);
+                Debug.Log("Path Found! Path Total Nodes: " + path.Length);
                 break;
             }
             // 
@@ -55,8 +55,8 @@ public static class Pathfinding
             }
         }
         // if (path.Length <= 0)
-            // return;
-            // Debug.Log("path is null");
+        //     return;
+        //     Debug.Log("path is null");
         return path;
         
     }

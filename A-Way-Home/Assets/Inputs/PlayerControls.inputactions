@@ -24,7 +24,16 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Tool1",
+                    "name": "Skill",
+                    "type": "Button",
+                    "id": "d29f8cc1-3e8b-4d54-a616-8c19fc384f62",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Default",
                     "type": "Button",
                     "id": "402fdb00-7056-43eb-8321-9aa13127d27f",
                     "expectedControlType": "Button",
@@ -33,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Tool2",
+                    "name": "Tool1",
                     "type": "Button",
                     "id": "1aa1f89e-c733-45fd-90b9-96b7d44fc0e2",
                     "expectedControlType": "Button",
@@ -42,7 +51,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Tool3",
+                    "name": "Tool2",
                     "type": "Button",
                     "id": "1fa05d33-74ae-4abb-961a-42f179a9ab40",
                     "expectedControlType": "Button",
@@ -51,7 +60,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Tool4",
+                    "name": "Tool3",
                     "type": "Button",
                     "id": "2c54b51d-ba2c-41fc-a4e0-3474e05d1ef7",
                     "expectedControlType": "Button",
@@ -60,7 +69,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Tool5",
+                    "name": "Tool4",
                     "type": "Button",
                     "id": "52dcaa3a-2226-448a-8e2d-9b94fce14b1b",
                     "expectedControlType": "Button",
@@ -127,7 +136,18 @@
                 {
                     "name": "",
                     "id": "7ca0dd35-91f6-4a43-b786-0e5df000e6d5",
-                    "path": "<Keyboard>/x",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Tool1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6e5272de-0e7e-415a-ab40-b2a752958659",
+                    "path": "<Keyboard>/4",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -137,8 +157,8 @@
                 },
                 {
                     "name": "",
-                    "id": "6e5272de-0e7e-415a-ab40-b2a752958659",
-                    "path": "<Keyboard>/c",
+                    "id": "a59ab146-e0b5-4828-8a08-f3f229f28556",
+                    "path": "<Keyboard>/5",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -148,23 +168,12 @@
                 },
                 {
                     "name": "",
-                    "id": "a59ab146-e0b5-4828-8a08-f3f229f28556",
-                    "path": "<Keyboard>/v",
+                    "id": "e6566638-4e0e-432e-8172-92f3ee171e53",
+                    "path": "<Keyboard>/6",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Tool4",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e6566638-4e0e-432e-8172-92f3ee171e53",
-                    "path": "<Keyboard>/b",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Tool5",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -226,11 +235,11 @@
                 {
                     "name": "",
                     "id": "ad4ef7d8-0d09-4289-b801-07907ceb54bb",
-                    "path": "<Keyboard>/z",
+                    "path": "<Keyboard>/2",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Tool1",
+                    "action": "Default",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -264,6 +273,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "RevealPath",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "47ddf25b-d51d-4cc1-9ab2-7e3b3d2b02fa",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

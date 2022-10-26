@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum CharacterType { None , Character1, Character2, Character3 }
 public class MainMenuUI : MonoBehaviour
@@ -16,7 +17,7 @@ public class MainMenuUI : MonoBehaviour
 
     private bool isActive;
     public GameObject deleteConfirmWindow;
-    
+
     private void Awake()
     {
         if (GameData.Instance == null)
@@ -26,11 +27,12 @@ public class MainMenuUI : MonoBehaviour
     {
         isActive = true;
         selectedCharacter = CharacterType.None;
+
         if (Instance == null)
             Instance = this;
         Debug.Assert(Instance != null, "Error: MainMenuUI instance is null");
         Debug.Assert(GameData.Instance != null, "Error: GameData instance is null");
-        GameData.saveFileDataList = new List<SaveFileData>(5);
+
         // Debug.Log(GameData.saveFileDataList.Count);
     }
 

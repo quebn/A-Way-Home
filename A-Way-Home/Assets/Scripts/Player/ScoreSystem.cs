@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 public static class ScoreSystem
 {
     private const float RemainingMovesMult = .5f;
@@ -8,7 +7,7 @@ public static class ScoreSystem
     // public static PlayerLevelData playerLevelData;    
     public static LevelData scoreLevelData;
     public static string characterName;
-    public static Image characterImage;
+    public static Sprite characterSprite;
 
 
     public static uint CalculateScore()
@@ -25,8 +24,8 @@ public static class ScoreSystem
     public static void InitScoreData()
     {
         PlayerLevelData playerLevelData = PlayerLevelData.Instance;
-        // characterImage = new Image(playerLevelData.character.image);
-        characterName = new string(playerLevelData.character.charName);
+        characterSprite = playerLevelData.character.characterImage.sprite;
+        characterName = new string(playerLevelData.levelData.characterName);
         scoreLevelData = PlayerLevelData.Instance.levelData;
     }
 

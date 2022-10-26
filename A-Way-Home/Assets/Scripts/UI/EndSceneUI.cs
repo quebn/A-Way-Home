@@ -21,7 +21,7 @@ public class EndSceneUI : MonoBehaviour
     {
         // PlayerLevelData data = ScoreSystem.playerLevelData;
         Debug.Assert(ScoreSystem.characterName != null);
-        // characterImage = data.character.image;
+        characterImage.sprite = ScoreSystem.characterSprite;
         characterName.text = ScoreSystem.characterName;
         scoreValueText.text = ScoreSystem.scoreLevelData.score.ToString();
         isSaved = false;

@@ -8,7 +8,7 @@ public static class GameEvent
     private static PlayerLevelData endData;
     public static LevelLoadType loadType;
     public static uint restartCounter;
-    // [HideInInspector] public bool isPaused = false; //TODO: should be in GameEvent.cs
+    public static bool isPaused = false;
     
     // private static
     public static void LoadEndScene()
@@ -55,6 +55,8 @@ public static class GameEvent
 
     public static void LoadGame(int slotNumber)
     {
+        if (isPaused)
+            UnpauseGame();
         loadType = LevelLoadType.LoadGame;
         restartCounter = 0;
         GameData.loadedLevelData = GameData.saveFileDataList[slotNumber];
@@ -74,15 +76,15 @@ public static class GameEvent
     // public static void On
     public static void PauseGame()//TODO: should be in GameEvent.cs
     {
-        Debug.Assert(!InGameUI.Instance.isPaused, "Game is Already Paused");
-        InGameUI.Instance.isPaused = true;
+        Debug.Assert(!isPaused, "Game is Already Paused");
+        isPaused = true;
         Time.timeScale = 0f;
     }
 
     public static void UnpauseGame()//TODO: should be in GameEvent.cs
     {
-        Debug.Assert(InGameUI.Instance.isPaused, "Game is not Paused");
-        InGameUI.Instance.isPaused = false;
+        Debug.Assert(isPaused, "Game is not Paused");
+        isPaused = false;
         Time.timeScale = 1f;
     }
 }

@@ -1,24 +1,51 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
+public interface ICharacter
+{
+    public void PerformSkill(Vector3 position);
+    public void OnClear(GameObject gameObject);
+    
+}
 public class Character : MonoBehaviour
 {
-
-    [SerializeField] private Animator animator;
-    [HideInInspector] public Image image;
-    [HideInInspector] public Transform home;
-    [HideInInspector] public string charName;
+    [SerializeField] protected GameObject jellyPrefab;
+    [HideInInspector] public SpriteRenderer characterImage;
+    [HideInInspector] public Vector3 homePosition;
     [HideInInspector] public uint energy;
     [HideInInspector] public float speed;
+    [HideInInspector] public bool isSkillActive;
     [HideInInspector] public bool isGoingHome = false;
-    [HideInInspector] public Vector3[] path;
-    private Vector3 currentTargetPos;   
-    private int targetIndex;
+
+    private Vector3[] path;
+
+    protected Animator animator;
+    protected Vector3 currentTargetPos;   
+    protected int targetIndex;
 
     public Vector3 currentPos{ get { return transform.position; } }
-    public bool isHome{ get { return this.transform.position == home.transform.position;}}
+    public bool isHome{ get { return this.transform.position == homePosition;}}
+    
+    private void Awake()
+    {
+        characterImage = jellyPrefab.GetComponent<SpriteRenderer>();
+        animator = jellyPrefab.GetComponent<Animator>();
+    }
 
+    protected void SetSkillCounter()
+    {
+        InGameUI.Instance.SkillCounter = PlayerLevelData.Instance.levelData.skillCount;
+    }
+
+    protected void LoadPlatforms(GameObject spawnedObject)
+    {
+        List<WorldCoords> coords = PlayerLevelData.Instance.levelData.skillCoords;
+        if (coords.Count == 0)
+            return;
+        foreach(WorldCoords coord in coords)
+            Instantiate(spawnedObject,new Vector2(coord.x, coord.y), Quaternion.identity);
+    }
     private void Update()
     {
         if (isGoingHome)
@@ -28,9 +55,10 @@ public class Character : MonoBehaviour
             InGameUI.Instance.SetCharacterEnergy(energy);
         }
     }
-    public void InitCharacter()
+
+    public virtual void InitCharacter()
     {
-        path = Pathfinding.FindPath(currentPos, home.position);
+        path = Pathfinding.FindPath(currentPos, homePosition);
         Debug.Log(path.Length);
         if (path.Length <=0)
             return;
@@ -38,16 +66,18 @@ public class Character : MonoBehaviour
         targetIndex = 0;
         isGoingHome = true;
     }
+
     public void DisplayPath()
     {
         GameObject tile = NodeGrid.Instance.revealedTile;
-        Vector3[] nodePath = Pathfinding.FindPath(currentPos, home.position);
+        Vector3[] nodePath = Pathfinding.FindPath(currentPos, homePosition);
         foreach (Vector3 position in nodePath)
         {
             Instantiate(tile, position, Quaternion.identity);
         }
     }
-    public virtual void GoHome()
+
+    protected virtual void GoHome()
     {
         if (currentPos ==  currentTargetPos)
         {
@@ -80,4 +110,11 @@ public class Character : MonoBehaviour
         transform.position = Vector3.MoveTowards(currentPos, currentTargetPos, speed * Time. deltaTime);
     }
 
+    protected float SetToMid(float f)
+    {
+        if (f < 0)            
+            return (float)(MathF.Truncate((float)f) - .5);
+        return (float)(MathF.Truncate((float)f) + .5);
+    }
 }
+

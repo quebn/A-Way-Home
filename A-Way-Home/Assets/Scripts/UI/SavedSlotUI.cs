@@ -1,6 +1,5 @@
 // using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class SavedSlotUI : MonoBehaviour
@@ -12,7 +11,10 @@ public class SavedSlotUI : MonoBehaviour
 
     #region hasData SerializedField Components
     // 8 components Image/Filename/energy/moves/Lives/LevelNum/Time/Date
-    // [SerializeField] private Image characterImage;
+    [SerializeField] private GameObject character1Image;
+    [SerializeField] private GameObject character2Image;
+    [SerializeField] private GameObject character3Image;
+    [SerializeField] private TextMeshProUGUI characterName;  
     [SerializeField] private TextMeshProUGUI fileName;  
     [SerializeField] private TextMeshProUGUI energy;  
     [SerializeField] private TextMeshProUGUI moves;  
@@ -26,7 +28,6 @@ public class SavedSlotUI : MonoBehaviour
 
     private void Start()
     {
-        // Debug.Log($"Slot Number {GameData.saveSlotUIDict.Count} => slotIndexNumber: {slotIndexNumber} Capacity = {GameData.saveSlotUIDict.Count}");
         GameData.saveSlotUIDict.Add(slotIndexNumber, this);
         InitData();
     }
@@ -102,6 +103,8 @@ public class SavedSlotUI : MonoBehaviour
     
     private void SetValues(SaveFileData slotdata)
     {
+        characterName.text = slotdata.levelData.characterName;
+        SetSlotImage(slotdata.levelData.characterName);
         fileName.text = slotdata.fileName;
         energy.text = slotdata.levelData.characterEnergy.ToString();
         moves.text = slotdata.levelData.moves.ToString();
@@ -111,6 +114,26 @@ public class SavedSlotUI : MonoBehaviour
         time.text = slotdata.time;
     }
 
+    private void SetSlotImage(string name)
+    {
+        switch(name){
+            case "Choco":
+                character1Image.SetActive(true);
+                character2Image.SetActive(false);
+                character3Image.SetActive(false);
+                break;
+            case "Wormy":
+                character1Image.SetActive(false);
+                character2Image.SetActive(true);
+                character3Image.SetActive(false);
+                break;
+            case "Sushi":
+                character1Image.SetActive(false);
+                character2Image.SetActive(false);
+                character3Image.SetActive(true);
+                break;
+        }
+    }
     public static void RefreshSaveSlots()
     {
         GameData.saveFileDataList = SaveSystem.InitAllSavedData();

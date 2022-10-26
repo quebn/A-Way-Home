@@ -5,6 +5,7 @@ public class Node
 {
     // Public
     public bool isWalkable;
+    public bool containsObject;
     public Node parent;
     public Vector3 worldPosition;
     public Vector2Int gridPos;
@@ -18,9 +19,10 @@ public class Node
         isWalkable = walkable;
         worldPosition = worldpos;
         gridPos = grid;
+        containsObject = false;
     }
 
-    public int  CompareNode(Node node)
+    public int CompareNode(Node node)
     {
         int compare = fCost.CompareTo(node.fCost);
 
@@ -29,7 +31,7 @@ public class Node
         return -compare;
     }
     
-    public static List<Node> GetNeighbors(Node node, Node[,] grid, Vector2Int gridsize)
+    public static List<Node> GetNeighbors(Node node, Dictionary<Vector2, Node> grid, Vector2Int gridsize)
     {
         List<Node> neighbors = new List<Node>();
 
@@ -46,7 +48,7 @@ public class Node
                 int checky = node.gridPos.y + y;
 
                 if (checkx >= 0 && checkx < gridsize.x && checky >=0 && checky < gridsize.y)
-                    neighbors.Add(grid[checkx, checky]);
+                    neighbors.Add(grid[new Vector2(checkx, checky)]);
             }
         }
         return neighbors;        
