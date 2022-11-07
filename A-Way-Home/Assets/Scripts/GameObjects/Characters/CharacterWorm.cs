@@ -4,10 +4,13 @@ using UnityEngine;
 public class CharacterWorm : Character, ICharacter
 {
     [SerializeField] private GameObject portalObject;
+    [SerializeField] private GameObject placeableTile;
+    [SerializeField] private int skillRange;
     private GameObject entranceHole;
     private GameObject exitHole;
     private List<Vector3[]> paths;
-
+    private List<Vector3> placeablePositions;
+    private List<GameObject> placeableTiles;
     private void Start()
     {
         paths = new List<Vector3[]>();
@@ -98,41 +101,81 @@ public class CharacterWorm : Character, ICharacter
         }
         transform.position = Vector3.MoveTowards(currentPos, currentTargetPos, speed * Time. deltaTime);
     }
-    public void PerformSkill(Vector3 position)
+    public void PerformSkill(Vector3 position, Collider2D collider2D, string tag)
     {
-        if(PlayerLevelData.Instance.levelData.skillCount == 0)
-            return;
+        // Checks and returns if theres is an obstacle when placing the skill 
+        if(collider2D != null || tag == "Obstacle" || PlayerLevelData.Instance.levelData.skillCount == 0)
+            return; 
         if (entranceHole == null)
+        {
             entranceHole = PlaceTunnel(position);
+            Debug.Log("Performed setting entranceHole ");
+            placeableTiles = new List<GameObject>();
+            placeablePositions = GetPlaceablePos(skillRange);
+            HighlightPlaceables();
+        }
         else if(entranceHole != null && exitHole == null)
         {
-            exitHole = PlaceTunnel(position);
+            //check if position is within the number tiles given by skillRange as the distance of entrance.
+            if(placeablePositions.Contains(SetToMid(position)))
+                exitHole = PlaceTunnel(position);
+            else    
+                Debug.Log($"Not Placeable in {SetToMid(position).ToString()}");
+            if (exitHole == null)
+                return;
+            foreach (GameObject tile in placeableTiles)
+                GameObject.Destroy(tile);
             PlayerLevelData.Instance.levelData.skillCount--;
             SetSkillCounter();
         }
+    }
+    
+    private void HighlightPlaceables()
+    {
+        foreach(Vector3 position in placeablePositions)
+        {
+            placeableTiles.Add(GameObject.Instantiate(placeableTile, position, Quaternion.identity));
+        }
+    }
+    private List<Vector3> GetPlaceablePos(int tileRange)
+    {
+        Node entranceNode = NodeGrid.NodeWorldPointPos(entranceHole.transform.position);
+        List<Vector3> placeablePos = new List<Vector3>();
+        Dictionary<Vector2, Node> grid = NodeGrid.Instance.grid;
+        for (int x = -tileRange; x <= tileRange; x++){
+            for (int y = -tileRange; y <= tileRange; y++){
+                if (x == 0 && y == 0)
+                    continue;
+                Vector2Int check = new Vector2Int(entranceNode.gridPos.x + x, entranceNode.gridPos.y + y);
+                if (grid.ContainsKey(check) && grid[check].IsWalkable())
+                    placeablePos.Add(grid[check].worldPosition);
+            }
+        }
+        return placeablePos;
     }
     private GameObject PlaceTunnel(Vector3 worldPosition)
     {
         worldPosition.x = SetToMid(worldPosition.x);
         worldPosition.y = SetToMid(worldPosition.y);
         worldPosition.z = 0;
-        Vector2 gridCoord = new Vector2();
-        foreach (KeyValuePair<Vector2, Node> pair in NodeGrid.Instance.grid)
-        {
-            if (pair.Value.worldPosition != worldPosition)
-                continue;
-            gridCoord = pair.Key;
-            if (pair.Value.containsObject || !pair.Value.isWalkable)
-            {
-                Debug.Log($"UNABLE TO PLACE: Node[{gridCoord.x},{gridCoord.y}] already has a portal or is unwalkable");
-                return null;
-            }
-            break;
-        }
-        NodeGrid.Instance.grid[gridCoord].containsObject = true;
+        Node node = NodeGrid.NodeWorldPointPos(worldPosition);
+        if (node.containsObject || !node.IsWalkable())
+            return null;
+        node.containsObject = true;
         PlayerLevelData.Instance.levelData.skillCoords.Add(new WorldCoords(worldPosition.x, worldPosition.y));
         return Instantiate(portalObject, worldPosition, Quaternion.identity);
     }
-    public void OnCancel(){}
+    public void OnDeselect()
+    {
+        if (entranceHole  != null && exitHole == null)
+        {
+            NodeGrid.NodeWorldPointPos(entranceHole.transform.position).containsObject = false;
+            GameObject.Destroy(entranceHole);
+            entranceHole = null;
+            foreach (GameObject tile in placeableTiles)
+                GameObject.Destroy(tile);
+            PlayerLevelData.Instance.levelData.skillCoords.RemoveAt(0);
+        }
+    }
     public void OnClear(GameObject gameObject){}
 }

@@ -3,14 +3,14 @@ using UnityEngine;
 
 public static class Pathfinding
 {
-    private static NodeGrid nodeGrid = NodeGrid.Instance;
-    public static Vector3[] FindPath(Vector3 startpos, Vector3 targetpos)
+    public static Vector3[] FindPath(Vector3 startpos, Vector3 targetpos, bool canWalkWater = false)
     {
+        NodeGrid nodeGrid = NodeGrid.Instance;
         Vector3[] path = new Vector3[0];
-        Node startnode = nodeGrid.NodeWorldPointPos(startpos);
-        Node targetnode = nodeGrid.NodeWorldPointPos(targetpos);
+        Node startnode = NodeGrid.NodeWorldPointPos(startpos);
+        Node targetnode = NodeGrid.NodeWorldPointPos(targetpos);
 
-        if (!startnode.isWalkable && !targetnode.isWalkable)
+        if (!startnode.IsWalkable(canWalkWater) && !targetnode.IsWalkable(canWalkWater))
         {    
             Debug.Log("No Path Found!");
             return path;
@@ -39,7 +39,7 @@ public static class Pathfinding
             // 
             foreach (Node Neighbor in Node.GetNeighbors(CurrentNode, nodeGrid.grid, nodeGrid.gridSizeInt))
             {
-                if (!Neighbor.isWalkable || ClosedSet.Contains(Neighbor))
+                if (!Neighbor.IsWalkable(canWalkWater) || ClosedSet.Contains(Neighbor))
                     continue;
                 
                 int newMovementCostToNeighbor = CurrentNode.gCost + GetDistance(CurrentNode, Neighbor);
@@ -58,7 +58,6 @@ public static class Pathfinding
         //     return;
         //     Debug.Log("path is null");
         return path;
-        
     }
     private static List<Vector3> RetracePath(Node startnode, Node targetnode)
     {
@@ -72,7 +71,7 @@ public static class Pathfinding
             CurrentNode = CurrentNode.parent;
         }
         path.Reverse();
-        nodeGrid.path = path;
+        NodeGrid.Instance.path = path;
         waypoints.Reverse();
         return waypoints;
     }

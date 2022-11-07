@@ -10,32 +10,18 @@ public class CharacterTerra : Character, ICharacter
     }
 
 
-    public void PerformSkill(Vector3 position)
+    public void PerformSkill(Vector3 position, Collider2D collider2D, string tag)
     {
-        
-        if(PlayerLevelData.Instance.levelData.skillCount == 0)
-        {        
-            Debug.Log("You have 0 rocks to use!");
+        if(tag == "Obstacle" || PlayerLevelData.Instance.levelData.skillCount == 0)
             return;
-        }
         position.x = SetToMid(position.x);
         position.y = SetToMid(position.y);
         position.z = 0;
-        Vector2 gridCoord = new Vector2();
-        foreach (KeyValuePair<Vector2, Node> pair in NodeGrid.Instance.grid)
-        {
-            if (pair.Value.worldPosition == position)
-            {
-                gridCoord = pair.Key;
-                if (pair.Value.containsObject)
-                {
-                    Debug.Log($"UNABLE TO PLACE: Node[{gridCoord.x},{gridCoord.y}] already has a platform");
-                    return;
-                }
-                break;
-            }
-        }
-        NodeGrid.Instance.grid[gridCoord].containsObject = true;
+        Node node = NodeGrid.NodeWorldPointPos(position);
+        if (node.containsObject)
+            return;
+        node.containsObject = true;
+        node.type = NodeType.Walkable;
         Instantiate(platformObject, position, Quaternion.identity);
         PlayerLevelData.Instance.levelData.skillCount--;
         PlayerLevelData.Instance.levelData.skillCoords.Add(new WorldCoords(position.x, position.y));
@@ -51,4 +37,6 @@ public class CharacterTerra : Character, ICharacter
             SetSkillCounter();
         }
     }
+
+    public void OnDeselect(){}
 }

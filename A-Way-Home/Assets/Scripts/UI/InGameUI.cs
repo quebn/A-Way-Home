@@ -18,6 +18,7 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI livesLeftTMP;
     [SerializeField] private TextMeshProUGUI skillCounter;
     public GameObject getGameEndWindow { get { return gameEndWindow; } }
+    private bool pathDisplayToggle = false;
 
 
     public uint SkillCounter{
@@ -58,10 +59,14 @@ public class InGameUI : MonoBehaviour
         energyLeftTMP.text = energy.ToString();
         energySlider.value = energy;
     }
-    // public void ShowCurrentPath()
-    // {
-    //     PlayerLevelData.Instance.character.DisplayPath();
-    // }
+    public void ShowCurrentPath()
+    {
+        if (!pathDisplayToggle)
+            pathDisplayToggle = true;
+        else
+            pathDisplayToggle = false;
+        PlayerLevelData.Instance.character.DisplayPath(pathDisplayToggle);
+    }
 
     #region Action Bar
     public void UndoAction()
@@ -106,6 +111,9 @@ public class InGameUI : MonoBehaviour
             Debug.LogWarning("Tool not yet added in Manipulation enum");
             return;
         }
+        ICharacter character = (ICharacter)PlayerLevelData.Instance.character;
+        if (toolindex != (int)ManipulationType.UniqueSkill)
+            character.OnDeselect();
         PlayerActions.Instance.currentManipulationType = (ManipulationType)toolindex;
         Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
     }

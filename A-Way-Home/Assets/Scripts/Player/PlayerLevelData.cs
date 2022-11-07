@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerLevelData : MonoBehaviour
 {
-    public static PlayerLevelData Instance;
+    public static PlayerLevelData Instance {get; private set;}
     public Character character;
     public Transform characterHome;
     public Animator homeAnimator;

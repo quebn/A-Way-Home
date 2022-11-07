@@ -4,11 +4,15 @@ using UnityEngine;
 public class NodeGrid : MonoBehaviour
 {
     public static NodeGrid Instance {get; private set;}
-    public LayerMask unwakableMask;
-    public LayerMask walkablePlatform;
-    public Vector2 gridSize;
-    public float nodeRadius;
-    public GameObject revealedTile;
+    [SerializeField] private LayerMask terrainMask;
+    [SerializeField] private LayerMask obstacleMask;
+    [SerializeField] private LayerMask waterMask;
+    [SerializeField] private LayerMask walkablePlatform;
+    [SerializeField] private Vector2 gridSize;
+    [SerializeField] private float nodeRadius;
+    [SerializeField] private GameObject tilePrefab;
+    [SerializeField] private Transform tilePrefabParent;
+    // publics
     [HideInInspector] public Vector2Int gridSizeInt;
     [HideInInspector] public Dictionary<Vector2, Node> grid;
     [HideInInspector] public List<Node> path;
@@ -39,16 +43,24 @@ public class NodeGrid : MonoBehaviour
         {
             foreach (KeyValuePair<Vector2, Node> pair in grid)
             {
-                Gizmos.color = (pair.Value.isWalkable)?Color.white : Color.red;
+                if (pair.Value.type == NodeType.Water)
+                    Gizmos.color = Color.blue;
+                else if(pair.Value.type == NodeType.Terrain)
+                    Gizmos.color = Color.black;
+                else if (pair.Value.type == NodeType.Obstacle)
+                    Gizmos.color = Color.red;
+                else
+                    Gizmos.color = Color.white;
                 if (path != null && path.Contains(pair.Value))
                     Gizmos.color = Color.green;
                 Gizmos.DrawCube(pair.Value.worldPosition, new Vector3( nodeDiameter - .1f, nodeDiameter - .1f, 0));
             }
-        }            
+        }
     }
 
     private void CreateGrid()
     {
+        NodeType nodeType;
         grid = new Dictionary<Vector2, Node>(gridSizeInt.x * gridSizeInt.y);
         Vector3 worldBottomLeft = transform.position - Vector3.right * gridSize.x / 2 - Vector3.up * gridSize.y / 2;
         for (int x = 0; x < gridSizeInt.x; x++)
@@ -57,8 +69,15 @@ public class NodeGrid : MonoBehaviour
             {
                 Vector2 gridCoord = new Vector2(x, y);
                 Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.up * (y * nodeDiameter + nodeRadius);
-                bool walkable = !(Physics2D.OverlapCircle(worldPoint, nodeRadius, unwakableMask));
-                grid[gridCoord] = new Node(walkable, worldPoint, new Vector2Int(x, y));
+                if (Physics2D.OverlapCircle(worldPoint, nodeRadius, terrainMask))
+                    nodeType = NodeType.Terrain;
+                else if (Physics2D.OverlapCircle(worldPoint, nodeRadius, obstacleMask))
+                    nodeType = NodeType.Obstacle;
+                else if (Physics2D.OverlapCircle(worldPoint, nodeRadius, waterMask))
+                    nodeType = NodeType.Water;
+                else
+                    nodeType = NodeType.Walkable;
+                grid[gridCoord] = new Node(nodeType, worldPoint, new Vector2Int(x, y), tilePrefab, tilePrefabParent);
             }
         }
     }
@@ -67,27 +86,32 @@ public class NodeGrid : MonoBehaviour
     {
         foreach (KeyValuePair<Vector2, Node> pair in grid)
         {
+            if (pair.Value.type == NodeType.Terrain || pair.Value.type == NodeType.Water)
+                continue;
             Vector3 nodeWorldPos = pair.Value.worldPosition;
-            bool hasPlatform = Physics2D.OverlapCircle(nodeWorldPos, nodeRadius, walkablePlatform);
-            if(hasPlatform)
-                pair.Value.isWalkable = hasPlatform;
+            if (Physics2D.OverlapCircle(nodeWorldPos, nodeRadius, obstacleMask))
+                pair.Value.type = NodeType.Obstacle;
             else    
-                pair.Value.isWalkable = !(Physics2D.OverlapCircle(nodeWorldPos, nodeRadius, unwakableMask));
+                pair.Value.type = NodeType.Walkable;
         }
     }
 
-    public Node NodeWorldPointPos(Vector3 worldpos)
+    public static Node NodeWorldPointPos(Vector3 worldpos)
     {
-        float percentX = (worldpos.x + gridSize.x / 2) /  gridSize.x;
-        float percentY = (worldpos.y + gridSize.y / 2) /  gridSize.y;
+        Vector2 gridSize = Instance.gridSize; 
+        Vector2Int gridSizeInt = Instance.gridSizeInt;
+
+        float percentX = (worldpos.x + gridSize.x * 0.5f) /  gridSize.x;
+        float percentY = (worldpos.y + gridSize.y * 0.5f) /  gridSize.y;
 
         percentX = Mathf.Clamp01(percentX);
         percentY = Mathf.Clamp01(percentY);
+        
+        Vector2 index = new Vector2();
+        index.x = Mathf.RoundToInt((gridSizeInt.x - 1) * percentX);
+        index.y = Mathf.RoundToInt((gridSizeInt.y - 1) * percentY);
 
-        int x = Mathf.RoundToInt((gridSizeInt.x - 1) * percentX);
-        int y = Mathf.RoundToInt((gridSizeInt.y - 1) * percentY);
-
-        return grid[new Vector2(x, y)];
+        return Instance.grid[index];
     }
 
 }

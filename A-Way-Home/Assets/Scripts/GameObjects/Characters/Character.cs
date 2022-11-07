@@ -4,8 +4,9 @@ using UnityEngine;
 
 public interface ICharacter
 {
-    public void PerformSkill(Vector3 position);
+    public void PerformSkill(Vector3 position, Collider2D collider2D, string tag);
     public void OnClear(GameObject gameObject);
+    public void OnDeselect();
     
 }
 public class Character : MonoBehaviour
@@ -18,8 +19,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public bool isSkillActive;
     [HideInInspector] public bool isGoingHome = false;
 
-    private Vector3[] path;
-
+    protected Vector3[] path;
     protected Animator animator;
     protected Vector3 currentTargetPos;   
     protected int targetIndex;
@@ -67,13 +67,24 @@ public class Character : MonoBehaviour
         isGoingHome = true;
     }
 
-    public void DisplayPath()
+    public virtual void DisplayPath(bool toggle)
     {
-        GameObject tile = NodeGrid.Instance.revealedTile;
+        
         Vector3[] nodePath = Pathfinding.FindPath(currentPos, homePosition);
-        foreach (Vector3 position in nodePath)
+        if (nodePath.Length == 0)
         {
-            Instantiate(tile, position, Quaternion.identity);
+            Debug.Log("no path to be shown.");
+            return;
+        }
+        Debug.Log($"Showing Path | Path length = {nodePath.Length}");
+        for (int i = 0; i < nodePath.Length; i++)
+        {
+            Node node = NodeGrid.NodeWorldPointPos(nodePath[i]);
+            if (!toggle)
+                node.tileSprite.color = new Color32(255, 255, 255, 150);
+            else
+                node.tileSprite.color = Color.green;
+            node.tileObject.SetActive(toggle);
         }
     }
 
@@ -115,6 +126,11 @@ public class Character : MonoBehaviour
         if (f < 0)            
             return (float)(MathF.Truncate((float)f) - .5);
         return (float)(MathF.Truncate((float)f) + .5);
+    }
+
+    protected Vector3 SetToMid(Vector3 vector3)
+    {
+        return new Vector3(SetToMid(vector3.x), SetToMid(vector3.y), 0);
     }
 }
 

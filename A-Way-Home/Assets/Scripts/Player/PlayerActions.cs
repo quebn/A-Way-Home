@@ -8,10 +8,11 @@ public enum ManipulationType{ None, UniqueSkill, Pickaxe, WoodAxe, }
 public class PlayerActions : MonoBehaviour
 {
     public static PlayerActions Instance {get; private set;}
-    
+
     [HideInInspector] public ManipulationType currentManipulationType = ManipulationType.None;
+    [HideInInspector] public Mouse mouse;
     private PlayerInput playerInput;
-    
+
     private InputAction removeObstacle; 
     private InputAction revealPath;
     private InputAction defaultTool; 
@@ -22,8 +23,10 @@ public class PlayerActions : MonoBehaviour
     private InputAction tool4; 
     private InputAction start;
     private InputAction reset;
-    
+
     private ICharacter character;
+
+
 
     private void Start()
     {
@@ -43,13 +46,12 @@ public class PlayerActions : MonoBehaviour
         uint moves = PlayerLevelData.Instance.levelData.moves; 
         if (moves == 0 || IsMouseOverUI())
             return;
-
-        ManipulationType type = gameObject.GetComponent<ObstacleData>().toolType;
-        if (gameObject.tag == "Obstacle" && type == toolType)
+        ObstacleData obstacleData = gameObject.GetComponent<ObstacleData>(); 
+        
+        if (gameObject.tag == "Obstacle" && obstacleData.toolType == toolType)
         {
             gameObject.SetActive(false);
-            string obstacleID = gameObject.GetComponent<ObstacleData>().ID;
-            PlayerLevelData.Instance.levelData.removedObstacles.Add(obstacleID, true);
+            PlayerLevelData.Instance.levelData.removedObstacles.Add(obstacleData.ID, true);
             PlayerLevelData.Instance.levelData.moves--;
 
             InGameUI.Instance.SetPlayerMoves();
@@ -58,17 +60,20 @@ public class PlayerActions : MonoBehaviour
             
             Debug.Log(gameObject + " was Destroyed");
             Debug.Log("Moves Left: " + PlayerLevelData.Instance.levelData.moves);
-            Debug.Log($"Added Obstacle with id of {obstacleID} to Removed Obstacles Dictionary!");
+            Debug.Log($"Added Obstacle with id of {obstacleData.ID} to Removed Obstacles Dictionary!");
         }
     }
 
-    private void UniqueSkill()
+    private void UniqueSkill(Collider2D collider2D)
     {
         if (IsMouseOverUI())
             return;
-        Vector3 position = Mouse.current.position.ReadValue();
+        string tag = "None"; 
+        Vector3 position = mouse.position.ReadValue();
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(position);
-        character.PerformSkill(worldPos); 
+        if (collider2D != null)
+            tag = collider2D.gameObject.tag;
+        character.PerformSkill(worldPos, collider2D, tag); 
     }
 
     private void RemoveObstacle(InputAction.CallbackContext context)
@@ -77,14 +82,12 @@ public class PlayerActions : MonoBehaviour
         if (GameEvent.isPaused || PlayerLevelData.Instance.character.isHome || type == ManipulationType.None)
             return;
 
-        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Ray ray = Camera.main.ScreenPointToRay(mouse.position.ReadValue());
         RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
         
         if (type == ManipulationType.UniqueSkill)
         {
-            // Checks and returns if theres is an obstacle when placing the skill 
-            if (hit2D.collider == null || hit2D.collider.gameObject.tag != "Obstacle")
-                UniqueSkill();
+            UniqueSkill(hit2D.collider);
             return;
         }
         if (hit2D.collider != null)
@@ -107,25 +110,25 @@ public class PlayerActions : MonoBehaviour
         switch(context.action.name)
         {
             case "Cancel":
-                currentManipulationType = ManipulationType.None;
+                SetToolType(ManipulationType.None);
                 break;
             case "Default":
-                currentManipulationType = ManipulationType.None;
+                SetToolType(ManipulationType.None);
                 break;
             case "Skill":
                 currentManipulationType = ManipulationType.UniqueSkill;
                 break;
             case "Tool1":
-                currentManipulationType = ManipulationType.Pickaxe;
+                SetToolType(ManipulationType.None);
                 break;
             case "Tool2":
-                currentManipulationType = ManipulationType.WoodAxe;
+                SetToolType(ManipulationType.None);
                 break;
             case "Tool3":
-                currentManipulationType = ManipulationType.None;
+                SetToolType(ManipulationType.None);
                 break;
             case "Tool4":
-                currentManipulationType = ManipulationType.None;
+                SetToolType(ManipulationType.None);
                 break;
             default:
                 Debug.Log($"{context.action.name} is not recognize!");
@@ -133,7 +136,11 @@ public class PlayerActions : MonoBehaviour
         }
         Debug.Log($"Current Tool: {currentManipulationType}");
     }
-    
+    private void SetToolType(ManipulationType type)
+    {
+        currentManipulationType = type;
+        character.OnDeselect();
+    }
     private void StartCharacter(InputAction.CallbackContext context)
     {
         if (PlayerLevelData.Instance.character.isGoingHome)
@@ -154,10 +161,8 @@ public class PlayerActions : MonoBehaviour
     {
         if (GameEvent.isPaused)
             return;
-        PlayerLevelData.Instance.character.DisplayPath();
+        // PlayerLevelData.Instance.character.DisplayPath();
     }
-
-
 
     private static bool IsMouseOverUI(){
         // IsPointerOverGameobject is having a warning when used in new input system 
@@ -167,6 +172,7 @@ public class PlayerActions : MonoBehaviour
     private void InitPlayerActions()
     {
         playerInput = GetComponent<PlayerInput>();
+        mouse = Mouse.current;
         character = (ICharacter)PlayerLevelData.Instance.character;
         Debug.Assert(playerInput != null, "GetComponent failed!");
         removeObstacle  = playerInput.actions["Remove"];

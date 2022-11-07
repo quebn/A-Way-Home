@@ -4240,7 +4240,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 686cdaed440e8b442b9701cd29079ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPaused: 0
   endGameType: 0
   optionsWindow: {fileID: 7946426458339522854}
   gameEndWindow: {fileID: 3843301364045520333}
@@ -6104,7 +6103,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 125.15613, y: 413.64005}
+  m_AnchoredPosition: {x: -0.000044814, y: 413.64}
   m_SizeDelta: {x: 70.307, y: 56.815}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7039305918273351389
@@ -6188,7 +6187,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5333197433198993866}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7946426458618690555}
+        m_TargetAssemblyTypeName: InGameUI, Assembly-CSharp
+        m_MethodName: ShowCurrentPath
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &2113394796604491029
 PrefabInstance:
   m_ObjectHideFlags: 0

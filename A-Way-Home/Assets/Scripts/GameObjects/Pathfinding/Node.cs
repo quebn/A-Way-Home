@@ -1,27 +1,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum NodeType{ Walkable, Water, Terrain, Obstacle}//, Platform}
 public class Node
 {
-    // Public
-    public bool isWalkable;
-    public bool containsObject;
-    public Node parent;
+    public GameObject tileObject;
+    public SpriteRenderer tileSprite;
     public Vector3 worldPosition;
     public Vector2Int gridPos;
+    public NodeType type;
+    public Node parent;
+    public bool containsObject;
     public int gCost;
     public int hCost;
-    
     public int fCost{ get{ return gCost + hCost ;} }
+    private bool isWalkable {get { return type == NodeType.Walkable ;}}
 
-    public Node(bool walkable, Vector3 worldpos, Vector2Int grid)
+    public Node(NodeType type, Vector3 worldpos, Vector2Int grid, GameObject tilePrefab, Transform parent)
     {
-        isWalkable = walkable;
+        tileObject = GameObject.Instantiate(tilePrefab, worldpos, Quaternion.identity, parent);
+        tileSprite = tileObject.GetComponent<SpriteRenderer>();
         worldPosition = worldpos;
         gridPos = grid;
+        this.type = type;
         containsObject = false;
+        tileObject.SetActive(false);
     }
-
+    public bool IsWalkable(bool canWalkWater = false)
+    {
+        if (canWalkWater)
+            return (isWalkable || type == NodeType.Water);
+        return isWalkable;
+    }
     public int CompareNode(Node node)
     {
         int compare = fCost.CompareTo(node.fCost);
@@ -51,6 +61,7 @@ public class Node
                     neighbors.Add(grid[new Vector2(checkx, checky)]);
             }
         }
-        return neighbors;        
+        return neighbors;
     }
+
 }
