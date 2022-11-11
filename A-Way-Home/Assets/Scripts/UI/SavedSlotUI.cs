@@ -1,5 +1,6 @@
 // using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class SavedSlotUI : MonoBehaviour
@@ -11,9 +12,8 @@ public class SavedSlotUI : MonoBehaviour
 
     #region hasData SerializedField Components
     // 8 components Image/Filename/energy/moves/Lives/LevelNum/Time/Date
-    [SerializeField] private GameObject character1Image;
-    [SerializeField] private GameObject character2Image;
-    [SerializeField] private GameObject character3Image;
+
+    [SerializeField] private Image characterImage;
     [SerializeField] private TextMeshProUGUI characterName;  
     [SerializeField] private TextMeshProUGUI fileName;  
     [SerializeField] private TextMeshProUGUI energy;  
@@ -39,7 +39,6 @@ public class SavedSlotUI : MonoBehaviour
 
     public void LoadGame()
     {
-        // GameEvent.instance.LoadGame(slotIndexNumber);
         if (noData.activeSelf)
             return;
         GameEvent.LoadGame(slotIndexNumber);
@@ -47,8 +46,6 @@ public class SavedSlotUI : MonoBehaviour
 
     public void OverwriteFile()
     {
-        // TODO: Implement function
-        // Delete the exisiting file and replace it with the new save;
         if (!this.hasData.activeSelf || GameData.saveFileDataList[this.slotIndexNumber] == null)
         {
             Debug.Log("No Data to be Overwritten!");
@@ -58,9 +55,9 @@ public class SavedSlotUI : MonoBehaviour
         OptionsUI.Instance.confirmOverwriteWindow.SetActive(true);
     }
 
+    // Delete the exisiting file and replace it with the new save;
     public void DeleteButton(string buttonlocation)
     {
-        // TODO: fix mainmenu bug where window does not pop up when delete button is pressed
         switch(buttonlocation)
         {
             case "mainmenu":
@@ -104,7 +101,7 @@ public class SavedSlotUI : MonoBehaviour
     private void SetValues(SaveFileData slotdata)
     {
         characterName.text = slotdata.levelData.characterName;
-        SetSlotImage(slotdata.levelData.characterName);
+        characterImage.sprite = GameData.characterSprites[slotdata.levelData.characterName];
         fileName.text = slotdata.fileName;
         energy.text = slotdata.levelData.characterEnergy.ToString();
         moves.text = slotdata.levelData.moves.ToString();
@@ -112,27 +109,6 @@ public class SavedSlotUI : MonoBehaviour
         level.text = slotdata.levelData.level.ToString();
         date.text = slotdata.date;
         time.text = slotdata.time;
-    }
-
-    private void SetSlotImage(string name)
-    {
-        switch(name){
-            case "Choco":
-                character1Image.SetActive(true);
-                character2Image.SetActive(false);
-                character3Image.SetActive(false);
-                break;
-            case "Wormy":
-                character1Image.SetActive(false);
-                character2Image.SetActive(true);
-                character3Image.SetActive(false);
-                break;
-            case "Sushi":
-                character1Image.SetActive(false);
-                character2Image.SetActive(false);
-                character3Image.SetActive(true);
-                break;
-        }
     }
 
     public static void RefreshSaveSlots()

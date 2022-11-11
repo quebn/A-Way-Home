@@ -73,15 +73,15 @@ public static class GameEvent
         inGameUI.getGameEndWindow.SetActive(true);
         inGameUI.endGameType = endGameType;
     }
-    // public static void On
-    public static void PauseGame()//TODO: should be in GameEvent.cs
+
+    public static void PauseGame()
     {
         Debug.Assert(!isPaused, "Game is Already Paused");
         isPaused = true;
         Time.timeScale = 0f;
     }
 
-    public static void UnpauseGame()//TODO: should be in GameEvent.cs
+    public static void UnpauseGame()
     {
         Debug.Assert(isPaused, "Game is not Paused");
         isPaused = false;

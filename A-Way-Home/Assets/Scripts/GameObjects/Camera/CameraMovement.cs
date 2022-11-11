@@ -48,7 +48,7 @@ public class CameraMovement : MonoBehaviour
         NewMoveCamera();
     }
 
-    // TODO: rewrite this block of code someday
+    // TODO: rewrite this function someday
     public void NewMoveCamera()
     {
         // if (PlayerLevelData.Instance.character.isHome)
@@ -75,7 +75,6 @@ public class CameraMovement : MonoBehaviour
             mainCamera.transform.position = resetCamera;    
         }
     }
-    // End of Block
 
     private void ZoomCamera()
     {

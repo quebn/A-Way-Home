@@ -19,11 +19,13 @@ public class GameData {
 
     // Statics;
     public static List<SaveFileData> saveFileDataList ;
+    public static Dictionary<string, Sprite> characterSprites;
     public static SaveFileData loadedLevelData = null;
     public static Dictionary<int,SavedSlotUI> saveSlotUIDict;
 
     public static void InitGameDataInstance()
     {
+        characterSprites = new Dictionary<string, Sprite>();
         saveSlotUIDict = new Dictionary<int, SavedSlotUI>(5);
         Instance = SaveSystem.LoadGameData();
         if (Instance != null)

@@ -9,7 +9,7 @@ public class CharacterWorm : Character, ICharacter
     private GameObject entranceHole;
     private GameObject exitHole;
     private List<Vector3[]> paths;
-    private List<Vector3> placeablePositions;//TODO: can be merge with paleable tiles
+    private List<Vector3> placeablePositions;//TODO:maybe can be merge with placeable tiles
     private List<GameObject> placeableTiles; // <-----
 
     private void Start()
@@ -89,9 +89,6 @@ public class CharacterWorm : Character, ICharacter
                     isGoingHome = false;
                     PlayerLevelData.Instance.homeAnimator.SetBool("Reached", true);
                     this.gameObject.SetActive(false);
-                    // TODO: Execute Window if animation of clodes is finished
-                    // PlayerLevelData.Instance.homeAnimator.;
-                    GameEvent.SetEndWindowActive(EndGameType.LevelClear);
                     return;
                 }
                 Debug.Log($"Not Reached character[{currentPos.x},{currentPos.y},{currentPos.z}] != home[{homePosition.x},{homePosition.x},{homePosition.x}]");

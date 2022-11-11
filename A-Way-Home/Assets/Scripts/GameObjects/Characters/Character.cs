@@ -68,11 +68,8 @@ public class Character : MonoBehaviour
             if (targetIndex >= path.Length)
             {
                 isGoingHome = false;
-                PlayerLevelData.Instance.homeAnimator.SetBool("Reached", true);
                 this.gameObject.SetActive(false);
-                // TODO: Execute Window if animation of clodes is finished
-                // PlayerLevelData.Instance.homeAnimator.;
-                GameEvent.SetEndWindowActive(EndGameType.LevelClear);
+                PlayerLevelData.Instance.homeAnimator.SetBool("Reached", true);
                 return;
             }
             if (energy == 0)

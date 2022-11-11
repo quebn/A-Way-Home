@@ -45,9 +45,9 @@ public class NodeGrid : MonoBehaviour
         {
             for (int y = 0; y < gridSizeInt.y; y++)
             {
-                bool hasObject = false;
                 Vector2 gridCoord = new Vector2(x, y);
                 Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.up * (y * nodeDiameter + nodeRadius);
+                bool hasPlatform = Physics2D.OverlapCircle(worldPoint, nodeRadius, walkableMask);
                 if (Physics2D.OverlapCircle(worldPoint, nodeRadius, terrainMask))
                     nodeType = NodeType.Terrain;
                 else if (Physics2D.OverlapCircle(worldPoint, nodeRadius, obstacleMask))
@@ -56,14 +56,13 @@ public class NodeGrid : MonoBehaviour
                     nodeType = NodeType.Water;
                 else
                     nodeType = NodeType.Walkable;
-                grid[gridCoord] = new Node(nodeType, worldPoint, new Vector2Int(x, y), tilePrefab, tilePrefabParent, hasObject);
-                if (hasObject = Physics2D.OverlapCircle(worldPoint, nodeRadius, walkableMask))
+                grid[gridCoord] = new Node(nodeType, worldPoint, new Vector2Int(x, y), tilePrefab, tilePrefabParent, hasPlatform);
+                if (hasPlatform)
                     grid[gridCoord].currentType = NodeType.Walkable;
             }
         }
     }
     
-    // UpdateGrid() should be called every player actions that places an obstacle
     public void UpdateGrid()
     {
         foreach (KeyValuePair<Vector2, Node> pair in grid)
@@ -76,8 +75,6 @@ public class NodeGrid : MonoBehaviour
             else    
                 pair.Value.currentType = NodeType.Walkable;
         }
-        // UpdateGridColor();
-        // UpdatePathColor();
     }
     public static void ToggleGridTiles(bool toggle)
     {
@@ -85,16 +82,7 @@ public class NodeGrid : MonoBehaviour
         {
             pair.Value.tileObject.SetActive(toggle);
         }
-
     }
-
-    // public static void UpdateGridColor()
-    // {
-    //     foreach(KeyValuePair<Vector2, Node> pair in Instance.grid)
-    //     {
-    //         pair.Value.SetColor();
-    //     }
-    // }
 
     public static Node NodeWorldPointPos(Vector3 worldpos)
     {

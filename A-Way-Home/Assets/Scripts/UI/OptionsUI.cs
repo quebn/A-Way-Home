@@ -42,7 +42,6 @@ public class OptionsUI : MonoBehaviour
 
     public void SaveGame()
     {
-        // List<SaveFileData> list = SaveSystem.InitAllSavedData();
         GameData.saveFileDataList = SaveSystem.InitAllSavedData();
         SetWindowActive(saveGameWindow);
         Debug.Log("Pressed SaveGame Button!");
@@ -77,7 +76,7 @@ public class OptionsUI : MonoBehaviour
         SetWindowInactive(saveGameWindow);
     }
 
-    public void ConfirmNewSaveFile()//TODO: fix bug where new saved file does not show when refreshed
+    public void ConfirmNewSaveFile()
     {
         if (GameData.saveFileDataList.Count > 5)
         {

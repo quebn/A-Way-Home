@@ -1,11 +1,16 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum CharacterType { None , Character1, Character2, Character3 }
 public class MainMenuUI : MonoBehaviour
 {
     public static MainMenuUI Instance {get; private set;}
+    [SerializeField] private Sprite terra;
+    [SerializeField] private Sprite worm;
+    [SerializeField] private Sprite aqua;
+    [SerializeField] private string terraName;
+    [SerializeField] private string wormName;
+    [SerializeField] private string aquaName;
+
     [SerializeField] private GameObject characterSelectionWindow;
     [SerializeField] private GameObject loadSelectionWindow;
     [SerializeField] private GameObject levelSelectionwindow;
@@ -33,7 +38,7 @@ public class MainMenuUI : MonoBehaviour
             Instance = this;
         Debug.Assert(Instance != null, "Error: MainMenuUI instance is null");
         Debug.Assert(GameData.Instance != null, "Error: GameData instance is null");
-
+        InitializeSpriteList();
         // Debug.Log(GameData.saveFileDataList.Count);
     }
 
@@ -192,5 +197,14 @@ public class MainMenuUI : MonoBehaviour
         Debug.Assert(isActive, "Main menu is not Active");
         isActive = false;
         window.SetActive(true);
+    }
+    
+    private void InitializeSpriteList()
+    {
+        if (GameData.characterSprites.Count == 3)
+            return;
+        GameData.characterSprites.Add(terraName, terra);
+        GameData.characterSprites.Add(wormName, worm);
+        GameData.characterSprites.Add(aquaName, aqua);
     }
 }

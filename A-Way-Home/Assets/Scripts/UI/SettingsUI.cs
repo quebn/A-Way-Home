@@ -12,7 +12,7 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private Slider gameSpeedSlider;
     [SerializeField] private TextMeshProUGUI audioValue;
     [SerializeField] private TextMeshProUGUI gameSpeedValue;
-    // TODO: Add Keybinds group
+
 
     private void Start()
     {
