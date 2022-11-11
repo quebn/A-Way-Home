@@ -7,7 +7,7 @@ public static class GameEvent
 {
     private static PlayerLevelData endData;
     public static LevelLoadType loadType;
-    public static uint restartCounter;
+    public static int restartCounter;
     public static bool isPaused = false;
     
     // private static

@@ -2,15 +2,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+
 public class OptionsUI : MonoBehaviour
 {
     public static OptionsUI Instance {get; private set;}
+
     [SerializeField] private GameObject saveGameWindow;
     [SerializeField] private GameObject createNewFileWindow;
     [SerializeField] private GameObject loadGameWindow;
     [SerializeField] private GameObject quitGameWindow;
     [SerializeField] private TMP_InputField fileNameInput;
     [SerializeField] private TMP_InputField overwriteNameInput;
+
     // Confirm delete windows
     public GameObject deleteConfirmSaveWindow;
     public GameObject deleteConfirmLoadWindow;
@@ -64,15 +67,16 @@ public class OptionsUI : MonoBehaviour
     }
     #endregion
     #region SaveGame window button functions
-
     public void CreateNewSaveFile()
     {
         createNewFileWindow.SetActive(true);
     }
+
     public void CloseSaveGameWindow()
     {
         SetWindowInactive(saveGameWindow);
     }
+
     public void ConfirmNewSaveFile()//TODO: fix bug where new saved file does not show when refreshed
     {
         if (GameData.saveFileDataList.Count > 5)
@@ -85,11 +89,13 @@ public class OptionsUI : MonoBehaviour
         Debug.Log($"Saved data as {fileNameInput.text}.save");
         SavedSlotUI.RefreshSaveSlots();
     }
+
     public void CancelNewSaveFile()
     {
         fileNameInput.text = "";
         createNewFileWindow.SetActive(false);
     }
+
     public void ConfirmOverwriteFile()
     {
         SaveSystem.DeleteFileData(SavedSlotUI.FileNameToBeDeleted);
@@ -98,6 +104,7 @@ public class OptionsUI : MonoBehaviour
         Debug.Log($"{SavedSlotUI.FileNameToBeDeleted} was overwritten by {overwriteNameInput.text}");
         SavedSlotUI.RefreshSaveSlots();
     }
+
     public void CloseConfirmOverwriteWindow()
     {
         overwriteNameInput.text = "";
@@ -109,7 +116,6 @@ public class OptionsUI : MonoBehaviour
     {
         SetWindowInactive(loadGameWindow);
     }
-    
     #endregion
     #region QuitGame window button functions
     public void QuitWindowYes()
@@ -119,6 +125,7 @@ public class OptionsUI : MonoBehaviour
         Debug.Log("Quit A-Way Home Game!");
         Application.Quit();
     }
+
     public void QuitWindowNo()
     {
         SetWindowInactive(quitGameWindow);
@@ -151,6 +158,7 @@ public class OptionsUI : MonoBehaviour
         window.SetActive(true);
         isActive = false;
     }
+
     private void SetWindowInactive(GameObject window)
     {
         Debug.Assert(!isActive, "Error: OptionsUI is active!");

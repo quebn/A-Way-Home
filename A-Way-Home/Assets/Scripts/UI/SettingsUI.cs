@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
+
 public class SettingsUI : MonoBehaviour
 {
     [SerializeField] private InputActionAsset inputActions;
@@ -49,6 +50,7 @@ public class SettingsUI : MonoBehaviour
         SaveSystem.SaveGameData();
         MainMenuUI.Instance.CloseSettingsWindow();
     }
+
     public void RevertValues()
     {
         this.fullscreenToggle.isOn = true;

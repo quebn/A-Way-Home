@@ -2,19 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ICharacter
-{
-    public void PerformSkill(Vector3 position, Collider2D collider2D, string tag);
-    public void OnClear(GameObject gameObject);
-    public void OnDeselect();
-    
-}
 public class Character : MonoBehaviour
 {
     [SerializeField] protected GameObject jellyPrefab;
     [HideInInspector] public SpriteRenderer characterImage;
     [HideInInspector] public Vector3 homePosition;
-    [HideInInspector] public uint energy;
+    [HideInInspector] public int energy;
     [HideInInspector] public float speed;
     [HideInInspector] public bool isSkillActive;
     [HideInInspector] public bool isGoingHome = false;
@@ -32,19 +25,19 @@ public class Character : MonoBehaviour
         characterImage = jellyPrefab.GetComponent<SpriteRenderer>();
         animator = jellyPrefab.GetComponent<Animator>();
     }
-
-    protected void SetSkillCounter()
+    protected virtual void LoadPlatforms(GameObject spawnedObject)
     {
-        InGameUI.Instance.SkillCounter = PlayerLevelData.Instance.levelData.skillCount;
-    }
-
-    protected void LoadPlatforms(GameObject spawnedObject)
-    {
-        List<WorldCoords> coords = PlayerLevelData.Instance.levelData.skillCoords;
-        if (coords.Count == 0)
+        List<Action> skillActions = new List<Action>();
+        foreach(Action action in PlayerLevelData.Instance.levelData.actionList)
+            if(action.type == ManipulationType.UniqueSkill)
+                skillActions.Add(action);
+        if (skillActions.Count == 0)
             return;
-        foreach(WorldCoords coord in coords)
-            Instantiate(spawnedObject,new Vector2(coord.x, coord.y), Quaternion.identity);
+        foreach(Action action in skillActions)
+        {
+            GameObject gameObject = GameObject.Instantiate(spawnedObject, action.skillCoord, Quaternion.identity);
+            PlayerLevelData.gameObjectList.Add($"{gameObject.transform.position.ToString()}", gameObject);
+        }
     }
     private void Update()
     {
@@ -52,14 +45,12 @@ public class Character : MonoBehaviour
         {
             animator.SetBool("isWalk", true);
             GoHome();
-            InGameUI.Instance.SetCharacterEnergy(energy);
         }
     }
 
     public virtual void InitCharacter()
     {
         path = Pathfinding.FindPath(currentPos, homePosition);
-        Debug.Log(path.Length);
         if (path.Length <=0)
             return;
         currentTargetPos = path[0];
@@ -67,32 +58,12 @@ public class Character : MonoBehaviour
         isGoingHome = true;
     }
 
-    public virtual void DisplayPath(bool toggle)
-    {
-        
-        Vector3[] nodePath = Pathfinding.FindPath(currentPos, homePosition);
-        if (nodePath.Length == 0)
-        {
-            Debug.Log("no path to be shown.");
-            return;
-        }
-        Debug.Log($"Showing Path | Path length = {nodePath.Length}");
-        for (int i = 0; i < nodePath.Length; i++)
-        {
-            Node node = NodeGrid.NodeWorldPointPos(nodePath[i]);
-            if (!toggle)
-                node.tileSprite.color = new Color32(255, 255, 255, 150);
-            else
-                node.tileSprite.color = Color.green;
-            node.tileObject.SetActive(toggle);
-        }
-    }
 
     protected virtual void GoHome()
     {
         if (currentPos ==  currentTargetPos)
         {
-            energy--;
+            InGameUI.Instance.SetCharacterEnergy(-1);
             targetIndex++;
             if (targetIndex >= path.Length)
             {
@@ -134,3 +105,11 @@ public class Character : MonoBehaviour
     }
 }
 
+public interface ICharacter
+{
+    public void PerformSkill(Vector3 position, Collider2D collider2D, string tag);
+    public void OnClear(GameObject gameObject){}
+    public void OnDeselect(){}
+    public void OnSkillUndo(ref Action action);
+    public void OnToolUndo(ManipulationType manipulationType){}
+}

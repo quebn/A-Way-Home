@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -5,24 +6,25 @@ public class ObstacleData : MonoBehaviour
 {
     public string ID;
     public ManipulationType toolType;
+    
     [HideInInspector] public bool isRemoved = false; // should be opposite
 
+
     [ContextMenu("Generate Obstacle id")]
-    private void GenerateGuid() 
+    private void GenerateID() 
     {
         ID = System.Guid.NewGuid().ToString();
     }
 
     private void Start()
     {
-        InitObstacle();
+        Initialize();
     }
     
-    private void InitObstacle()
+    private void Initialize()
     {
-        if (GameEvent.loadType == LevelLoadType.Sandbox)
-            return;
-        if (GameEvent.loadType == LevelLoadType.NewGame || GameEvent.loadType == LevelLoadType.RestartGame)
+        PlayerLevelData.gameObjectList.Add(this.ID, this.gameObject);
+        if (GameEvent.loadType != LevelLoadType.LoadGame)
             return;
         if (!PlayerLevelData.Instance.levelData.removedObstacles.ContainsKey(this.ID))
             return;

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+
 public class EndSceneUI : MonoBehaviour
 {
     [SerializeField] private GameObject leaderboards;
@@ -41,6 +42,7 @@ public class EndSceneUI : MonoBehaviour
         playerNameInput.text = "";
         isSaved = true;
     }
+
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");        
@@ -55,6 +57,7 @@ public class EndSceneUI : MonoBehaviour
     {
         leaderboards.SetActive(false);
     }
+
     public void QuitGame()
     {
         confirmQuitGameWindow.SetActive(true);

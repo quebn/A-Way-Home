@@ -8,8 +8,7 @@ public static class SaveSystem
 {
     private static string filePathDir = Application.persistentDataPath;
     private static BinaryFormatter formatter = new BinaryFormatter(); 
-    
-    // public static Dictionary<string, SaveFileData> SavedStateFileData = new Dictionary<string, SaveFileData>(5); 
+
     public static void DeleteFileData(string filename)
     {
         string path = $"{filePathDir}/SavedFiles/{filename}.save";

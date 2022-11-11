@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 public class CharacterTerra : Character, ICharacter
 {
     [SerializeField] private GameObject platformObject;
@@ -21,22 +22,37 @@ public class CharacterTerra : Character, ICharacter
         if (node.containsObject)
             return;
         node.containsObject = true;
-        node.type = NodeType.Walkable;
-        Instantiate(platformObject, position, Quaternion.identity);
-        PlayerLevelData.Instance.levelData.skillCount--;
-        PlayerLevelData.Instance.levelData.skillCoords.Add(new WorldCoords(position.x, position.y));
-        SetSkillCounter();
+        node.currentType = NodeType.Walkable;
+        node.SetColor();
+        GameObject platform = Instantiate(platformObject, position, Quaternion.identity);
+        PlayerLevelData.gameObjectList.Add($"{platform.transform.position.ToString()}", platform);
+        PlayerLevelData.Instance.levelData.actionList.Add(new Action(ManipulationType.UniqueSkill ,position, $"{platform.transform.position.ToString()}"));
+        InGameUI.Instance.SetSkillCounter(-1);
     }
 
     public void OnClear(GameObject gameObject)
     {
         ManipulationType type = gameObject.GetComponent<ObstacleData>().toolType;
         if (type == ManipulationType.Pickaxe)
-        {
-            PlayerLevelData.Instance.levelData.skillCount++;
-            SetSkillCounter();
-        }
+            InGameUI.Instance.SetSkillCounter(1);
     }
-
-    public void OnDeselect(){}
+    public void OnToolUndo(ManipulationType manipulationType)
+    {
+        if (manipulationType == ManipulationType.Pickaxe)
+            InGameUI.Instance.SetSkillCounter(-1);
+    }
+    public void OnSkillUndo(ref Action action)
+    {
+        Debug.Assert(PlayerLevelData.gameObjectList.ContainsKey(action.obstacleID), "ERROR: ID should but is not present in GameObject list");
+        PlayerLevelData.gameObjectList[action.obstacleID].SetActive(true);
+        
+        GameObject.Destroy(PlayerLevelData.gameObjectList[action.obstacleID]);
+        PlayerLevelData.gameObjectList.Remove(action.obstacleID);
+        
+        bool check = PlayerLevelData.Instance.levelData.actionList.Remove(action);
+        Debug.Log($"action removed from list: {check}");
+        
+        InGameUI.Instance.SetSkillCounter(1);
+        NodeGrid.NodeWorldPointPos(action.skillCoord).RevertNode(); 
+    }
 }

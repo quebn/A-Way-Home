@@ -21,6 +21,7 @@ public class GameData {
     public static List<SaveFileData> saveFileDataList ;
     public static SaveFileData loadedLevelData = null;
     public static Dictionary<int,SavedSlotUI> saveSlotUIDict;
+
     public static void InitGameDataInstance()
     {
         saveSlotUIDict = new Dictionary<int, SavedSlotUI>(5);

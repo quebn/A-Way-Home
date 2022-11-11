@@ -9,8 +9,9 @@ public class CharacterWorm : Character, ICharacter
     private GameObject entranceHole;
     private GameObject exitHole;
     private List<Vector3[]> paths;
-    private List<Vector3> placeablePositions;
-    private List<GameObject> placeableTiles;
+    private List<Vector3> placeablePositions;//TODO: can be merge with paleable tiles
+    private List<GameObject> placeableTiles; // <-----
+
     private void Start()
     {
         paths = new List<Vector3[]>();
@@ -23,9 +24,9 @@ public class CharacterWorm : Character, ICharacter
         {
             animator.SetBool("isWalk", true);
             GoHome(paths[0]);
-            InGameUI.Instance.SetCharacterEnergy(energy);
         }
     }
+
     public override void InitCharacter()
     {
         if (paths.Count == 0)
@@ -40,7 +41,23 @@ public class CharacterWorm : Character, ICharacter
         targetIndex = 0;
         isGoingHome = true;
     }
-    
+
+    protected override void LoadPlatforms(GameObject spawnedObject)
+    {
+        List<Action> skillActions = new List<Action>();
+        foreach(Action action in PlayerLevelData.Instance.levelData.actionList)
+            if(action.type == ManipulationType.UniqueSkill)
+                skillActions.Add(action);
+        if (skillActions.Count == 0)
+            return;
+        foreach(Action action in PlayerLevelData.Instance.levelData.actionList){
+            if (action.type == ManipulationType.UniqueSkill){
+                entranceHole = GameObject.Instantiate(spawnedObject, action.GetCoordByIndex(0), Quaternion.identity);
+                exitHole = GameObject.Instantiate(spawnedObject, action.GetCoordByIndex(1), Quaternion.identity);
+            }
+        }
+    }
+
     public void SetPaths()
     {
         if(entranceHole != null && exitHole != null){
@@ -50,7 +67,6 @@ public class CharacterWorm : Character, ICharacter
         }else{
             if (entranceHole != null && entranceHole == null)
             {
-                PlayerLevelData.Instance.levelData.skillCoords.RemoveAt(0);
                 GameObject.Destroy(entranceHole);
                 entranceHole = null;
             }
@@ -63,7 +79,7 @@ public class CharacterWorm : Character, ICharacter
     {
         if (currentPos == currentTargetPos)
         {
-            energy--;
+            InGameUI.Instance.SetCharacterEnergy(-1);
             targetIndex++;
             if (targetIndex >= path.Length)
             {
@@ -101,6 +117,7 @@ public class CharacterWorm : Character, ICharacter
         }
         transform.position = Vector3.MoveTowards(currentPos, currentTargetPos, speed * Time. deltaTime);
     }
+
     public void PerformSkill(Vector3 position, Collider2D collider2D, string tag)
     {
         // Checks and returns if theres is an obstacle when placing the skill 
@@ -119,17 +136,21 @@ public class CharacterWorm : Character, ICharacter
             //check if position is within the number tiles given by skillRange as the distance of entrance.
             if(placeablePositions.Contains(SetToMid(position)))
                 exitHole = PlaceTunnel(position);
-            else    
+            else
                 Debug.Log($"Not Placeable in {SetToMid(position).ToString()}");
             if (exitHole == null)
                 return;
+            WorldCoords[] coords = new WorldCoords[2]{
+                new WorldCoords(entranceHole.transform.position), 
+                new WorldCoords(exitHole.transform.position)
+            };
+            PlayerLevelData.Instance.levelData.actionList.Add(new Action(ManipulationType.UniqueSkill, coords));
             foreach (GameObject tile in placeableTiles)
                 GameObject.Destroy(tile);
-            PlayerLevelData.Instance.levelData.skillCount--;
-            SetSkillCounter();
+            InGameUI.Instance.SetSkillCounter(-1);
         }
     }
-    
+
     private void HighlightPlaceables()
     {
         foreach(Vector3 position in placeablePositions)
@@ -137,6 +158,7 @@ public class CharacterWorm : Character, ICharacter
             placeableTiles.Add(GameObject.Instantiate(placeableTile, position, Quaternion.identity));
         }
     }
+
     private List<Vector3> GetPlaceablePos(int tileRange)
     {
         Node entranceNode = NodeGrid.NodeWorldPointPos(entranceHole.transform.position);
@@ -153,6 +175,7 @@ public class CharacterWorm : Character, ICharacter
         }
         return placeablePos;
     }
+
     private GameObject PlaceTunnel(Vector3 worldPosition)
     {
         worldPosition.x = SetToMid(worldPosition.x);
@@ -162,9 +185,9 @@ public class CharacterWorm : Character, ICharacter
         if (node.containsObject || !node.IsWalkable())
             return null;
         node.containsObject = true;
-        PlayerLevelData.Instance.levelData.skillCoords.Add(new WorldCoords(worldPosition.x, worldPosition.y));
         return Instantiate(portalObject, worldPosition, Quaternion.identity);
     }
+
     public void OnDeselect()
     {
         if (entranceHole  != null && exitHole == null)
@@ -172,10 +195,28 @@ public class CharacterWorm : Character, ICharacter
             NodeGrid.NodeWorldPointPos(entranceHole.transform.position).containsObject = false;
             GameObject.Destroy(entranceHole);
             entranceHole = null;
-            foreach (GameObject tile in placeableTiles)
+            foreach (GameObject tile in placeableTiles)//Destroys the tunnel range visual tiles
                 GameObject.Destroy(tile);
-            PlayerLevelData.Instance.levelData.skillCoords.RemoveAt(0);
         }
     }
-    public void OnClear(GameObject gameObject){}
+
+    public void OnSkillUndo(ref Action action)
+    {
+        Debug.Assert(PlayerLevelData.Instance.levelData.actionList.Contains(action), "ERROR: ID should but is not present in action list");
+        // PlayerLevelData.gameObjectList[action.obstacleID].SetActive(true);
+
+        NodeGrid.NodeWorldPointPos(entranceHole.transform.position).RevertNode(); 
+        NodeGrid.NodeWorldPointPos(exitHole.transform.position).RevertNode(); 
+        
+        GameObject.Destroy(entranceHole);
+        GameObject.Destroy(exitHole);
+
+        entranceHole = null;
+        exitHole = null;
+
+        bool check = PlayerLevelData.Instance.levelData.actionList.Remove(action);
+        Debug.Log($"action removed from list: {check}");
+        
+        InGameUI.Instance.SetSkillCounter(1);
+    }
 }

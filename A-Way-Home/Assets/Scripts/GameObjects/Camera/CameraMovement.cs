@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class CameraMovement : MonoBehaviour
 {
     public static CameraMovement Instance {get; private set;}
@@ -29,7 +30,6 @@ public class CameraMovement : MonoBehaviour
         mapMinY = platform.transform.position.y - platform.bounds.size.y * 0.5f;
         mapMaxY = platform.transform.position.y + platform.bounds.size.y * 0.5f;
     }
-
 
     private void Update()
     {

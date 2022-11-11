@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-using System;
 
+[System.Serializable]
 public enum ManipulationType{ None, UniqueSkill, Pickaxe, WoodAxe, }
 
 public class PlayerActions : MonoBehaviour
@@ -17,6 +17,7 @@ public class PlayerActions : MonoBehaviour
     private InputAction revealPath;
     private InputAction defaultTool; 
     private InputAction uniqueSkill;
+    private InputAction undoAction;
     private InputAction tool1; 
     private InputAction tool2; 
     private InputAction tool3; 
@@ -25,8 +26,6 @@ public class PlayerActions : MonoBehaviour
     private InputAction reset;
 
     private ICharacter character;
-
-
 
     private void Start()
     {
@@ -40,10 +39,10 @@ public class PlayerActions : MonoBehaviour
     {
         UnsubscribeFunctions();
     }
-    
+
     private void ClearObstacle(ManipulationType toolType, GameObject gameObject)
     {
-        uint moves = PlayerLevelData.Instance.levelData.moves; 
+        int moves = PlayerLevelData.Instance.levelData.moves; 
         if (moves == 0 || IsMouseOverUI())
             return;
         ObstacleData obstacleData = gameObject.GetComponent<ObstacleData>(); 
@@ -51,10 +50,9 @@ public class PlayerActions : MonoBehaviour
         if (gameObject.tag == "Obstacle" && obstacleData.toolType == toolType)
         {
             gameObject.SetActive(false);
-            PlayerLevelData.Instance.levelData.removedObstacles.Add(obstacleData.ID, true);
-            PlayerLevelData.Instance.levelData.moves--;
-
-            InGameUI.Instance.SetPlayerMoves();
+            // PlayerLevelData.Instance.levelData.actionList.Add(new Action(toolType, obstacleData.ID, true));
+            PlayerLevelData.AddRemovedToList(toolType, obstacleData.ID, true);
+            InGameUI.Instance.SetPlayerMoves(-1);
             
             character.OnClear(gameObject);
             
@@ -97,12 +95,43 @@ public class PlayerActions : MonoBehaviour
 
     private void UndoAction(InputAction.CallbackContext context)
     {
-        if (GameEvent.isPaused)
+        Undo();
+    }
+
+    public void Undo()
+    {
+        PlayerLevelData data = PlayerLevelData.Instance;
+        if (GameEvent.isPaused || data.levelData.actionList.Count == 0 || data.character.energy <= data.minimumEnergy)
             return;
-        Debug.Assert(false, "To be implemented");
-        //TODO: PlayerLevelData.Instance.character.DecrementEnergy();
+        Action action = data.levelData.actionList[^1];
+        Debug.Log($"{action.type.ToString()}");
+        
+        switch(action.type)
+        {
+            case ManipulationType.UniqueSkill:
+                character.OnSkillUndo(ref action);
+                break;
+            default:
+                OnToolUndo(ref action);
+                break;
+        }
+        // undo should removed items from both ActionList and RemovedObstacles
+        InGameUI.Instance.SetMaxEnergy(-1);
         NodeGrid.Instance.UpdateGrid();
     }
+
+    private void OnToolUndo(ref Action action)
+    {
+        Debug.Assert(PlayerLevelData.Instance.levelData.removedObstacles.ContainsKey(action.obstacleID), "ERROR: ID should but is not present in removed list");
+        PlayerLevelData.gameObjectList[action.obstacleID].SetActive(true);
+        
+        PlayerLevelData.Instance.levelData.removedObstacles.Remove(action.obstacleID);
+        PlayerLevelData.Instance.levelData.actionList.Remove(action);
+        
+        character.OnToolUndo(action.type);
+        InGameUI.Instance.SetPlayerMoves(1);
+    }
+
     private void SetCurrentTool(InputAction.CallbackContext context)
     {
         if (GameEvent.isPaused || PlayerLevelData.Instance.character.isHome)
@@ -136,11 +165,13 @@ public class PlayerActions : MonoBehaviour
         }
         Debug.Log($"Current Tool: {currentManipulationType}");
     }
+
     private void SetToolType(ManipulationType type)
     {
         currentManipulationType = type;
         character.OnDeselect();
     }
+
     private void StartCharacter(InputAction.CallbackContext context)
     {
         if (PlayerLevelData.Instance.character.isGoingHome)
@@ -157,6 +188,7 @@ public class PlayerActions : MonoBehaviour
             GameEvent.RestartGame();      
         }
     }
+
     private void RevealPath(InputAction.CallbackContext context)
     {
         if (GameEvent.isPaused)
@@ -169,6 +201,7 @@ public class PlayerActions : MonoBehaviour
         return EventSystem.current.IsPointerOverGameObject();
     }
 
+
     private void InitPlayerActions()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -179,6 +212,7 @@ public class PlayerActions : MonoBehaviour
         revealPath      = playerInput.actions["RevealPath"];
         defaultTool     = playerInput.actions["Default"];
         uniqueSkill     = playerInput.actions["Skill"];
+        undoAction      = playerInput.actions["Undo"];
         tool1           = playerInput.actions["Tool1"];
         tool2           = playerInput.actions["Tool2"];
         tool3           = playerInput.actions["Tool3"];
@@ -193,6 +227,7 @@ public class PlayerActions : MonoBehaviour
         revealPath.started      += RevealPath;
         defaultTool.started     += SetCurrentTool;
         uniqueSkill.started     += SetCurrentTool;
+        undoAction.started      += UndoAction;
         tool1.started           += SetCurrentTool;
         tool2.started           += SetCurrentTool;
         tool3.started           += SetCurrentTool;
@@ -207,6 +242,7 @@ public class PlayerActions : MonoBehaviour
         revealPath.started      -= RevealPath;
         defaultTool.started     -= SetCurrentTool;
         uniqueSkill.started     -= SetCurrentTool;
+        undoAction.started      -= UndoAction;
         tool1.started           -= SetCurrentTool;
         tool2.started           -= SetCurrentTool;
         tool3.started           -= SetCurrentTool;

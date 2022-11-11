@@ -23,6 +23,7 @@ public class MainMenuUI : MonoBehaviour
         if (GameData.Instance == null)
             GameData.InitGameDataInstance();
     }
+
     private void Start()
     {
         isActive = true;
@@ -86,6 +87,7 @@ public class MainMenuUI : MonoBehaviour
         selectedCharacter = (CharacterType)charactertype;
         Debug.Log("Character Selected: " + selectedCharacter);
     }
+
     public void CloseCharWindow()
     {
         selectedCharacter = CharacterType.None;
@@ -103,7 +105,6 @@ public class MainMenuUI : MonoBehaviour
         // GameEvent.instance.NewGame(GameData.Instance.currentCharacterLevel[characterIndex - 1]);
         GameEvent.NewGame(GameData.Instance.currentCharacterLevel[characterIndex - 1]);
     }
-
     #endregion
     #region Load selection window button functions
     public void ConfirmDeleteSlot()
@@ -113,11 +114,13 @@ public class MainMenuUI : MonoBehaviour
         SavedSlotUI.RefreshSaveSlots();
         Debug.Log("Saved Slot deleted!");
     }
+
     public void CancelDeleteSlot()
     {
         Debug.Assert(deleteConfirmWindow != null, "Error: Load slot confrimation window not found!");
         deleteConfirmWindow.SetActive(false);
     }
+
     public void CloseLoadWindow()
     {
         SetWindowInactive(loadSelectionWindow);
@@ -137,21 +140,19 @@ public class MainMenuUI : MonoBehaviour
         // }
         // SceneManager.LoadScene(scenelevelname);
     }
+
     public void CloseLevelWindow()
     {
         SetWindowInactive(levelSelectionwindow);
     }
     #endregion
     #region Settings window button functions
-
     public void CloseSettingsWindow()
     {
         SetWindowInactive(settingsWindow);
     }
-
     #endregion 
     #region Close game window button functions
-
     public void CloseGameYes()
     {
         SaveSystem.SaveGameData();
@@ -163,22 +164,18 @@ public class MainMenuUI : MonoBehaviour
     {
         SetWindowInactive(closeGameWindow);
     }
-
     #endregion
     #region Leaderboards window button functions
     public void CloseLeaderboardsWindow()
     {
         SetWindowInactive(leaderboardsWindow);
     }
-
     #endregion
     #region HowtoPlay window button functions
-
     public void CloseHowtoPlayWindow()
     {
         SetWindowInactive(howtoPlayWindow);
     }
-
     #endregion
 
     // General window functions
@@ -189,11 +186,11 @@ public class MainMenuUI : MonoBehaviour
         isActive = true;
         window.SetActive(false);
     }
+
     private void SetWindowActive(GameObject window)
     {
         Debug.Assert(isActive, "Main menu is not Active");
         isActive = false;
         window.SetActive(true);
     }
-    
 }

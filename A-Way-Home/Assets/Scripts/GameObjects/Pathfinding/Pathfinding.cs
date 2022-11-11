@@ -59,22 +59,20 @@ public static class Pathfinding
         //     Debug.Log("path is null");
         return path;
     }
+
     private static List<Vector3> RetracePath(Node startnode, Node targetnode)
     {
-        List<Node> path = new List<Node>();
         List<Vector3> waypoints = new List<Vector3>();
         Node CurrentNode = targetnode;
         while(CurrentNode != startnode)
         {
             waypoints.Add(CurrentNode.worldPosition);
-            path.Add(CurrentNode);
             CurrentNode = CurrentNode.parent;
         }
-        path.Reverse();
-        NodeGrid.Instance.path = path;
         waypoints.Reverse();
         return waypoints;
     }
+
     private static int GetDistance(Node nodeA, Node nodeB)
     {
         int dstX = Mathf.Abs(nodeA.gridPos.x - nodeB.gridPos.x);

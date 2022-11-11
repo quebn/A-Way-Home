@@ -11,12 +11,15 @@ public class PlayerLevelData : MonoBehaviour
     public bool sandboxMode;
     [SerializeField] private uint characterLevel;
     [SerializeField] private string characterName;
-    [SerializeField] private uint characterEnergy;
-    [SerializeField] private uint characterSkillCount;
-    [SerializeField] private uint playerLives;
-    [SerializeField] private uint playerMoves;
+    [SerializeField] private int characterEnergy;
+    [SerializeField] private int characterSkillCount;
+    [SerializeField] private int playerLives;
+    [SerializeField] private int playerMoves;
     [HideInInspector] public LevelData levelData;
+    public static Dictionary<string, GameObject> gameObjectList;
     
+    public int minimumEnergy {get { return characterEnergy - 5; } }
+
     private void Awake()
     {
         if (sandboxMode)
@@ -28,7 +31,6 @@ public class PlayerLevelData : MonoBehaviour
         Instance  = this;
         Debug.Assert(levelData.level != 0, "ERROR: level is 0");
         Debug.Assert(character.homePosition != null, "Error: characterHome is null!");
-        Display();
     }
 
     private void InitCharacter()
@@ -45,6 +47,7 @@ public class PlayerLevelData : MonoBehaviour
 
     private void Initialize()
     {
+        gameObjectList = new Dictionary<string, GameObject>();
         switch(GameEvent.loadType)
         {
             case LevelLoadType.NewGame:
@@ -74,7 +77,7 @@ public class PlayerLevelData : MonoBehaviour
             moves = playerMoves,
             score = 0,
             skillCount = this.characterSkillCount,
-            skillCoords = new List<WorldCoords>(),
+            actionList = new List<Action>(),
             removedObstacles = new Dictionary<string, bool>()
         };
     }
@@ -91,8 +94,8 @@ public class PlayerLevelData : MonoBehaviour
             moves = playerMoves,
             score = 0, //<-TODO: score should be retained from previous game
             skillCount = this.characterSkillCount,
-            skillCoords = new List<WorldCoords>(),
-            removedObstacles = new Dictionary<string, bool>()
+            actionList = new List<Action>(),
+            removedObstacles = new Dictionary<string, bool>()//should be private
         };
         Debug.Assert(playerLives > 0, "ERROR: Lives is less than 1");
     }
@@ -103,18 +106,12 @@ public class PlayerLevelData : MonoBehaviour
         Debug.Assert(this.characterLevel == levelData.level, "ERROR: Level does not match");
     }
 
-    private void Display()
+    public static void AddRemovedToList(ManipulationType manipulationType, string obstacleID, bool isRemoved)
     {
-        if (levelData.skillCoords.Count == 0)
-            return;
-        Debug.Log("Skill Coords list:");
-        int index = 0;
-        foreach(WorldCoords coords in levelData.skillCoords)
-        {
-            Debug.Log($" --list[{index}] => ({coords.x}, {coords.y})");
-            index++;
-        }
+        Instance.levelData.actionList.Add(new Action(manipulationType, obstacleID));
+        Instance.levelData.removedObstacles.Add(obstacleID, isRemoved);
     }
+
 }
 
 [System.Serializable]
@@ -123,20 +120,60 @@ public struct LevelData
     public string sceneName;
     public uint level;
     public string characterName;
-    public uint characterEnergy; 
-    public uint lives;
-    public uint moves;
-    public uint score;
-    public uint skillCount;
-    public List<WorldCoords> skillCoords; 
-    // public Dictionary<float, float> skillCoords;
+    public int characterEnergy; 
+    public int lives;
+    public int moves;
+    public int score;
+    public int skillCount;
+    public List<Action> actionList;
     public Dictionary<string, bool> removedObstacles;
 }
+
 [System.Serializable]
 public struct WorldCoords{
     public float x, y;
-    public WorldCoords(float x, float y){
-        this.x = x;
-        this.y = y;
+    public WorldCoords(Vector2 vector2){
+        this.x = vector2.x;
+        this.y = vector2.y;
+    }
+}
+
+[System.Serializable]
+public struct Action 
+{
+    public ManipulationType type;
+    private WorldCoords[] skillCoords;
+    public string obstacleID;
+
+    public Vector3 skillCoord {
+        get { return new Vector3(skillCoords[0].x, skillCoords[0].y, 0);}
+        set { skillCoords[0].x = value.x; skillCoords[0].y = value.y;}
+    }
+
+    public Vector3 GetCoordByIndex(int index)
+    {
+        return new Vector3(skillCoords[index].x, skillCoords[index].y, 0);
+    }
+
+    public Action(ManipulationType manipulationType, Vector3 skillCoord, string ID)
+    {
+        this.type = manipulationType;
+        this.skillCoords = new WorldCoords[1];
+        this.skillCoords[0] = new WorldCoords(skillCoord);
+        this.obstacleID = ID;
+    }
+
+    public Action(ManipulationType manipulationType, WorldCoords[] worldCoords)
+    {
+        this.type = manipulationType;
+        this.skillCoords = worldCoords;
+        this.obstacleID = "";
+    }
+    
+    public Action(ManipulationType manipulationType, string ID)
+    {
+        this.type = manipulationType;
+        this.skillCoords = new WorldCoords[0];
+        this.obstacleID = ID;
     }
 }

@@ -4,9 +4,8 @@ using TMPro;
 
 public class InGameUI : MonoBehaviour
 {
-    
     public static InGameUI Instance {get; private set;}
-    // [HideInInspector] public bool isPaused = false; //TODO: should be in GameEvent.cs
+
     [HideInInspector] public EndGameType endGameType;
     [SerializeField] private GameObject optionsWindow;
     [SerializeField] private GameObject gameEndWindow;
@@ -17,14 +16,16 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI energyLeftTMP;
     [SerializeField] private TextMeshProUGUI livesLeftTMP;
     [SerializeField] private TextMeshProUGUI skillCounter;
+
     public GameObject getGameEndWindow { get { return gameEndWindow; } }
     private bool pathDisplayToggle = false;
-
-
-    public uint SkillCounter{
-        set { this.skillCounter.text = $"{value}";}
+    private int energyValueUI {
+        set { 
+            energyLeftTMP.text = value.ToString();
+            energySlider.value = value;
+        }
     }
-    
+
     private void Start()
     {
         PlayerLevelData playerLevelData = PlayerLevelData.Instance;
@@ -41,41 +42,54 @@ public class InGameUI : MonoBehaviour
         this.movesLeftTMP.text      = levelData.moves.ToString();
         this.livesLeftTMP.text      = levelData.lives.ToString();
         this.skillCounter.text      = levelData.skillCount.ToString();
-        InitCharacterEnergy(character.energy);
+        SetMaxEnergy(0);
     }
 
-    public void SetPlayerMoves()
+    public void SetMaxEnergy(int increment)
     {
-        this.movesLeftTMP.text = PlayerLevelData.Instance.levelData.moves.ToString();
-    }
-    private void InitCharacterEnergy(uint energy)
-    {
-        energySlider.maxValue = energy;
-        SetCharacterEnergy(energy);
+        Character character = PlayerLevelData.Instance.character;
+        character.energy += increment;
+        energySlider.maxValue = character.energy;
+        energyValueUI = character.energy;
     }
 
-    public void SetCharacterEnergy(uint energy)
+    public void SetCharacterEnergy(int increment)
     {
-        energyLeftTMP.text = energy.ToString();
-        energySlider.value = energy;
+        PlayerLevelData.Instance.character.energy += increment;
+        energyValueUI = PlayerLevelData.Instance.character.energy;
     }
+
+    public void SetSkillCounter(int increment)
+    {
+        PlayerLevelData.Instance.levelData.skillCount += increment;
+        this.skillCounter.text = $"{PlayerLevelData.Instance.levelData.skillCount}";
+    }
+
+    public void SetPlayerMoves(int increment)
+    {
+        PlayerLevelData.Instance.levelData.moves += increment;
+        this.movesLeftTMP.text = $"{PlayerLevelData.Instance.levelData.moves}";
+    }
+
     public void ShowCurrentPath()
     {
         if (!pathDisplayToggle)
             pathDisplayToggle = true;
         else
             pathDisplayToggle = false;
-        PlayerLevelData.Instance.character.DisplayPath(pathDisplayToggle);
+        NodeGrid.ToggleGridTiles(pathDisplayToggle);
+        // PlayerLevelData.Instance.character.DisplayPath(pathDisplayToggle);
     }
 
-    #region Action Bar
     public void UndoAction()
     {
-        Debug.Log("Pressed Undo Button!");     
+        Debug.Log("Pressed Undo Button!");
+        PlayerActions.Instance.Undo();
         // +1 player moves
         // revert last player action
         // -1 character energy   
     }
+
     public void ReloadAction()
     {
         GameEvent.RestartGame();
@@ -86,8 +100,6 @@ public class InGameUI : MonoBehaviour
         PlayerLevelData.Instance.character.InitCharacter();
     }
 
-    #endregion
-    #region Options
     public void HelpButton()
     {
         Debug.Log("Pressed Help Button!");
@@ -101,9 +113,6 @@ public class InGameUI : MonoBehaviour
         this.optionsWindow.SetActive(true);
     }
 
-
-    #endregion
-    #region ToolBar
     public void SetTool(int toolindex)
     {
         if (toolindex > 3)
@@ -117,8 +126,4 @@ public class InGameUI : MonoBehaviour
         PlayerActions.Instance.currentManipulationType = (ManipulationType)toolindex;
         Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
     }
-    #endregion
-    
-
-
 }

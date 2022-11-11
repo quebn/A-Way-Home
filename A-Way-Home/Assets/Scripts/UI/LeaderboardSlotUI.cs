@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+
 public class LeaderboardSlotUI : MonoBehaviour
 {
     [SerializeField] private int slotIndexNumber;
@@ -9,6 +10,7 @@ public class LeaderboardSlotUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerName;
     [SerializeField] private TextMeshProUGUI characterName;
     [SerializeField] private TextMeshProUGUI score;
+
     private void Start()
     {
         InitData();

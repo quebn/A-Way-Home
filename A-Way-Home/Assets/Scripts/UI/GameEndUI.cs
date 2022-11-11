@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 
 public enum EndGameType { None, GameOver, LevelClear, NoEnergy}
+
 public class GameEndUI : MonoBehaviour
 {
     [SerializeField] private Image windowBackground;
@@ -12,16 +13,19 @@ public class GameEndUI : MonoBehaviour
     [SerializeField] private GameObject endRunConfirmWindow;
     [SerializeField] private GameObject livesUI;
     [SerializeField] private TextMeshProUGUI livesValueText;
+
     private void Start()
     {
         InitGameEndUI();
         GameEvent.PauseGame();
         PlayerLevelData.Instance.levelData.score = ScoreSystem.CalculateScore();
     }
+
     private void OnDisable()
     {
         GameEvent.UnpauseGame();
     }
+
     private void InitGameEndUI()
     {   
         EndGameType type = InGameUI.Instance.endGameType;
@@ -51,8 +55,10 @@ public class GameEndUI : MonoBehaviour
         ui.SetActive(true);
     }
 
-    private void InitLivesUI(uint life)
+    private void InitLivesUI(int life)
     {
+        if (life < 0)
+            Debug.LogError("ERROR: Life less than zer0");
         livesUI.SetActive(true);
         livesValueText.text = life.ToString();
     }
@@ -85,5 +91,4 @@ public class GameEndUI : MonoBehaviour
         ScoreSystem.InitScoreData();
         GameEvent.LoadEndScene();
     }
-    
 }

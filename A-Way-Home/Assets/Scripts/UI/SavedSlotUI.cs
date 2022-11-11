@@ -134,6 +134,7 @@ public class SavedSlotUI : MonoBehaviour
                 break;
         }
     }
+
     public static void RefreshSaveSlots()
     {
         GameData.saveFileDataList = SaveSystem.InitAllSavedData();
@@ -142,5 +143,4 @@ public class SavedSlotUI : MonoBehaviour
             GameData.saveSlotUIDict[i].InitData();
         }
     }
-
 }
