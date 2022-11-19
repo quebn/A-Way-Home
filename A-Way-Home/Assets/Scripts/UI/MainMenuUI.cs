@@ -1,15 +1,15 @@
 using UnityEngine;
-
+using System.Linq;
 public enum CharacterType { None , Character1, Character2, Character3 }
 public class MainMenuUI : MonoBehaviour
 {
     public static MainMenuUI Instance {get; private set;}
-    [SerializeField] private Sprite terra;
-    [SerializeField] private Sprite worm;
-    [SerializeField] private Sprite aqua;
-    [SerializeField] private string terraName;
-    [SerializeField] private string wormName;
-    [SerializeField] private string aquaName;
+    [SerializeField] private Sprite char1Sprite;
+    [SerializeField] private string char1Name;
+    [SerializeField] private Sprite char2Sprite;
+    [SerializeField] private string char2Name;
+    [SerializeField] private Sprite char3Sprite;
+    [SerializeField] private string char3Name;
 
     [SerializeField] private GameObject characterSelectionWindow;
     [SerializeField] private GameObject loadSelectionWindow;
@@ -86,11 +86,12 @@ public class MainMenuUI : MonoBehaviour
     }
     #endregion
     #region Character selection window functions
-    public void SelectCharButton(int charactertype)
+    public void SelectCharButton(int characterIndex)
     {
-        Debug.Assert(charactertype <= 3, "Error: Character number exceeded at 3!");
-        selectedCharacter = (CharacterType)charactertype;
-        Debug.Log("Character Selected: " + selectedCharacter);
+        Debug.Assert(characterIndex <= 3, "Error: Character number exceeded at 3!");
+        PlayerLevelData.characterName = GameData.characterSprites.ElementAt(characterIndex - 1).Key;
+        selectedCharacter = (CharacterType)characterIndex;
+        Debug.Log("Character Selected: " + PlayerLevelData.characterName);
     }
 
     public void CloseCharWindow()
@@ -132,20 +133,6 @@ public class MainMenuUI : MonoBehaviour
     }
     #endregion
     #region Level selection window button functions
-    public void NewLevel(string scenelevelname)
-    {
-        // GameEvent.instance.NewGame(scenelevelname);
-        GameEvent.NewGame(scenelevelname);
-        // Debug.Assert(GameData.Instance.unlockLevels.Contains(scenelevelname), "Error: Scene does not exist");
-        // GameData.loadType = LevelLoadType.NewGame;
-        // if (!GameData.Instance.unlockLevels.Contains(scenelevelname))
-        // {
-        //     Debug.Log(scenelevelname + " Does not Exist");
-        //     return;
-        // }
-        // SceneManager.LoadScene(scenelevelname);
-    }
-
     public void CloseLevelWindow()
     {
         SetWindowInactive(levelSelectionwindow);
@@ -203,8 +190,30 @@ public class MainMenuUI : MonoBehaviour
     {
         if (GameData.characterSprites.Count == 3)
             return;
-        GameData.characterSprites.Add(terraName, terra);
-        GameData.characterSprites.Add(wormName, worm);
-        GameData.characterSprites.Add(aquaName, aqua);
+        GameData.characterSprites.Add(char1Name, char1Sprite);
+        GameData.characterSprites.Add(char2Name, char2Sprite);
+        GameData.characterSprites.Add(char3Name, char3Sprite);
     }
+
+    public uint GetCharacterIndex()
+    {
+        string name = PlayerLevelData.Instance.levelData.characterName;
+        if (name == char1Name)
+            return 1;
+        else if (name == char2Name)
+            return 2;
+        else if (name == char2Name)
+            return 2;
+        return 0;
+    }
+
+    // public string GetCharacterName(int index)
+    // {
+    //     if (index == 1)
+    //         return char1Name;
+    //     else if (index == 2)
+    //         return char2Name;
+    //     else 
+    //         return char3Name;
+    // }
 }

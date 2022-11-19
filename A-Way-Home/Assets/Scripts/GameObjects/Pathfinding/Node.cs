@@ -47,7 +47,6 @@ public class Node
     public int CompareNode(Node node)
     {
         int compare = fCost.CompareTo(node.fCost);
-
         if (compare == 0)
             compare = hCost.CompareTo(node.hCost);
         return -compare;

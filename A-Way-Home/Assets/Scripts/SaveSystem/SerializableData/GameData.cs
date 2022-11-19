@@ -22,7 +22,7 @@ public class GameData {
     public static Dictionary<string, Sprite> characterSprites;
     public static SaveFileData loadedLevelData = null;
     public static Dictionary<int,SavedSlotUI> saveSlotUIDict;
-
+    public static List<string> allLevels = new List<string>(){"Char1Level1", "Char2Level1", "Char3Level1"};
     public static void InitGameDataInstance()
     {
         characterSprites = new Dictionary<string, Sprite>();

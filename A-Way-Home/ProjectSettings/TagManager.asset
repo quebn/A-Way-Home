@@ -8,12 +8,13 @@ TagManager:
   - StructureObstacle
   - Platform
   - Obstacle
-  - Waypoint
+  - Terrain
+  - Water
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Obstacle
+  - Unwalkable
   - Water
   - UI
   - Walkable

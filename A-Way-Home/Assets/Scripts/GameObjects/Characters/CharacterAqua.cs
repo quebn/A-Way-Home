@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CharacterAquatic : Character, ICharacter
+public class CharacterAqua : Character, ICharacter
 {
     public override void InitCharacter()
     {
@@ -13,22 +13,21 @@ public class CharacterAquatic : Character, ICharacter
         isGoingHome = true;
     }
 
-    public void PerformSkill(Vector3 position, Collider2D collider2D, string tag)
+    public void PerformSkill(Vector3 position, Collider2D collider2D)
     {
-        if(collider2D == null && tag != "Obstacle")
+        if(collider2D == null || collider2D.gameObject.tag != "Obstacle")
             return;
         ObstacleData obstacleData = collider2D.gameObject.GetComponent<ObstacleData>();
         if(obstacleData.toolType == ManipulationType.UniqueSkill)
         {
             collider2D.gameObject.SetActive(false);
             PlayerLevelData.AddRemovedToList(obstacleData.toolType, obstacleData.ID, true);
-            // PlayerLevelData.Instance.levelData.removedObstacles.Add(obstacleData.ID, true);
             InGameUI.Instance.SetPlayerMoves(-1);
             InGameUI.Instance.SetSkillCounter(1);
         }
     }
 
-    protected override void GoHome()
+    protected override bool EndConditions()
     {
         Node node = NodeGrid.NodeWorldPointPos(currentPos);
         if (PlayerLevelData.Instance.levelData.skillCount < 1 && node.currentType == NodeType.Water)
@@ -36,11 +35,11 @@ public class CharacterAquatic : Character, ICharacter
             Debug.Log("Not enough skill count to traverse water.");
             isGoingHome = false;
             animator.SetBool("isWalk", false);
-            return;
+            return true;
         }
-        if (node.currentType == NodeType.Water && currentPos == currentTargetPos)
+        if (node.currentType == NodeType.Water)
             InGameUI.Instance.SetSkillCounter(-1);
-        base.GoHome();
+        return base.EndConditions();
     }
 
     public void OnSkillUndo(ref Action action)

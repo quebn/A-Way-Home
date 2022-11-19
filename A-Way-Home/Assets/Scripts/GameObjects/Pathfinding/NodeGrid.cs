@@ -4,18 +4,14 @@ using UnityEngine;
 public class NodeGrid : MonoBehaviour
 {
     public static NodeGrid Instance {get; private set;}
-    [SerializeField] private LayerMask terrainMask;
-    [SerializeField] private LayerMask obstacleMask;
-    [SerializeField] private LayerMask waterMask;
+    [SerializeField] private LayerMask unwalkableMask;
     [SerializeField] private LayerMask walkableMask;
     [SerializeField] private Vector2 gridSize;
     [SerializeField] private float nodeRadius;
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private Transform tilePrefabParent;
-    // publics
     [HideInInspector] public Vector2Int gridSizeInt;
     [HideInInspector] public Dictionary<Vector2, Node> grid;
-    // [HideInInspector] public List<Node> path;
     private float nodeDiameter;
 
     public int  maxSize{
@@ -48,14 +44,15 @@ public class NodeGrid : MonoBehaviour
                 Vector2 gridCoord = new Vector2(x, y);
                 Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.up * (y * nodeDiameter + nodeRadius);
                 bool hasPlatform = Physics2D.OverlapCircle(worldPoint, nodeRadius, walkableMask);
-                if (Physics2D.OverlapCircle(worldPoint, nodeRadius, terrainMask))
-                    nodeType = NodeType.Terrain;
-                else if (Physics2D.OverlapCircle(worldPoint, nodeRadius, obstacleMask))
-                    nodeType = NodeType.Obstacle;
-                else if (Physics2D.OverlapCircle(worldPoint, nodeRadius, waterMask))
-                    nodeType = NodeType.Water;
-                else
+                Collider2D collider2D = Physics2D.OverlapCircle(worldPoint, nodeRadius, unwalkableMask);
+                if (collider2D == null)
                     nodeType = NodeType.Walkable;
+                else if (collider2D.gameObject.tag == "Obstacle")
+                    nodeType = NodeType.Obstacle;
+                else if (collider2D.gameObject.tag == "Water")
+                    nodeType = NodeType.Water;
+                else if (collider2D.gameObject.tag == "Terrain")
+                    nodeType = NodeType.Terrain;
                 grid[gridCoord] = new Node(nodeType, worldPoint, new Vector2Int(x, y), tilePrefab, tilePrefabParent, hasPlatform);
                 if (hasPlatform)
                     grid[gridCoord].currentType = NodeType.Walkable;
@@ -70,7 +67,8 @@ public class NodeGrid : MonoBehaviour
             if (pair.Value.currentType == NodeType.Terrain || pair.Value.currentType == NodeType.Water)
                 continue;
             Vector3 nodeWorldPos = pair.Value.worldPosition;
-            if (Physics2D.OverlapCircle(nodeWorldPos, nodeRadius, obstacleMask))
+            Collider2D collider2D = Physics2D.OverlapCircle(nodeWorldPos, nodeRadius, unwalkableMask); 
+            if (collider2D != null && collider2D.gameObject.tag == "Obstacle")
                 pair.Value.currentType = NodeType.Obstacle;
             else    
                 pair.Value.currentType = NodeType.Walkable;

@@ -525,7 +525,7 @@ Tilemap:
       - {fileID: 1518317059, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -176046340, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 29509636, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 1, y: -4, z: 0}
@@ -681,7 +681,7 @@ Tilemap:
       - {fileID: 1518317059, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -176046340, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 29509636, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -1, y: -1, z: 0}
@@ -717,7 +717,7 @@ Tilemap:
       - {fileID: -1616887012, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -748777926, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 411444107, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -3, y: 0, z: 0}
@@ -853,9 +853,9 @@ GameObject:
   m_Component:
   - component: {fileID: 178859991}
   - component: {fileID: 178859992}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: Ledge (4)
-  m_TagString: StructureObstacle
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1304,7 +1304,7 @@ GameObject:
   - component: {fileID: 392116433}
   m_Layer: 0
   m_Name: Grid
-  m_TagString: Untagged
+  m_TagString: StructureObstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1438,9 +1438,9 @@ GameObject:
   m_Component:
   - component: {fileID: 558809006}
   - component: {fileID: 558809007}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: Ledge (1)
-  m_TagString: StructureObstacle
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2316,7 +2316,7 @@ Tilemap:
       - {fileID: -539852454, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 1335542886, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 1128460382, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -3, y: -4, z: 0}
@@ -2631,7 +2631,7 @@ Tilemap:
       - {fileID: 169368638, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 835173984, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -1656849333, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -2, y: 8, z: 0}
@@ -2640,7 +2640,7 @@ Tilemap:
       - {fileID: 169368638, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 835173984, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -1656849333, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -1, y: 8, z: 0}
@@ -2902,9 +2902,9 @@ GameObject:
   m_Component:
   - component: {fileID: 732630791}
   - component: {fileID: 732630792}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: Ledge (3)
-  m_TagString: StructureObstacle
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3290,9 +3290,9 @@ GameObject:
   m_Component:
   - component: {fileID: 924511487}
   - component: {fileID: 924511488}
-  m_Layer: 4
+  m_Layer: 3
   m_Name: Water (1)
-  m_TagString: WaterObstacle
+  m_TagString: Water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4070,9 +4070,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1216778573}
   - component: {fileID: 1216778574}
-  m_Layer: 4
+  m_Layer: 3
   m_Name: Water (2)
-  m_TagString: WaterObstacle
+  m_TagString: Water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4155,9 +4155,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1279125124}
   - component: {fileID: 1279125125}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: Ledge (2)
-  m_TagString: StructureObstacle
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4528,15 +4528,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 932a93f541501df40ae12c8f7b404b47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainMask:
-    serializedVersion: 2
-    m_Bits: 128
-  obstacleMask:
+  unwalkableMask:
     serializedVersion: 2
     m_Bits: 8
-  waterMask:
-    serializedVersion: 2
-    m_Bits: 16
   walkableMask:
     serializedVersion: 2
     m_Bits: 64
@@ -4677,11 +4671,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2960510235673526028, guid: 67f703aaae31c5847b8e1ac026081770, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 7.47
+      value: 7.5
       objectReference: {fileID: 0}
     - target: {fileID: 2960510235673526028, guid: 67f703aaae31c5847b8e1ac026081770, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -2.46
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 4262290159510698176, guid: 67f703aaae31c5847b8e1ac026081770, type: 3}
       propertyPath: m_Name
@@ -12844,7 +12838,6 @@ MonoBehaviour:
   homeAnimator: {fileID: 1567260614}
   sandboxMode: 0
   characterLevel: 1
-  characterName: Choco
   characterEnergy: 30
   characterSkillCount: 5
   playerLives: 3
@@ -13389,11 +13382,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6228342452916448569, guid: b317529421e489d43a4a355b9c7b2437, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6228342452916448569, guid: b317529421e489d43a4a355b9c7b2437, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6228342452916448569, guid: b317529421e489d43a4a355b9c7b2437, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13425,11 +13418,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6228342452916448569, guid: b317529421e489d43a4a355b9c7b2437, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -12.57869
+      value: -12.5
       objectReference: {fileID: 0}
     - target: {fileID: 6228342452916448569, guid: b317529421e489d43a4a355b9c7b2437, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -4.402912
+      value: -4.5
       objectReference: {fileID: 0}
     - target: {fileID: 6228342452916448569, guid: b317529421e489d43a4a355b9c7b2437, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -13445,7 +13438,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6228342452916448571, guid: b317529421e489d43a4a355b9c7b2437, type: 3}
       propertyPath: m_Name
-      value: CharacterTerra
+      value: CharacterGaia
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b317529421e489d43a4a355b9c7b2437, type: 3}

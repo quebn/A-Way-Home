@@ -39,6 +39,7 @@ public class GameEndUI : MonoBehaviour
                 SetActiveEndGameUI(gameOverUI, Color.red);
                 break;
             case EndGameType.LevelClear:
+                // UnlockNextLevel();
                 SetActiveEndGameUI(levelClearUI, new Color32(0, 219, 43, 255));
                 InitLivesUI(PlayerLevelData.Instance.levelData.lives);
                 break;
@@ -47,6 +48,23 @@ public class GameEndUI : MonoBehaviour
                 InitLivesUI(PlayerLevelData.Instance.levelData.lives - 1);
                 break;
         }
+    }
+
+    private void UnlockNextLevel()
+    {
+        if (PlayerLevelData.Instance.levelData.level == 5)
+        {
+            Debug.Log($"Max Level ({PlayerLevelData.Instance.levelData.level}) reached!");
+            return;
+        }
+        string sceneLevelName = GameEvent.GetNextLevel();
+        Debug.Log($"Next Level Scene Name: {sceneLevelName}");
+        if (!GameData.allLevels.Contains(sceneLevelName))
+        {
+            Debug.Assert(false, $"Scene: {sceneLevelName} does not exist!");
+            return;
+        }
+        GameData.Instance.unlockLevels.Add(sceneLevelName);
     }
 
     private void SetActiveEndGameUI(GameObject ui, Color color)
@@ -65,8 +83,10 @@ public class GameEndUI : MonoBehaviour
 
     public void NextLevel()
     {
-        Debug.Log("Next Level Loaded");
-        GameEvent.NextLevel();
+        Debug.Log("Loading Next Level......");
+        if(GameData.Instance.unlockLevels.Contains(GameEvent.GetNextLevel()))
+            GameEvent.NextLevel();
+        ConfirmEndRun();
     }
 
     public void TryAgain()

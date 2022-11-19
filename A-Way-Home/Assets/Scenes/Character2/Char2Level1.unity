@@ -6405,15 +6405,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 932a93f541501df40ae12c8f7b404b47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainMask:
-    serializedVersion: 2
-    m_Bits: 128
-  obstacleMask:
+  unwalkableMask:
     serializedVersion: 2
     m_Bits: 8
-  waterMask:
-    serializedVersion: 2
-    m_Bits: 16
   walkableMask:
     serializedVersion: 2
     m_Bits: 64
@@ -6667,8 +6661,7 @@ MonoBehaviour:
   characterHome: {fileID: 1347055215}
   homeAnimator: {fileID: 1347055216}
   sandboxMode: 0
-  characterLevel: 2
-  characterName: Worm
+  characterLevel: 1
   characterEnergy: 30
   characterSkillCount: 1
   playerLives: 3
@@ -6827,9 +6820,9 @@ GameObject:
   m_Component:
   - component: {fileID: 531960779}
   - component: {fileID: 531960780}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: Ledge (1)
-  m_TagString: StructureObstacle
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7134,7 +7127,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 620000353}
+  - component: {fileID: 620000355}
   - component: {fileID: 620000352}
   - component: {fileID: 620000351}
   - component: {fileID: 620000354}
@@ -7196,21 +7189,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!4 &620000353
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 620000350}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &620000354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7227,6 +7205,26 @@ MonoBehaviour:
   zoomSpeed: 25
   minZoom: 4.5
   maxZoom: 8
+--- !u!224 &620000355
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620000350}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -6.04, y: -3.93}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &621599486
 GameObject:
   m_ObjectHideFlags: 0
@@ -9567,9 +9565,9 @@ GameObject:
   m_Component:
   - component: {fileID: 679484532}
   - component: {fileID: 679484533}
-  m_Layer: 4
+  m_Layer: 3
   m_Name: Water (2)
-  m_TagString: WaterObstacle
+  m_TagString: Water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9647,9 +9645,9 @@ GameObject:
   m_Component:
   - component: {fileID: 741056827}
   - component: {fileID: 741056828}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: Ledge (4)
-  m_TagString: StructureObstacle
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10562,7 +10560,7 @@ Tilemap:
       - {fileID: 169368638, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 835173984, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -1656849333, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12
+      m_AnimationSpeed: 12.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -4, y: -8, z: 0}
@@ -10598,7 +10596,7 @@ Tilemap:
       - {fileID: 169368638, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 835173984, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -1656849333, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12
+      m_AnimationSpeed: 12.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -5, y: -6, z: 0}
@@ -10721,7 +10719,7 @@ Tilemap:
       - {fileID: 1298246859, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -747609995, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -306707840, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -2, y: -4, z: 0}
@@ -10733,7 +10731,7 @@ Tilemap:
       - {fileID: 1298246859, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -747609995, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -306707840, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -1, y: -4, z: 0}
@@ -10781,7 +10779,7 @@ Tilemap:
       - {fileID: -1245134647, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 964479564, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -1484934781, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12
+      m_AnimationSpeed: 12.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -3, y: -3, z: 0}
@@ -10793,7 +10791,7 @@ Tilemap:
       - {fileID: 41255443, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 221911185, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -1156724470, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -2, y: -3, z: 0}
@@ -10898,7 +10896,7 @@ Tilemap:
       - {fileID: 169368638, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 835173984, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -1656849333, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -2, y: 3, z: 0}
@@ -10961,7 +10959,7 @@ Tilemap:
       - {fileID: 169368638, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 835173984, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -1656849333, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 0, y: 5, z: 0}
@@ -11015,7 +11013,7 @@ Tilemap:
       - {fileID: 169368638, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 835173984, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -1656849333, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12.000001
+      m_AnimationSpeed: 12
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 0, y: 7, z: 0}
@@ -11634,9 +11632,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1196467025}
   - component: {fileID: 1196467026}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: Ledge (2)
-  m_TagString: StructureObstacle
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11710,9 +11708,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1230122486}
   - component: {fileID: 1230122487}
-  m_Layer: 4
+  m_Layer: 3
   m_Name: Water (1)
-  m_TagString: WaterObstacle
+  m_TagString: Water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11831,6 +11829,14 @@ PrefabInstance:
     - target: {fileID: 2960510235673526028, guid: 67f703aaae31c5847b8e1ac026081770, type: 3}
       propertyPath: m_RootOrder
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960510235673526028, guid: 67f703aaae31c5847b8e1ac026081770, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960510235673526028, guid: 67f703aaae31c5847b8e1ac026081770, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2960510235673526028, guid: 67f703aaae31c5847b8e1ac026081770, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -12506,9 +12512,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1864059205}
   - component: {fileID: 1864059206}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: Ledge (3)
-  m_TagString: StructureObstacle
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13030,7 +13036,7 @@ Tilemap:
       - {fileID: 1518317059, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -176046340, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 29509636, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12
+      m_AnimationSpeed: 12.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 1, y: -4, z: 0}
@@ -13150,7 +13156,7 @@ Tilemap:
       - {fileID: 1518317059, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: -176046340, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
       - {fileID: 29509636, guid: 0bf15cd857897a34a911d6dccd048115, type: 3}
-      m_AnimationSpeed: 12
+      m_AnimationSpeed: 12.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 1, y: -2, z: 0}
@@ -13401,7 +13407,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1940736457955203040, guid: c7f7bb80f4f803c4b971771c2c32aab0, type: 3}
       propertyPath: m_Name
-      value: CharacterWorm
+      value: CharacterTerra
       objectReference: {fileID: 0}
     - target: {fileID: 1940736457955203042, guid: c7f7bb80f4f803c4b971771c2c32aab0, type: 3}
       propertyPath: m_Pivot.x
@@ -13433,11 +13439,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1940736457955203042, guid: c7f7bb80f4f803c4b971771c2c32aab0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1940736457955203042, guid: c7f7bb80f4f803c4b971771c2c32aab0, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1940736457955203042, guid: c7f7bb80f4f803c4b971771c2c32aab0, type: 3}
       propertyPath: m_LocalPosition.x

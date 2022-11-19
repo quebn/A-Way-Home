@@ -10,14 +10,13 @@ public class PlayerLevelData : MonoBehaviour
     public Animator homeAnimator;
     public bool sandboxMode;
     [SerializeField] private uint characterLevel;
-    [SerializeField] private string characterName;
     [SerializeField] private int characterEnergy;
     [SerializeField] private int characterSkillCount;
     [SerializeField] private int playerLives;
     [SerializeField] private int playerMoves;
     [HideInInspector] public LevelData levelData;
     public static Dictionary<string, GameObject> gameObjectList;
-    
+    public static string characterName;
     public int minimumEnergy {get { return characterEnergy - 5; } }
 
     private void Awake()
@@ -71,7 +70,7 @@ public class PlayerLevelData : MonoBehaviour
         this.levelData = new LevelData {
             sceneName = SceneManager.GetActiveScene().name,
             level = currentLevel,
-            characterName = this.characterName,
+            characterName = characterName,
             characterEnergy = this.characterEnergy,
             lives = playerLives,
             moves = playerMoves,
@@ -88,7 +87,7 @@ public class PlayerLevelData : MonoBehaviour
         this.levelData = new LevelData {
             sceneName = SceneManager.GetActiveScene().name,
             level = currentLevel,
-            characterName = this.characterName,
+            characterName = characterName,
             characterEnergy = this.characterEnergy,
             lives = playerLives - GameEvent.restartCounter,
             moves = playerMoves,
@@ -111,7 +110,6 @@ public class PlayerLevelData : MonoBehaviour
         Instance.levelData.actionList.Add(new Action(manipulationType, obstacleID));
         Instance.levelData.removedObstacles.Add(obstacleID, isRemoved);
     }
-
 }
 
 [System.Serializable]

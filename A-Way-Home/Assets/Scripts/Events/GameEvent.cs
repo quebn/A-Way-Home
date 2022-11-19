@@ -10,19 +10,24 @@ public static class GameEvent
     public static int restartCounter;
     public static bool isPaused = false;
     
-    // private static
     public static void LoadEndScene()
     {
         SceneManager.LoadScene("EndScene");
     }
+
+    public static string GetNextLevel()
+    {
+        uint currentChar = MainMenuUI.Instance.GetCharacterIndex();
+        uint currentLevel = PlayerLevelData.Instance.levelData.level;
+        Debug.Assert(currentChar != 0, "ERROR: character index is 0");
+        return $"Char{currentChar}Level{currentLevel+1}";
+    }
+
     public static void NextLevel()
     {
-        Debug.Log("No other level found Redirecting to main menu!");
-        SceneManager.LoadScene("MainMenu");
-        // string nextScene = "";// <- TODO: this should contain the name of the next level scene of the character
-        // SceneManager.LoadScene(nextScene);
-
+        SceneManager.LoadScene(GetNextLevel());
     }
+
     public static void NewGame(string sceneLevelName)
     {
         loadType = LevelLoadType.NewGame;

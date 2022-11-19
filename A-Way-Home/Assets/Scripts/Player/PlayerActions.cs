@@ -66,12 +66,9 @@ public class PlayerActions : MonoBehaviour
     {
         if (IsMouseOverUI())
             return;
-        string tag = "None"; 
         Vector3 position = mouse.position.ReadValue();
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(position);
-        if (collider2D != null)
-            tag = collider2D.gameObject.tag;
-        character.PerformSkill(worldPos, collider2D, tag); 
+        character.PerformSkill(worldPos, collider2D); 
     }
 
     private void RemoveObstacle(InputAction.CallbackContext context)
@@ -181,12 +178,8 @@ public class PlayerActions : MonoBehaviour
 
     private void RestartLevel(InputAction.CallbackContext context)
     {
-        // GameEvent.instance.RestartGame();  
         if (context.started && !GameEvent.isPaused)
-        {
-            Debug.Log("Pressed R");
             GameEvent.RestartGame();      
-        }
     }
 
     private void RevealPath(InputAction.CallbackContext context)

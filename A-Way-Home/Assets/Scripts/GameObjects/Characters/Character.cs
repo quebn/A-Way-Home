@@ -18,7 +18,7 @@ public class Character : MonoBehaviour
     protected int targetIndex;
 
     public Vector3 currentPos{ get { return transform.position; } }
-    public bool isHome{ get { return this.transform.position == homePosition;}}
+    public bool isHome{ get { return currentPos == SetToMid(homePosition);}}
     
     private void Awake()
     {
@@ -41,11 +41,7 @@ public class Character : MonoBehaviour
     }
     private void Update()
     {
-        if (isGoingHome)
-        {
-            animator.SetBool("isWalk", true);
-            GoHome();
-        }
+        GoHome();
     }
 
     public virtual void InitCharacter()
@@ -58,40 +54,53 @@ public class Character : MonoBehaviour
         isGoingHome = true;
     }
 
-
-    protected virtual void GoHome()
+    private void GoHome()
     {
-        if (currentPos ==  currentTargetPos)
+        if (isGoingHome)
         {
-            InGameUI.Instance.SetCharacterEnergy(-1);
+            animator.SetBool("isWalk", true);
+            Step();
+        }
+    }
+
+    private void Step()
+    {
+        if (currentPos == currentTargetPos)
+        {
             targetIndex++;
-            if (targetIndex >= path.Length)
-            {
-                isGoingHome = false;
-                this.gameObject.SetActive(false);
-                PlayerLevelData.Instance.homeAnimator.SetBool("Reached", true);
+            InGameUI.Instance.SetCharacterEnergy(-1);
+            if (EndConditions())
                 return;
-            }
-            if (energy == 0)
-            {
-                if (PlayerLevelData.Instance.levelData.lives == 1)
-                {
-                    isGoingHome = false;
-                    GameEvent.SetEndWindowActive(EndGameType.GameOver);
-                    return;
-                }
-                isGoingHome = false;
-                GameEvent.SetEndWindowActive(EndGameType.NoEnergy);
-                return;   
-            }
             currentTargetPos = path[targetIndex];
         }
         transform.position = Vector3.MoveTowards(currentPos, currentTargetPos, speed * Time. deltaTime);
+
+    }
+
+    protected virtual bool EndConditions()
+    {
+        if (isHome){
+            this.gameObject.SetActive(false);
+            isGoingHome = false;
+            PlayerLevelData.Instance.homeAnimator.SetBool("Reached", true);
+            return true;
+        }
+        if (energy == 0){
+            if (PlayerLevelData.Instance.levelData.lives == 1){
+                isGoingHome = false;
+                GameEvent.SetEndWindowActive(EndGameType.GameOver);
+                return true;
+            }
+            isGoingHome = false;
+            GameEvent.SetEndWindowActive(EndGameType.NoEnergy);
+            return true;
+        }
+        return false;
     }
 
     protected float SetToMid(float f)
     {
-        if (f < 0)            
+        if (f < 0)
             return (float)(MathF.Truncate((float)f) - .5);
         return (float)(MathF.Truncate((float)f) + .5);
     }
@@ -104,7 +113,7 @@ public class Character : MonoBehaviour
 
 public interface ICharacter
 {
-    public void PerformSkill(Vector3 position, Collider2D collider2D, string tag);
+    public void PerformSkill(Vector3 position, Collider2D collider2D);
     public void OnClear(GameObject gameObject){}
     public void OnDeselect(){}
     public void OnSkillUndo(ref Action action);
