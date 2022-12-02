@@ -2,17 +2,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public enum EndGameType { None, GameOver, LevelClear, NoEnergy}
+public enum EndGameType { None, GameOver, LevelClear, NoEnergy, TimeRanOut}
 
 public class GameEndUI : MonoBehaviour
 {
     [SerializeField] private Image windowBackground;
-    [SerializeField] private GameObject zeroEnergysUI;
-    [SerializeField] private GameObject levelClearUI;
-    [SerializeField] private GameObject gameOverUI;
     [SerializeField] private GameObject endRunConfirmWindow;
-    [SerializeField] private GameObject livesUI;
+    [SerializeField] private TextMeshProUGUI title;
+    [SerializeField] private TextMeshProUGUI message;
+    [SerializeField] private TextMeshProUGUI redButtonText;
+    [SerializeField] private TextMeshProUGUI greenButtonText;
     [SerializeField] private TextMeshProUGUI livesValueText;
+    [SerializeField] private Button redButton;
+    [SerializeField] private Button greenButton;
 
     private void Start()
     {
@@ -27,27 +29,75 @@ public class GameEndUI : MonoBehaviour
     }
 
     private void InitGameEndUI()
-    {   
+    {
         EndGameType type = InGameUI.Instance.endGameType;
-        Debug.Log($"endGameType: {type}");
+        
         switch(type)
         {
             case EndGameType.None:
                 Debug.LogError("ERROR: InGame Instance endgametype = None!");
                 break;
             case EndGameType.GameOver:
-                SetActiveEndGameUI(gameOverUI, Color.red);
+                InitializeContentsUI(
+                    color: Color.red,
+                    title: "game over",
+                    message: "looks like you have no more lives left to try again! proceed to end screen?.",
+                    redButtonText: "main menu",
+                    greenButtonText: "proceed"
+                );
                 break;
             case EndGameType.LevelClear:
+                InitializeContentsUI(
+                    color: new Color32(0, 219, 43, 255),
+                    title: "level complete",
+                    message: "your character reached its target safetly!",
+                    redButtonText: "end run",
+                    greenButtonText: "proceed",
+                    lifeIncrement: 0
+                );
                 // UnlockNextLevel();
-                SetActiveEndGameUI(levelClearUI, new Color32(0, 219, 43, 255));
-                InitLivesUI(PlayerLevelData.Instance.levelData.lives);
                 break;
             case EndGameType.NoEnergy:
-                SetActiveEndGameUI(zeroEnergysUI, Color.white);
-                InitLivesUI(PlayerLevelData.Instance.levelData.lives - 1);
+                InitializeContentsUI(
+                    color: Color.white, 
+                    title: "level failed",
+                    message: "your character ran out of energy before reaching to its home!",
+                    redButtonText: "end run",
+                    greenButtonText: "try again"
+                );
+                break;
+            case EndGameType.TimeRanOut:
+                if (PlayerLevelData.Instance.levelData.lives > 1){
+                    InitializeContentsUI(
+                        color: Color.white,
+                        title: "level failed",
+                        message: "you ran out of time before solving the level!",
+                        redButtonText: "end run",
+                        greenButtonText: "try again"
+                    );
+                    InGameUI.Instance.endGameType = EndGameType.NoEnergy;
+                }else{
+                    InitializeContentsUI(
+                        color: Color.red,
+                        title: "game over",
+                        message: "you ran out of time before solving the level!",
+                        redButtonText: "main menu",
+                        greenButtonText: "proceed"
+                    );
+                    InGameUI.Instance.endGameType = EndGameType.GameOver;
+                }
+                // Debug.Assert(false, "Unimplemented!");
                 break;
         }
+    }
+    private void InitializeContentsUI(Color color, string title, string message, string redButtonText, string greenButtonText, int lifeIncrement = -1)
+    {
+        this.windowBackground.color = color;
+        this.title.text = title;
+        this.message.text = message;
+        this.redButtonText.text = redButtonText;
+        this.greenButtonText.text = greenButtonText;
+        this.livesValueText.text = $"{PlayerLevelData.Instance.levelData.lives + lifeIncrement}";
     }
 
     private void UnlockNextLevel()
@@ -67,46 +117,64 @@ public class GameEndUI : MonoBehaviour
         GameData.Instance.unlockLevels.Add(sceneLevelName);
     }
 
-    private void SetActiveEndGameUI(GameObject ui, Color color)
+
+    public void RedButton()
     {
-        windowBackground.color = color;
-        ui.SetActive(true);
+        switch(InGameUI.Instance.endGameType)
+        {
+            case EndGameType.GameOver:
+                OptionsUI.Instance.MainMenu();
+                break;
+            default:
+                EndRun();
+                break;
+        }
     }
 
-    private void InitLivesUI(int life)
+    public void GreenButton()
     {
-        if (life < 0)
-            Debug.LogError("ERROR: Life less than zer0");
-        livesUI.SetActive(true);
-        livesValueText.text = life.ToString();
+        Debug.Log("Green Button Pressed!");
+        switch(InGameUI.Instance.endGameType)
+        {
+            case EndGameType.GameOver:
+                ConfirmEndRun();
+                break;
+            case EndGameType.LevelClear:
+                NextLevel();
+                break;
+            case EndGameType.NoEnergy:
+                TryAgain();
+                break;
+        }
     }
 
-    public void NextLevel()
+    private void NextLevel()
     {
         Debug.Log("Loading Next Level......");
         if(GameData.Instance.unlockLevels.Contains(GameEvent.GetNextLevel()))
             GameEvent.NextLevel();
-        ConfirmEndRun();
+        else
+            ConfirmEndRun();
     }
 
-    public void TryAgain()
+    private void TryAgain()
     {
         GameEvent.RestartGame();
     }
 
-    public void EndRun()
+    private void EndRun()
     {
         Debug.Assert(!endRunConfirmWindow.gameObject.activeSelf, "ERROR: EndRun confirm window is already active!");
         endRunConfirmWindow.SetActive(true);
     } 
 
-    public void CancelEndRun() 
+    private void CancelEndRun() 
     {
         Debug.Assert(endRunConfirmWindow.gameObject.activeSelf, "ERROR: EndRun confirm window is already active!");
         endRunConfirmWindow.SetActive(false);
     }
 
-    public void ConfirmEndRun()
+    private void ConfirmEndRun()
     {
         ScoreSystem.InitScoreData();
         GameEvent.LoadEndScene();

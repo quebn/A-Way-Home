@@ -20,16 +20,12 @@ public class NodeGrid : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)   
+            Instance = this;
         nodeDiameter = nodeRadius * 2;
         gridSizeInt.x = Mathf.RoundToInt(gridSize.x / nodeDiameter);
         gridSizeInt.y = Mathf.RoundToInt(gridSize.y / nodeDiameter);
-    }
-
-    private void Start()
-    {
         CreateGrid();
-        if (Instance == null)   
-            Instance = this;
     }
 
     private void CreateGrid()
@@ -98,5 +94,10 @@ public class NodeGrid : MonoBehaviour
         index.y = Mathf.RoundToInt((gridSizeInt.y - 1) * percentY);
 
         return Instance.grid[index];
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(transform.position, new Vector3(gridSize.x, gridSize.y, 0));
     }
 }

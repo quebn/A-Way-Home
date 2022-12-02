@@ -100,15 +100,15 @@ public class SavedSlotUI : MonoBehaviour
     
     private void SetValues(SaveFileData slotdata)
     {
-        characterName.text = slotdata.levelData.characterName;
-        characterImage.sprite = GameData.characterSprites[slotdata.levelData.characterName];
-        fileName.text = slotdata.fileName;
-        energy.text = slotdata.levelData.characterEnergy.ToString();
-        moves.text = slotdata.levelData.moves.ToString();
-        lives.text = slotdata.levelData.lives.ToString();
-        level.text = slotdata.levelData.level.ToString();
-        date.text = slotdata.date;
-        time.text = slotdata.time;
+        this.characterName.text = slotdata.levelData.characterName;
+        this.characterImage.sprite = GameData.characterSprites[slotdata.levelData.characterName];
+        this.fileName.text = slotdata.fileName;
+        this.energy.text = slotdata.levelData.characterEnergy.ToString();
+        this.moves.text = slotdata.levelData.moves.ToString();
+        this.lives.text = slotdata.levelData.lives.ToString();
+        this.level.text = slotdata.levelData.level.ToString();
+        this.date.text = slotdata.date;
+        this.time.text = slotdata.time;
     }
 
     public static void RefreshSaveSlots()

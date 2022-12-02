@@ -5,12 +5,7 @@ public class CharacterAqua : Character, ICharacter
     public override void InitCharacter()
     {
         path = Pathfinding.FindPath(currentPos, homePosition, true);
-        Debug.Log(path.Length);
-        if (path.Length <=0)
-            return;
-        currentTargetPos = path[0];
-        targetIndex = 0;
-        isGoingHome = true;
+        base.InitCharacter();
     }
 
     public void PerformSkill(Vector3 position, Collider2D collider2D)
@@ -33,7 +28,6 @@ public class CharacterAqua : Character, ICharacter
         if (PlayerLevelData.Instance.levelData.skillCount < 1 && node.currentType == NodeType.Water)
         {
             Debug.Log("Not enough skill count to traverse water.");
-            isGoingHome = false;
             animator.SetBool("isWalk", false);
             return true;
         }

@@ -16,14 +16,27 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI energyLeftTMP;
     [SerializeField] private TextMeshProUGUI livesLeftTMP;
     [SerializeField] private TextMeshProUGUI skillCounter;
+    [SerializeField] private TextMeshProUGUI timeCounter;
 
-    public GameObject getGameEndWindow { get { return gameEndWindow; } }
     private bool pathDisplayToggle = false;
+    public GameObject getGameEndWindow { get { return gameEndWindow; } }
     private int energyValueUI {
         set { 
             energyLeftTMP.text = value.ToString();
             energySlider.value = value;
         }
+    }
+    private float timeCounterUI{
+        get {return PlayerLevelData.Instance.levelData.secondsLeft; }
+        set {
+            PlayerLevelData.Instance.levelData.secondsLeft = value;
+            timeCounter.text = ((int)timeCounterUI).ToString();
+        }
+    }
+
+    private void Awake()
+    {
+        GameEvent.InitializeLevel();
     }
 
     private void Start()
@@ -33,6 +46,22 @@ public class InGameUI : MonoBehaviour
         endGameType = EndGameType.None;
         if (Instance == null)
             Instance = this;
+    }
+
+    private void Update()
+    {
+        if (!PlayerLevelData.Instance.character.isGoingHome)
+            TimeCountdown();
+    }
+
+
+
+    public void TimeCountdown()
+    {
+        if (timeCounterUI > 0)
+            timeCounterUI -= Time.deltaTime;
+        if (timeCounterUI <= 0 && !GameEvent.isEndWindowActive)
+            GameEvent.SetEndWindowActive(EndGameType.TimeRanOut);
     }
 
     private void InitCharacterUI(LevelData levelData, Character character)
@@ -85,9 +114,6 @@ public class InGameUI : MonoBehaviour
     {
         Debug.Log("Pressed Undo Button!");
         PlayerActions.Instance.Undo();
-        // +1 player moves
-        // revert last player action
-        // -1 character energy   
     }
 
     public void ReloadAction()

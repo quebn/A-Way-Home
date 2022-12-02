@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerLevelData : MonoBehaviour
 {
@@ -8,12 +7,12 @@ public class PlayerLevelData : MonoBehaviour
     public Character character;
     public Transform characterHome;
     public Animator homeAnimator;
-    public bool sandboxMode;
     [SerializeField] private uint characterLevel;
     [SerializeField] private int characterEnergy;
     [SerializeField] private int characterSkillCount;
     [SerializeField] private int playerLives;
     [SerializeField] private int playerMoves;
+    [SerializeField] private float timeLimitInSecs;
     [HideInInspector] public LevelData levelData;
     public static Dictionary<string, GameObject> gameObjectList;
     public static string characterName;
@@ -21,8 +20,6 @@ public class PlayerLevelData : MonoBehaviour
 
     private void Awake()
     {
-        if (sandboxMode)
-            GameEvent.loadType = LevelLoadType.Sandbox;
         Initialize();
         InitCharacter();
         if (Instance != null)
@@ -36,7 +33,7 @@ public class PlayerLevelData : MonoBehaviour
     {
         character.homePosition = characterHome.transform.position;
         character.energy = levelData.characterEnergy;
-        if (sandboxMode)
+        if (GameEvent.isSceneSandbox)
         {
             character.speed = 5f;    
             return;
@@ -58,9 +55,6 @@ public class PlayerLevelData : MonoBehaviour
             case LevelLoadType.RestartGame:
                 RestartGame();
                 break;
-            case LevelLoadType.Sandbox:
-                NewGame();
-                break;
         }
     }
 
@@ -68,7 +62,6 @@ public class PlayerLevelData : MonoBehaviour
     {
         uint currentLevel = this.characterLevel;
         this.levelData = new LevelData {
-            sceneName = SceneManager.GetActiveScene().name,
             level = currentLevel,
             characterName = characterName,
             characterEnergy = this.characterEnergy,
@@ -77,7 +70,8 @@ public class PlayerLevelData : MonoBehaviour
             score = 0,
             skillCount = this.characterSkillCount,
             actionList = new List<Action>(),
-            removedObstacles = new Dictionary<string, bool>()
+            removedObstacles = new Dictionary<string, bool>(),
+            secondsLeft = this.timeLimitInSecs
         };
     }
 
@@ -85,7 +79,6 @@ public class PlayerLevelData : MonoBehaviour
     {
         uint currentLevel = this.characterLevel;
         this.levelData = new LevelData {
-            sceneName = SceneManager.GetActiveScene().name,
             level = currentLevel,
             characterName = characterName,
             characterEnergy = this.characterEnergy,
@@ -94,7 +87,8 @@ public class PlayerLevelData : MonoBehaviour
             score = 0, //<-TODO: score should be retained from previous game
             skillCount = this.characterSkillCount,
             actionList = new List<Action>(),
-            removedObstacles = new Dictionary<string, bool>()//should be private
+            removedObstacles = new Dictionary<string, bool>(),//should be private
+            secondsLeft = this.timeLimitInSecs
         };
         Debug.Assert(playerLives > 0, "ERROR: Lives is less than 1");
     }
@@ -115,7 +109,6 @@ public class PlayerLevelData : MonoBehaviour
 [System.Serializable]
 public struct LevelData
 {
-    public string sceneName;
     public uint level;
     public string characterName;
     public int characterEnergy; 
@@ -125,6 +118,7 @@ public struct LevelData
     public int skillCount;
     public List<Action> actionList;
     public Dictionary<string, bool> removedObstacles;
+    public float secondsLeft;
 }
 
 [System.Serializable]

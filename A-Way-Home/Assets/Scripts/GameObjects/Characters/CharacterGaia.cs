@@ -10,7 +10,12 @@ public class CharacterGaia : Character, ICharacter
         LoadPlatforms(platformObject);
     }
 
-
+    public override void InitCharacter()
+    {
+        path = Pathfinding.FindPath(currentPos, homePosition);
+        base.InitCharacter();
+    }
+    
     public void PerformSkill(Vector3 position, Collider2D collider2D)
     {
         position = SetToMid(position);

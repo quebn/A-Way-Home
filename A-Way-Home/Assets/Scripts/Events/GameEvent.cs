@@ -1,15 +1,27 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum LevelLoadType{ NewGame, LoadGame, RestartGame, Sandbox}// <- should not exist
+public enum LevelLoadType{ NewGame, LoadGame, RestartGame}// <- should not exist
 
 public static class GameEvent
 {
-    private static PlayerLevelData endData;
     public static LevelLoadType loadType;
     public static int restartCounter;
     public static bool isPaused = false;
-    
+    public static bool isEndWindowActive {get {return InGameUI.Instance.getGameEndWindow.activeSelf;}}
+    private static PlayerLevelData endData;
+    private static string  prefabLevelName;
+
+    public static bool isSceneSandbox {get { return SceneManager.GetActiveScene().name == "Sandbox" ;}}
+
+    public static void InitializeLevel()
+    {
+        if(isSceneSandbox)
+            return;
+        GameObject levelPrefab = Resources.Load<GameObject>($"Levels/{prefabLevelName}");
+        GameObject.Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
+    }
+
     public static void LoadEndScene()
     {
         SceneManager.LoadScene("EndScene");
@@ -17,7 +29,7 @@ public static class GameEvent
 
     public static string GetNextLevel()
     {
-        uint currentChar = MainMenuUI.Instance.GetCharacterIndex();
+        uint currentChar = MainMenuUI.GetCharacterIndex();
         uint currentLevel = PlayerLevelData.Instance.levelData.level;
         Debug.Assert(currentChar != 0, "ERROR: character index is 0");
         return $"Char{currentChar}Level{currentLevel+1}";
@@ -25,34 +37,33 @@ public static class GameEvent
 
     public static void NextLevel()
     {
-        SceneManager.LoadScene(GetNextLevel());
+        NewGame(GetNextLevel());
     }
 
-    public static void NewGame(string sceneLevelName)
+    public static void NewGame(string levelName)
     {
-        loadType = LevelLoadType.NewGame;
-        restartCounter = 0;
-        if (!GameData.Instance.unlockLevels.Contains(sceneLevelName))
+        if (!GameData.Instance.unlockLevels.Contains(levelName))
         {
-            Debug.Log(sceneLevelName + " Does not Exist");
+            Debug.Log(levelName + " Does not Exist");
             return;
         }
-        SceneManager.LoadScene(sceneLevelName);
+        restartCounter = 0;
+        loadType = LevelLoadType.NewGame;
+        prefabLevelName = levelName;
+        SceneManager.LoadScene("LevelScene");
     }
 
     public static void RestartGame()
     {
-        if (loadType == LevelLoadType.Sandbox)
-        {
-            SceneManager.LoadScene(PlayerLevelData.Instance.levelData.sceneName);
+        if (isSceneSandbox){
+            SceneManager.LoadScene("Sandbox");
             return;
         }
-        if (PlayerLevelData.Instance.levelData.lives > 1)
-        {
+        if (PlayerLevelData.Instance.levelData.lives > 1){
             loadType = LevelLoadType.RestartGame;
             restartCounter++;       
             Debug.Log($"GameEvent Restart counter :{restartCounter}");
-            SceneManager.LoadScene(PlayerLevelData.Instance.levelData.sceneName);
+            SceneManager.LoadScene("LevelScene");
         } else {
             Debug.Log($"You have {PlayerLevelData.Instance.levelData.lives}! you cant restart anymore!");
         }
@@ -62,19 +73,20 @@ public static class GameEvent
     {
         if (isPaused)
             UnpauseGame();
-        loadType = LevelLoadType.LoadGame;
         restartCounter = 0;
+        loadType = LevelLoadType.LoadGame;
         GameData.loadedLevelData = GameData.saveFileDataList[slotNumber];
-        SceneManager.LoadScene(GameData.loadedLevelData.levelData.sceneName);
+        prefabLevelName = $"Char{MainMenuUI.GetCharacterIndex(GameData.loadedLevelData.levelData.characterName)}Level{GameData.loadedLevelData.levelData.level}";
+        SceneManager.LoadScene("LevelScene");
     }
 
     public static void SetEndWindowActive(EndGameType endGameType)
     {
-        if(loadType == LevelLoadType.Sandbox)
+        Debug.Log("Calling..");
+        PlayerLevelData.Instance.character.isGoingHome = false;
+        if(isSceneSandbox)
             return;
         InGameUI inGameUI = InGameUI.Instance;
-        Debug.Assert(inGameUI != false, $"ERROR:{inGameUI.gameObject.name} instance is null");
-        Debug.Assert(inGameUI.getGameEndWindow != false, $"ERROR: Game End window is null/not found!");
         inGameUI.getGameEndWindow.SetActive(true);
         inGameUI.endGameType = endGameType;
     }
@@ -92,4 +104,5 @@ public static class GameEvent
         isPaused = false;
         Time.timeScale = 1f;
     }
+
 }

@@ -195,18 +195,29 @@ public class MainMenuUI : MonoBehaviour
         GameData.characterSprites.Add(char3Name, char3Sprite);
     }
 
-    public uint GetCharacterIndex()
+    public static uint GetCharacterIndex()
     {
         string name = PlayerLevelData.Instance.levelData.characterName;
-        if (name == char1Name)
+        if (name == Instance.char1Name)
             return 1;
-        else if (name == char2Name)
+        else if (name == Instance.char2Name)
             return 2;
-        else if (name == char2Name)
-            return 2;
+        else if (name == Instance.char3Name)
+            return 3;
         return 0;
     }
+    
+    public static uint GetCharacterIndex(string characterName)
+    {
+        if (characterName == Instance.char1Name)
+            return 1;
+        else if (characterName == Instance.char2Name)
+            return 2;
+        else if (characterName == Instance.char3Name)
+            return 3;
+        return 0;
 
+    }
     // public string GetCharacterName(int index)
     // {
     //     if (index == 1)

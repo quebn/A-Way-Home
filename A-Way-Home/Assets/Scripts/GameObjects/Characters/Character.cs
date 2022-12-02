@@ -25,6 +25,12 @@ public class Character : MonoBehaviour
         characterImage = jellyPrefab.GetComponent<SpriteRenderer>();
         animator = jellyPrefab.GetComponent<Animator>();
     }
+
+    private void Update()
+    {
+        GoHome();
+    }
+
     protected virtual void LoadPlatforms(GameObject spawnedObject)
     {
         List<Action> skillActions = new List<Action>();
@@ -39,26 +45,22 @@ public class Character : MonoBehaviour
             PlayerLevelData.gameObjectList.Add($"{gameObject.transform.position.ToString()}", gameObject);
         }
     }
-    private void Update()
-    {
-        GoHome();
-    }
 
     public virtual void InitCharacter()
     {
-        path = Pathfinding.FindPath(currentPos, homePosition);
         if (path.Length <=0)
             return;
         currentTargetPos = path[0];
         targetIndex = 0;
         isGoingHome = true;
+        animator.SetBool("isWalk", true);
     }
 
     private void GoHome()
     {
         if (isGoingHome)
         {
-            animator.SetBool("isWalk", true);
+            Debug.Log("Stepping....");
             Step();
         }
     }
@@ -81,17 +83,14 @@ public class Character : MonoBehaviour
     {
         if (isHome){
             this.gameObject.SetActive(false);
-            isGoingHome = false;
             PlayerLevelData.Instance.homeAnimator.SetBool("Reached", true);
             return true;
         }
         if (energy == 0){
             if (PlayerLevelData.Instance.levelData.lives == 1){
-                isGoingHome = false;
                 GameEvent.SetEndWindowActive(EndGameType.GameOver);
                 return true;
             }
-            isGoingHome = false;
             GameEvent.SetEndWindowActive(EndGameType.NoEnergy);
             return true;
         }
@@ -101,8 +100,8 @@ public class Character : MonoBehaviour
     protected float SetToMid(float f)
     {
         if (f < 0)
-            return (float)(MathF.Truncate((float)f) - .5);
-        return (float)(MathF.Truncate((float)f) + .5);
+            return (float)(MathF.Truncate(f) - .5);
+        return (float)(MathF.Truncate(f) + .5);
     }
 
     protected Vector3 SetToMid(Vector3 vector3)

@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class LeaderboardSlotUI : MonoBehaviour
 {
     [SerializeField] private int slotIndexNumber;
-    // [SerializeField] private Image characterImage;
+    [SerializeField] private Image characterImage;
     [SerializeField] private GameObject data;
     [SerializeField] private GameObject noData;
     [SerializeField] private TextMeshProUGUI playerName;
@@ -45,8 +46,9 @@ public class LeaderboardSlotUI : MonoBehaviour
 
     private void SetValues(PlayerScoreData data)
     {
-        playerName.text = data.playerName;
-        characterName.text = data.charName;
-        score.text = data.score.ToString();
+        this.characterImage.sprite = GameData.characterSprites[data.charName];
+        this.playerName.text = data.playerName;
+        this.characterName.text = data.charName;
+        this.score.text = data.score.ToString();
     }
 }

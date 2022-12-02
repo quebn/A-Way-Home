@@ -20,11 +20,7 @@ public class CharacterTerra : Character, ICharacter
     public override void InitCharacter()
     {
         SetPaths();
-        if (path.Length <= 0 )
-            return;
-        currentTargetPos = path[0];
-        targetIndex = 0;
-        isGoingHome = true;
+        base.InitCharacter();
     }
 
     protected override void LoadPlatforms(GameObject spawnedObject)
@@ -62,7 +58,6 @@ public class CharacterTerra : Character, ICharacter
     {
         if (isHome){
             this.gameObject.SetActive(false);
-            isGoingHome = false;
             PlayerLevelData.Instance.homeAnimator.SetBool("Reached", true);
             return true;
         }
@@ -75,11 +70,9 @@ public class CharacterTerra : Character, ICharacter
         }
         if (energy == 0){
             if (PlayerLevelData.Instance.levelData.lives == 1){
-                isGoingHome = false;
                 GameEvent.SetEndWindowActive(EndGameType.GameOver);
                 return true;
             }
-            isGoingHome = false;
             GameEvent.SetEndWindowActive(EndGameType.NoEnergy);
             return true;
         }

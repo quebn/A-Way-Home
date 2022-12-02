@@ -4,11 +4,9 @@ using UnityEngine.InputSystem;
 public class CameraMovement : MonoBehaviour
 {
     public static CameraMovement Instance {get; private set;}
-    public SpriteRenderer platform;
     public float zoomSpeed = 25f;
     public float minZoom = 4.5f;
     public float maxZoom = 8f;
-
 
     // Privates
     private Vector3 origin;
@@ -19,8 +17,14 @@ public class CameraMovement : MonoBehaviour
     private float mapMinX, mapMaxX, mapMinY, mapMaxY;
     private bool drag = false;
 
-    private void Awake()
-    {   
+    private void Update()
+    {
+        ZoomCamera();
+    }
+
+    private void Start()
+    {
+        SpriteRenderer platform = NodeGrid.Instance.GetComponent<SpriteRenderer>();
         mainCamera = Camera.main;
         zoom = mainCamera.orthographicSize;
 
@@ -29,16 +33,9 @@ public class CameraMovement : MonoBehaviour
 
         mapMinY = platform.transform.position.y - platform.bounds.size.y * 0.5f;
         mapMaxY = platform.transform.position.y + platform.bounds.size.y * 0.5f;
-    }
 
-    private void Update()
-    {
-        ZoomCamera();
-    }
-
-    private void Start()
-    {
         resetCamera = mainCamera.transform.position;
+
         if (Instance == null)
             Instance = this;
     }
