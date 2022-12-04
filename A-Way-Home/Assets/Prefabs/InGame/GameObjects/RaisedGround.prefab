@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 5594663747459890023}
   - component: {fileID: 5594663747459890021}
   - component: {fileID: 5594663747459890022}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RaisedGround
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -74,12 +74,12 @@ SpriteRenderer:
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1480115128, guid: 256eb93769cc532459cd42daf3f0c479, type: 3}
+  m_Sprite: {fileID: 1931617549, guid: 9782f7c1901248742896d92f75814664, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4, y: 4}
+  m_Size: {x: 3.6875, y: 3.6875}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -98,16 +98,16 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.07962465, y: -0.53809476}
+  m_Offset: {x: 0.07962465, y: -0.32461584}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4, y: 4}
-    newSize: {x: 4, y: 4}
+    oldSize: {x: 3.6875, y: 3.6875}
+    newSize: {x: 3.6875, y: 3.6875}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.5110579, y: 2.799159}
+  m_Size: {x: 3.5110579, y: 2.5180142}
   m_EdgeRadius: 0

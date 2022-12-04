@@ -21,12 +21,9 @@ public class PlayerLevelData : MonoBehaviour
     private void Awake()
     {
         Initialize();
-        InitCharacter();
         if (Instance != null)
             return;
         Instance  = this;
-        Debug.Assert(levelData.level != 0, "ERROR: level is 0");
-        Debug.Assert(character.homePosition != null, "Error: characterHome is null!");
     }
 
     private void InitCharacter()
@@ -56,6 +53,9 @@ public class PlayerLevelData : MonoBehaviour
                 RestartGame();
                 break;
         }
+        InitCharacter();
+        Debug.Assert(levelData.level != 0, "ERROR: level is 0");
+        Debug.Assert(character.homePosition != null, "Error: characterHome is null!");
     }
 
     private void NewGame()

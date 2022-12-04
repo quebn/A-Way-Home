@@ -5,7 +5,6 @@ using TMPro;
 public class InGameUI : MonoBehaviour
 {
     public static InGameUI Instance {get; private set;}
-
     [HideInInspector] public EndGameType endGameType;
     [SerializeField] private GameObject optionsWindow;
     [SerializeField] private GameObject gameEndWindow;
@@ -33,6 +32,7 @@ public class InGameUI : MonoBehaviour
             timeCounter.text = ((int)timeCounterUI).ToString();
         }
     }
+
 
     private void Awake()
     {
