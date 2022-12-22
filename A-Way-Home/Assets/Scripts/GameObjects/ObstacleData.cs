@@ -13,7 +13,7 @@ public class ObstacleData : MonoBehaviour
     [ContextMenu("Generate Obstacle id")]
     private void GenerateID() 
     {
-        ID = System.Guid.NewGuid().ToString();
+        this.ID = System.Guid.NewGuid().ToString();
     }
 
     private void Start()
