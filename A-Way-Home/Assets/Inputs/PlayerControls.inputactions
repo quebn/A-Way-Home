@@ -6,7 +6,7 @@
             "id": "8cf5aa82-0756-4e35-bbf1-d6413560047e",
             "actions": [
                 {
-                    "name": "Remove",
+                    "name": "PerformAction",
                     "type": "Button",
                     "id": "795de5c3-5268-4c9a-9f82-ee4478b252f8",
                     "expectedControlType": "Button",
@@ -24,7 +24,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Skill",
+                    "name": "Tool1",
                     "type": "Button",
                     "id": "d29f8cc1-3e8b-4d54-a616-8c19fc384f62",
                     "expectedControlType": "Button",
@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Default",
+                    "name": "Tool2",
                     "type": "Button",
                     "id": "402fdb00-7056-43eb-8321-9aa13127d27f",
                     "expectedControlType": "Button",
@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Tool1",
+                    "name": "Tool3",
                     "type": "Button",
                     "id": "1aa1f89e-c733-45fd-90b9-96b7d44fc0e2",
                     "expectedControlType": "Button",
@@ -51,7 +51,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Tool2",
+                    "name": "Tool4",
                     "type": "Button",
                     "id": "1fa05d33-74ae-4abb-961a-42f179a9ab40",
                     "expectedControlType": "Button",
@@ -60,7 +60,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Tool3",
+                    "name": "Tool5",
                     "type": "Button",
                     "id": "2c54b51d-ba2c-41fc-a4e0-3474e05d1ef7",
                     "expectedControlType": "Button",
@@ -69,7 +69,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Tool4",
+                    "name": "Tool6",
                     "type": "Button",
                     "id": "52dcaa3a-2226-448a-8e2d-9b94fce14b1b",
                     "expectedControlType": "Button",
@@ -140,7 +140,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Tool1",
+                    "action": "Tool3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -151,7 +151,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Tool2",
+                    "action": "Tool4",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -162,7 +162,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Tool3",
+                    "action": "Tool5",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -173,7 +173,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Tool4",
+                    "action": "Tool6",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -228,7 +228,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Remove",
+                    "action": "PerformAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -239,7 +239,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Default",
+                    "action": "Tool2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -283,7 +283,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Skill",
+                    "action": "Tool1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

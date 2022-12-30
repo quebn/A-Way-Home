@@ -1,10 +1,10 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
     [SerializeField] protected GameObject jellyPrefab;
+
     [HideInInspector] public SpriteRenderer characterImage;
     [HideInInspector] public Vector3 homePosition;
     [HideInInspector] public int energy;
@@ -31,23 +31,9 @@ public class Character : MonoBehaviour
         GoHome();
     }
 
-    protected virtual void LoadPlatforms(GameObject spawnedObject)
+    public void InitCharacter()
     {
-        List<Action> skillActions = new List<Action>();
-        foreach(Action action in PlayerLevelData.Instance.levelData.actionList)
-            if(action.type == ManipulationType.UniqueSkill)
-                skillActions.Add(action);
-        if (skillActions.Count == 0)
-            return;
-        foreach(Action action in skillActions)
-        {
-            GameObject gameObject = GameObject.Instantiate(spawnedObject, action.skillCoord, Quaternion.identity);
-            PlayerLevelData.gameObjectList.Add($"{gameObject.transform.position.ToString()}", gameObject);
-        }
-    }
-
-    public virtual void InitCharacter()
-    {
+        path = Pathfinding.FindPath(currentPos, homePosition);
         if (path.Length <=0)
             return;
         currentTargetPos = path[0];
@@ -75,11 +61,11 @@ public class Character : MonoBehaviour
                 return;
             currentTargetPos = path[targetIndex];
         }
-        transform.position = Vector3.MoveTowards(currentPos, currentTargetPos, speed * Time. deltaTime);
+        transform.position = Vector3.MoveTowards(currentPos, currentTargetPos, speed * Time.deltaTime);
 
     }
 
-    protected virtual bool EndConditions()
+    protected bool EndConditions()
     {
         if (isHome){
             this.gameObject.SetActive(false);
@@ -97,24 +83,15 @@ public class Character : MonoBehaviour
         return false;
     }
 
-    protected float SetToMid(float f)
+    private static float SetToMid(float f)
     {
         if (f < 0)
-            return (float)(MathF.Truncate(f) - .5);
-        return (float)(MathF.Truncate(f) + .5);
+            return  ((float)(int)f) - .5f;
+        return ((float)(int)f) + .5f;
     }
 
-    protected Vector3 SetToMid(Vector3 vector3)
+    private static Vector3 SetToMid(Vector3 vector3)
     {
         return new Vector3(SetToMid(vector3.x), SetToMid(vector3.y), 0);
     }
-}
-
-public interface ICharacter
-{
-    public void PerformSkill(Vector3 position, Collider2D collider2D);
-    public void OnClear(GameObject gameObject){}
-    public void OnDeselect(){}
-    public void OnSkillUndo(ref Action action);
-    public void OnToolUndo(ManipulationType manipulationType){}
 }

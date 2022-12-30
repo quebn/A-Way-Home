@@ -98,7 +98,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8767383135747185543}
-  - component: {fileID: 8767383135747185545}
   - component: {fileID: 1132807363521227034}
   m_Layer: 3
   m_Name: LogHorizontal
@@ -128,21 +127,6 @@ RectTransform:
   m_AnchoredPosition: {x: -4.5, y: -4}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8767383135747185545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8767383135747185540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5aaa44e52c17824bb1a43e4c701da06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 
-  toolType: 3
-  isRemoved: 0
 --- !u!61 &1132807363521227034
 BoxCollider2D:
   m_ObjectHideFlags: 0

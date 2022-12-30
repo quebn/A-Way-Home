@@ -2,131 +2,72 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
-[System.Serializable]
-public enum ManipulationType{ None, UniqueSkill, Pickaxe, WoodAxe, }
 
 public class PlayerActions : MonoBehaviour
 {
-    public static PlayerActions Instance {get; private set;}
+    public static PlayerActions Instance { get; private set; }
 
-    [HideInInspector] public ManipulationType currentManipulationType = ManipulationType.None;
+    [HideInInspector] public string currentTool;
     [HideInInspector] public Mouse mouse;
-    private PlayerInput playerInput;
 
-    private InputAction removeObstacle; 
+    private Camera mainCamera;
+    private PlayerInput playerInput;
+    private InputAction performAction; 
     private InputAction revealPath;
-    private InputAction defaultTool; 
-    private InputAction uniqueSkill;
     private InputAction undoAction;
     private InputAction tool1; 
     private InputAction tool2; 
     private InputAction tool3; 
     private InputAction tool4; 
+    private InputAction tool5; 
+    private InputAction tool6; 
     private InputAction start;
     private InputAction reset;
 
-    private ICharacter character;
+    private IObstacle currentObstacle;
 
     private void Start()
     {
-        InitPlayerActions();
+        Initialize();
         SubscribeFunctions();
         if (Instance == null)
             Instance = this;
     }
-        
+
+    private void FixedUpdate()
+    {
+        HoverObstacle();
+    }
+
     private void OnDisable()
     {
         UnsubscribeFunctions();
     }
 
-    private void ClearObstacle(ManipulationType toolType, GameObject gameObject)
-    {
-        int moves = PlayerLevelData.Instance.levelData.moves; 
-        if (moves == 0 || IsMouseOverUI())
-            return;
-        ObstacleData obstacleData = gameObject.GetComponent<ObstacleData>(); 
-        
-        if (gameObject.tag == "Obstacle" && obstacleData.toolType == toolType)
-        {
-            gameObject.SetActive(false);
-            // PlayerLevelData.Instance.levelData.actionList.Add(new Action(toolType, obstacleData.ID, true));
-            PlayerLevelData.AddRemovedToList(toolType, obstacleData.ID, true);
-            InGameUI.Instance.SetPlayerMoves(-1);
-            
-            character.OnClear(gameObject);
-            
-            Debug.Log(gameObject + " was Destroyed");
-            Debug.Log("Moves Left: " + PlayerLevelData.Instance.levelData.moves);
-            Debug.Log($"Added Obstacle with id of {obstacleData.ID} to Removed Obstacles Dictionary!");
-        }
-    }
-
-    private void UniqueSkill(Collider2D collider2D)
-    {
-        if (IsMouseOverUI())
-            return;
-        Vector3 position = mouse.position.ReadValue();
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(position);
-        character.PerformSkill(worldPos, collider2D); 
-    }
-
-    private void RemoveObstacle(InputAction.CallbackContext context)
-    {
-        ManipulationType type = Instance.currentManipulationType;
-        if (GameEvent.isPaused || PlayerLevelData.Instance.character.isHome || type == ManipulationType.None)
-            return;
-
-        Ray ray = Camera.main.ScreenPointToRay(mouse.position.ReadValue());
-        RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
-        
-        if (type == ManipulationType.UniqueSkill)
-        {
-            UniqueSkill(hit2D.collider);
-            return;
-        }
-        if (hit2D.collider != null)
-            ClearObstacle(type, hit2D.collider.gameObject);
-        NodeGrid.Instance.UpdateGrid();
-    }
-
-    private void UndoAction(InputAction.CallbackContext context)
-    {
-        Undo();
-    }
-
     public void Undo()
     {
-        PlayerLevelData data = PlayerLevelData.Instance;
-        if (GameEvent.isPaused || data.levelData.actionList.Count == 0 || data.character.energy <= data.minimumEnergy)
-            return;
-        Action action = data.levelData.actionList[^1];
-        Debug.Log($"{action.type.ToString()}");
-        
-        switch(action.type)
-        {
-            case ManipulationType.UniqueSkill:
-                character.OnSkillUndo(ref action);
-                break;
-            default:
-                OnToolUndo(ref action);
-                break;
-        }
-        // undo should removed items from both ActionList and RemovedObstacles
-        InGameUI.Instance.SetMaxEnergy(-1);
-        NodeGrid.Instance.UpdateGrid();
+        Debug.LogWarning("Undo not implemented");
     }
 
-    private void OnToolUndo(ref Action action)
+    public void PerformAction(InputAction.CallbackContext context)
     {
-        Debug.Assert(PlayerLevelData.Instance.levelData.removedObstacles.ContainsKey(action.obstacleID), "ERROR: ID should but is not present in removed list");
-        PlayerLevelData.gameObjectList[action.obstacleID].SetActive(true);
-        
-        PlayerLevelData.Instance.levelData.removedObstacles.Remove(action.obstacleID);
-        PlayerLevelData.Instance.levelData.actionList.Remove(action);
-        
-        character.OnToolUndo(action.type);
-        InGameUI.Instance.SetPlayerMoves(1);
+        // Perform action should perform the desired action depending on the current Tool
+        //      Tool1: Interact/None    => Obstacles/Objects that responds to interact like Bat changing states when interacted.
+        //      Tool2: Destroy          => Obstacles/Objects that responds to destroy will be destroyed.
+        if (IsMouseOverUI())
+            return;
+        Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
+        RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
+        if (hit2D.collider == null || hit2D.collider.gameObject.tag != "Obstacle")
+            return;
+        Debug.Log("GameObject with Obstacle component found");
+        IObstacle obstacle = hit2D.collider.gameObject.GetComponent<IObstacle>();
+        if (obstacle == null)
+        {
+            Debug.LogWarning("No Obstacle component attached.");
+            return;
+        }
+        obstacle.OnClick();
     }
 
     private void SetCurrentTool(InputAction.CallbackContext context)
@@ -135,38 +76,44 @@ public class PlayerActions : MonoBehaviour
             return;
         switch(context.action.name)
         {
-            case "Cancel":
-                SetToolType(ManipulationType.None);
-                break;
-            case "Default":
-                SetToolType(ManipulationType.None);
-                break;
-            case "Skill":
-                currentManipulationType = ManipulationType.UniqueSkill;
-                break;
             case "Tool1":
-                SetToolType(ManipulationType.None);
-                break;
             case "Tool2":
-                SetToolType(ManipulationType.None);
-                break;
             case "Tool3":
-                SetToolType(ManipulationType.None);
-                break;
             case "Tool4":
-                SetToolType(ManipulationType.None);
+            case "Tool5":
+            case "Tool6":
+                SetToolType(context.action.name);
                 break;
             default:
                 Debug.Log($"{context.action.name} is not recognize!");
-                break;
+                return;
         }
-        Debug.Log($"Current Tool: {currentManipulationType}");
     }
 
-    private void SetToolType(ManipulationType type)
+    public void SetToolType(string tool)
     {
-        currentManipulationType = type;
-        character.OnDeselect();
+        currentTool = tool;
+        Debug.Log($"Current Tool: {currentTool}");
+    }
+
+    private void HoverObstacle()
+    {
+        if (IsMouseOverUI())
+            return;
+        Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
+        RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
+        if (hit2D.collider == null || hit2D.collider.gameObject.tag != "Obstacle")
+        {
+            if (currentObstacle != null)
+            {
+                currentObstacle.OnDehover();
+                currentObstacle = null;
+            }
+            return;
+        }
+        if (currentObstacle == null)
+            currentObstacle = hit2D.collider.gameObject.GetComponent<IObstacle>();
+        currentObstacle.OnHover();
     }
 
     private void StartCharacter(InputAction.CallbackContext context)
@@ -174,6 +121,11 @@ public class PlayerActions : MonoBehaviour
         if (PlayerLevelData.Instance.character.isGoingHome)
             return;
         PlayerLevelData.Instance.character.InitCharacter();
+    }
+
+    private void UndoAction(InputAction.CallbackContext context)
+    {
+        Undo();
     }
 
     private void RestartLevel(InputAction.CallbackContext context)
@@ -184,6 +136,7 @@ public class PlayerActions : MonoBehaviour
 
     private void RevealPath(InputAction.CallbackContext context)
     {
+        Debug.LogWarning("Unimplemented!");
         if (GameEvent.isPaused)
             return;
         // PlayerLevelData.Instance.character.DisplayPath();
@@ -195,51 +148,52 @@ public class PlayerActions : MonoBehaviour
     }
 
 
-    private void InitPlayerActions()
+    private void Initialize()
     {
         playerInput = GetComponent<PlayerInput>();
+        currentTool = "Tool1";
         mouse = Mouse.current;
-        character = (ICharacter)PlayerLevelData.Instance.character;
+        mainCamera = Camera.main;
         Debug.Assert(playerInput != null, "GetComponent failed!");
-        removeObstacle  = playerInput.actions["Remove"];
+        performAction  = playerInput.actions["PerformAction"];
         revealPath      = playerInput.actions["RevealPath"];
-        defaultTool     = playerInput.actions["Default"];
-        uniqueSkill     = playerInput.actions["Skill"];
         undoAction      = playerInput.actions["Undo"];
         tool1           = playerInput.actions["Tool1"];
         tool2           = playerInput.actions["Tool2"];
         tool3           = playerInput.actions["Tool3"];
         tool4           = playerInput.actions["Tool4"];
+        tool5           = playerInput.actions["Tool5"];
+        tool6           = playerInput.actions["Tool6"];
         start           = playerInput.actions["Start"];
         reset           = playerInput.actions["Reset"];
     }
 
     private void SubscribeFunctions()
     {
-        removeObstacle.started  += RemoveObstacle;
+        performAction.started  += PerformAction;
         revealPath.started      += RevealPath;
-        defaultTool.started     += SetCurrentTool;
-        uniqueSkill.started     += SetCurrentTool;
         undoAction.started      += UndoAction;
         tool1.started           += SetCurrentTool;
         tool2.started           += SetCurrentTool;
         tool3.started           += SetCurrentTool;
         tool4.started           += SetCurrentTool;
+        tool5.started           += SetCurrentTool;
+        tool6.started           += SetCurrentTool;
         start.started           += StartCharacter;
         reset.started           += RestartLevel;
     }
 
     private void UnsubscribeFunctions()
     {
-        removeObstacle.started  -= RemoveObstacle;
+        performAction.started  -= PerformAction;
         revealPath.started      -= RevealPath;
-        defaultTool.started     -= SetCurrentTool;
-        uniqueSkill.started     -= SetCurrentTool;
         undoAction.started      -= UndoAction;
         tool1.started           -= SetCurrentTool;
         tool2.started           -= SetCurrentTool;
         tool3.started           -= SetCurrentTool;
         tool4.started           -= SetCurrentTool;
+        tool5.started           -= SetCurrentTool;
+        tool6.started           -= SetCurrentTool;
         start.started           -= StartCharacter;
         reset.started           -= RestartLevel;
     }

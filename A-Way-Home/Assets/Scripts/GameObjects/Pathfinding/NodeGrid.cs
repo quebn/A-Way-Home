@@ -5,7 +5,6 @@ public class NodeGrid : MonoBehaviour
 {
     public static NodeGrid Instance {get; private set;}
     [SerializeField] private LayerMask unwalkableMask;
-    [SerializeField] private LayerMask walkableMask;
     [SerializeField] private Vector2 gridSize;
     [SerializeField] private float nodeRadius;
     [SerializeField] private GameObject tilePrefab;
@@ -30,46 +29,31 @@ public class NodeGrid : MonoBehaviour
 
     private void CreateGrid()
     {
-        NodeType nodeType = NodeType.Walkable;
         grid = new Dictionary<Vector2, Node>(gridSizeInt.x * gridSizeInt.y);
         Vector3 worldBottomLeft = transform.position - Vector3.right * gridSize.x / 2 - Vector3.up * gridSize.y / 2;
-        for (int x = 0; x < gridSizeInt.x; x++)
-        {
-            for (int y = 0; y < gridSizeInt.y; y++)
-            {
-                Vector2 gridCoord = new Vector2(x, y);
-                Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.up * (y * nodeDiameter + nodeRadius);
-                bool hasPlatform = Physics2D.OverlapCircle(worldPoint, nodeRadius, walkableMask);
-                Collider2D collider2D = Physics2D.OverlapCircle(worldPoint, nodeRadius, unwalkableMask);
-                if (collider2D == null)
-                    nodeType = NodeType.Walkable;
-                else if (collider2D.gameObject.tag == "Obstacle")
-                    nodeType = NodeType.Obstacle;
-                else if (collider2D.gameObject.tag == "Water")
-                    nodeType = NodeType.Water;
-                else if (collider2D.gameObject.tag == "Terrain")
-                    nodeType = NodeType.Terrain;
-                grid[gridCoord] = new Node(nodeType, worldPoint, new Vector2Int(x, y), tilePrefab, tilePrefabParent, hasPlatform);
-                if (hasPlatform)
-                    grid[gridCoord].currentType = NodeType.Walkable;
+        for (int x = 0; x < gridSizeInt.x; x++){
+            for (int y = 0; y < gridSizeInt.y; y++){
+                CreateNode(x, y, worldBottomLeft);
             }
         }
     }
-    
-    public void UpdateGrid()
+
+    private void CreateNode(int x, int y, Vector3 worldBottomLeft)
     {
-        foreach (KeyValuePair<Vector2, Node> pair in grid)
-        {
-            if (pair.Value.currentType == NodeType.Terrain || pair.Value.currentType == NodeType.Water)
-                continue;
-            Vector3 nodeWorldPos = pair.Value.worldPosition;
-            Collider2D collider2D = Physics2D.OverlapCircle(nodeWorldPos, nodeRadius, unwalkableMask); 
-            if (collider2D != null && collider2D.gameObject.tag == "Obstacle")
-                pair.Value.currentType = NodeType.Obstacle;
-            else    
-                pair.Value.currentType = NodeType.Walkable;
-        }
+        NodeType nodeType = NodeType.Walkable;
+        Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.up * (y * nodeDiameter + nodeRadius);
+        Collider2D collider2D = Physics2D.OverlapCircle(worldPoint, nodeRadius, unwalkableMask);
+        if (collider2D == null)
+            nodeType = NodeType.Walkable;
+        // else if (collider2D.gameObject.tag == "Obstacle")
+        //     nodeType = NodeType.Obstacle;
+        else if (collider2D.gameObject.tag == "Water")
+            nodeType = NodeType.Water;
+        else if (collider2D.gameObject.tag == "Terrain")
+            nodeType = NodeType.Terrain;
+        grid[new Vector2(x, y)] = new Node(nodeType, worldPoint, new Vector2Int(x, y), tilePrefab, tilePrefabParent, false);
     }
+
     public static void ToggleGridTiles(bool toggle)
     {
         foreach(KeyValuePair<Vector2, Node> pair in Instance.grid)
@@ -98,6 +82,18 @@ public class NodeGrid : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        float diameter = nodeRadius * 2;
+        Vector3 bottomLeft = transform.position - Vector3.right * gridSize.x / 2 - Vector3.up * gridSize.y / 2;
+        for (int x = 0; x < gridSize.x; x++){
+            for (int y = 0; y < gridSize.y; y++){
+                Vector3 worldPoint = bottomLeft + Vector3.right * (x * diameter + nodeRadius) + Vector3.up * (y * diameter+ nodeRadius);
+                Gizmos.color = Color.blue;
+                Gizmos.DrawWireCube(worldPoint, new Vector3(diameter, diameter, 0));
+                UnityEditor.Handles.Label(worldPoint, $"{worldPoint.x}, {worldPoint.y}");
+            }
+        }
+        Gizmos.color = Color.white;
         Gizmos.DrawWireCube(transform.position, new Vector3(gridSize.x, gridSize.y, 0));
     }
+
 }

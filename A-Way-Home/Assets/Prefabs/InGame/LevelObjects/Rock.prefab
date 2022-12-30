@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7432801485719824592}
-  - component: {fileID: 7432801485719824595}
+  - component: {fileID: 6901048490866201070}
   - component: {fileID: 7432801485719824594}
   - component: {fileID: 7432801485719824593}
+  - component: {fileID: 6943999327393801636}
   m_Layer: 3
   m_Name: Rock
   m_TagString: Obstacle
@@ -28,8 +29,8 @@ RectTransform:
   m_GameObject: {fileID: 7432801485719824604}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.021086216}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -39,7 +40,7 @@ RectTransform:
   m_AnchoredPosition: {x: -4.5, y: -4.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &7432801485719824595
+--- !u!114 &6901048490866201070
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -48,12 +49,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7432801485719824604}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5aaa44e52c17824bb1a43e4c701da06, type: 3}
+  m_Script: {fileID: 11500000, guid: 62b9df7eb05410c4b98a31e492feb905, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nodesToBlock: []
+  toolType: 0
   ID: 
-  toolType: 2
-  isRemoved: 0
 --- !u!61 &7432801485719824594
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -121,7 +122,7 @@ SpriteRenderer:
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1361808530, guid: 5e5c2b70d8610c44795b6b7403a61e1c, type: 3}
+  m_Sprite: {fileID: 1549638497, guid: 4187036a4d5fba74fa736a5b932690dd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -132,3 +133,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &6943999327393801636
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7432801485719824604}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d020c5ccf55a1674cacf2a2ace844394, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0

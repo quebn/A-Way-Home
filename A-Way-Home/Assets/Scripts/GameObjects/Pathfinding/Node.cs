@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum NodeType{ Walkable, Water, Terrain, Obstacle}//, Platform}
+public enum NodeType{ Walkable, Water, Terrain, Obstacle}
 public class Node
 {
     public GameObject tileObject;
@@ -15,10 +15,18 @@ public class Node
     public int gCost;
     public int hCost;
     
-    private bool isWalkable {get{ return currentNodeType == NodeType.Walkable ;}}
-    public int fCost{ get{ return gCost + hCost ;} }
-    public NodeType currentType { get { return currentNodeType;} set{ currentNodeType = value; SetColor();} }
-
+    public int fCost => gCost + hCost ;
+    private bool isWalkable => currentNodeType == NodeType.Walkable ;
+    public NodeType currentType {  
+        get => this.currentNodeType; 
+        set { this.currentNodeType = value; UpdateColor();} 
+    }
+    
+    public static Color colorWhite  => new Color32(255, 255, 255, 100);   
+    public static Color colorRed    => new Color32(255, 0, 0, 150);       
+    public static Color colorBlue   => new Color32(0, 0, 255, 150);       
+    public static Color colorClear  => Color.clear; 
+    
     public Node(NodeType nodeType, Vector3 worldpos, Vector2Int grid, GameObject tilePrefab, Transform parent, bool containsObj)
     {
         this.tileObject = GameObject.Instantiate(tilePrefab, worldpos, Quaternion.identity, parent);
@@ -32,9 +40,8 @@ public class Node
 
     public void RevertNode()
     {
-        this.currentNodeType = originalNodeType;
         this.containsObject = false;
-        SetColor();
+        this.currentType = this.originalNodeType;
     }
 
     public bool IsWalkable(bool canWalkWater = false)
@@ -52,21 +59,21 @@ public class Node
         return -compare;
     }
 
-    public void SetColor()
+    public void UpdateColor()
     {
         switch(currentNodeType)
         {
             case NodeType.Walkable:
-                tileRenderer.color = new Color32(255, 255, 255, 100);
+                tileRenderer.color = colorWhite;
                 break;
             case NodeType.Terrain:
-                tileRenderer.color = new Color32(0, 0, 0, 100);
+                tileRenderer.color = colorClear;
                 break;
             case NodeType.Water:
-                tileRenderer.color = new Color32(0, 0, 255, 100);
+                tileRenderer.color = colorBlue;
                 break;
             case NodeType.Obstacle:
-                tileRenderer.color = new Color32(255, 0 , 0, 100);
+                tileRenderer.color = colorRed;
                 break;
         }
     }
@@ -74,11 +81,8 @@ public class Node
     public static List<Node> GetNeighbors(Node node, Dictionary<Vector2, Node> grid, Vector2Int gridsize)
     {
         List<Node> neighbors = new List<Node>();
-
-        for (int x = -1; x <= 1; x++)
-        {
-            for (int y = -1; y <= 1; y++)
-            {
+        for (int x = -1; x <= 1; x++){
+            for (int y = -1; y <= 1; y++){
                 // Prevent middle node and diagonal nodes from being included in neighbors of the node.
                 // Grid coords that are excluded: (0, 0), (1, 1), (-1, -1), (-1 , 1), (1, -1)
                 if (x == y || x + y == 0)

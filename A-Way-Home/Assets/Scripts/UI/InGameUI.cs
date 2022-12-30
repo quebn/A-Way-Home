@@ -14,7 +14,6 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI movesLeftTMP;
     [SerializeField] private TextMeshProUGUI energyLeftTMP;
     [SerializeField] private TextMeshProUGUI livesLeftTMP;
-    [SerializeField] private TextMeshProUGUI skillCounter;
     [SerializeField] private TextMeshProUGUI timeCounter;
 
     private bool pathDisplayToggle = false;
@@ -25,6 +24,7 @@ public class InGameUI : MonoBehaviour
             energySlider.value = value;
         }
     }
+
     private float timeCounterUI{
         get {return PlayerLevelData.Instance.levelData.secondsLeft; }
         set {
@@ -32,7 +32,6 @@ public class InGameUI : MonoBehaviour
             timeCounter.text = ((int)timeCounterUI).ToString();
         }
     }
-
 
     private void Awake()
     {
@@ -54,8 +53,6 @@ public class InGameUI : MonoBehaviour
             TimeCountdown();
     }
 
-
-
     public void TimeCountdown()
     {
         if (timeCounterUI > 0)
@@ -70,7 +67,6 @@ public class InGameUI : MonoBehaviour
         this.characterNameTMP.text  = levelData.characterName;
         this.movesLeftTMP.text      = levelData.moves.ToString();
         this.livesLeftTMP.text      = levelData.lives.ToString();
-        this.skillCounter.text      = levelData.skillCount.ToString();
         SetMaxEnergy(0);
     }
 
@@ -86,12 +82,6 @@ public class InGameUI : MonoBehaviour
     {
         PlayerLevelData.Instance.character.energy += increment;
         energyValueUI = PlayerLevelData.Instance.character.energy;
-    }
-
-    public void SetSkillCounter(int increment)
-    {
-        PlayerLevelData.Instance.levelData.skillCount += increment;
-        this.skillCounter.text = $"{PlayerLevelData.Instance.levelData.skillCount}";
     }
 
     public void SetPlayerMoves(int increment)
@@ -139,17 +129,10 @@ public class InGameUI : MonoBehaviour
         this.optionsWindow.SetActive(true);
     }
 
-    public void SetTool(int toolindex)
+    public void SetTool(int toolIndex)
     {
-        if (toolindex > 3)
-        {
-            Debug.LogWarning("Tool not yet added in Manipulation enum");
-            return;
-        }
-        ICharacter character = (ICharacter)PlayerLevelData.Instance.character;
-        if (toolindex != (int)ManipulationType.UniqueSkill)
-            character.OnDeselect();
-        PlayerActions.Instance.currentManipulationType = (ManipulationType)toolindex;
-        Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
+        PlayerActions.Instance.SetToolType($"Tool{toolIndex}");
+        // PlayerActions.Instance.currentManipulationType = (ManipulationType)toolindex;
+        // Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
     }
 }
