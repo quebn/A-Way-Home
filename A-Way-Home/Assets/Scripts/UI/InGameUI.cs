@@ -17,16 +17,27 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timeCounter;
 
     private bool pathDisplayToggle = false;
-    public GameObject getGameEndWindow { get { return gameEndWindow; } }
-    private int energyValueUI {
+    public GameObject getGameEndWindow => gameEndWindow;
+    public int energyValueUI {
         set { 
             energyLeftTMP.text = value.ToString();
             energySlider.value = value;
         }
     }
+    public int energyMaxValueUI {
+        set { 
+            energyLeftTMP.text = value.ToString();
+            energySlider.maxValue = value;
+            energySlider.value = value;
+        }
+    }
+
+    public string playerMovesUI {
+        set =>  this.movesLeftTMP.text = value;
+    }
 
     private float timeCounterUI{
-        get {return PlayerLevelData.Instance.levelData.secondsLeft; }
+        get => PlayerLevelData.Instance.levelData.secondsLeft; 
         set {
             PlayerLevelData.Instance.levelData.secondsLeft = value;
             timeCounter.text = ((int)timeCounterUI).ToString();
@@ -36,15 +47,16 @@ public class InGameUI : MonoBehaviour
     private void Awake()
     {
         GameEvent.InitializeLevel();
+        if (Instance == null)
+            Instance = this;
     }
 
     private void Start()
     {
         PlayerLevelData playerLevelData = PlayerLevelData.Instance;
+        Debug.Assert(playerLevelData.character != null, "Character is null");
         InitCharacterUI(playerLevelData.levelData, playerLevelData.character);
         endGameType = EndGameType.None;
-        if (Instance == null)
-            Instance = this;
     }
 
     private void Update()
@@ -58,7 +70,7 @@ public class InGameUI : MonoBehaviour
         if (timeCounterUI > 0)
             timeCounterUI -= Time.deltaTime;
         if (timeCounterUI <= 0 && !GameEvent.isEndWindowActive)
-            GameEvent.SetEndWindowActive(EndGameType.TimeRanOut);
+            PlayerLevelData.Instance.character.GoHome();
     }
 
     private void InitCharacterUI(LevelData levelData, Character character)
@@ -67,28 +79,9 @@ public class InGameUI : MonoBehaviour
         this.characterNameTMP.text  = levelData.characterName;
         this.movesLeftTMP.text      = levelData.moves.ToString();
         this.livesLeftTMP.text      = levelData.lives.ToString();
-        SetMaxEnergy(0);
+        character.SetMaxEnergy(levelData.characterEnergy);
     }
 
-    public void SetMaxEnergy(int increment)
-    {
-        Character character = PlayerLevelData.Instance.character;
-        character.energy += increment;
-        energySlider.maxValue = character.energy;
-        energyValueUI = character.energy;
-    }
-
-    public void SetCharacterEnergy(int increment)
-    {
-        PlayerLevelData.Instance.character.energy += increment;
-        energyValueUI = PlayerLevelData.Instance.character.energy;
-    }
-
-    public void SetPlayerMoves(int increment)
-    {
-        PlayerLevelData.Instance.levelData.moves += increment;
-        this.movesLeftTMP.text = $"{PlayerLevelData.Instance.levelData.moves}";
-    }
 
     public void ShowCurrentPath()
     {
@@ -113,7 +106,7 @@ public class InGameUI : MonoBehaviour
 
     public void PlayAction()
     {
-        PlayerLevelData.Instance.character.InitCharacter();
+
     }
 
     public void HelpButton()
@@ -131,7 +124,7 @@ public class InGameUI : MonoBehaviour
 
     public void SetTool(int toolIndex)
     {
-        PlayerActions.Instance.SetToolType($"Tool{toolIndex}");
+        PlayerActions.Instance.SetToolType(toolIndex);
         // PlayerActions.Instance.currentManipulationType = (ManipulationType)toolindex;
         // Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
     }

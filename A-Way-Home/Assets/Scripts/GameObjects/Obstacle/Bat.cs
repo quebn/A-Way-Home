@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bat : Obstacle , IObstacle
+public class Bat : Obstacle , IInteractable
 {
     [SerializeField] private GameObject batGameObject;
     [SerializeField] private GameObject destination;
@@ -23,6 +23,7 @@ public class Bat : Obstacle , IObstacle
         destination.SetActive(false);
         spriteRenderer = batGameObject.GetComponent<SpriteRenderer>();
         animator = batGameObject.GetComponent<Animator>();
+        SetNodes(destination.transform.position);
         if (isAwake)
             GoToDestination();
     }
@@ -35,20 +36,19 @@ public class Bat : Obstacle , IObstacle
         Debug.Log("Interacted!");
         isAwake = true;
         GoToDestination();
-        InGameUI.Instance.SetPlayerMoves(-1);
+        PlayerLevelData.Instance.SetPlayerMoves(-1);
     }
 
     public void OnHover()
     {
         // Should show the nodes the bat blocks when hovered
-        Debug.Log("Hovering on Bat!");
-        spriteRenderer.color = Color.red;
+        SetMouseCursor(this.mouseTexture);
         HighlightNodes();
     }
 
     public void OnDehover()
     {
-        spriteRenderer.color = Color.white;
+        ResetMouseCursor();
         if (isAwake)
             return;
         setNodes = Node.colorWhite;

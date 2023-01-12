@@ -16,6 +16,7 @@ public class CameraMovement : MonoBehaviour
     private float zoom;
     private float mapMinX, mapMaxX, mapMinY, mapMaxY;
     private bool drag = false;
+    private Vector2 cameraBoundary => PlayerLevelData.Instance.levelBoundary;// replace bounds size.
 
     private void Update()
     {
@@ -24,15 +25,13 @@ public class CameraMovement : MonoBehaviour
 
     private void Start()
     {
-        SpriteRenderer platform = NodeGrid.Instance.GetComponent<SpriteRenderer>();
         mainCamera = Camera.main;
         zoom = mainCamera.orthographicSize;
-
-        mapMinX = platform.transform.position.x - platform.bounds.size.x * 0.5f;
-        mapMaxX = platform.transform.position.x + platform.bounds.size.x * 0.5f;
-
-        mapMinY = platform.transform.position.y - platform.bounds.size.y * 0.5f;
-        mapMaxY = platform.transform.position.y + platform.bounds.size.y * 0.5f;
+        Vector2 center = Vector2.zero;
+        mapMinX = center.x - cameraBoundary.x * 0.5f;
+        mapMaxX = center.x + cameraBoundary.x * 0.5f;
+        mapMinY = center.y - cameraBoundary.y * 0.5f;
+        mapMaxY = center.y + cameraBoundary.y * 0.5f;
 
         resetCamera = mainCamera.transform.position;
 
@@ -107,4 +106,6 @@ public class CameraMovement : MonoBehaviour
 
         return new Vector3(ClampedPos.x, ClampedPos.y, TargetPos.z);
     }
+
+
 }

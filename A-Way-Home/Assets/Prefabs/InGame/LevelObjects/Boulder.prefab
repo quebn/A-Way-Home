@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 897719141268755615}
   - component: {fileID: 2167627224974332013}
   - component: {fileID: 1993872408031588406}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Boulder
-  m_TagString: Obstacle
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,8 +52,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 606277a92c89889419be73d2e4797593, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodesToBlock: []
-  toolType: 1
+  mouseTexture: {fileID: 2800000, guid: 3dda94fc419320245b16310096793a85, type: 3}
+  toolTypes: 04000000
+  tileSize: {x: 2, y: 2}
   ID: 
 --- !u!61 &897719141268755615
 BoxCollider2D:

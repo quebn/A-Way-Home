@@ -18,6 +18,8 @@ public static class GameEvent
     {
         if(isSceneSandbox)
             return;
+        if(isPaused)
+            UnpauseGame();
         GameObject levelPrefab = Resources.Load<GameObject>($"Levels/{prefabLevelName}");
         GameObject.Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
     }
@@ -82,10 +84,8 @@ public static class GameEvent
 
     public static void SetEndWindowActive(EndGameType endGameType)
     {
+        PauseGame();
         Debug.Log("Calling..");
-        PlayerLevelData.Instance.character.isGoingHome = false;
-        if(isSceneSandbox)
-            return;
         InGameUI inGameUI = InGameUI.Instance;
         inGameUI.getGameEndWindow.SetActive(true);
         inGameUI.endGameType = endGameType;
@@ -94,14 +94,14 @@ public static class GameEvent
     public static void PauseGame()
     {
         Debug.Assert(!isPaused, "Game is Already Paused");
-        isPaused = true;
+        isPaused = !isPaused;
         Time.timeScale = 0f;
     }
 
     public static void UnpauseGame()
     {
         Debug.Assert(isPaused, "Game is not Paused");
-        isPaused = false;
+        isPaused = !isPaused;
         Time.timeScale = 1f;
     }
 

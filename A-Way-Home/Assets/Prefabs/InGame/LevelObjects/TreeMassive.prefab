@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4596059024753697537}
   m_Layer: 3
   m_Name: TreeMassive
-  m_TagString: Obstacle
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -54,7 +54,7 @@ BoxCollider2D:
   m_Offset: {x: -0.03, y: 0.75}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
+    pivot: {x: 0.5, y: 0.11}
     oldSize: {x: 5.9375, y: 6.625}
     newSize: {x: 5.9375, y: 6.625}
     adaptiveTilingThreshold: 0.5

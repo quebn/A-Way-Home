@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public enum EndGameType { None, GameOver, LevelClear, NoEnergy, TimeRanOut}
+public enum EndGameType { None, GameOver, LevelClear, TryAgain}
 
 public class GameEndUI : MonoBehaviour
 {
@@ -19,7 +19,6 @@ public class GameEndUI : MonoBehaviour
     private void Start()
     {
         InitGameEndUI();
-        GameEvent.PauseGame();
         PlayerLevelData.Instance.levelData.score = ScoreSystem.CalculateScore();
     }
 
@@ -31,7 +30,6 @@ public class GameEndUI : MonoBehaviour
     private void InitGameEndUI()
     {
         EndGameType type = InGameUI.Instance.endGameType;
-        
         switch(type)
         {
             case EndGameType.None:
@@ -55,38 +53,15 @@ public class GameEndUI : MonoBehaviour
                     greenButtonText: "proceed",
                     lifeIncrement: 0
                 );
-                // UnlockNextLevel();
                 break;
-            case EndGameType.NoEnergy:
+            case EndGameType.TryAgain:
                 InitializeContentsUI(
                     color: Color.white, 
                     title: "level failed",
-                    message: "your character ran out of energy before reaching to its home!",
+                    message: "your character died before reaching to its home!",
                     redButtonText: "end run",
                     greenButtonText: "try again"
                 );
-                break;
-            case EndGameType.TimeRanOut:
-                if (PlayerLevelData.Instance.levelData.lives > 1){
-                    InitializeContentsUI(
-                        color: Color.white,
-                        title: "level failed",
-                        message: "you ran out of time before solving the level!",
-                        redButtonText: "end run",
-                        greenButtonText: "try again"
-                    );
-                    InGameUI.Instance.endGameType = EndGameType.NoEnergy;
-                }else{
-                    InitializeContentsUI(
-                        color: Color.red,
-                        title: "game over",
-                        message: "you ran out of time before solving the level!",
-                        redButtonText: "main menu",
-                        greenButtonText: "proceed"
-                    );
-                    InGameUI.Instance.endGameType = EndGameType.GameOver;
-                }
-                // Debug.Assert(false, "Unimplemented!");
                 break;
         }
     }
@@ -142,7 +117,7 @@ public class GameEndUI : MonoBehaviour
             case EndGameType.LevelClear:
                 NextLevel();
                 break;
-            case EndGameType.NoEnergy:
+            case EndGameType.TryAgain:
                 TryAgain();
                 break;
         }

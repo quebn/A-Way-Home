@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 4750551784843103696}
   m_Layer: 0
   m_Name: Bat
-  m_TagString: Obstacle
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -136,8 +136,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c98a8dfadcc55894883e9b73353a0ede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouseTexture: {fileID: 2800000, guid: 763e4a00d1d0cc5419223076ce4d1436, type: 3}
+  toolTypes: 02000000
+  tileSize: {x: 1, y: 1}
   ID: 
-  nodesToBlock: []
   batGameObject: {fileID: 1600305799403283369}
   destination: {fileID: 1482998649462478349}
   isAwake: 0
@@ -157,10 +159,10 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 2.68, y: 2.22}
+    adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0

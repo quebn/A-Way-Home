@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum NodeType{ Walkable, Water, Terrain, Obstacle}
@@ -13,18 +14,19 @@ public class Node
     public Node parent;
     public bool containsObject;
     public int gCost;
-    public int hCost;
-    
-    public int fCost => gCost + hCost ;
+    public List<int> hCosts ;
+
+    public int minHCost => hCosts.Min(); 
+    public int fCost => gCost + minHCost;
     private bool isWalkable => currentNodeType == NodeType.Walkable ;
     public NodeType currentType {  
         get => this.currentNodeType; 
         set { this.currentNodeType = value; UpdateColor();} 
     }
     
-    public static Color colorWhite  => new Color32(255, 255, 255, 100);   
-    public static Color colorRed    => new Color32(255, 0, 0, 150);       
-    public static Color colorBlue   => new Color32(0, 0, 255, 150);       
+    public static Color colorWhite  => new Color32(255, 255, 255, 100);
+    public static Color colorRed    => new Color32(255, 0, 0, 150);
+    public static Color colorBlue   => new Color32(0, 0, 255, 150);
     public static Color colorClear  => Color.clear; 
     
     public Node(NodeType nodeType, Vector3 worldpos, Vector2Int grid, GameObject tilePrefab, Transform parent, bool containsObj)
@@ -51,13 +53,14 @@ public class Node
         return isWalkable;
     }
 
-    public int CompareNode(Node node)
-    {
-        int compare = fCost.CompareTo(node.fCost);
-        if (compare == 0)
-            compare = hCost.CompareTo(node.hCost);
-        return -compare;
-    }
+    // public int CompareNode(Node node)
+    // {
+    //     int compare = fCost.CompareTo(node.fCost);
+    //     foreach(int hCost in hCosts)
+    //         if (compare == 0)
+    //             compare = hCost.CompareTo(node.hCosts);
+    //     return -compare;
+    // }
 
     public void UpdateColor()
     {
@@ -76,6 +79,14 @@ public class Node
                 tileRenderer.color = colorRed;
                 break;
         }
+    }
+
+    private int GetHcostSum()
+    {
+        int total = 0;
+        foreach(int i in hCosts)
+            total += i;
+        return total;
     }
 
     public static List<Node> GetNeighbors(Node node, Dictionary<Vector2, Node> grid, Vector2Int gridsize)

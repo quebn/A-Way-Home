@@ -5,44 +5,35 @@ public class PlayerLevelData : MonoBehaviour
 {
     public static PlayerLevelData Instance {get; private set;}
     public Character character;
-    public Transform characterHome;
-    public Animator homeAnimator;
 
     [SerializeField] private uint characterLevel;
     [SerializeField] private int characterEnergy;
     [SerializeField] private int characterSkillCount;
     [SerializeField] private int playerLives;
     [SerializeField] private int playerMoves;
+    [SerializeField] private int essenceNeeded;
     [SerializeField] private float timeLimitInSecs;
+    [SerializeField] private Vector2 cameraBoundary;
 
     [HideInInspector] public LevelData levelData;
+    [HideInInspector] public List<Vector3> currentDestinations;
 
-    public static Dictionary<string, GameObject> gameObjectList;
+    public Vector2 levelBoundary => this.cameraBoundary;
     public static string characterName;
 
     private void Awake()
     {
         Initialize();
-        if (Instance != null)
-            return;
-        Instance  = this;
-    }
-
-    private void InitCharacter()
-    {
-        character.homePosition = characterHome.transform.position;
-        character.energy = levelData.characterEnergy;
-        if (GameEvent.isSceneSandbox)
-        {
-            character.speed = 5f;    
-            return;
-        }
-        character.speed = GameData.Instance.gameSpeed;
     }
 
     private void Initialize()
     {
-        gameObjectList = new Dictionary<string, GameObject>();
+        if (Instance != null)
+            return;
+        Instance  = this;
+        Obstacle.list = new Dictionary<string, Obstacle>();
+        Essence.list = new Dictionary<Vector2, Essence>();
+        this.currentDestinations = new List<Vector3>();
         switch(GameEvent.loadType)
         {
             case LevelLoadType.NewGame:
@@ -55,10 +46,12 @@ public class PlayerLevelData : MonoBehaviour
                 RestartGame();
                 break;
         }
-        Debug.Assert(character != null, "Character is null");
-        InitCharacter();
-        Debug.Assert(levelData.level != 0, "ERROR: level is 0");
-        Debug.Assert(character.homePosition != null, "Error: characterHome is null!");
+        // InitCharacter();
+    }
+
+    private void Start()
+    {
+        character.Initialize(characterEnergy, essenceNeeded);
     }
 
     private void NewGame()
@@ -94,6 +87,21 @@ public class PlayerLevelData : MonoBehaviour
     {
         this.levelData = GameData.loadedLevelData.levelData;
         Debug.Assert(this.characterLevel == levelData.level, "ERROR: Level does not match");
+    }
+
+    public void SetPlayerMoves(int increment)
+    {
+        this.levelData.moves += increment;
+        InGameUI.Instance.playerMovesUI = $"{this.levelData.moves}";
+    }
+
+    [SerializeField] private bool enableBoundaryGizmo;
+    private void OnDrawGizmos()
+    {
+        if (!enableBoundaryGizmo)
+            return;
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(Vector3.zero, new Vector3(cameraBoundary.x, cameraBoundary.y, 0));
     }
 
 }

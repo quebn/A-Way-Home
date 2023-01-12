@@ -3,71 +3,69 @@ using UnityEngine;
 
 public static class Pathfinding
 {
-    public static Vector3[] FindPath(Vector3 startpos, Vector3 targetpos, bool canWalkWater = false)
+    public static Vector3[] FindPath(Vector3 startingPos, List<Vector3> targetPos, bool canWalkWater = false)
     {
         NodeGrid nodeGrid = NodeGrid.Instance;
         Vector3[] path = new Vector3[0];
-        Node startnode = NodeGrid.NodeWorldPointPos(startpos);
-        Node targetnode = NodeGrid.NodeWorldPointPos(targetpos);
 
-        if (!startnode.IsWalkable(canWalkWater) && !targetnode.IsWalkable(canWalkWater))
-        {    
+        Node startNode = NodeGrid.NodeWorldPointPos(startingPos);
+        List<Node> endNodes = NodeGrid.NodeWorldPointPos(targetPos);
+
+        if (!startNode.IsWalkable())
+        {
             Debug.Log("No Path Found!");
             return path;
         }
-        List<Node> OpenSet = new List<Node>();
-        HashSet<Node> ClosedSet = new HashSet<Node>();
-        OpenSet.Add(startnode);
 
-        while (OpenSet.Count > 0)
+        List<Node> openSet = new List<Node>();
+        HashSet<Node> closedSet = new HashSet<Node>();
+        openSet.Add(startNode);
+
+        while (openSet.Count > 0)
         {
             // 
-            Node CurrentNode = OpenSet[0];
-            for (int i = 1; i < OpenSet.Count; i++)
-                if (OpenSet[i].fCost < CurrentNode.fCost || OpenSet[i].fCost == CurrentNode.fCost && OpenSet[i].hCost < CurrentNode.hCost)
-                    CurrentNode = OpenSet[i];
+            Node currentNode = openSet[0];
+            for (int i = 1; i < openSet.Count; i++)
+                if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].minHCost < currentNode.minHCost)
+                    currentNode = openSet[i];
+            //
 
-            OpenSet.Remove(CurrentNode);
-            ClosedSet.Add(CurrentNode);
-
-            if (CurrentNode == targetnode)
+            openSet.Remove(currentNode);
+            closedSet.Add(currentNode);
+            if (endNodes.Contains(currentNode))
             {
-                path = RetracePath(startnode, targetnode).ToArray();
+                path = RetracePath(startNode, currentNode).ToArray();
                 Debug.Log("Path Found! Path Total Nodes: " + path.Length);
                 break;
             }
-            // 
-            foreach (Node Neighbor in Node.GetNeighbors(CurrentNode, nodeGrid.grid, nodeGrid.gridSizeInt))
+            foreach (Node neighbor in Node.GetNeighbors(currentNode, nodeGrid.grid, nodeGrid.gridSizeInt))
             {
-                if (!Neighbor.IsWalkable(canWalkWater) || ClosedSet.Contains(Neighbor))
+                if (!neighbor.IsWalkable(canWalkWater) || closedSet.Contains(neighbor))
                     continue;
                 
-                int newMovementCostToNeighbor = CurrentNode.gCost + GetDistance(CurrentNode, Neighbor);
-                if (newMovementCostToNeighbor < Neighbor.gCost || !OpenSet.Contains(Neighbor))
+                int newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
+                if (newMovementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
                 {
-                    Neighbor.gCost = newMovementCostToNeighbor;
-                    Neighbor.hCost = GetDistance(Neighbor, targetnode);
-                    Neighbor.parent = CurrentNode;
+                    neighbor.gCost = newMovementCostToNeighbor;
+                    neighbor.hCosts = GetDistances(neighbor, endNodes);
+                    neighbor.parent = currentNode;
 
-                    if (!OpenSet.Contains(Neighbor))
-                        OpenSet.Add(Neighbor);
+                    if (!openSet.Contains(neighbor))
+                        openSet.Add(neighbor);
                 }
             }
         }
-        // if (path.Length <= 0)
-        //     return;
-        //     Debug.Log("path is null");
         return path;
     }
 
-    private static List<Vector3> RetracePath(Node startnode, Node targetnode)
+    private static List<Vector3> RetracePath(Node startNode, Node endNode)
     {
         List<Vector3> waypoints = new List<Vector3>();
-        Node CurrentNode = targetnode;
-        while(CurrentNode != startnode)
+        Node currentNode = endNode;
+        while(currentNode != startNode)
         {
-            waypoints.Add(CurrentNode.worldPosition);
-            CurrentNode = CurrentNode.parent;
+            waypoints.Add(currentNode.worldPosition);
+            currentNode = currentNode.parent;
         }
         waypoints.Reverse();
         return waypoints;
@@ -81,5 +79,13 @@ public static class Pathfinding
         if (dstX > dstY)
             return dstY + 10 * (dstX - dstY);
         return dstX + 10 * (dstY - dstX);
+    }
+
+    private static List<int> GetDistances(Node nodeA, List<Node> nodes)
+    {
+        List<int> distances = new List<int>();
+        foreach (Node node in nodes)
+            distances.Add(GetDistance(nodeA, node));
+        return distances;
     }
 }

@@ -7,10 +7,12 @@ public class PlayerActions : MonoBehaviour
 {
     public static PlayerActions Instance { get; private set; }
 
-    [HideInInspector] public string currentTool;
+    [SerializeField] private Animator lightningAnimator;
+    [HideInInspector] public Tool currentTool;
     [HideInInspector] public Mouse mouse;
-
+    
     private Camera mainCamera;
+    private IInteractable currentInteractable;
     private PlayerInput playerInput;
     private InputAction performAction; 
     private InputAction revealPath;
@@ -24,7 +26,8 @@ public class PlayerActions : MonoBehaviour
     private InputAction start;
     private InputAction reset;
 
-    private IObstacle currentObstacle;
+
+    private bool actionsNotAllowed => ( IsMouseOverUI() ||  PlayerLevelData.Instance.character.isGoingHome);
 
     private void Start()
     {
@@ -54,35 +57,57 @@ public class PlayerActions : MonoBehaviour
         // Perform action should perform the desired action depending on the current Tool
         //      Tool1: Interact/None    => Obstacles/Objects that responds to interact like Bat changing states when interacted.
         //      Tool2: Destroy          => Obstacles/Objects that responds to destroy will be destroyed.
-        if (IsMouseOverUI())
+        if (actionsNotAllowed || PlayerLevelData.Instance.levelData.moves <= 0)
             return;
         Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
         RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
-        if (hit2D.collider == null || hit2D.collider.gameObject.tag != "Obstacle")
+        if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
             return;
-        Debug.Log("GameObject with Obstacle component found");
-        IObstacle obstacle = hit2D.collider.gameObject.GetComponent<IObstacle>();
-        if (obstacle == null)
+        Debug.Log("Interactable obstacle found");
+        IInteractable interactable = hit2D.collider.gameObject.GetComponent<IInteractable>();
+        if (interactable == null)
         {
-            Debug.LogWarning("No Obstacle component attached.");
+            Debug.LogWarning("No interactable obstacle found.");
             return;
         }
-        obstacle.OnClick();
+        OnClick(hit2D.transform.position, interactable);
+    }
+
+    private void OnClick(Vector2 location, IInteractable interactable)
+    {
+        switch(currentTool)
+        {
+            case Tool.Lightning:
+                lightningAnimator.transform.position = location;
+                lightningAnimator.Play("Lightning_Strike");
+                break;
+        }
+        interactable.OnClick();
     }
 
     private void SetCurrentTool(InputAction.CallbackContext context)
     {
-        if (GameEvent.isPaused || PlayerLevelData.Instance.character.isHome)
+        if (GameEvent.isPaused || PlayerLevelData.Instance.character.destinationReached)
             return;
         switch(context.action.name)
         {
             case "Tool1":
+                SetToolType(0);
+                break;
             case "Tool2":
+                SetToolType(1);
+                break;
             case "Tool3":
+                SetToolType(2);
+                break;
             case "Tool4":
+                SetToolType(3);
+                break;
             case "Tool5":
+                SetToolType(4);
+                break;
             case "Tool6":
-                SetToolType(context.action.name);
+                SetToolType(5);
                 break;
             default:
                 Debug.Log($"{context.action.name} is not recognize!");
@@ -90,37 +115,39 @@ public class PlayerActions : MonoBehaviour
         }
     }
 
-    public void SetToolType(string tool)
+    public void SetToolType(int index)
     {
-        currentTool = tool;
+        if (index > 5)
+            return;
+        currentTool = (Tool)index;
         Debug.Log($"Current Tool: {currentTool}");
     }
 
     private void HoverObstacle()
     {
-        if (IsMouseOverUI())
+        if (actionsNotAllowed)
             return;
         Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
         RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
-        if (hit2D.collider == null || hit2D.collider.gameObject.tag != "Obstacle")
+        if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
         {
-            if (currentObstacle != null)
+            if (currentInteractable != null)
             {
-                currentObstacle.OnDehover();
-                currentObstacle = null;
+                currentInteractable.OnDehover();
+                currentInteractable = null;
             }
             return;
         }
-        if (currentObstacle == null)
-            currentObstacle = hit2D.collider.gameObject.GetComponent<IObstacle>();
-        currentObstacle.OnHover();
+        if (currentInteractable == null)
+            currentInteractable = hit2D.collider.gameObject.GetComponent<IInteractable>();
+        currentInteractable.OnHover();
     }
 
     private void StartCharacter(InputAction.CallbackContext context)
     {
         if (PlayerLevelData.Instance.character.isGoingHome)
             return;
-        PlayerLevelData.Instance.character.InitCharacter();
+        PlayerLevelData.Instance.character.GoHome();
     }
 
     private void UndoAction(InputAction.CallbackContext context)
@@ -151,7 +178,7 @@ public class PlayerActions : MonoBehaviour
     private void Initialize()
     {
         playerInput = GetComponent<PlayerInput>();
-        currentTool = "Tool1";
+        currentTool = Tool.Inspect;
         mouse = Mouse.current;
         mainCamera = Camera.main;
         Debug.Assert(playerInput != null, "GetComponent failed!");

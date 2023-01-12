@@ -45,8 +45,6 @@ public class NodeGrid : MonoBehaviour
         Collider2D collider2D = Physics2D.OverlapCircle(worldPoint, nodeRadius, unwalkableMask);
         if (collider2D == null)
             nodeType = NodeType.Walkable;
-        // else if (collider2D.gameObject.tag == "Obstacle")
-        //     nodeType = NodeType.Obstacle;
         else if (collider2D.gameObject.tag == "Water")
             nodeType = NodeType.Water;
         else if (collider2D.gameObject.tag == "Terrain")
@@ -54,6 +52,29 @@ public class NodeGrid : MonoBehaviour
         grid[new Vector2(x, y)] = new Node(nodeType, worldPoint, new Vector2Int(x, y), tilePrefab, tilePrefabParent, false);
     }
 
+    public static List<Vector2> WorldPosByTileSize(Vector2 worldPos, int width, int height)
+    {
+        int size = width * height;
+        List<Vector2> worldPositions = new List<Vector2>(size);
+        Vector2 coord = new Vector2(SetToMid(worldPos.x, width), SetToMid(worldPos.y, height));
+        Vector2 worldBottomLeft = coord - Vector2.right * width / 2 - Vector2.up * height / 2;
+        for (int x = 0; x < width; x++){
+            for (int y = 0; y < height; y++){
+                Vector2 worldPoint = worldBottomLeft + Vector2.right * (x * 1 + 0.5f) + Vector2.up * (y * 1 + 0.5f);
+                worldPositions.Add(SetToMid(worldPoint));
+            }
+        }
+        return worldPositions;
+    }
+
+    public static List<Node> NodesByTileSize(Vector2 worldPos, int width, int height)
+    {
+        List<Node> nodes = new List<Node>();
+        List<Vector2> vector2s = WorldPosByTileSize(worldPos, width, height);
+        for(int i = 0; i < vector2s.Count; i++)
+            nodes.Add(NodeWorldPointPos(vector2s[i]));
+        return nodes;
+    }
     public static void ToggleGridTiles(bool toggle)
     {
         foreach(KeyValuePair<Vector2, Node> pair in Instance.grid)
@@ -76,10 +97,10 @@ public class NodeGrid : MonoBehaviour
         Vector2 index = new Vector2();
         index.x = Mathf.RoundToInt((gridSizeInt.x - 1) * percentX);
         index.y = Mathf.RoundToInt((gridSizeInt.y - 1) * percentY);
-
         return Instance.grid[index];
     }
 
+    [SerializeField] private bool enablePositionValues;
     private void OnDrawGizmos()
     {
         float diameter = nodeRadius * 2;
@@ -89,11 +110,56 @@ public class NodeGrid : MonoBehaviour
                 Vector3 worldPoint = bottomLeft + Vector3.right * (x * diameter + nodeRadius) + Vector3.up * (y * diameter+ nodeRadius);
                 Gizmos.color = Color.blue;
                 Gizmos.DrawWireCube(worldPoint, new Vector3(diameter, diameter, 0));
-                UnityEditor.Handles.Label(worldPoint, $"{worldPoint.x}, {worldPoint.y}");
+                if (enablePositionValues)
+                    UnityEditor.Handles.Label(worldPoint, $"{worldPoint.x}, {worldPoint.y}");
             }
         }
         Gizmos.color = Color.white;
         Gizmos.DrawWireCube(transform.position, new Vector3(gridSize.x, gridSize.y, 0));
     }
 
+
+    public static List<Node> GetNodesByRange(Node node, int tileRange)
+    {
+        List<Node> nodes = new List<Node>();
+        Vector2Int check;
+        for (int x = -tileRange; x <= tileRange; x++){
+            for (int y = -tileRange; y <= tileRange; y++){
+                if (x == 0 && y == 0)
+                    continue;
+                check = new Vector2Int(node.gridPos.x + x, node.gridPos.y + y);
+                if (Instance.grid.ContainsKey(check) && Instance.grid[check].IsWalkable())
+                    nodes.Add(Instance.grid[check]);
+            }
+        }
+        return nodes;
+    }
+
+    public static List<Node> NodeWorldPointPos(List<Vector3> positions)
+    {
+        List<Node> nodes = new List<Node>();
+        foreach (Vector3 pos in positions)
+            nodes.Add(NodeWorldPointPos(pos));
+        return nodes;
+    }
+
+    public static float SetToMid(float f, int size)
+    {
+        if (size % 2 == 0)
+            return Mathf.RoundToInt(f);
+        return SetToMid(f);
+
+    }
+
+    public static float SetToMid(float f)
+    {
+        if (f < 0)
+            return  ((float)(int)f) - .5f;
+        return ((float)(int)f) + .5f;
+    }
+
+    public static Vector3 SetToMid(Vector3 vector3)
+    {
+        return new Vector3(SetToMid(vector3.x), SetToMid(vector3.y), 0);
+    }
 }

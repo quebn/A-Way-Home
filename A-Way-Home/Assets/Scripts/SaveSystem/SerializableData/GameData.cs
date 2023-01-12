@@ -17,7 +17,7 @@ public class GameData {
     public string[] currentCharacterLevel;
     public List<string> unlockLevels;
 
-    // Statics;
+    // Statics;zz
     public static List<SaveFileData> saveFileDataList ;
     public static Dictionary<string, Sprite> characterSprites;
     public static SaveFileData loadedLevelData = null;
