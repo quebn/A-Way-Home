@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerLevelData : MonoBehaviour
@@ -18,6 +19,8 @@ public class PlayerLevelData : MonoBehaviour
     [HideInInspector] public LevelData levelData;
     [HideInInspector] public List<Vector3> currentDestinations;
 
+    // private List<ISaveable> saveables;
+
     public Vector2 levelBoundary => this.cameraBoundary;
     public static string characterName;
 
@@ -28,12 +31,13 @@ public class PlayerLevelData : MonoBehaviour
 
     private void Initialize()
     {
-        if (Instance != null)
-            return;
-        Instance  = this;
+        if (Instance == null)
+            Instance  = this;
         Obstacle.list = new Dictionary<string, Obstacle>();
         Essence.list = new Dictionary<Vector2, Essence>();
         this.currentDestinations = new List<Vector3>();
+        // this.saveables = FindAllSaveableObjects();
+        // Debug.Log($"Saveable objects count: {saveables.Count}"); 
         switch(GameEvent.loadType)
         {
             case LevelLoadType.NewGame:
@@ -46,12 +50,11 @@ public class PlayerLevelData : MonoBehaviour
                 RestartGame();
                 break;
         }
-        // InitCharacter();
     }
 
     private void Start()
     {
-        character.Initialize(characterEnergy, essenceNeeded);
+        character.Initialize(levelData.characterEnergy, levelData.characterRequiredEssence);
     }
 
     private void NewGame()
@@ -63,6 +66,7 @@ public class PlayerLevelData : MonoBehaviour
             characterEnergy = this.characterEnergy,
             lives = playerLives,
             moves = playerMoves,
+            characterRequiredEssence = this.essenceNeeded,
             score = 0,
             secondsLeft = this.timeLimitInSecs
         };
@@ -77,22 +81,37 @@ public class PlayerLevelData : MonoBehaviour
             characterEnergy = this.characterEnergy,
             lives = playerLives - GameEvent.restartCounter,
             moves = playerMoves,
+            characterRequiredEssence = this.essenceNeeded,
             score = 0, //<-TODO: score should be retained from previous game
             secondsLeft = this.timeLimitInSecs
         };
         Debug.Assert(playerLives > 0, "ERROR: Lives is less than 1");
     }
-
+    
     public void LoadGame()
     {
         this.levelData = GameData.loadedLevelData.levelData;
+        // foreach(ISaveable saveable in saveables)
+        //     saveable.LoadData(this.levelData);
         Debug.Assert(this.characterLevel == levelData.level, "ERROR: Level does not match");
     }
 
-    public void SetPlayerMoves(int increment)
+    public LevelData SaveGame()
+    {
+        // foreach(ISaveable saveable in saveables)
+        //     saveable.SaveData(ref this.levelData);
+        return this.levelData;
+    }
+
+    public void IncrementPlayerMoves(int increment)
     {
         this.levelData.moves += increment;
-        InGameUI.Instance.playerMovesUI = $"{this.levelData.moves}";
+        InGameUI.Instance.playerMovesUI = this.levelData.moves;
+    }
+
+    public int GetScore(int movesMultiplier, int livesMultiplier)
+    {
+        return (playerMoves * movesMultiplier) + (playerLives * livesMultiplier);
     }
 
     [SerializeField] private bool enableBoundaryGizmo;
@@ -104,25 +123,30 @@ public class PlayerLevelData : MonoBehaviour
         Gizmos.DrawWireCube(Vector3.zero, new Vector3(cameraBoundary.x, cameraBoundary.y, 0));
     }
 
+    // private static List<ISaveable> FindAllSaveableObjects() 
+    // {
+    //     // FindObjectsofType takes in an optional boolean to include inactive gameobjects
+    //     IEnumerable<ISaveable> dataPersistenceObjects = FindObjectsOfType<MonoBehaviour>(true).OfType<ISaveable>();
+
+    //     return new List<ISaveable>(dataPersistenceObjects);
+    // }
+
 }
 
 [System.Serializable]
 public struct LevelData
 {
-    public uint level;
+
+    // Character Data
     public string characterName;
-    public int characterEnergy; 
+    public int characterEnergy;
+    public int characterRequiredEssence;
+    public SerializedVector3 characterPosition;
+
+    // Player Data 
+    public uint level;
     public int lives;
     public int moves;
     public int score;
     public float secondsLeft;
-}
-
-[System.Serializable]
-public struct WorldCoords{
-    public float x, y;
-    public WorldCoords(Vector2 vector2){
-        this.x = vector2.x;
-        this.y = vector2.y;
-    }
 }

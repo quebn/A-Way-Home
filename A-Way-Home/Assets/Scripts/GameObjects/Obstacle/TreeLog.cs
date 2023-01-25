@@ -1,51 +1,83 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TreeLog : Obstacle, IInteractable
+public class TreeLog : Obstacle//, IInteractable, INodeInteractable
 {
-    private Animator animator;
+    // public bool notSpawned;
+    // private Animator animator;
 
+    // protected override void Initialize()
+    // {
+    //     base.Initialize();
+    //     animator = GetComponent<Animator>();
+    //     spriteRenderer = GetComponent<SpriteRenderer>();
+    //     InitializeNodes(this.transform.position);
+    //     SetNodesType(NodeType.Obstacle, this);
+    //     if(!notSpawned)
+    //         SpawnAnimation();
+    // }
 
-    protected override void Initialize()
-    {
-        base.Initialize();
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        SetNodes(this.transform.position);
-        nodesType = NodeType.Obstacle;
-        // PlaySpawnAnimation();
-    }
+    // public override void SetActionData(ActionData actionData)
+    // {
+    //     base.SetActionData(actionData);
+    //     actionData.isActive = this.gameObject.activeSelf;
+    // }
 
-    public void OnClick()
-    {
-        if(incorrectTool)
-            return;
-        RemoveLog();
-    }
+    // public override void OnUndo(ActionData actionData)
+    // {
+    //     base.OnUndo(actionData);
+    //     this.gameObject.SetActive(actionData.GetLogData());
+    //     SetNodesType(NodeType.Obstacle);
+    //     Debug.Log("Undo Log");
+    // }
 
-    public void OnHover()
-    {
-        if(incorrectTool)
-            return;
-        SetMouseCursor(this.mouseTexture);
-        spriteRenderer.color = Color.green;
-        // HighlightObstacle();
-    }
+    // private void RemoveLog()
+    // {
+    //     PlayerActions.Instance.LightningAnimation(this.transform.position);
+    //     this.tag = "Interacted";
+    //     PlayerLevelData.Instance.IncrementPlayerMoves(-1);
+    //     SetNodesType(NodeType.Walkable);
+    //     this.gameObject.SetActive(false);
+    // }
 
-    public void OnDehover()
-    {
-        ResetMouseCursor();
-        spriteRenderer.color = Color.white;
-    }
+    // private void SpawnAnimation()
+    // {
+    //     animator.Play("Log_Spawn");
+    // }
 
-    private void RemoveLog()
-    {
-        this.tag = "Interacted";
-        PlayerLevelData.Instance.SetPlayerMoves(-1);
-        animator.Play("SmallExplosion_Destroy");
-        float delay = animator.GetCurrentAnimatorStateInfo(0).length;
-        Invoke("UpdateNodes", delay);
-    }
+    // private void ShowInfo()
+    // {
+    //     Debug.Log("Clicked on Log");
+    // }
 
+    // public static void SpawnTreeLog(Vector2 position, GameObject prefab, string id)
+    // {
+
+    // }
+
+    // public void OnClick()
+    // {
+    //     if(incorrectTool)
+    //         return;
+    //     ShowInfo();
+    // }
+
+    // public void OnHover()
+    // {
+    //     if(incorrectTool)
+    //         return;
+    //     spriteRenderer.color = Color.green;
+    //     // HighlightObstacle();
+    // }
+
+    // public void OnDehover()
+    // {
+    //     spriteRenderer.color = Color.white;
+    // }
+
+    // public void OnNodeInteract(Tool tool)
+    // {
+    //     RemoveLog();
+    // }
 }

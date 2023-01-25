@@ -4,28 +4,36 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
 
-    [HideInInspector] public SpriteRenderer characterImage;
-    [HideInInspector] public int energy;
-    [HideInInspector] public float speed;
-    [HideInInspector] public bool isGoingHome = false;
-
-    protected int requiredEssence;
-    protected Vector3[] path;
+    protected SpriteRenderer spriteRenderer;
     protected Animator animator;
-    protected Vector3 currentTargetPos;
+    protected int energy;
+    protected int requiredEssence;
     protected int targetIndex; 
+    protected float speed;
+    protected bool isGoingHome = false;
+    protected List<Node> path;
+    protected Node currentTargetNode;
 
-    protected bool isFlipped {get => this.characterImage.flipX; set => this.characterImage.flipX = value;}
-    protected int xPosDiff => (int)(currentTargetPos.x - currentPosition.x); 
-    protected List<Vector3> currentDestinations => PlayerLevelData.Instance.currentDestinations; 
+
+    public Sprite image => spriteRenderer.sprite;
     public Essence currentEssence => Essence.list[currentPosition];
     public Vector3 currentPosition => transform.position;
-    public bool destinationReached => currentDestinations.Contains(currentPosition);
-    public bool isHome => requiredEssence == 0;
+    public bool isHome => requiredEssence <= 0;
+    public bool destinationReached => Essence.GetCurrentDestinations().Contains(currentPosition);
+    public bool isMoving => isGoingHome;
+
+    protected Vector3 currentTargetPos => currentTargetNode.worldPosition;
+
+    protected int xPosDiff => (int)(currentTargetPos.x - currentPosition.x); 
+    protected bool isFlipped {
+        get => this.spriteRenderer.flipX; 
+        set => this.spriteRenderer.flipX = value;
+    }
+    
     
     private void Awake()
     {
-        characterImage = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
     }
 
@@ -44,26 +52,37 @@ public class Character : MonoBehaviour
 
     public void Initialize(int energy, int EssenceNeeded)
     {
-        this.requiredEssence += EssenceNeeded;
+        IncrementEssence(EssenceNeeded);
         SetMaxEnergy(energy);
+        GetPath();
         if (GameEvent.isSceneSandbox)
             this.speed = 5f;    
         else
             this.speed = GameData.Instance.gameSpeed;
     } 
 
-    public void SetPath()
+    public List<Node> GetPath()
     {
-        path = Pathfinding.FindPath(currentPosition, currentDestinations);
-        Debug.LogWarning($"{currentDestinations.Count} Targets Remaining");
+        if(path != null)
+            Node.ToggleNodes(path, NodeGrid.nodesVisibility);
+        List<Vector3> destinations = Essence.GetCurrentDestinations();
+        path = Pathfinding.FindPath(currentPosition, destinations);
+        Debug.Log($"{requiredEssence} essence required! => {destinations.Count} Essence Found!");
+        if(path.Count <= 0)
+        {
+            Debug.LogWarning("No Path Found");
+            return path;
+        } else
+            Debug.Log("Path Found! Path nodes: " + path.Count);
+        Node.ToggleNodes(path, Node.colorGreen, NodeGrid.nodesVisibility);
+        return path;
     }
 
     public void GoHome()
     {
-        SetPath();
-        if (path.Length <=0)
+        if (path.Count <=0)
             return;
-        currentTargetPos = path[0];
+        currentTargetNode = path[0];
         targetIndex = 0;
         isGoingHome = true;
         animator.SetBool("isWalk", true);
@@ -71,14 +90,14 @@ public class Character : MonoBehaviour
 
     private void Step()
     {
-        // add Flip where the character is facing depending of whether its X position is decreasing or increasing.
         if (currentPosition == currentTargetPos)
         {
+            currentTargetNode.UpdateNode();
             targetIndex++;
             IncrementEnergy(-1);
             if (EndConditions())
                 return;
-            currentTargetPos = path[targetIndex];
+            currentTargetNode = path[targetIndex];
         }
         Flip();
         transform.position = Vector3.MoveTowards(currentPosition, currentTargetPos, speed * Time.deltaTime);
@@ -103,21 +122,16 @@ public class Character : MonoBehaviour
 
     public bool Consume(Essence Essence)
     {
+        animator.SetBool("isWalk", false);
         Essence.OnConsume(this);
         this.isGoingHome = false;
         if (isHome)
             TriggerLevelComplete();
         else
-            NextTarget();
+            GetPath();
         Debug.Log($"Current Essence Needed: {this.requiredEssence}");
         return true;
     }
-
-    private void NextTarget()
-    {
-        SetPath();
-    }
-
 
     public void TriggerLevelComplete()
     {
@@ -125,7 +139,6 @@ public class Character : MonoBehaviour
         GameEvent.SetEndWindowActive(EndGameType.LevelClear);
     }
 
-    // Character should have an TriggerDeath method
     public bool TriggerDeath()
     {
         this.isGoingHome = false;
@@ -146,6 +159,11 @@ public class Character : MonoBehaviour
             GameEvent.SetEndWindowActive(EndGameType.TryAgain);
     }
 
+    public int GetScore(int multiplier)
+    {
+        return this.energy * multiplier;  
+    }
+
     public void SetMaxEnergy(int value)
     {
         this.energy = value;
@@ -156,5 +174,16 @@ public class Character : MonoBehaviour
     {
         this.energy += increment;
         InGameUI.Instance.energyValueUI = this.energy;
+    }
+
+    public void IncrementEssence(int increment)
+    {
+        this.requiredEssence += increment;
+        InGameUI.Instance.essenceCounterUI = this.requiredEssence;
+    }
+
+    public bool NodeInPath(Node node)
+    {
+        return path.Contains(node);
     }
 }

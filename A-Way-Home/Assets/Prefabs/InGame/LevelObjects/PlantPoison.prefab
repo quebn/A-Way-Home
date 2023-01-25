@@ -9,12 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1906130720302937236}
-  - component: {fileID: 856823751568834627}
+  - component: {fileID: 3947740544349406220}
   - component: {fileID: 6768811726980547612}
   - component: {fileID: 5488764455900083796}
+  - component: {fileID: 917244297326472155}
   m_Layer: 6
   m_Name: PlantPoison
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,14 +28,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6052316582592267611}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.49, y: -5.5, z: 0.4532849}
+  m_LocalPosition: {x: -7.49, y: -5.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &856823751568834627
+--- !u!114 &3947740544349406220
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,11 +44,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6052316582592267611}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 598882c33d567ca4588400f2bbe1fad8, type: 3}
+  m_Script: {fileID: 11500000, guid: 0d96e939c69a3f349ada01caaa87b4ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseTexture: {fileID: 2800000, guid: 67509345db9644744abac8bb9baac208, type: 3}
-  toolTypes: 01000000
+  toolTypes: 0100000003000000
   tileSize: {x: 1, y: 1}
   ID: 
 --- !u!212 &6768811726980547612
@@ -91,12 +91,12 @@ SpriteRenderer:
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2040610494, guid: ec39434ea85d74248905de5028b111e6, type: 3}
+  m_Sprite: {fileID: 294986397, guid: 42297c431902a954188c94071da7b7ac, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.9375, y: 0.875}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -120,7 +120,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.9375, y: 0.875}
-    newSize: {x: 1, y: 1}
+    newSize: {x: 0.9375, y: 0.875}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -128,3 +128,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.9375, y: 0.875}
   m_EdgeRadius: 0
+--- !u!95 &917244297326472155
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6052316582592267611}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a33da1465795d1c49b75a784ad628b82, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -12,7 +11,7 @@ public static class SaveSystem
     public static void DeleteFileData(string filename)
     {
         string path = $"{filePathDir}/SavedFiles/{filename}.save";
-
+        Debug.Log($"Deleting file named: '{filename}.save' in '{filePathDir}/SavedFiles/'. ");
         if (!File.Exists(path))
         {
             Debug.LogError($"{filename}.save does not exist in path: {filePathDir}/SavedFiles/");
@@ -22,13 +21,12 @@ public static class SaveSystem
         Debug.Log($"{filename}.save deleted successfully!");
     }
 
-    public static void SaveLevelData(string savefilename)
+    public static void SaveLevelData(string filename, PlayerLevelData playerLevelData)
     {
-        string path = $"{filePathDir}/SavedFiles/{savefilename}.save";
-        
+        string path = $"{filePathDir}/SavedFiles/{filename}.save";
         FileStream stream = new FileStream(path, FileMode.Create);
-
-        SaveFileData fileData = new SaveFileData(savefilename, PlayerLevelData.Instance.levelData);
+        SaveFileData fileData = new SaveFileData(filename ,playerLevelData.SaveGame());
+        Debug.Log($"Saving Level Data as '{filename}.save' in '{filePathDir}/SavedFiles/' !");
         formatter.Serialize(stream, fileData);
         stream.Close();
         SaveGameData();
@@ -59,10 +57,34 @@ public static class SaveSystem
         {
             Debug.Log($"Accessing the file: {filename}");
             SaveFileData fileData = GetSaveFileData(filename);
+            if(fileData == null)
+                Debug.LogWarning($"{filename} is null");
             list.Add(fileData);
         }
         return list;
     }
+
+    public static List<SaveFileData> FetchAllSavedFileData()
+    {
+        List<SaveFileData> savedFiles = new List<SaveFileData>();
+        string path = $"{filePathDir}/SavedFiles/";
+        Debug.Log($"Fetching all saved files from {path}");
+        string[] fileArray = Directory.GetFiles(path, "*.save");
+        if (fileArray.Length == 0)
+        {
+            Debug.LogWarning("SavedFiles folder is Empty");
+            return savedFiles;
+        }
+        foreach(string filename in fileArray)
+        {
+            Debug.Log($"Accessing the file: {filename}");
+            SaveFileData fileData = GetSaveFileData(filename);
+            savedFiles.Add(fileData);
+        }
+        Debug.Log($"Fetched {savedFiles.Count} saved file data!");
+        return savedFiles;
+    }
+
 
     public static void SaveGameData()//should be implemented in every file saving functions
     {
@@ -87,4 +109,12 @@ public static class SaveSystem
 
         return fileData;
     }
+
+
+}
+
+interface ISaveable
+{
+    public void SaveData(ref LevelData levelData);
+    public void LoadData(LevelData levelData);
 }

@@ -8,39 +8,44 @@ public class InGameUI : MonoBehaviour
     [HideInInspector] public EndGameType endGameType;
     [SerializeField] private GameObject optionsWindow;
     [SerializeField] private GameObject gameEndWindow;
-    [SerializeField] public Image characterImage;
+    [SerializeField] private Image characterImage;
     [SerializeField] private Slider energySlider;
     [SerializeField] private TextMeshProUGUI characterNameTMP;
     [SerializeField] private TextMeshProUGUI movesLeftTMP;
     [SerializeField] private TextMeshProUGUI energyLeftTMP;
     [SerializeField] private TextMeshProUGUI livesLeftTMP;
+    [SerializeField] private TextMeshProUGUI essenceNeededTMP;
     [SerializeField] private TextMeshProUGUI timeCounter;
 
-    private bool pathDisplayToggle = false;
     public GameObject getGameEndWindow => gameEndWindow;
+
     public int energyValueUI {
         set { 
-            energyLeftTMP.text = value.ToString();
+            energyLeftTMP.text = $"{value}";
             energySlider.value = value;
         }
     }
     public int energyMaxValueUI {
         set { 
-            energyLeftTMP.text = value.ToString();
+            energyLeftTMP.text = $"{value}";
             energySlider.maxValue = value;
             energySlider.value = value;
         }
     }
 
-    public string playerMovesUI {
-        set =>  this.movesLeftTMP.text = value;
+    public int essenceCounterUI {
+        set => this.essenceNeededTMP.text = $"{value}";
+    }
+
+    public int playerMovesUI {
+        set =>  this.movesLeftTMP.text = $"{value}";
     }
 
     private float timeCounterUI{
         get => PlayerLevelData.Instance.levelData.secondsLeft; 
         set {
             PlayerLevelData.Instance.levelData.secondsLeft = value;
-            timeCounter.text = ((int)timeCounterUI).ToString();
+            timeCounter.text = $"{(int)timeCounterUI}";
         }
     }
 
@@ -61,7 +66,7 @@ public class InGameUI : MonoBehaviour
 
     private void Update()
     {
-        if (!PlayerLevelData.Instance.character.isGoingHome)
+        if (!PlayerLevelData.Instance.character.isMoving)
             TimeCountdown();
     }
 
@@ -73,9 +78,10 @@ public class InGameUI : MonoBehaviour
             PlayerLevelData.Instance.character.GoHome();
     }
 
-    private void InitCharacterUI(LevelData levelData, Character character)
+    // move to character initialization
+    private void InitCharacterUI(LevelData levelData, Character character) 
     {
-        this.characterImage.sprite  = character.characterImage.sprite;
+        this.characterImage.sprite  = character.image;
         this.characterNameTMP.text  = levelData.characterName;
         this.movesLeftTMP.text      = levelData.moves.ToString();
         this.livesLeftTMP.text      = levelData.lives.ToString();
@@ -85,12 +91,10 @@ public class InGameUI : MonoBehaviour
 
     public void ShowCurrentPath()
     {
-        if (!pathDisplayToggle)
-            pathDisplayToggle = true;
-        else
-            pathDisplayToggle = false;
-        NodeGrid.ToggleGridTiles(pathDisplayToggle);
-        // PlayerLevelData.Instance.character.DisplayPath(pathDisplayToggle);
+        if(PlayerLevelData.Instance.character.isMoving)
+            return;
+        NodeGrid.nodesVisibility = !NodeGrid.nodesVisibility;
+        NodeGrid.ToggleGridTiles(NodeGrid.nodesVisibility);
     }
 
     public void UndoAction()
@@ -124,7 +128,7 @@ public class InGameUI : MonoBehaviour
 
     public void SetTool(int toolIndex)
     {
-        PlayerActions.Instance.SetToolType(toolIndex);
+        PlayerActions.Instance.SetCurrentTool(toolIndex);
         // PlayerActions.Instance.currentManipulationType = (ManipulationType)toolindex;
         // Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
     }

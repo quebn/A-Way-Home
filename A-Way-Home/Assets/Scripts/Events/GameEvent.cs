@@ -71,13 +71,13 @@ public static class GameEvent
         }
     }
 
-    public static void LoadGame(int slotNumber)
+    public static void LoadGame(int index)
     {
         if (isPaused)
             UnpauseGame();
         restartCounter = 0;
         loadType = LevelLoadType.LoadGame;
-        GameData.loadedLevelData = GameData.saveFileDataList[slotNumber];
+        GameData.loadedLevelData = GameData.savedDataFiles[index];
         prefabLevelName = $"Char{MainMenuUI.GetCharacterIndex(GameData.loadedLevelData.levelData.characterName)}Level{GameData.loadedLevelData.levelData.level}";
         SceneManager.LoadScene("LevelScene");
     }

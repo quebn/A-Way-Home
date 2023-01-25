@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5011018718827325006}
   m_Layer: 0
   m_Name: GroundSpike
-  m_TagString: Interactable
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -47,7 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eba616a35707374da9e86565d47730e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseTexture: {fileID: 0}
   toolTypes: 04000000
   tileSize: {x: 1, y: 1}
   ID: 

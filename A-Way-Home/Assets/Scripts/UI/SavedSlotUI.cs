@@ -1,4 +1,4 @@
-// using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -10,9 +10,6 @@ public class SavedSlotUI : MonoBehaviour
     [SerializeField] private GameObject hasData;
     [SerializeField] private GameObject noData;
 
-    #region hasData SerializedField Components
-    // 8 components Image/Filename/energy/moves/Lives/LevelNum/Time/Date
-
     [SerializeField] private Image characterImage;
     [SerializeField] private TextMeshProUGUI characterName;  
     [SerializeField] private TextMeshProUGUI fileName;  
@@ -22,7 +19,6 @@ public class SavedSlotUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI level;  
     [SerializeField] private TextMeshProUGUI date;  
     [SerializeField] private TextMeshProUGUI time;  
-    #endregion
 
     public static string FileNameToBeDeleted;
 
@@ -46,7 +42,7 @@ public class SavedSlotUI : MonoBehaviour
 
     public void OverwriteFile()
     {
-        if (!this.hasData.activeSelf || GameData.saveFileDataList[this.slotIndexNumber] == null)
+        if (!this.hasData.activeSelf || GameData.savedDataFiles.Count < this.slotIndexNumber)
         {
             Debug.Log("No Data to be Overwritten!");
             return;
@@ -81,9 +77,8 @@ public class SavedSlotUI : MonoBehaviour
 
     private void InitData()
     {
-        int Size = 0;
-        Size = GameData.saveFileDataList.Count;
-        if (Size == 0 || slotIndexNumber >= Size )
+        int size = GameData.savedDataFiles.Count;
+        if (size == 0 || slotIndexNumber >= size )
         {
             if (this.hasData.activeSelf)
             {
@@ -95,28 +90,27 @@ public class SavedSlotUI : MonoBehaviour
         }
         this.noData.SetActive(false);
         this.hasData.SetActive(true);
-        SetValues(GameData.saveFileDataList[slotIndexNumber]);
+        SetValues(GameData.savedDataFiles[slotIndexNumber]);
     }
     
-    private void SetValues(SaveFileData slotdata)
+    private void SetValues(SaveFileData data)
     {
-        this.characterName.text = slotdata.levelData.characterName;
-        this.characterImage.sprite = GameData.characterSprites[slotdata.levelData.characterName];
-        this.fileName.text = slotdata.fileName;
-        this.energy.text = slotdata.levelData.characterEnergy.ToString();
-        this.moves.text = slotdata.levelData.moves.ToString();
-        this.lives.text = slotdata.levelData.lives.ToString();
-        this.level.text = slotdata.levelData.level.ToString();
-        this.date.text = slotdata.date;
-        this.time.text = slotdata.time;
+        this.fileName.text = data.fileName;
+        this.characterName.text = data.levelData.characterName;
+        this.characterImage.sprite = GameData.characterSprites[data.levelData.characterName];
+        this.energy.text = data.levelData.characterEnergy.ToString();
+        this.moves.text = data.levelData.moves.ToString();
+        this.lives.text = data.levelData.lives.ToString();
+        this.level.text = data.levelData.level.ToString();
+        this.date.text = data.date;
+        this.time.text = data.time;
     }
 
-    public static void RefreshSaveSlots()
+    public static void UpdateSaveSlots()
     {
-        GameData.saveFileDataList = SaveSystem.InitAllSavedData();
-        for(int i = 0; i < 5; i++)
-        {
+        Debug.Log("Saved slot list Updated");
+        GameData.savedDataFiles = SaveSystem.FetchAllSavedFileData();
+        for(int i = 0; i < GameData.saveSlotUIDict.Count; i++)
             GameData.saveSlotUIDict[i].InitData();
-        }
     }
 }

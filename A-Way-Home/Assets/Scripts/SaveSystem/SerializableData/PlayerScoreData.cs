@@ -1,4 +1,5 @@
 using System;
+
 [System.Serializable] 
 public class PlayerScoreData : IComparable<PlayerScoreData>
 {

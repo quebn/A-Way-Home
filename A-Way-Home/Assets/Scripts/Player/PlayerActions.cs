@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
@@ -7,27 +9,29 @@ public class PlayerActions : MonoBehaviour
 {
     public static PlayerActions Instance { get; private set; }
 
-    [SerializeField] private Animator lightningAnimator;
+    [SerializeField] private Animator animatorLighting;
+    [SerializeField] private Animator animatorExplosion;
+    [SerializeField] private int toolCount;
+    [SerializeField] private List<Texture2D> mouseTextures;
     [HideInInspector] public Tool currentTool;
-    [HideInInspector] public Mouse mouse;
-    
+
+    private Mouse mouse;
     private Camera mainCamera;
     private IInteractable currentInteractable;
     private PlayerInput playerInput;
     private InputAction performAction; 
     private InputAction revealPath;
     private InputAction undoAction;
-    private InputAction tool1; 
-    private InputAction tool2; 
-    private InputAction tool3; 
-    private InputAction tool4; 
-    private InputAction tool5; 
-    private InputAction tool6; 
+    private List<InputAction> tools;
     private InputAction start;
     private InputAction reset;
+    private Vector2 currentTileOrigin;
+    private List<Node> currentTileNodes;
+    private List<ActionData> actionList;
 
-
-    private bool actionsNotAllowed => ( IsMouseOverUI() ||  PlayerLevelData.Instance.character.isGoingHome);
+    public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
+    private bool actionsNotAllowed => ( IsMouseOverUI() ||  PlayerLevelData.Instance.character.isMoving);
+    private bool unhoverable => PlayerActions.Instance.currentTool == Tool.PlaceMode;
 
     private void Start()
     {
@@ -39,7 +43,7 @@ public class PlayerActions : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HoverObstacle();
+        Hover();
     }
 
     private void OnDisable()
@@ -49,109 +53,160 @@ public class PlayerActions : MonoBehaviour
 
     public void Undo()
     {
-        Debug.LogWarning("Undo not implemented");
+        if(PlayerLevelData.Instance.character.isMoving || actionList.Count < 1)
+            return;
+        ActionData data = actionList.Last<ActionData>();
+        data.GetObstacle().OnUndo(data);
+        actionList.Remove(data);
+        Debug.Log("Undo Action was Pressed!");
+        PlayerLevelData.Instance.IncrementPlayerMoves(1);
+        PlayerLevelData.Instance.character.GetPath();
+        // add a penalty reducing the time by n amount every time player undo an action.
     }
 
     public void PerformAction(InputAction.CallbackContext context)
     {
-        // Perform action should perform the desired action depending on the current Tool
-        //      Tool1: Interact/None    => Obstacles/Objects that responds to interact like Bat changing states when interacted.
-        //      Tool2: Destroy          => Obstacles/Objects that responds to destroy will be destroyed.
         if (actionsNotAllowed || PlayerLevelData.Instance.levelData.moves <= 0)
             return;
+        switch(currentTool)
+        {
+            case Tool.Inspect:
+                Inspect();
+                break;
+            case Tool.Lightning:
+            case Tool.Tremor:
+                Interact();
+                break;
+        }
+        PlayerLevelData.Instance.character.GetPath();
+    }
+
+    private void Inspect()
+    {
         Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
         RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
         if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
             return;
-        Debug.Log("Interactable obstacle found");
-        IInteractable interactable = hit2D.collider.gameObject.GetComponent<IInteractable>();
-        if (interactable == null)
-        {
-            Debug.LogWarning("No interactable obstacle found.");
+        currentInteractable = hit2D.collider.gameObject.GetComponent<IInteractable>();
+        if (currentInteractable == null)
             return;
-        }
-        OnClick(hit2D.transform.position, interactable);
+        actionList.Add(new ActionData((Obstacle)currentInteractable, currentTool));
+        currentInteractable.OnClick();
     }
 
-    private void OnClick(Vector2 location, IInteractable interactable)
+    private void Interact()
     {
-        switch(currentTool)
-        {
-            case Tool.Lightning:
-                lightningAnimator.transform.position = location;
-                lightningAnimator.Play("Lightning_Strike");
-                break;
-        }
-        interactable.OnClick();
+        Node.TriggerNodesObstacle(currentTileNodes, currentTool);
+    }
+
+    // private void Place()
+    // {
+    //     if (currentInteractable == null)
+    //         return;
+    //     Debug.Log("Placing an object");
+    //     IPlaceable placeable = (IPlaceable)currentInteractable;
+    //     placeable.OnPlace();
+
+    // }
+
+    public float LightningAnimation(Vector2 location)
+    {
+        animatorLighting.transform.position = location;
+        animatorLighting.Play("Lightning_Strike");
+        animatorExplosion.Play("SmallExplosion_Destroy");
+        return animatorLighting.GetNextAnimatorStateInfo(0).length;
     }
 
     private void SetCurrentTool(InputAction.CallbackContext context)
     {
         if (GameEvent.isPaused || PlayerLevelData.Instance.character.destinationReached)
             return;
-        switch(context.action.name)
+        int toolNumber = context.action.name[context.action.name.Length - 1] - '0';
+        SetCurrentTool(toolNumber - 1);
+        Debug.Log(toolNumber);
+    }
+
+    public void SetCurrentTool(int index)
+    {
+        Tool newTool = (Tool)index;
+        if (index > 5 || index < 0)
+            return;
+        if(currentTool != newTool)
+            OnChangeTool();
+        currentTool = newTool;
+        Cursor.SetCursor(mouseTextures[index], Vector2.zero, CursorMode.Auto);
+
+    }
+
+    private void OnChangeTool()
+    {
+        switch(currentTool)
         {
-            case "Tool1":
-                SetToolType(0);
+            case Tool.Lightning:
+            case Tool.Tremor:
+                currentTileOrigin = new Vector2();
+                Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, PlayerLevelData.Instance.character);
+                currentTileNodes = new List<Node>(4);
                 break;
-            case "Tool2":
-                SetToolType(1);
-                break;
-            case "Tool3":
-                SetToolType(2);
-                break;
-            case "Tool4":
-                SetToolType(3);
-                break;
-            case "Tool5":
-                SetToolType(4);
-                break;
-            case "Tool6":
-                SetToolType(5);
-                break;
-            default:
-                Debug.Log($"{context.action.name} is not recognize!");
-                return;
         }
     }
 
-    public void SetToolType(int index)
+    private void Hover()
     {
-        if (index > 5)
+        if(actionsNotAllowed)
             return;
-        currentTool = (Tool)index;
-        Debug.Log($"Current Tool: {currentTool}");
+        switch(currentTool)
+        {
+            case Tool.Lightning:
+                HighlightTile(1, 1, Node.colorCyan);
+                break;
+            case Tool.Tremor:
+                HighlightTile(2, 2, Node.colorYellow);
+                break;
+        }
     }
 
-    private void HoverObstacle()
+    private void HighlightTile(int tileWidth, int tileHeight, Color color)
     {
-        if (actionsNotAllowed)
+        Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos, tileWidth, tileHeight);
+        if(currentTileOrigin == origin)
             return;
-        Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
-        RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
-        if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
-        {
-            if (currentInteractable != null)
-            {
-                currentInteractable.OnDehover();
-                currentInteractable = null;
-            }
-            return;
-        }
-        if (currentInteractable == null)
-            currentInteractable = hit2D.collider.gameObject.GetComponent<IInteractable>();
-        currentInteractable.OnHover();
+        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, PlayerLevelData.Instance.character);
+        currentTileOrigin = origin;
+        currentTileNodes = NodeGrid.NodesByTileSize(origin, tileWidth, tileHeight, NodeType.Terrain);
+        Node.RevealNodes(currentTileNodes, color);
+    }
+
+
+    private void HighlightObject()
+    {
+    //     Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
+    //     RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
+    //     if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
+    //     {
+    //         if (currentInteractable != null)
+    //         {
+    //             currentInteractable.OnDehover();
+    //             currentInteractable = null;
+    //         }
+    //         return;
+    //     }
+    //     if (currentInteractable == null)
+    //         currentInteractable = hit2D.collider.gameObject.GetComponent<IInteractable>();
+    //     currentInteractable.OnHover();
     }
 
     private void StartCharacter(InputAction.CallbackContext context)
     {
-        if (PlayerLevelData.Instance.character.isGoingHome)
+        if (PlayerLevelData.Instance.character.isMoving)
             return;
         PlayerLevelData.Instance.character.GoHome();
     }
 
     private void UndoAction(InputAction.CallbackContext context)
     {
+        if (GameEvent.isPaused)
+            return;
         Undo();
     }
 
@@ -163,9 +218,9 @@ public class PlayerActions : MonoBehaviour
 
     private void RevealPath(InputAction.CallbackContext context)
     {
-        Debug.LogWarning("Unimplemented!");
         if (GameEvent.isPaused)
             return;
+        Debug.LogWarning("Unimplemented!");
         // PlayerLevelData.Instance.character.DisplayPath();
     }
 
@@ -177,50 +232,43 @@ public class PlayerActions : MonoBehaviour
 
     private void Initialize()
     {
+        tools = new List<InputAction>(toolCount);
         playerInput = GetComponent<PlayerInput>();
         currentTool = Tool.Inspect;
         mouse = Mouse.current;
         mainCamera = Camera.main;
-        Debug.Assert(playerInput != null, "GetComponent failed!");
+        Debug.Assert(playerInput != null, "playerInput GetComponent failed!");
         performAction  = playerInput.actions["PerformAction"];
         revealPath      = playerInput.actions["RevealPath"];
         undoAction      = playerInput.actions["Undo"];
-        tool1           = playerInput.actions["Tool1"];
-        tool2           = playerInput.actions["Tool2"];
-        tool3           = playerInput.actions["Tool3"];
-        tool4           = playerInput.actions["Tool4"];
-        tool5           = playerInput.actions["Tool5"];
-        tool6           = playerInput.actions["Tool6"];
+        for(int i = 1; i <= toolCount; i++)
+            tools.Add(playerInput.actions[$"Tool{i}"]);
         start           = playerInput.actions["Start"];
         reset           = playerInput.actions["Reset"];
+        currentTileNodes = new List<Node>(4); 
+        actionList = new List<ActionData>();
     }
 
     private void SubscribeFunctions()
     {
+        // Debug.LogWarning("Subscribing Functions");
         performAction.started  += PerformAction;
         revealPath.started      += RevealPath;
         undoAction.started      += UndoAction;
-        tool1.started           += SetCurrentTool;
-        tool2.started           += SetCurrentTool;
-        tool3.started           += SetCurrentTool;
-        tool4.started           += SetCurrentTool;
-        tool5.started           += SetCurrentTool;
-        tool6.started           += SetCurrentTool;
+        foreach(InputAction tool in tools)
+            tool.started += SetCurrentTool;
         start.started           += StartCharacter;
         reset.started           += RestartLevel;
     }
 
     private void UnsubscribeFunctions()
     {
+        // Debug.LogWarning("Unsubscribing Functions");
         performAction.started  -= PerformAction;
         revealPath.started      -= RevealPath;
         undoAction.started      -= UndoAction;
-        tool1.started           -= SetCurrentTool;
-        tool2.started           -= SetCurrentTool;
-        tool3.started           -= SetCurrentTool;
-        tool4.started           -= SetCurrentTool;
-        tool5.started           -= SetCurrentTool;
-        tool6.started           -= SetCurrentTool;
+        foreach(InputAction tool in tools)
+            tool.started -= SetCurrentTool;
         start.started           -= StartCharacter;
         reset.started           -= RestartLevel;
     }

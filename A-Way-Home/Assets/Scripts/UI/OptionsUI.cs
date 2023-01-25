@@ -42,14 +42,14 @@ public class OptionsUI : MonoBehaviour
 
     public void SaveGame()
     {
-        GameData.saveFileDataList = SaveSystem.InitAllSavedData();
+        GameData.savedDataFiles = SaveSystem.FetchAllSavedFileData();
         SetWindowActive(saveGameWindow);
         Debug.Log("Pressed SaveGame Button!");
     }
 
     public void LoadGame()
     {
-        GameData.saveFileDataList = SaveSystem.InitAllSavedData();
+        GameData.savedDataFiles = SaveSystem.FetchAllSavedFileData();
         SetWindowActive(loadGameWindow);
         Debug.Log("Pressed LoadGame Button");
     }
@@ -78,15 +78,15 @@ public class OptionsUI : MonoBehaviour
 
     public void ConfirmNewSaveFile()
     {
-        if (GameData.saveFileDataList.Count > 5)
+        if (GameData.savedDataFiles.Count > 5)
         {
             Debug.LogWarning("SavedSlots is full delete/overwrite an existing slot");
             return;
         }
-        SaveSystem.SaveLevelData(fileNameInput.text);
+        SaveSystem.SaveLevelData(fileNameInput.text, PlayerLevelData.Instance);
         CancelNewSaveFile();
         Debug.Log($"Saved data as {fileNameInput.text}.save");
-        SavedSlotUI.RefreshSaveSlots();
+        SavedSlotUI.UpdateSaveSlots();
     }
 
     public void CancelNewSaveFile()
@@ -98,10 +98,10 @@ public class OptionsUI : MonoBehaviour
     public void ConfirmOverwriteFile()
     {
         SaveSystem.DeleteFileData(SavedSlotUI.FileNameToBeDeleted);
-        SaveSystem.SaveLevelData(overwriteNameInput.text);
+        SaveSystem.SaveLevelData(overwriteNameInput.text, PlayerLevelData.Instance);
         CloseConfirmOverwriteWindow();
         Debug.Log($"{SavedSlotUI.FileNameToBeDeleted} was overwritten by {overwriteNameInput.text}");
-        SavedSlotUI.RefreshSaveSlots();
+        SavedSlotUI.UpdateSaveSlots();
     }
 
     public void CloseConfirmOverwriteWindow()
@@ -135,7 +135,7 @@ public class OptionsUI : MonoBehaviour
     {
         SaveSystem.DeleteFileData(SavedSlotUI.FileNameToBeDeleted);
         CloseDeleteWindow(windoworigin);
-        SavedSlotUI.RefreshSaveSlots();
+        SavedSlotUI.UpdateSaveSlots();
     }
 
     public void CloseDeleteWindow(string windoworigin)

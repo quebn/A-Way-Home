@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6943999327393801636}
   m_Layer: 3
   m_Name: Rock
-  m_TagString: Interactable
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,11 +52,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62b9df7eb05410c4b98a31e492feb905, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseTexture: {fileID: 2800000, guid: 763e4a00d1d0cc5419223076ce4d1436, type: 3}
   toolTypes: 0200000004000000
   tileSize: {x: 1, y: 1}
   ID: 
-  travelRange: 5
 --- !u!212 &7432801485719824593
 SpriteRenderer:
   m_ObjectHideFlags: 0

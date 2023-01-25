@@ -13,20 +13,20 @@ public static class ScoreSystem
     public static int CalculateScore()
     {
         // Debug.Assert(false, "TODO: Implement Calculate Score");
-        int score = PlayerLevelData.Instance.levelData.score;
-        int energy = PlayerLevelData.Instance.character.energy;
-        int moves = PlayerLevelData.Instance.levelData.moves;
-        score += Mathf.RoundToInt((energy * CharEnergyMult) * (moves * RemainingMovesMult + 1)); 
-        Debug.Log($"Calculated Score: {score}");
-        if (score < 0)
+        int playerScore = PlayerLevelData.Instance.levelData.score;
+        int characterScore = PlayerLevelData.Instance.character.GetScore(1);
+        int levelScore = PlayerLevelData.Instance.GetScore(1 , 1);
+        playerScore += Mathf.RoundToInt((characterScore * CharEnergyMult) * (levelScore * RemainingMovesMult + 1)); 
+        Debug.Log($"Calculated Score: {playerScore}");
+        if (playerScore < 0)
             Debug.LogError("ERROR: Score was less than zero");
-        return score;
+        return playerScore;
     }
     
     public static void InitScoreData()
     {
         PlayerLevelData playerLevelData = PlayerLevelData.Instance;
-        characterSprite = playerLevelData.character.characterImage.sprite;
+        characterSprite = playerLevelData.character.image;
         characterName = new string(playerLevelData.levelData.characterName);
         scoreLevelData = PlayerLevelData.Instance.levelData;
     }

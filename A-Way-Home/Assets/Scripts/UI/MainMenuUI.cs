@@ -50,7 +50,7 @@ public class MainMenuUI : MonoBehaviour
 
     public void LoadGame()
     {
-        GameData.saveFileDataList =  SaveSystem.InitAllSavedData();
+        GameData.savedDataFiles =  SaveSystem.FetchAllSavedFileData();
         SetWindowActive(loadSelectionWindow);
         Debug.Log("Pressed LoadGame Button");
     }
@@ -117,7 +117,7 @@ public class MainMenuUI : MonoBehaviour
     {
         SaveSystem.DeleteFileData(SavedSlotUI.FileNameToBeDeleted);
         CancelDeleteSlot();
-        SavedSlotUI.RefreshSaveSlots();
+        SavedSlotUI.UpdateSaveSlots();
         Debug.Log("Saved Slot deleted!");
     }
 

@@ -5,34 +5,36 @@ using UnityEngine;
 public enum NodeType{ Walkable, Water, Terrain, Obstacle}
 public class Node
 {
-    public GameObject tileObject;
-    public SpriteRenderer tileRenderer;
     public Vector3 worldPosition;
     public Vector2Int gridPos;
-    private NodeType originalNodeType;
-    private NodeType currentNodeType;
     public Node parent;
     public bool containsObject;
     public int gCost;
     public List<int> hCosts ;
 
+    private NodeType originalNodeType;
+    private NodeType currentNodeType;
+    private INodeInteractable interactableObstacle;
+
+    private Color nodeColor {set => NodeGrid.tilemap.SetColor((Vector3Int)this.gridPos ,value); }
+    private bool isWalkable => currentNodeType == NodeType.Walkable ;
     public int minHCost => hCosts.Min(); 
     public int fCost => gCost + minHCost;
-    private bool isWalkable => currentNodeType == NodeType.Walkable ;
     public NodeType currentType {  
         get => this.currentNodeType; 
-        set { this.currentNodeType = value; UpdateColor();} 
+        set {this.currentNodeType = value; UpdateColor();}
     }
-    
+
+    public static Color colorCyan   => new Color32(0, 255, 255, 150);
     public static Color colorWhite  => new Color32(255, 255, 255, 100);
     public static Color colorRed    => new Color32(255, 0, 0, 150);
+    public static Color colorGreen  => new Color32(0, 255, 0, 150);
     public static Color colorBlue   => new Color32(0, 0, 255, 150);
+    public static Color colorYellow   => new Color32(255, 255, 0, 150);
     public static Color colorClear  => Color.clear; 
     
-    public Node(NodeType nodeType, Vector3 worldpos, Vector2Int grid, GameObject tilePrefab, Transform parent, bool containsObj)
+    public Node(NodeType nodeType, Vector3 worldpos, Vector2Int grid, bool containsObj)
     {
-        this.tileObject = GameObject.Instantiate(tilePrefab, worldpos, Quaternion.identity, parent);
-        this.tileRenderer = tileObject.GetComponent<SpriteRenderer>();
         this.worldPosition = worldpos;
         this.gridPos = grid;
         this.originalNodeType = nodeType;
@@ -53,43 +55,92 @@ public class Node
         return isWalkable;
     }
 
-    // public int CompareNode(Node node)
-    // {
-    //     int compare = fCost.CompareTo(node.fCost);
-    //     foreach(int hCost in hCosts)
-    //         if (compare == 0)
-    //             compare = hCost.CompareTo(node.hCosts);
-    //     return -compare;
-    // }
+    public bool IsType(NodeType nodeType)
+    {
+        if(currentNodeType == nodeType)
+            return true;
+        return false;
+    }
 
-    public void UpdateColor()
+    private void UpdateColor()
+    {
+        if(!NodeGrid.nodesVisibility){
+            HideNode();
+            return;
+        }
+        RevealNode();
+    }
+
+    public void HideNode()
+    {
+        nodeColor = colorClear;
+    }
+
+    public void UpdateNode()
+    {
+        UpdateColor();
+    }
+
+    public void RevealNode()
     {
         switch(currentNodeType)
         {
             case NodeType.Walkable:
-                tileRenderer.color = colorWhite;
+                nodeColor = colorWhite;
                 break;
             case NodeType.Terrain:
-                tileRenderer.color = colorClear;
+                HideNode();
                 break;
             case NodeType.Water:
-                tileRenderer.color = colorBlue;
+                nodeColor = colorBlue;
                 break;
             case NodeType.Obstacle:
-                tileRenderer.color = colorRed;
+                nodeColor = colorRed;
                 break;
         }
     }
 
-    private int GetHcostSum()
+    public void RevealNode(Color color)
     {
-        int total = 0;
-        foreach(int i in hCosts)
-            total += i;
-        return total;
+        nodeColor = color;
     }
 
-    public static List<Node> GetNeighbors(Node node, Dictionary<Vector2, Node> grid, Vector2Int gridsize)
+    public void ToggleNode(bool toggle)
+    {
+        if(toggle)
+            RevealNode();
+        else
+            HideNode();
+    }
+
+    public void ToggleNode(Color color, bool toggle)
+    {
+        if(toggle)
+            RevealNode(color);
+        else
+            HideNode();
+    }
+
+
+    public void SetObstacle(INodeInteractable obstacle)
+    {
+        this.interactableObstacle = obstacle;
+    }
+
+    public void SetObstacle(INodeInteractable obstacle, NodeType nodeType)
+    {
+        this.interactableObstacle = obstacle;
+        this.currentType = nodeType;
+    }
+
+    public void InteractObstacle(Tool tool)
+    {
+        if(interactableObstacle == null)
+            return;
+        interactableObstacle.OnNodeInteract(tool);
+    }
+
+    public static List<Node> GetNeighbors(Node node, Dictionary<Vector2Int, Node> grid, Vector2Int gridsize)
     {
         List<Node> neighbors = new List<Node>();
         for (int x = -1; x <= 1; x++){
@@ -103,9 +154,76 @@ public class Node
                 int checky = node.gridPos.y + y;
 
                 if (checkx >= 0 && checkx < gridsize.x && checky >=0 && checky < gridsize.y)
-                    neighbors.Add(grid[new Vector2(checkx, checky)]);
+                    neighbors.Add(grid[new Vector2Int(checkx, checky)]);
             }
         }
         return neighbors;
+    }
+
+    public static void RevealNodes(List<Node> nodeList)
+    {
+        if (nodeList.Count == 0)
+            return;
+        foreach(Node node in nodeList)
+            node.RevealNode();
+    }
+
+    public static void RevealNodes(List<Node> nodeList, Color color)
+    {
+        if (nodeList.Count == 0)
+            return;
+        foreach(Node node in nodeList)
+            node.RevealNode(color);
+    }
+
+    public static void HideNodes(List<Node> nodeList)
+    {
+        if (nodeList.Count == 0)
+            return;
+        foreach(Node node in nodeList)
+            node.HideNode();
+    }
+
+    public static void ToggleNodes(List<Node> nodeList, bool active)
+    {
+        if (nodeList.Count == 0)
+            return;
+        foreach(Node node in nodeList)
+            node.ToggleNode(active);
+    }
+
+    public static void ToggleNodes(List<Node> nodeList, Color color,bool active)
+    {
+        if (nodeList.Count == 0)
+            return;
+        foreach(Node node in nodeList)
+            node.ToggleNode(color, active);
+    }
+
+    public static void SetNodesObstacle(List<Node> nodeList, INodeInteractable obstacle)
+    {
+        if(nodeList.Count == 0)
+            return;
+        foreach(Node node in nodeList)
+            node.SetObstacle(obstacle);
+    }
+
+    public static void TriggerNodesObstacle(List<Node> nodeList, Tool tool)
+    {
+        if(nodeList.Count == 0)
+            return;
+        foreach (Node node in nodeList)
+            node.InteractObstacle(tool);
+    } 
+    
+    public static void ToggleNodes(List<Node> nodeList, bool toggle, Character character)
+    {
+        if(nodeList.Count == 0)
+            return;
+        foreach(Node node in nodeList)
+            if(character.NodeInPath(node))
+                node.ToggleNode(Node.colorGreen, toggle);
+            else
+                node.ToggleNode(toggle);
     }
 }

@@ -17,21 +17,12 @@ public class GameData {
     public string[] currentCharacterLevel;
     public List<string> unlockLevels;
 
-    // Statics;zz
-    public static List<SaveFileData> saveFileDataList ;
-    public static Dictionary<string, Sprite> characterSprites;
+    // Statics;
     public static SaveFileData loadedLevelData = null;
-    public static Dictionary<int,SavedSlotUI> saveSlotUIDict;
+    public static Dictionary<string, Sprite> characterSprites;
+    public static Dictionary<int, SavedSlotUI> saveSlotUIDict;
+    public static List<SaveFileData> savedDataFiles;
     public static List<string> allLevels = new List<string>(){"Char1Level1", "Char2Level1", "Char3Level1"};
-    public static void InitGameDataInstance()
-    {
-        characterSprites = new Dictionary<string, Sprite>();
-        saveSlotUIDict = new Dictionary<int, SavedSlotUI>(5);
-        Instance = SaveSystem.LoadGameData();
-        if (Instance != null)
-            return;
-        Instance = new GameData();
-    }
 
     private GameData()
     {
@@ -45,5 +36,15 @@ public class GameData {
         currentCharacterLevel = new string[3]{"Char1Level1", "Char2Level1", "Char3Level1"};
         unlockLevels = new List<string>{currentCharacterLevel[0], currentCharacterLevel[1], currentCharacterLevel[2]};
         leaderboards = new List<PlayerScoreData>();
+    }
+
+    public static void InitGameDataInstance()
+    {
+        characterSprites = new Dictionary<string, Sprite>(3);
+        saveSlotUIDict = new Dictionary<int, SavedSlotUI>(5);
+        savedDataFiles = new List<SaveFileData>(5);
+        Instance = SaveSystem.LoadGameData();
+        if (Instance == null)
+            Instance = new GameData();
     }
 }

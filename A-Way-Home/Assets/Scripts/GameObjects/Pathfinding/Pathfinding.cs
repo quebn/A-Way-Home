@@ -3,17 +3,17 @@ using UnityEngine;
 
 public static class Pathfinding
 {
-    public static Vector3[] FindPath(Vector3 startingPos, List<Vector3> targetPos, bool canWalkWater = false)
+    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, bool canWalkWater = false)
     {
         NodeGrid nodeGrid = NodeGrid.Instance;
-        Vector3[] path = new Vector3[0];
+        List<Node> path = new List<Node>();
 
         Node startNode = NodeGrid.NodeWorldPointPos(startingPos);
         List<Node> endNodes = NodeGrid.NodeWorldPointPos(targetPos);
 
         if (!startNode.IsWalkable())
         {
-            Debug.Log("No Path Found!");
+            Debug.LogWarning("Start node is Unwalkable!");
             return path;
         }
 
@@ -34,8 +34,7 @@ public static class Pathfinding
             closedSet.Add(currentNode);
             if (endNodes.Contains(currentNode))
             {
-                path = RetracePath(startNode, currentNode).ToArray();
-                Debug.Log("Path Found! Path Total Nodes: " + path.Length);
+                path = RetracePath(startNode, currentNode);
                 break;
             }
             foreach (Node neighbor in Node.GetNeighbors(currentNode, nodeGrid.grid, nodeGrid.gridSizeInt))
@@ -58,18 +57,19 @@ public static class Pathfinding
         return path;
     }
 
-    private static List<Vector3> RetracePath(Node startNode, Node endNode)
+    private static List<Node> RetracePath(Node startNode, Node endNode)
     {
-        List<Vector3> waypoints = new List<Vector3>();
+        List<Node> waypoints = new List<Node>();
         Node currentNode = endNode;
         while(currentNode != startNode)
         {
-            waypoints.Add(currentNode.worldPosition);
+            waypoints.Add(currentNode);
             currentNode = currentNode.parent;
         }
         waypoints.Reverse();
         return waypoints;
     }
+
 
     private static int GetDistance(Node nodeA, Node nodeB)
     {

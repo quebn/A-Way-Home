@@ -15,7 +15,7 @@ public class GroundSpike : Obstacle, IInteractable, ITrap
     {
         if (incorrectTool)
             return;
-        Debug.Log($"Click on Ground Spike with {PlayerActions.Instance.currentTool}");
+        Debug.Log($"Click on Ground Spike with {currentTool}");
     }
 
 

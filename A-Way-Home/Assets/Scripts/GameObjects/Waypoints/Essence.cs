@@ -9,7 +9,9 @@ public class Essence : MonoBehaviour
     private HomePortal homePortal;
 
 
-    public Vector3 worldPosition => NodeGrid.SetToMid(this.transform.position);
+
+    public Vector3 worldPosition => NodeGrid.GetMiddle(this.transform.position);
+
     public static Dictionary<Vector2, Essence> list;
     
     private void Start()
@@ -21,17 +23,25 @@ public class Essence : MonoBehaviour
     private void Initialize()
     {
         list.Add(worldPosition, this);
-        PlayerLevelData.Instance.currentDestinations.Add(this.worldPosition);
     }
 
     public void OnConsume(Character character)
     {
         this.gameObject.SetActive(false);
         list.Remove(this.worldPosition);
-        PlayerLevelData.Instance.currentDestinations.Remove(this.worldPosition);
-        character.Initialize(energyRestored, -1);
+        character.IncrementEnergy(energyRestored);
+        character.IncrementEssence(-1);
     }
 
+    public static List<Vector3> GetCurrentDestinations()
+    {
+        List<Vector3> destinations = new List<Vector3>();
+        if(list.Count <= 0) 
+            return destinations;
+        foreach(KeyValuePair<Vector2, Essence> pair in list)
+            destinations.Add(pair.Key);
+        return destinations;
+    }
     
     [ContextMenu("Generate Essence ID")]
     private void GenerateID() 

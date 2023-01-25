@@ -44,7 +44,6 @@ public class CameraMovement : MonoBehaviour
         NewMoveCamera();
     }
 
-    // TODO: rewrite this function someday
     public void NewMoveCamera()
     {
         if (PlayerLevelData.Instance.character.isHome)

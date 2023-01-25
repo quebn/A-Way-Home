@@ -1,22 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Tool { Inspect, Lightning, Command, Grow, Tremor, None }
+[System.Serializable]
+public enum Tool { Inspect, Lightning, Command, Grow, Tremor, PlaceMode }
 
 public class Obstacle : MonoBehaviour
 {
-    public const string TAG = "Interactable";
+    public static string TAG = "Obstacle";
 
-    [SerializeField] protected Texture2D mouseTexture;
     [SerializeField] private List<Tool> toolTypes;
     [SerializeField] private Vector2Int tileSize;
     [SerializeField] private string ID;
 
+
+    protected Vector2 worldPos => this.transform.position; 
     protected List<Node> nodes;
     protected SpriteRenderer spriteRenderer;
+    
+    protected int nodeCount => tileSize.x * tileSize.y; 
+    protected bool isRemoved => !this.gameObject.activeSelf;
     protected bool incorrectTool => !toolTypes.Contains(PlayerActions.Instance.currentTool);
-    protected int size => tileSize.x * tileSize.y; 
-    protected NodeType nodesType { set { foreach (Node node in nodes) node.currentType = value; }}
+    protected Tool currentTool => PlayerActions.Instance.currentTool;
 
     public static Dictionary<string, Obstacle> list;
 
@@ -25,43 +29,48 @@ public class Obstacle : MonoBehaviour
         Initialize();
     }
 
+    public virtual void SetActionData(ActionData actionData)
+    {
+        actionData.ID = this.ID;
+    } 
+
+    public virtual void OnUndo(ActionData actionData)
+    {
+        // this.tag = Obstacle.TAG;
+    }
+
     protected virtual void Initialize()
     {
+        if(ID == "")
+            GenerateID();
         list.Add(this.ID, this);
-        if (size > 0)
-            nodes = new List<Node>(size);
     }
 
-    protected void SetNodes(Vector3 worldPos)
+    protected void InitializeNodes(Vector3 worldPos, NodeType nodeType)
     {
-        if (nodes.Count == 1)
-            nodes.Add(NodeGrid.NodeWorldPointPos(worldPos));
-        else
-            nodes = NodeGrid.NodesByTileSize(worldPos, tileSize.x, tileSize.y);
+        nodes = new List<Node>();
+        nodes = NodeGrid.NodesByTileSize(worldPos, tileSize.x, tileSize.y);
+        foreach(Node node in nodes)
+            node.currentType = nodeType;
     }
 
-    protected void SetMouseCursor(Texture2D mouseTexture)
-    {
-        Cursor.SetCursor(mouseTexture, Vector2.zero, CursorMode.Auto);
-    }
+    // protected void SetNodesType(NodeType nodeType)
+    // {
+    //     foreach(Node node in nodes)
+    //         node.currentType = nodeType;
+    // }
 
-    protected void ResetMouseCursor()
-    {
-        Cursor.SetCursor(UnityEditor.PlayerSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
-    }
+    // protected void SetNodesType(NodeType nodeType, INodeInteractable obstacle)
+    // {
+    //     foreach(Node node in nodes)
+    //         node.SetObstacle(obstacle, nodeType);
+    // }
 
     [ContextMenu("Generate Obstacle ID")]
     private void GenerateID() 
     {
-        this.ID = System.Guid.NewGuid().ToString();
+        ID = System.Guid.NewGuid().ToString();
     }
-
-    protected void UpdateNodes()
-    {
-        nodesType = NodeType.Walkable;
-        this.gameObject.SetActive(false);
-    }
-
 }
 
 interface IInteractable
@@ -74,4 +83,14 @@ interface IInteractable
 interface ITrap
 {
     public void OnTrapTrigger(Character character);
+}
+
+interface IPlaceable
+{
+    public void OnPlace();
+}
+
+public interface INodeInteractable
+{
+    public void OnNodeInteract(Tool tool);
 }
