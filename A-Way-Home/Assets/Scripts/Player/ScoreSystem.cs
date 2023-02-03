@@ -14,7 +14,7 @@ public static class ScoreSystem
     {
         // Debug.Assert(false, "TODO: Implement Calculate Score");
         int playerScore = PlayerLevelData.Instance.levelData.score;
-        int characterScore = PlayerLevelData.Instance.character.GetScore(1);
+        int characterScore = Character.instance.GetScore(1);
         int levelScore = PlayerLevelData.Instance.GetScore(1 , 1);
         playerScore += Mathf.RoundToInt((characterScore * CharEnergyMult) * (levelScore * RemainingMovesMult + 1)); 
         Debug.Log($"Calculated Score: {playerScore}");
@@ -26,7 +26,7 @@ public static class ScoreSystem
     public static void InitScoreData()
     {
         PlayerLevelData playerLevelData = PlayerLevelData.Instance;
-        characterSprite = playerLevelData.character.image;
+        characterSprite = Character.instance.image;
         characterName = new string(playerLevelData.levelData.characterName);
         scoreLevelData = PlayerLevelData.Instance.levelData;
     }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 
 public enum NodeType{ Walkable, Water, Terrain, Obstacle}
@@ -8,18 +9,16 @@ public class Node
     public Vector3 worldPosition;
     public Vector2Int gridPos;
     public Node parent;
-    public bool containsObject;
     public int gCost;
     public List<int> hCosts ;
 
-    private NodeType originalNodeType;
     private NodeType currentNodeType;
-    private INodeInteractable interactableObstacle;
+    private IInteractable interactableObstacle;//Maybe should be an Obstacle instead of of IInteractable.
 
     private Color nodeColor {set => NodeGrid.tilemap.SetColor((Vector3Int)this.gridPos ,value); }
     private bool isWalkable => currentNodeType == NodeType.Walkable ;
-    public int minHCost => hCosts.Min(); 
-    public int fCost => gCost + minHCost;
+    public int hCost => MinHCost(); 
+    public int fCost => gCost + hCost;
     public NodeType currentType {  
         get => this.currentNodeType; 
         set {this.currentNodeType = value; UpdateColor();}
@@ -33,34 +32,57 @@ public class Node
     public static Color colorYellow   => new Color32(255, 255, 0, 150);
     public static Color colorClear  => Color.clear; 
     
-    public Node(NodeType nodeType, Vector3 worldpos, Vector2Int grid, bool containsObj)
+    public Node(NodeType nodeType, Vector3 worldpos, Vector2Int grid)
     {
         this.worldPosition = worldpos;
         this.gridPos = grid;
-        this.originalNodeType = nodeType;
         this.currentType = nodeType;
-        this.containsObject = containsObj;
+        this.hCosts = new List<int>();
     }
 
-    public void RevertNode()
+    private int MinHCost()
     {
-        this.containsObject = false;
-        this.currentType = this.originalNodeType;
+        if (!hCosts.Any<int>())
+            Debug.LogWarning($"Node[{gridPos.x}, {gridPos.y}] has no Contents");
+
+            // return 0;
+        return hCosts.Min<int>();
+        // int hcost = hCosts.Min<int>();
+        // Debug.LogWarning($"Node[{gridPos.x}, {gridPos.y}] => MIN hCost: {hcost}");
+        // return hcost;
     }
 
-    public bool IsWalkable(bool canWalkWater = false)
+    public bool IsWalkable(NodeType nodeType = NodeType.Walkable, Type obstacleType = null)
     {
-        if (canWalkWater)
-            return (isWalkable || currentNodeType == NodeType.Water);
-        return isWalkable;
+        if(obstacleType != null && interactableObstacle != null)
+            return IsObstacle(obstacleType);
+        return (currentNodeType == nodeType ||currentNodeType == NodeType.Walkable );
     }
 
     public bool IsType(NodeType nodeType)
     {
-        if(currentNodeType == nodeType)
-            return true;
-        return false;
+        return currentNodeType == nodeType;
     }
+
+    public bool IsObstacle(Type type)
+    {
+        return interactableObstacle != null && type.IsAssignableFrom(interactableObstacle.GetType());
+    }
+
+    public IInteractable GetObstacle()
+    {
+        return interactableObstacle;
+    }
+
+    // public bool TryGetTrap(out ITrap trap)
+    // {
+        // if(interactableObstacle is ITrap){
+            // trap = (ITrap)interactableObstacle;
+            // return true;
+        // }
+        // trap = null;
+        // return false;
+    // }
 
     private void UpdateColor()
     {
@@ -76,7 +98,7 @@ public class Node
         nodeColor = colorClear;
     }
 
-    public void UpdateNode()
+    public void UpdateNodeColor()
     {
         UpdateColor();
     }
@@ -121,44 +143,20 @@ public class Node
             HideNode();
     }
 
-
-    public void SetObstacle(INodeInteractable obstacle)
+    public void SetInteractable(IInteractable obstacle, NodeType nodeType)
     {
         this.interactableObstacle = obstacle;
+        this.currentNodeType = nodeType;
+        UpdateColor();
     }
 
-    public void SetObstacle(INodeInteractable obstacle, NodeType nodeType)
-    {
-        this.interactableObstacle = obstacle;
-        this.currentType = nodeType;
-    }
-
-    public void InteractObstacle(Tool tool)
+    public void InteractObstacle()
     {
         if(interactableObstacle == null)
             return;
-        interactableObstacle.OnNodeInteract(tool);
+        interactableObstacle.OnInteract();
     }
 
-    public static List<Node> GetNeighbors(Node node, Dictionary<Vector2Int, Node> grid, Vector2Int gridsize)
-    {
-        List<Node> neighbors = new List<Node>();
-        for (int x = -1; x <= 1; x++){
-            for (int y = -1; y <= 1; y++){
-                // Prevent middle node and diagonal nodes from being included in neighbors of the node.
-                // Grid coords that are excluded: (0, 0), (1, 1), (-1, -1), (-1 , 1), (1, -1)
-                if (x == y || x + y == 0)
-                    continue;
-                    
-                int checkx = node.gridPos.x + x;
-                int checky = node.gridPos.y + y;
-
-                if (checkx >= 0 && checkx < gridsize.x && checky >=0 && checky < gridsize.y)
-                    neighbors.Add(grid[new Vector2Int(checkx, checky)]);
-            }
-        }
-        return neighbors;
-    }
 
     public static void RevealNodes(List<Node> nodeList)
     {
@@ -200,20 +198,21 @@ public class Node
             node.ToggleNode(color, active);
     }
 
-    public static void SetNodesObstacle(List<Node> nodeList, INodeInteractable obstacle)
+
+    public static void SetNodesInteractable(List<Node> nodeList, NodeType nodeType, IInteractable interactable = null)
     {
         if(nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
-            node.SetObstacle(obstacle);
+            node.SetInteractable(interactable, nodeType);
     }
 
-    public static void TriggerNodesObstacle(List<Node> nodeList, Tool tool)
+    public static void TriggerNodesObstacle(List<Node> nodeList)
     {
         if(nodeList.Count == 0)
             return;
         foreach (Node node in nodeList)
-            node.InteractObstacle(tool);
+            node.InteractObstacle();
     } 
     
     public static void ToggleNodes(List<Node> nodeList, bool toggle, Character character)
@@ -225,5 +224,46 @@ public class Node
                 node.ToggleNode(Node.colorGreen, toggle);
             else
                 node.ToggleNode(toggle);
+    }
+
+    public static void SetNodesType(List<Node> nodeList, NodeType type)
+    {
+        if(nodeList.Count == 0)
+            return;
+        foreach(Node node in nodeList)
+            node.currentNodeType = type;
+    }
+
+    public static bool CheckNodesType(List<Node> nodeList, NodeType nodeType, Type type)
+    {
+        if(nodeList.Count == 0)
+            return false;
+        foreach (Node node in nodeList)
+            if(node.IsWalkable(nodeType, type))
+                return true;
+        return false;
+    }
+
+    public static List<IInteractable> GetNodesInteractable(List<Node> nodeList)
+    {
+        List<IInteractable> interactables = new List<IInteractable>();
+        foreach(Node node in nodeList)
+            if(node.interactableObstacle != null && !interactables.Contains(node.interactableObstacle))
+                interactables.Add(node.interactableObstacle);
+        return interactables;
+    }
+
+    public static Vector3 GetRandomWorldPos(Dictionary<Vector2Int, Node> grid)
+    {
+        return grid.Values.ToList()[UnityEngine.Random.Range(0, grid.Count)].worldPosition;
+    }
+
+    public static List<Vector3> GetRandomWorldPos(Dictionary<Vector2Int, Node> grid, int count)
+    {
+        Debug.Assert(count > 0, "ERROR: Count should be greater than 0!");
+        List<Vector3> positions = new List<Vector3>(count);
+        for (int i = 0; i < count ; i++)
+            positions.Add(GetRandomWorldPos(grid));
+        return positions;
     }
 }

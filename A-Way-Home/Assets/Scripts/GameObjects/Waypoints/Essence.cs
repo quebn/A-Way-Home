@@ -22,6 +22,7 @@ public class Essence : MonoBehaviour
 
     private void Initialize()
     {
+        Debug.Assert(list != null, "ERROR: List is null");
         list.Add(worldPosition, this);
     }
 
@@ -36,13 +37,17 @@ public class Essence : MonoBehaviour
     public static List<Vector3> GetCurrentDestinations()
     {
         List<Vector3> destinations = new List<Vector3>();
-        if(list.Count <= 0) 
-            return destinations;
+        Debug.Assert(list.Count > 0, "ERROR: No Essences found");
         foreach(KeyValuePair<Vector2, Essence> pair in list)
             destinations.Add(pair.Key);
         return destinations;
     }
-    
+
+    public static void InitializeAll()
+    {
+
+    }
+
     [ContextMenu("Generate Essence ID")]
     private void GenerateID() 
     {

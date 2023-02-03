@@ -1,35 +1,33 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public static class Pathfinding
 {
-    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, bool canWalkWater = false)
+
+    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, NodeType walkableNodeType = NodeType.Walkable, Type type = null)
     {
+        Debug.Assert(targetPos.Count > 0, "ERROR: No Target in list");
         NodeGrid nodeGrid = NodeGrid.Instance;
         List<Node> path = new List<Node>();
 
         Node startNode = NodeGrid.NodeWorldPointPos(startingPos);
         List<Node> endNodes = NodeGrid.NodeWorldPointPos(targetPos);
-
-        if (!startNode.IsWalkable())
+        if (!startNode.IsWalkable(walkableNodeType, type) && !Node.CheckNodesType(endNodes, walkableNodeType, type))
         {
-            Debug.LogWarning("Start node is Unwalkable!");
+            // Debug.LogWarning($"Start node and End Nodes are Unwalkable! node type -> {walkableNodeType.ToString()} | obstacle type => {type.ToString()}");
             return path;
         }
-
         List<Node> openSet = new List<Node>();
         HashSet<Node> closedSet = new HashSet<Node>();
         openSet.Add(startNode);
-
         while (openSet.Count > 0)
         {
-            // 
             Node currentNode = openSet[0];
             for (int i = 1; i < openSet.Count; i++)
-                if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].minHCost < currentNode.minHCost)
+                if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost)
                     currentNode = openSet[i];
             //
-
             openSet.Remove(currentNode);
             closedSet.Add(currentNode);
             if (endNodes.Contains(currentNode))
@@ -37,11 +35,10 @@ public static class Pathfinding
                 path = RetracePath(startNode, currentNode);
                 break;
             }
-            foreach (Node neighbor in Node.GetNeighbors(currentNode, nodeGrid.grid, nodeGrid.gridSizeInt))
+            foreach (Node neighbor in NodeGrid.GetPathNeighborNodes(currentNode, nodeGrid.grid))
             {
-                if (!neighbor.IsWalkable(canWalkWater) || closedSet.Contains(neighbor))
+                if (!neighbor.IsWalkable(walkableNodeType, type) || closedSet.Contains(neighbor))
                     continue;
-                
                 int newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
                 if (newMovementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
                 {
@@ -69,7 +66,6 @@ public static class Pathfinding
         waypoints.Reverse();
         return waypoints;
     }
-
 
     private static int GetDistance(Node nodeA, Node nodeB)
     {

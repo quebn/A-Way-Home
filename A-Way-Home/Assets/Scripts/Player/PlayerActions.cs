@@ -17,7 +17,6 @@ public class PlayerActions : MonoBehaviour
 
     private Mouse mouse;
     private Camera mainCamera;
-    private IInteractable currentInteractable;
     private PlayerInput playerInput;
     private InputAction performAction; 
     private InputAction revealPath;
@@ -28,10 +27,11 @@ public class PlayerActions : MonoBehaviour
     private Vector2 currentTileOrigin;
     private List<Node> currentTileNodes;
     private List<ActionData> actionList;
+    private List<IInteractable> currentInteractables;
 
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
-    private bool actionsNotAllowed => ( IsMouseOverUI() ||  PlayerLevelData.Instance.character.isMoving);
-    private bool unhoverable => PlayerActions.Instance.currentTool == Tool.PlaceMode;
+    private bool actionsNotAllowed => ( IsMouseOverUI() ||  Character.instance.isMoving);
+    // private bool uninteractable => this.currentTool == Tool.PlaceMode;
 
     private void Start()
     {
@@ -53,14 +53,14 @@ public class PlayerActions : MonoBehaviour
 
     public void Undo()
     {
-        if(PlayerLevelData.Instance.character.isMoving || actionList.Count < 1)
+        if(Character.instance.isMoving || actionList.Count < 1)
             return;
         ActionData data = actionList.Last<ActionData>();
         data.GetObstacle().OnUndo(data);
         actionList.Remove(data);
         Debug.Log("Undo Action was Pressed!");
         PlayerLevelData.Instance.IncrementPlayerMoves(1);
-        PlayerLevelData.Instance.character.GetPath();
+        Character.instance.GetPath();
         // add a penalty reducing the time by n amount every time player undo an action.
     }
 
@@ -70,46 +70,48 @@ public class PlayerActions : MonoBehaviour
             return;
         switch(currentTool)
         {
-            case Tool.Inspect:
-                Inspect();
-                break;
+            // case Tool.Inspect:
+                // Inspect();
+                // break;
             case Tool.Lightning:
+                LightningAnimation(this.currentTileOrigin);
+                InteractNodes();
+                break;
             case Tool.Tremor:
-                Interact();
+                InteractNodes();
+                break;
+            case Tool.Grow:
+                InteractObject();
+                break;
+            case Tool.Command:
+                InteractObject();
                 break;
         }
-        PlayerLevelData.Instance.character.GetPath();
+        Character.instance.GetPath();
     }
 
-    private void Inspect()
+    private void InteractNodes()
     {
-        Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
-        RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
-        if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
-            return;
-        currentInteractable = hit2D.collider.gameObject.GetComponent<IInteractable>();
-        if (currentInteractable == null)
-            return;
-        actionList.Add(new ActionData((Obstacle)currentInteractable, currentTool));
-        currentInteractable.OnClick();
-    }
-
-    private void Interact()
-    {
-        Node.TriggerNodesObstacle(currentTileNodes, currentTool);
+        Node.TriggerNodesObstacle(currentTileNodes);
     }
 
     // private void Place()
     // {
-    //     if (currentInteractable == null)
-    //         return;
-    //     Debug.Log("Placing an object");
-    //     IPlaceable placeable = (IPlaceable)currentInteractable;
-    //     placeable.OnPlace();
 
     // }
 
-    public float LightningAnimation(Vector2 location)
+    private void InteractObject()
+    {
+        if(currentInteractables.Count < 1)
+            return;
+        currentInteractables[0].OnInteract();
+        // currentInteractable = hit2D.collider.gameObject.GetComponent<IInteractable>();
+        // if (currentInteractable == null)
+            // return;
+        // actionList.Add(new ActionData((Obstacle)currentInteractable, currentTool));
+    }
+
+    private float LightningAnimation(Vector2 location)
     {
         animatorLighting.transform.position = location;
         animatorLighting.Play("Lightning_Strike");
@@ -119,11 +121,10 @@ public class PlayerActions : MonoBehaviour
 
     private void SetCurrentTool(InputAction.CallbackContext context)
     {
-        if (GameEvent.isPaused || PlayerLevelData.Instance.character.destinationReached)
+        if (GameEvent.isPaused || Character.instance.destinationReached)
             return;
         int toolNumber = context.action.name[context.action.name.Length - 1] - '0';
         SetCurrentTool(toolNumber - 1);
-        Debug.Log(toolNumber);
     }
 
     public void SetCurrentTool(int index)
@@ -145,10 +146,13 @@ public class PlayerActions : MonoBehaviour
             case Tool.Lightning:
             case Tool.Tremor:
                 currentTileOrigin = new Vector2();
-                Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, PlayerLevelData.Instance.character);
-                currentTileNodes = new List<Node>(4);
+                Obstacle.DehighlightInteractables(currentInteractables);
+                Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, Character.instance);
+                currentInteractables = new List<IInteractable>();
+                currentTileNodes = new List<Node>();
                 break;
         }
+        Debug.Log("Change");
     }
 
     private void Hover()
@@ -160,10 +164,33 @@ public class PlayerActions : MonoBehaviour
             case Tool.Lightning:
                 HighlightTile(1, 1, Node.colorCyan);
                 break;
+            case Tool.Command:
+            case Tool.Grow:
+                HighlightObject();
+                break;
             case Tool.Tremor:
                 HighlightTile(2, 2, Node.colorYellow);
                 break;
         }
+    }
+
+    private void HighlightObject()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
+        RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
+        if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
+        {
+            if (currentInteractables.Count > 0)
+            {
+                currentInteractables[0].OnDehighlight();
+                currentInteractables = new List<IInteractable>();
+            }
+            return;
+        }
+        if(currentInteractables.Count < 1)
+            currentInteractables.Add(hit2D.collider.gameObject.GetComponent<IInteractable>());
+        currentInteractables[0].OnHighlight();
+        // Debug.Log("Hovering on Object");
     }
 
     private void HighlightTile(int tileWidth, int tileHeight, Color color)
@@ -171,15 +198,26 @@ public class PlayerActions : MonoBehaviour
         Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos, tileWidth, tileHeight);
         if(currentTileOrigin == origin)
             return;
-        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, PlayerLevelData.Instance.character);
+        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, Character.instance);
+        currentTileNodes = NodeGrid.GetNodes(origin, tileWidth, tileHeight, NodeType.Terrain);
+        HiglightInteractables(origin);
         currentTileOrigin = origin;
-        currentTileNodes = NodeGrid.NodesByTileSize(origin, tileWidth, tileHeight, NodeType.Terrain);
         Node.RevealNodes(currentTileNodes, color);
     }
 
-
-    private void HighlightObject()
+    private void HiglightInteractables(Vector2 origin)
     {
+        List<IInteractable> interactables = Node.GetNodesInteractable(currentTileNodes);
+        if(interactables == currentInteractables)
+            return;
+        if(origin != currentTileOrigin)
+            Obstacle.DehighlightInteractables(currentInteractables);
+        currentInteractables = interactables;
+        Obstacle.HighlightInteractables(currentInteractables);
+    } 
+
+    // private void HighlightObject()
+    // {
     //     Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
     //     RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
     //     if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
@@ -194,13 +232,13 @@ public class PlayerActions : MonoBehaviour
     //     if (currentInteractable == null)
     //         currentInteractable = hit2D.collider.gameObject.GetComponent<IInteractable>();
     //     currentInteractable.OnHover();
-    }
+    // }
 
     private void StartCharacter(InputAction.CallbackContext context)
     {
-        if (PlayerLevelData.Instance.character.isMoving)
+        if (Character.instance.isMoving)
             return;
-        PlayerLevelData.Instance.character.GoHome();
+        Character.instance.GoHome();
     }
 
     private void UndoAction(InputAction.CallbackContext context)
@@ -221,7 +259,7 @@ public class PlayerActions : MonoBehaviour
         if (GameEvent.isPaused)
             return;
         Debug.LogWarning("Unimplemented!");
-        // PlayerLevelData.Instance.character.DisplayPath();
+        // Character.instance.DisplayPath();
     }
 
     private static bool IsMouseOverUI(){
@@ -247,6 +285,7 @@ public class PlayerActions : MonoBehaviour
         reset           = playerInput.actions["Reset"];
         currentTileNodes = new List<Node>(4); 
         actionList = new List<ActionData>();
+        currentInteractables = new List<IInteractable>();
     }
 
     private void SubscribeFunctions()

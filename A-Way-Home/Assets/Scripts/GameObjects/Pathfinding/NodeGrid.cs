@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -11,10 +12,10 @@ public class NodeGrid : MonoBehaviour
     [SerializeField] private Tilemap tileMap; 
     [SerializeField] private Tile tile; 
 
-    [HideInInspector] public Vector2Int gridSizeInt;
-    [HideInInspector] public Dictionary<Vector2Int, Node> grid;
-    
+    public Dictionary<Vector2Int, Node> grid;
+    private Vector2Int gridSizeInt;
     private float nodeDiameter;
+    
 
     public static bool nodesVisibility = false; 
     public static Tilemap tilemap => Instance.tileMap;
@@ -35,6 +36,7 @@ public class NodeGrid : MonoBehaviour
     private void CreateGrid()
     {
         grid = new Dictionary<Vector2Int, Node>(gridSizeInt.x * gridSizeInt.y);
+        Debug.Log("Creating new Grid");
         Vector3 worldBottomLeft = transform.position - Vector3.right * gridSize.x / 2 - Vector3.up * gridSize.y / 2;
         this.tileMap.transform.position = worldBottomLeft;
         for (int x = 0; x < gridSizeInt.x; x++){
@@ -57,7 +59,7 @@ public class NodeGrid : MonoBehaviour
             nodeType = NodeType.Water;
         else if (collider2D.gameObject.tag == "Terrain")
             nodeType = NodeType.Terrain;
-        grid[gridPosition] = new Node(nodeType, worldPoint, gridPosition, false);
+        grid[gridPosition] = new Node(nodeType, worldPoint, gridPosition);
     }
     
     [SerializeField] private bool enableValues;
@@ -79,7 +81,7 @@ public class NodeGrid : MonoBehaviour
         Gizmos.DrawWireCube(transform.position, new Vector3(gridSize.x, gridSize.y, 0));
     } 
 
-    public static List<Vector2> NodePosByTileSize(Vector2 origin, int width, int height)
+    public static List<Vector2> GetNodeWorldPos(Vector2 origin, int width, int height)
     {
         List<Vector2> worldPositions = new List<Vector2>(width * height);
         Vector2 coord = new Vector2(GetMiddle(origin.x, width), GetMiddle(origin.y, height));
@@ -92,20 +94,20 @@ public class NodeGrid : MonoBehaviour
         }
         return worldPositions;
     }
-
-    public static List<Node> NodesByTileSize(Vector2 origin, int width, int height)
+    
+    public static List<Node> GetNodes(Vector2 nodeTileCenter, int width, int height)
     {
         List<Node> nodes = new List<Node>(width * height);
-        List<Vector2> vector2s = NodePosByTileSize(origin, width, height);
+        List<Vector2> vector2s = GetNodeWorldPos(nodeTileCenter, width, height);
         for(int i = 0; i < vector2s.Count; i++)
             nodes.Add(NodeWorldPointPos(vector2s[i]));
         return nodes;
     }
-
-    public static List<Node> NodesByTileSize(Vector2 origin, int width, int height, NodeType excludedType)
+    
+    public static List<Node> GetNodes(Vector2 nodeTileCenter, int width, int height, NodeType excludedType)
     {
         List<Node> nodes = new List<Node>(width * height);
-        List<Vector2> vector2s = NodePosByTileSize(origin, width, height);
+        List<Vector2> vector2s = GetNodeWorldPos(nodeTileCenter, width, height);
         for(int i = 0; i < vector2s.Count; i++){
             Node node = NodeWorldPointPos(vector2s[i]);
             if (!node.IsType(excludedType))
@@ -114,10 +116,10 @@ public class NodeGrid : MonoBehaviour
         return nodes;
     }
 
-    public static List<Node> WalkableNodesByTileSize(Vector2 origin, int width, int height)
+    public static List<Node> GetWalkableNodes(Vector2 nodeTileCenter, int width, int height)
     {
         List<Node> nodes = new List<Node>(width * height);
-        List<Vector2> vector2s = NodePosByTileSize(origin, width, height);
+        List<Vector2> vector2s = GetNodeWorldPos(nodeTileCenter, width, height);
         for(int i = 0; i < vector2s.Count; i++){
             Node node  = NodeWorldPointPos(vector2s[i]);
             if (!node.IsWalkable())
@@ -127,9 +129,9 @@ public class NodeGrid : MonoBehaviour
         return nodes;
     }
 
-    public static bool CheckTileIsWalkable(Vector2 origin, int width, int height)
+    public static bool CheckTileIsWalkable(Vector2 nodeTileCenter, int width, int height)
     {
-        List<Node> nodes = NodesByTileSize(origin, width, height);
+        List<Node> nodes = GetNodes(nodeTileCenter, width, height);
         foreach(Node node in nodes)
             if(!node.IsWalkable())
                 return false;
@@ -141,7 +143,7 @@ public class NodeGrid : MonoBehaviour
     {
         foreach(KeyValuePair<Vector2Int, Node> pair in Instance.grid)
         {
-            if(PlayerLevelData.Instance.character.NodeInPath(pair.Value))
+            if(Character.instance.NodeInPath(pair.Value))
                 pair.Value.ToggleNode(Node.colorGreen, active);
             else
                 pair.Value.ToggleNode(active);
@@ -165,20 +167,56 @@ public class NodeGrid : MonoBehaviour
         return Instance.grid[index];
     }
 
-    public static List<Node> GetNodesByRange(Node node, int tileRange)
+    public static Dictionary<Vector2Int, Node> GetNeighorNodes(Node node, Dictionary<Vector2Int, Node> grid, int size)
     {
-        List<Node> nodes = new List<Node>();
-        Vector2Int check;
-        for (int x = -tileRange; x <= tileRange; x++){
-            for (int y = -tileRange; y <= tileRange; y++){
-                if (x == 0 && y == 0)
+        Dictionary<Vector2Int, Node> nodes = new Dictionary<Vector2Int, Node>(size * size);
+        Vector2Int gridPosition;
+        for (int x = -size; x <= size; x++){
+            for (int y = -size; y <= size; y++){
+                if(x == 0 && y == 0)
                     continue;
-                check = new Vector2Int(node.gridPos.x + x, node.gridPos.y + y);
-                if (Instance.grid.ContainsKey(check) && Instance.grid[check].IsWalkable())
-                    nodes.Add(Instance.grid[check]);
+                gridPosition = new Vector2Int(node.gridPos.x + x, node.gridPos.y + y);
+                if (Instance.grid.ContainsKey(gridPosition))
+                    nodes.Add(gridPosition, Instance.grid[gridPosition]);
             }
         }
         return nodes;
+    }
+
+    public static List<Node> GetPathNeighborNodes(Node node, Dictionary<Vector2Int, Node> grid, Vector2Int gridsize)
+    {
+        List<Node> neighbors = new List<Node>();
+        for (int x = -1; x <= 1; x++){
+            for (int y = -1; y <= 1; y++){
+                // Prevent middle node and diagonal nodes from being included in neighbors of the node.
+                // Grid coords that are excluded: (0, 0), (1, 1), (-1, -1), (-1 , 1), (1, -1)
+                if (x == y || x + y == 0)
+                    continue;
+                int checkx = node.gridPos.x + x;
+                int checky = node.gridPos.y + y;
+                if (checkx >= 0 && checkx < gridsize.x && checky >=0 && checky < gridsize.y)
+                    neighbors.Add(grid[new Vector2Int(checkx, checky)]);
+            }
+        }
+        return neighbors;
+    }
+
+    public static List<Node> GetPathNeighborNodes(Node node, Dictionary<Vector2Int, Node> grid)
+    {
+        List<Node> neighbors = new List<Node>();
+        Vector2Int gridPosition;
+        for (int x = -1; x <= 1; x++){
+            for (int y = -1; y <= 1; y++){
+                // Prevent middle node and diagonal nodes from being included in neighbors of the node.
+                // Grid coords that are excluded: (0, 0), (1, 1), (-1, -1), (-1 , 1), (1, -1)
+                if (x == y || x + y == 0)
+                    continue;
+                gridPosition = new Vector2Int(node.gridPos.x + x, node.gridPos.y + y);
+                if (grid.ContainsKey(gridPosition))
+                    neighbors.Add(grid[gridPosition]);
+            }
+        }
+        return neighbors;
     }
 
     public static List<Node> NodeWorldPointPos(List<Vector3> positions)
@@ -212,4 +250,25 @@ public class NodeGrid : MonoBehaviour
     {
         return new Vector3(GetMiddle(vector3.x, x), GetMiddle(vector3.y, y));
     }
+
+    public static Node GetNode(Type obstacleType, Dictionary<Vector2Int, Node> grid)
+    {
+        foreach (KeyValuePair<Vector2Int, Node> pair in grid)
+            if(pair.Value.IsObstacle(obstacleType))
+                return pair.Value;
+        return null;
+    }
+
+
+    public static List<Vector3> GetReachableWorldPos(Type obstacleType, Dictionary<Vector2Int, Node> grid)
+    {
+        List<Vector3> worldPositions = new List<Vector3>();
+        // Should Check if up down left right is walkable and if true add.;
+        foreach (KeyValuePair<Vector2Int, Node> pair in grid)
+            if(pair.Value.IsObstacle(obstacleType))
+                worldPositions.Add(pair.Value.worldPosition);
+        return worldPositions;
+    }
+
+
 }

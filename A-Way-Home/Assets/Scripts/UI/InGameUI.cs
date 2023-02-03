@@ -59,14 +59,14 @@ public class InGameUI : MonoBehaviour
     private void Start()
     {
         PlayerLevelData playerLevelData = PlayerLevelData.Instance;
-        Debug.Assert(playerLevelData.character != null, "Character is null");
-        InitCharacterUI(playerLevelData.levelData, playerLevelData.character);
+        Debug.Assert(Character.instance != null, "Character is null");
+        InitCharacterUI(playerLevelData.levelData, Character.instance);
         endGameType = EndGameType.None;
     }
 
     private void Update()
     {
-        if (!PlayerLevelData.Instance.character.isMoving)
+        if (!Character.instance.isMoving)
             TimeCountdown();
     }
 
@@ -75,7 +75,7 @@ public class InGameUI : MonoBehaviour
         if (timeCounterUI > 0)
             timeCounterUI -= Time.deltaTime;
         if (timeCounterUI <= 0 && !GameEvent.isEndWindowActive)
-            PlayerLevelData.Instance.character.GoHome();
+            Character.instance.GoHome();
     }
 
     // move to character initialization
@@ -91,7 +91,7 @@ public class InGameUI : MonoBehaviour
 
     public void ShowCurrentPath()
     {
-        if(PlayerLevelData.Instance.character.isMoving)
+        if(Character.instance.isMoving)
             return;
         NodeGrid.nodesVisibility = !NodeGrid.nodesVisibility;
         NodeGrid.ToggleGridTiles(NodeGrid.nodesVisibility);

@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerLevelData : MonoBehaviour
 {
     public static PlayerLevelData Instance {get; private set;}
-    public Character character;
 
     [SerializeField] private uint characterLevel;
     [SerializeField] private int characterEnergy;
@@ -54,7 +53,7 @@ public class PlayerLevelData : MonoBehaviour
 
     private void Start()
     {
-        character.Initialize(levelData.characterEnergy, levelData.characterRequiredEssence);
+        Character.instance.Initialize(levelData.characterEnergy, levelData.characterRequiredEssence);
     }
 
     private void NewGame()

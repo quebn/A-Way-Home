@@ -2,82 +2,42 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TreeLog : Obstacle//, IInteractable, INodeInteractable
+public class TreeLog : Obstacle, IInteractable//, IInteractable, INodeInteractable
 {
+
     // public bool notSpawned;
-    // private Animator animator;
+    [SerializeField] private Animator animator;
 
-    // protected override void Initialize()
-    // {
-    //     base.Initialize();
-    //     animator = GetComponent<Animator>();
-    //     spriteRenderer = GetComponent<SpriteRenderer>();
-    //     InitializeNodes(this.transform.position);
-    //     SetNodesType(NodeType.Obstacle, this);
-    //     if(!notSpawned)
-    //         SpawnAnimation();
-    // }
+    protected override void Initialize()
+    {
+        base.Initialize();
+        SetNodes(this.transform.position, NodeType.Obstacle, this);
+    }
 
-    // public override void SetActionData(ActionData actionData)
-    // {
-    //     base.SetActionData(actionData);
-    //     actionData.isActive = this.gameObject.activeSelf;
-    // }
+    public void OnInteract()
+    {
+        if(currentTool == Tool.Lightning)
+            RemoveLog();
+    }
 
-    // public override void OnUndo(ActionData actionData)
-    // {
-    //     base.OnUndo(actionData);
-    //     this.gameObject.SetActive(actionData.GetLogData());
-    //     SetNodesType(NodeType.Obstacle);
-    //     Debug.Log("Undo Log");
-    // }
+    public void OnHighlight()
+    {
+        if(currentTool != Tool.Lightning)
+            return;
+        this.spriteRenderer.color = Color.green;
+    }
 
-    // private void RemoveLog()
-    // {
-    //     PlayerActions.Instance.LightningAnimation(this.transform.position);
-    //     this.tag = "Interacted";
-    //     PlayerLevelData.Instance.IncrementPlayerMoves(-1);
-    //     SetNodesType(NodeType.Walkable);
-    //     this.gameObject.SetActive(false);
-    // }
+    public void OnDehighlight()
+    {
+        if(currentTool != Tool.Lightning)
+            return;
+        this.spriteRenderer.color = Color.white;
+    }
 
-    // private void SpawnAnimation()
-    // {
-    //     animator.Play("Log_Spawn");
-    // }
-
-    // private void ShowInfo()
-    // {
-    //     Debug.Log("Clicked on Log");
-    // }
-
-    // public static void SpawnTreeLog(Vector2 position, GameObject prefab, string id)
-    // {
-
-    // }
-
-    // public void OnClick()
-    // {
-    //     if(incorrectTool)
-    //         return;
-    //     ShowInfo();
-    // }
-
-    // public void OnHover()
-    // {
-    //     if(incorrectTool)
-    //         return;
-    //     spriteRenderer.color = Color.green;
-    //     // HighlightObstacle();
-    // }
-
-    // public void OnDehover()
-    // {
-    //     spriteRenderer.color = Color.white;
-    // }
-
-    // public void OnNodeInteract(Tool tool)
-    // {
-    //     RemoveLog();
-    // }
+    private void RemoveLog()
+    {
+        PlayerLevelData.Instance.IncrementPlayerMoves(-1);
+        ClearNodes();
+        this.gameObject.SetActive(false);
+    }
 }

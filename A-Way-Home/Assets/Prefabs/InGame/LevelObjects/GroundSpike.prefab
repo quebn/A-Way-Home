@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1375199264598416130}
   - component: {fileID: 4085223547173731104}
   - component: {fileID: 4085223547173731107}
-  - component: {fileID: 5011018718827325006}
+  - component: {fileID: 7067239462161007942}
   m_Layer: 0
   m_Name: GroundSpike
   m_TagString: Obstacle
@@ -47,9 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eba616a35707374da9e86565d47730e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toolTypes: 04000000
   tileSize: {x: 1, y: 1}
-  ID: 
+  spriteRenderer: {fileID: 4085223547173731104}
+  animator: {fileID: 4085223547173731107}
 --- !u!212 &4085223547173731104
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -88,9 +88,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -415720907
-  m_SortingLayer: 1
-  m_SortingOrder: 3
+  m_SortingLayerID: -1157385037
+  m_SortingLayer: 2
+  m_SortingOrder: -1
   m_Sprite: {fileID: -992262655, guid: 0a1fa2aa2ac9ddf429b9dff66578a92d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -122,7 +122,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!61 &5011018718827325006
+--- !u!61 &7067239462161007942
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,5 +146,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.8, y: 0.8}
+  m_Size: {x: 0.5, y: 0.5}
   m_EdgeRadius: 0

@@ -1,25 +1,23 @@
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 [System.Serializable]
-public enum Tool { Inspect, Lightning, Command, Grow, Tremor, PlaceMode }
+public enum Tool { Inspect, Lightning, Command, Grow, Tremor}//, PlaceMode }
 
 public class Obstacle : MonoBehaviour
 {
     public static string TAG = "Obstacle";
 
-    [SerializeField] private List<Tool> toolTypes;
     [SerializeField] private Vector2Int tileSize;
-    [SerializeField] private string ID;
+    private string ID;
 
+    [SerializeField] protected SpriteRenderer spriteRenderer;
+    protected List<Node> nodes;
+    // protected bool isActive;
 
     protected Vector2 worldPos => this.transform.position; 
-    protected List<Node> nodes;
-    protected SpriteRenderer spriteRenderer;
-    
     protected int nodeCount => tileSize.x * tileSize.y; 
-    protected bool isRemoved => !this.gameObject.activeSelf;
-    protected bool incorrectTool => !toolTypes.Contains(PlayerActions.Instance.currentTool);
     protected Tool currentTool => PlayerActions.Instance.currentTool;
 
     public static Dictionary<string, Obstacle> list;
@@ -41,56 +39,59 @@ public class Obstacle : MonoBehaviour
 
     protected virtual void Initialize()
     {
-        if(ID == "")
-            GenerateID();
+        ID = $"{this.gameObject.name}{this.worldPos}";
         list.Add(this.ID, this);
     }
 
-    protected void InitializeNodes(Vector3 worldPos, NodeType nodeType)
+    protected void SetNodes(Vector3 worldPos, NodeType nodeType, IInteractable interactable = null)
     {
+        // Initialize Node should:
+        //      - Set what and how many nodes are assigned to the obstacle;
+        //      - Set what are nodeType the node behaves as.
+        //      - Set the what obstacle the nodes contains. 
+        nodes = NodeGrid.GetNodes(worldPos, tileSize.x, tileSize.y);
+        Node.SetNodesInteractable(nodes, nodeType, interactable);
+        // Debug.Log($"{this.gameObject.name} -> Nodes count{nodes.Count}");
+    }
+
+    protected void ClearNodes()
+    {
+        if (nodes.Count == 0 || Node.GetNodesInteractable(nodes).Count == 0)
+            return;
+        Node.SetNodesInteractable(nodes, NodeType.Walkable);
         nodes = new List<Node>();
-        nodes = NodeGrid.NodesByTileSize(worldPos, tileSize.x, tileSize.y);
-        foreach(Node node in nodes)
-            node.currentType = nodeType;
     }
+    
 
-    // protected void SetNodesType(NodeType nodeType)
-    // {
-    //     foreach(Node node in nodes)
-    //         node.currentType = nodeType;
-    // }
-
-    // protected void SetNodesType(NodeType nodeType, INodeInteractable obstacle)
-    // {
-    //     foreach(Node node in nodes)
-    //         node.SetObstacle(obstacle, nodeType);
-    // }
-
-    [ContextMenu("Generate Obstacle ID")]
-    private void GenerateID() 
+    public static void HighlightInteractables(List<IInteractable> list)
     {
-        ID = System.Guid.NewGuid().ToString();
+        if(list.Count == 0)
+            return;
+        foreach(IInteractable interactable in list)
+            interactable.OnHighlight();
     }
+
+    public static void DehighlightInteractables(List<IInteractable> list)
+    {
+        if(list.Count == 0)
+            return;
+        foreach(IInteractable interactable in list)
+            interactable.OnDehighlight();
+
+    }
+
 }
 
-interface IInteractable
-{
-    public void OnClick();
-    public void OnHover();
-    public void OnDehover();
-}
-
-interface ITrap
+public interface ITrap
 {
     public void OnTrapTrigger(Character character);
 }
 
-interface IPlaceable
+public interface IInteractable
 {
-    public void OnPlace();
-}
+    public void OnInteract();
+    
+    public void OnHighlight();
 
-public interface INodeInteractable
-{
-    public void OnNodeInteract(Tool tool);
+    public void OnDehighlight();
 }

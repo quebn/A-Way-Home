@@ -133,10 +133,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9825f196596809a4cade910a3c5e2737, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterImage: {fileID: 0}
-  energy: 0
-  speed: 0
-  isGoingHome: 0
+  spriteRenderer: {fileID: 7233497297596977955}
+  animator: {fileID: 7233497297596977954}
 --- !u!212 &7233497297596977955
 SpriteRenderer:
   m_ObjectHideFlags: 0

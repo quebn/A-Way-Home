@@ -1,11 +1,13 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
+    public static Character instance;
 
-    protected SpriteRenderer spriteRenderer;
-    protected Animator animator;
+    [SerializeField] protected SpriteRenderer spriteRenderer;
+    [SerializeField] protected Animator animator;
     protected int energy;
     protected int requiredEssence;
     protected int targetIndex; 
@@ -33,8 +35,8 @@ public class Character : MonoBehaviour
     
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
+        if (instance == null)
+            instance = this;
     }
 
     private void Update()
@@ -54,12 +56,23 @@ public class Character : MonoBehaviour
     {
         IncrementEssence(EssenceNeeded);
         SetMaxEnergy(energy);
-        GetPath();
-        if (GameEvent.isSceneSandbox)
-            this.speed = 5f;    
-        else
-            this.speed = GameData.Instance.gameSpeed;
+        StartCoroutine(GetPathOnInit());
+        // if (GameEvent.isSceneSandbox)
+        //     this.speed = 5f;    
+        // else
+        //     this.speed = GameData.Instance.gameSpeed;
+        this.speed = GameEvent.isSceneSandbox ? 5f : GameData.Instance.gameSpeed;
     } 
+
+    private IEnumerator GetPathOnInit()
+    {
+        int count = GameObject.FindObjectsOfType<Essence>().Length;
+        Debug.Log($"Essence Count: {count}");
+        // TO ADD: should also wait on obstacles to initializa on load.
+        while(Essence.list.Count < count)
+            yield return null;
+        GetPath();
+    }
 
     public List<Node> GetPath()
     {
@@ -70,7 +83,7 @@ public class Character : MonoBehaviour
         Debug.Log($"{requiredEssence} essence required! => {destinations.Count} Essence Found!");
         if(path.Count <= 0)
         {
-            Debug.LogWarning("No Path Found");
+            Debug.LogWarning("No Path Found for Character");
             return path;
         } else
             Debug.Log("Path Found! Path nodes: " + path.Count);
@@ -92,7 +105,7 @@ public class Character : MonoBehaviour
     {
         if (currentPosition == currentTargetPos)
         {
-            currentTargetNode.UpdateNode();
+            currentTargetNode.UpdateNodeColor();
             targetIndex++;
             IncrementEnergy(-1);
             if (EndConditions())
@@ -139,19 +152,25 @@ public class Character : MonoBehaviour
         GameEvent.SetEndWindowActive(EndGameType.LevelClear);
     }
 
-    public bool TriggerDeath()
+    public bool TriggerDeath(float animDelay = 0)
     {
         this.isGoingHome = false;
         this.animator.SetBool("isWalk", isGoingHome);
-        this.animator.Play("Character_Death");
-
-        float delay = animator.GetCurrentAnimatorStateInfo(0).length;
-        Invoke("DisplayEndWindow", delay);
+        StartCoroutine(PlayDeathAnim(animDelay));
         return true;
     }
 
-    private void DisplayEndWindow()
+    private IEnumerator PlayDeathAnim(float delayDeath = 0)
     {
+        yield return new WaitForSeconds(delayDeath);
+        this.animator.Play("Character_Death");
+        StartCoroutine(DisplayEndWindow(animator.GetCurrentAnimatorClipInfo(0).Length));
+
+    }
+
+    private IEnumerator DisplayEndWindow(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
         this.gameObject.SetActive(false);
         if (PlayerLevelData.Instance.levelData.lives == 1)
             GameEvent.SetEndWindowActive(EndGameType.GameOver);
