@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public class Character : MonoBehaviour, ISaveable
 {
     public static Character instance;
 
@@ -23,6 +23,7 @@ public class Character : MonoBehaviour
     public bool isHome => requiredEssence <= 0;
     public bool destinationReached => Essence.GetCurrentDestinations().Contains(currentPosition);
     public bool isMoving => isGoingHome;
+    public bool hasPath => path.Count > 0;
 
     protected Vector3 currentTargetPos => currentTargetNode.worldPosition;
 
@@ -52,10 +53,12 @@ public class Character : MonoBehaviour
     }
 
 
-    public void Initialize(int energy, int EssenceNeeded)
+    public void Initialize(int energy, int essenceNeeded)
     {
-        IncrementEssence(EssenceNeeded);
+        IncrementEssence(essenceNeeded);
         SetMaxEnergy(energy);
+        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {energy} energy and {essenceNeeded} ");
+        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {this.energy} energy and {this.requiredEssence} ");
         StartCoroutine(GetPathOnInit());
         // if (GameEvent.isSceneSandbox)
         //     this.speed = 5f;    
@@ -66,7 +69,7 @@ public class Character : MonoBehaviour
 
     private IEnumerator GetPathOnInit()
     {
-        int count = GameObject.FindObjectsOfType<Essence>().Length;
+        int count = GameObject.FindObjectsOfType<Essence>(false).Length;
         Debug.Log($"Essence Count: {count}");
         // TO ADD: should also wait on obstacles to initializa on load.
         while(Essence.list.Count < count)
@@ -172,7 +175,7 @@ public class Character : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         this.gameObject.SetActive(false);
-        if (PlayerLevelData.Instance.levelData.lives == 1)
+        if (GameData.levelData.lives == 1)
             GameEvent.SetEndWindowActive(EndGameType.GameOver);
         else
             GameEvent.SetEndWindowActive(EndGameType.TryAgain);
@@ -205,4 +208,28 @@ public class Character : MonoBehaviour
     {
         return path.Contains(node);
     }
+
+    public void SaveData(LevelData levelData)
+    {
+        levelData.characterEnergy = this.energy;
+        levelData.characterPosition = this.currentPosition;
+        levelData.characterRequiredEssence = this.requiredEssence;
+    }
+
+    public void LoadData(LevelData levelData)
+    {
+        // this.energy = levelData.characterEnergy;
+        this.transform.position = levelData.characterPosition;
+        // this.requiredEssence = levelData.characterRequiredEssence;
+    }
+
+    // public void SaveData(LevelData levelData)
+    // {
+    //     ((ISaveable)instance).SaveData(levelData);
+    // }
+
+    // public void LoadData(LevelData levelData)
+    // {
+    //     ((ISaveable)instance).LoadData(levelData);
+    // }
 }

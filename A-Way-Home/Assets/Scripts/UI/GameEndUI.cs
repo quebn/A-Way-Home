@@ -19,7 +19,7 @@ public class GameEndUI : MonoBehaviour
     private void Start()
     {
         InitGameEndUI();
-        PlayerLevelData.Instance.levelData.score = ScoreSystem.CalculateScore();
+        GameData.levelData.score = ScoreSystem.CalculateScore();
     }
 
     private void OnDisable()
@@ -72,14 +72,14 @@ public class GameEndUI : MonoBehaviour
         this.message.text = message;
         this.redButtonText.text = redButtonText;
         this.greenButtonText.text = greenButtonText;
-        this.livesValueText.text = $"{PlayerLevelData.Instance.levelData.lives + lifeIncrement}";
+        this.livesValueText.text = $"{GameData.levelData.lives + lifeIncrement}";
     }
 
     private void UnlockNextLevel()
     {
-        if (PlayerLevelData.Instance.levelData.level == 5)
+        if (GameData.levelData.level == 5)
         {
-            Debug.Log($"Max Level ({PlayerLevelData.Instance.levelData.level}) reached!");
+            Debug.Log($"Max Level ({GameData.levelData.level}) reached!");
             return;
         }
         string sceneLevelName = GameEvent.GetNextLevel();

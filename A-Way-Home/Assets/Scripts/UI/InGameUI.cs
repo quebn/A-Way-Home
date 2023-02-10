@@ -42,9 +42,9 @@ public class InGameUI : MonoBehaviour
     }
 
     private float timeCounterUI{
-        get => PlayerLevelData.Instance.levelData.secondsLeft; 
+        get => GameData.levelData.secondsLeft; 
         set {
-            PlayerLevelData.Instance.levelData.secondsLeft = value;
+            GameData.levelData.secondsLeft = value;
             timeCounter.text = $"{(int)timeCounterUI}";
         }
     }
@@ -58,9 +58,8 @@ public class InGameUI : MonoBehaviour
 
     private void Start()
     {
-        PlayerLevelData playerLevelData = PlayerLevelData.Instance;
         Debug.Assert(Character.instance != null, "Character is null");
-        InitCharacterUI(playerLevelData.levelData, Character.instance);
+        InitCharacterUI(GameData.levelData, Character.instance);
         endGameType = EndGameType.None;
     }
 
@@ -75,7 +74,12 @@ public class InGameUI : MonoBehaviour
         if (timeCounterUI > 0)
             timeCounterUI -= Time.deltaTime;
         if (timeCounterUI <= 0 && !GameEvent.isEndWindowActive)
-            Character.instance.GoHome();
+        {
+            if(Character.instance.hasPath)
+                Character.instance.GoHome();
+            else
+                Character.instance.TriggerDeath();
+        }
     }
 
     // move to character initialization
@@ -97,22 +101,6 @@ public class InGameUI : MonoBehaviour
         NodeGrid.ToggleGridTiles(NodeGrid.nodesVisibility);
     }
 
-    public void UndoAction()
-    {
-        Debug.Log("Pressed Undo Button!");
-        PlayerActions.Instance.Undo();
-    }
-
-    public void ReloadAction()
-    {
-        GameEvent.RestartGame();
-    }
-
-    public void PlayAction()
-    {
-
-    }
-
     public void HelpButton()
     {
         Debug.Log("Pressed Help Button!");
@@ -132,4 +120,20 @@ public class InGameUI : MonoBehaviour
         // PlayerActions.Instance.currentManipulationType = (ManipulationType)toolindex;
         // Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
     }
+
+    // public void UndoAction()
+    // {
+    //     Debug.Log("Pressed Undo Button!");
+    //     PlayerActions.Instance.Undo();
+    // }
+
+    // public void ReloadAction()
+    // {
+    //     GameEvent.RestartGame();
+    // }
+
+    // public void PlayAction()
+    // {
+
+    // }
 }

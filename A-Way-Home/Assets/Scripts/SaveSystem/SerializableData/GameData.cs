@@ -13,11 +13,12 @@ public class GameData {
     public Dictionary<string, string> keybinds;
     // LeaderBoards Data
     public List<PlayerScoreData> leaderboards;
-    
     public string[] currentCharacterLevel;
     public List<string> unlockLevels;
 
+
     // Statics;
+    public static LevelData levelData;
     public static SaveFileData loadedLevelData = null;
     public static Dictionary<string, Sprite> characterSprites;
     public static Dictionary<int, SavedSlotUI> saveSlotUIDict;
@@ -47,4 +48,46 @@ public class GameData {
         if (Instance == null)
             Instance = new GameData();
     }
+
+    public static void IncrementPlayerMoves(int increment)
+    {
+        levelData.moves += increment;
+        InGameUI.Instance.playerMovesUI = levelData.moves;
+    }
+}
+
+[System.Serializable]
+public class SpawnedData
+{
+    public string typeName;
+    public int hitpoints;
+    public SerializedVector3 spawnedLocation;
+
+    public SpawnedData(string obstacleType, int hp, Vector3 location)
+    {
+        typeName = obstacleType;
+        hitpoints = hp;
+        spawnedLocation = location;
+    }
+    
+}
+
+[System.Serializable]
+public class LevelData
+{
+
+    // Character Data
+    public string characterName;
+    public int characterEnergy;
+    public int characterRequiredEssence;
+    public SerializedVector3 characterPosition;
+    // Player Data 
+    public uint level;
+    public int lives;
+    public int moves;
+    public int score;
+    public float secondsLeft;
+    public Dictionary<string, int> obstacles;
+    public Dictionary<string, SpawnedData> spawneds;
+    public Dictionary<string, bool> essences;
 }

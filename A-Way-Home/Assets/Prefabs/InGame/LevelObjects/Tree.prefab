@@ -52,14 +52,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a47ae0f948fd0c41a2281a4a99f477c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toolTypes: 01000000
   tileSize: {x: 1, y: 1}
   spriteRenderer: {fileID: 5142473099469508756}
   upperRenderer: {fileID: 2577153118406074730}
   upper: {fileID: 2577153118406074728}
   animatorUpper: {fileID: 2577153118406074731}
-  animatorLower: {fileID: 0}
   logs: []
+  upperTransform: {fileID: 2577153118406074729}
 --- !u!61 &7922437100171256276
 BoxCollider2D:
   m_ObjectHideFlags: 0

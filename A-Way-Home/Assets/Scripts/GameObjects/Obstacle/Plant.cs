@@ -4,21 +4,40 @@ using UnityEngine;
 
 public class Plant : Obstacle , IInteractable, ITrap
 {
-    [System.Serializable] 
-    public enum Stage {Juvenile, Adult, Harvested}
     
-    [SerializeField] private Stage currentStage;
     [SerializeField] private Animator animator;
-
-
-    // private bool juvenile => stage == Stage.Juvenile;
-    // private bool adult => stage == Stage.Adult;
-    // private bool harvested => stage == Stage.Harvested;
+    
+    protected override int hitpoints {
+        get => animator.GetInteger("hitpoints");
+        set => animator.SetInteger("hitpoints", value);
+    } 
+    private bool isAdult {
+        get => hitpoints > 1;
+    }
 
     protected override void Initialize()
     {
         base.Initialize();
-        SetStage(currentStage);
+        switch(hitpoints)
+        {
+            case 4:
+                Grow();
+                break;
+            case 3:
+                Debug.LogError("ERROR: SHOULD BE UNREACHABLE!");
+                break;
+            case 2:
+                HarvestPlant();
+                break;
+            case 1: 
+                Spawn();
+                break;
+            case 0:
+                DestroyPlant();
+                break;
+        }
+
+        Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), $"ERROR: {id} Not in obstacle dictionary:");
     //     spriteRenderer = GetComponent<SpriteRenderer>();
     //     animator = GetComponent<Animator>();
     //     InitializeNodes(worldPos);
@@ -28,14 +47,14 @@ public class Plant : Obstacle , IInteractable, ITrap
 
     public void OnDehighlight()
     {
-        if(currentTool == Tool.Grow || currentTool == Tool.Grow)
+        if((currentTool == Tool.Grow && !isAdult ) || currentTool == Tool.Grow)
             spriteRenderer.color = Color.white;
 
     }
 
     public void OnHighlight()
     {
-        if(currentTool == Tool.Grow && currentStage == Stage.Juvenile || currentTool == Tool.Lightning && currentStage == Stage.Adult)
+        if((currentTool == Tool.Grow && !isAdult )|| currentTool == Tool.Lightning)
             spriteRenderer.color = Color.green;
     }
 
@@ -44,69 +63,69 @@ public class Plant : Obstacle , IInteractable, ITrap
         switch(currentTool)
         {
             case Tool.Grow:
-                if(currentStage == Stage.Juvenile)
+                if(!isAdult)
                     Grow();
                 break;
             case Tool.Lightning:
-                if(currentStage == Stage.Adult)
-                    HarvestPlant();
-                else if(currentStage == Stage.Juvenile)
-                    DestroyPlant();
+                DamagePlant(isAdult ? 2 : 1);
                 break;
+        }
+        if(!GameData.levelData.obstacles.ContainsKey(id))
+        {
+            foreach(KeyValuePair<string, int> pair in GameData.levelData.obstacles)
+            {
+                Debug.LogWarning($"{pair.Key} -> {pair.Value}");
+            }
+
+            Debug.LogWarning($"THIS: {this.id} -> {this.hitpoints}");
         }
     }
 
     public void OnTrapTrigger(Character character)
     {
-        if(currentStage != Stage.Juvenile)
+        if(isAdult)
             return;
         character.IncrementEnergy(-5);
-        ClearPlant();
+        DamagePlant(1);
     }
 
+    public override void SaveData(LevelData levelData)
+    {
+        base.SaveData(levelData);
+    }
+
+    public override void LoadData(LevelData levelData)
+    {
+        base.LoadData(levelData);
+        Debug.LogWarning($"loaded plant hp: {levelData.obstacles[id]}");
+    }
 
     private void HarvestPlant()
     {
         Harvested();
     }
 
-    private void SetStage(Stage stage)
-    {
-        switch(stage)
-        {
-            case Stage.Juvenile:
-                Spawn();
-                break;
-            case Stage.Adult:
-                Grow();
-                break;
-            case Stage.Harvested:
-                Harvested();
-                break;
-        }
-    }
-
 
     private void Spawn()
     {
-        if(currentStage != Stage.Juvenile)
-            currentStage = Stage.Juvenile;
+        Debug.Assert(!isAdult, "ERROR: isAdult bool true, and hitpoints isnt full");
         animator.Play("Plant_Spawn");
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
     private void Grow()
     {
-        if(currentStage != Stage.Adult)
-            currentStage = Stage.Adult;
-        animator.Play("Plant_Grow");
+        if(hitpoints != 4)
+            hitpoints = 4;
+        Debug.Assert(isAdult, "ERROR: isnt adult and hitpoints not equal to 1!");
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
     private void Harvested()
     {
-        if(currentStage != Stage.Harvested)
-            currentStage = Stage.Harvested;
+        // if(isAdult && hitpoints > 2)
+            // currentStage = Stage.Harvested;
+        Debug.Assert(hitpoints == 2, "ERROR: hitpoints not equal to 2!");
         animator.Play("Plant_Harvested");
     }
 
@@ -116,15 +135,30 @@ public class Plant : Obstacle , IInteractable, ITrap
         Debug.Assert(false, "ERROR: Not implemented");
     }
 
-    public void ClearPlant()
+    private void DestroyPlant()
     {
+        Debug.Assert(hitpoints == 0, "ERROR: Plant Cleared despite hp is above 0!");
         StartCoroutine(OnClear());
         ClearNodes();
     }
 
-    private void DestroyPlant()
+    public void DamagePlant(int damage = 0)
     {
-        ClearPlant();
+        Debug.Log($"Plant Damage: {damage}");
+        hitpoints -= (damage == 0) ? hitpoints : damage;
+        switch(hitpoints)
+        {
+            case 4:
+            case 1:
+                Debug.LogError("ERROR: SHOULD BE UNREACHABLE!");
+                break;
+            case 2:
+                HarvestPlant();
+                break;
+            case 0:
+                DestroyPlant();
+                break;
+        }
     }
 
 

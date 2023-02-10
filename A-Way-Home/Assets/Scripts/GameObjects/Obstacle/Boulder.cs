@@ -7,7 +7,11 @@ public class Boulder : Obstacle, IInteractable
 {
 
     [SerializeField] private Animator animator;
-    private int hitpoints = 4;
+
+    protected override int hitpoints{
+        get => animator.GetInteger("hitpoints");
+        set => animator.SetInteger("hitpoints", value);
+    } 
 
     protected override void Initialize()
     {
@@ -47,6 +51,13 @@ public class Boulder : Obstacle, IInteractable
         animator.Play("BigBoulder_Destroy");
         float delay = animator.GetCurrentAnimatorStateInfo(0).length;
         Invoke("OnDestroy", delay);
+    }
+
+    public override void LoadData(LevelData levelData)
+    {
+        base.LoadData(levelData);
+        if(hitpoints == 0)
+            this.gameObject.SetActive(false);
     }
 
     private void OnDestroy()

@@ -160,7 +160,7 @@ public class Node
 
     public static void RevealNodes(List<Node> nodeList)
     {
-        if (nodeList.Count == 0)
+        if (nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
             node.RevealNode();
@@ -168,7 +168,7 @@ public class Node
 
     public static void RevealNodes(List<Node> nodeList, Color color)
     {
-        if (nodeList.Count == 0)
+        if (nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
             node.RevealNode(color);
@@ -176,7 +176,7 @@ public class Node
 
     public static void HideNodes(List<Node> nodeList)
     {
-        if (nodeList.Count == 0)
+        if (nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
             node.HideNode();
@@ -184,7 +184,7 @@ public class Node
 
     public static void ToggleNodes(List<Node> nodeList, bool active)
     {
-        if (nodeList.Count == 0)
+        if (nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
             node.ToggleNode(active);
@@ -192,7 +192,7 @@ public class Node
 
     public static void ToggleNodes(List<Node> nodeList, Color color,bool active)
     {
-        if (nodeList.Count == 0)
+        if (nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
             node.ToggleNode(color, active);
@@ -201,7 +201,7 @@ public class Node
 
     public static void SetNodesInteractable(List<Node> nodeList, NodeType nodeType, IInteractable interactable = null)
     {
-        if(nodeList.Count == 0)
+        if(nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
             node.SetInteractable(interactable, nodeType);
@@ -209,7 +209,7 @@ public class Node
 
     public static void TriggerNodesObstacle(List<Node> nodeList)
     {
-        if(nodeList.Count == 0)
+        if(nodeList == null ||nodeList.Count == 0)
             return;
         foreach (Node node in nodeList)
             node.InteractObstacle();
@@ -217,7 +217,7 @@ public class Node
     
     public static void ToggleNodes(List<Node> nodeList, bool toggle, Character character)
     {
-        if(nodeList.Count == 0)
+        if(nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
             if(character.NodeInPath(node))
@@ -228,7 +228,7 @@ public class Node
 
     public static void SetNodesType(List<Node> nodeList, NodeType type)
     {
-        if(nodeList.Count == 0)
+        if(nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
             node.currentNodeType = type;
@@ -236,7 +236,7 @@ public class Node
 
     public static bool CheckNodesType(List<Node> nodeList, NodeType nodeType, Type type)
     {
-        if(nodeList.Count == 0)
+        if(nodeList == null ||nodeList.Count == 0)
             return false;
         foreach (Node node in nodeList)
             if(node.IsWalkable(nodeType, type))

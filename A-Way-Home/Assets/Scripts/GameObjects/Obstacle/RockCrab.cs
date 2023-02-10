@@ -16,14 +16,18 @@ public class RockCrab : Rock , ITrap
     private int targetIndex;
 
     private bool hasPath => path.Count > 0;
+    private bool hasShell => hitpoints == 2;
+
+    protected override int hitpoints {
+        get => animator.GetInteger("hitpoints");
+        set => animator.SetInteger("hitpoints", value);
+    }
+
     private bool isWalking {
         get => animator.GetBool("isWalking");
         set => animator.SetBool("isWalking", value);
     }
-    private bool hasShell {
-        get => animator.GetBool("hasShell");
-        set => animator.SetBool("hasShell", value);
-    }
+
 
     private void Update()
     {
@@ -35,8 +39,10 @@ public class RockCrab : Rock , ITrap
     protected override void Initialize()
     {
         base.Initialize();
-        Debug.Assert(this.nodes.Count > 0, "ERROR: nodes is empty");
         SetGrid();
+        if(!hasShell)
+            Invoke("SetPath", .5f);
+            // SetPath();
     }
 
     public override void OnInteract()
@@ -74,6 +80,7 @@ public class RockCrab : Rock , ITrap
 
     public void OnTrapTrigger(Character character)
     {
+        if(isWalking || !hasShell)
         character.TriggerDeath();
     }
 
@@ -88,7 +95,8 @@ public class RockCrab : Rock , ITrap
 
     private void RemoveRock()
     {
-        this.hasShell = false;
+        hitpoints -= 1;
+        Debug.Assert(hitpoints == 1, "ERROR: HP is not equals to 1");
         SetNodes(this.worldPos, NodeType.Walkable, this);
         SetPath();
     }
@@ -96,19 +104,18 @@ public class RockCrab : Rock , ITrap
     public void TriggerDeath()
     {
         ClearNodes();
+        hitpoints = 0;
         StartCoroutine(DeathAnimation());
     }
 
     private IEnumerator DeathAnimation()
     {
-        this.animator.Play("SmallExplosion_Death");
         yield return new WaitForSeconds(this.animator.GetCurrentAnimatorClipInfo(0).Length);
         this.gameObject.SetActive(false);
     }
 
     private void MoveLocation()
     {
-
         isWalking = true;
         ClearNodes();
     }
@@ -144,6 +151,7 @@ public class RockCrab : Rock , ITrap
     private void SetPath()
     {
         path = new List<Node>();
+        Debug.LogWarning($"hasShell: {hasShell} | hp: {hitpoints}");
         if(!hasShell) 
             TryGetCrabPath(typeof(Rock));
         if(!hasPath) 
@@ -157,7 +165,7 @@ public class RockCrab : Rock , ITrap
 
     private void Eat(Plant plant)
     {
-        plant.ClearPlant();
+        plant.DamagePlant();
     }
 
     private bool TryGetCrabPath(Type type)
@@ -205,7 +213,8 @@ public class RockCrab : Rock , ITrap
 
     private void PickUpRock(Rock rock)
     {
-        this.hasShell = true;
+        hitpoints += 1;
+        Debug.Assert(hitpoints == 2, "ERROR: HP is not equals to 1");
         rock.ClearRock();
     }
 
@@ -217,5 +226,4 @@ public class RockCrab : Rock , ITrap
         if(!hasPath)
             SetRandomPath();
     }
-
 }

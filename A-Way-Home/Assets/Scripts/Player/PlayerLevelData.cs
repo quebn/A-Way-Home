@@ -15,13 +15,12 @@ public class PlayerLevelData : MonoBehaviour
     [SerializeField] private float timeLimitInSecs;
     [SerializeField] private Vector2 cameraBoundary;
 
-    [HideInInspector] public LevelData levelData;
-    [HideInInspector] public List<Vector3> currentDestinations;
-
-    // private List<ISaveable> saveables;
-
+    // [HideInInspector] public LevelData levelData;// should be in GameData
+    [HideInInspector] public List<Vector3> currentDestinations;// should be in GameData
     public Vector2 levelBoundary => this.cameraBoundary;
+    public GameObject logPrefab;
     public static string characterName;
+
 
     private void Awake()
     {
@@ -32,11 +31,11 @@ public class PlayerLevelData : MonoBehaviour
     {
         if (Instance == null)
             Instance  = this;
-        Obstacle.list = new Dictionary<string, Obstacle>();
         Essence.list = new Dictionary<Vector2, Essence>();
         this.currentDestinations = new List<Vector3>();
         // this.saveables = FindAllSaveableObjects();
         // Debug.Log($"Saveable objects count: {saveables.Count}"); 
+        SaveSystem.saveables = GetAllSaveables();
         switch(GameEvent.loadType)
         {
             case LevelLoadType.NewGame:
@@ -49,68 +48,90 @@ public class PlayerLevelData : MonoBehaviour
                 RestartGame();
                 break;
         }
+        LoadSpawnedObstacles();
+
     }
 
     private void Start()
     {
-        Character.instance.Initialize(levelData.characterEnergy, levelData.characterRequiredEssence);
+        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initializing Character with {GameData.levelData.characterEnergy} energy and {GameData.levelData.characterRequiredEssence} ");
+        Character.instance.Initialize(GameData.levelData.characterEnergy, GameData.levelData.characterRequiredEssence);
     }
 
     private void NewGame()
     {
-        uint currentLevel = this.characterLevel;
-        this.levelData = new LevelData {
-            level = currentLevel,
+        GameData.levelData = new LevelData {
+            level = this.characterLevel,
             characterName = characterName,
             characterEnergy = this.characterEnergy,
             lives = playerLives,
             moves = playerMoves,
             characterRequiredEssence = this.essenceNeeded,
             score = 0,
-            secondsLeft = this.timeLimitInSecs
+            secondsLeft = this.timeLimitInSecs,
+            obstacles = new Dictionary<string, int>(),
+            spawneds = new Dictionary<string, SpawnedData>(),
+            essences = new Dictionary<string, bool>()
         };
     }
 
     private void RestartGame()
     {
-        uint currentLevel = this.characterLevel;
-        this.levelData = new LevelData {
-            level = currentLevel,
+        GameData.levelData = new LevelData {
+            level = this.characterLevel,
             characterName = characterName,
             characterEnergy = this.characterEnergy,
             lives = playerLives - GameEvent.restartCounter,
             moves = playerMoves,
             characterRequiredEssence = this.essenceNeeded,
-            score = 0, //<-TODO: score should be retained from previous game
-            secondsLeft = this.timeLimitInSecs
+            score = GameData.levelData.score, //<-TODO: score should be retained from previous game
+            secondsLeft = this.timeLimitInSecs,
+            obstacles = new Dictionary<string, int>(),
+            spawneds = new Dictionary<string, SpawnedData>(),
+            essences = new Dictionary<string, bool>()
         };
         Debug.Assert(playerLives > 0, "ERROR: Lives is less than 1");
     }
     
     public void LoadGame()
     {
-        this.levelData = GameData.loadedLevelData.levelData;
-        // foreach(ISaveable saveable in saveables)
-        //     saveable.LoadData(this.levelData);
-        Debug.Assert(this.characterLevel == levelData.level, "ERROR: Level does not match");
+        GameData.levelData = GameData.loadedLevelData.levelData;
+        foreach(KeyValuePair<string, int> pair in GameData.levelData.obstacles)
+            Debug.LogWarning($"{pair.Key} -> {pair.Value}");
+        foreach(ISaveable saveable in SaveSystem.saveables)
+            saveable.LoadData(GameData.levelData);
+        Debug.Assert(this.characterLevel == GameData.levelData.level, "ERROR: Level does not match");
     }
 
     public LevelData SaveGame()
     {
-        // foreach(ISaveable saveable in saveables)
-        //     saveable.SaveData(ref this.levelData);
-        return this.levelData;
+        foreach(ISaveable saveable in SaveSystem.saveables)
+            saveable.SaveData(GameData.levelData);
+        return GameData.levelData;
     }
 
-    public void IncrementPlayerMoves(int increment)
+    public List<ISaveable> GetAllSaveables()
     {
-        this.levelData.moves += increment;
-        InGameUI.Instance.playerMovesUI = this.levelData.moves;
+        IEnumerable<ISaveable> saveables = FindObjectsOfType<MonoBehaviour>(true).OfType<ISaveable>();
+        return new List<ISaveable>(saveables);
     }
 
     public int GetScore(int movesMultiplier, int livesMultiplier)
     {
         return (playerMoves * movesMultiplier) + (playerLives * livesMultiplier);
+    }
+
+    public void LoadSpawnedObstacles()
+    {
+        List<SpawnedData> spawnedDatas = new List<SpawnedData>(GameData.levelData.spawneds.Values.ToList());
+        foreach(SpawnedData spawnedData in spawnedDatas)
+        {
+            if(spawnedData.typeName == typeof(TreeLog).ToString()){
+                TreeLog log = GameObject.Instantiate( logPrefab, spawnedData.spawnedLocation, Quaternion.identity, this.gameObject.transform).GetComponent<TreeLog>();
+                log.AddAsSpawned();
+            }
+        }
+        SaveSystem.saveables = GetAllSaveables();
     }
 
     [SerializeField] private bool enableBoundaryGizmo;
@@ -122,30 +143,4 @@ public class PlayerLevelData : MonoBehaviour
         Gizmos.DrawWireCube(Vector3.zero, new Vector3(cameraBoundary.x, cameraBoundary.y, 0));
     }
 
-    // private static List<ISaveable> FindAllSaveableObjects() 
-    // {
-    //     // FindObjectsofType takes in an optional boolean to include inactive gameobjects
-    //     IEnumerable<ISaveable> dataPersistenceObjects = FindObjectsOfType<MonoBehaviour>(true).OfType<ISaveable>();
-
-    //     return new List<ISaveable>(dataPersistenceObjects);
-    // }
-
-}
-
-[System.Serializable]
-public struct LevelData
-{
-
-    // Character Data
-    public string characterName;
-    public int characterEnergy;
-    public int characterRequiredEssence;
-    public SerializedVector3 characterPosition;
-
-    // Player Data 
-    public uint level;
-    public int lives;
-    public int moves;
-    public int score;
-    public float secondsLeft;
 }

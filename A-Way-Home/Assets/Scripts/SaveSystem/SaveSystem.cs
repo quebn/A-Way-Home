@@ -2,11 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System;
 
 public static class SaveSystem
 {
     private static string filePathDir = Application.persistentDataPath;
     private static BinaryFormatter formatter = new BinaryFormatter(); 
+    public static List<ISaveable> saveables;
 
     public static void DeleteFileData(string filename)
     {
@@ -110,11 +112,10 @@ public static class SaveSystem
         return fileData;
     }
 
-
 }
 
-interface ISaveable
+public interface ISaveable
 {
-    public void SaveData(ref LevelData levelData);
+    public void SaveData(LevelData levelData);
     public void LoadData(LevelData levelData);
 }

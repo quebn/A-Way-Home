@@ -26,7 +26,6 @@ public class PlayerActions : MonoBehaviour
     private InputAction reset;
     private Vector2 currentTileOrigin;
     private List<Node> currentTileNodes;
-    private List<ActionData> actionList;
     private List<IInteractable> currentInteractables;
 
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
@@ -53,20 +52,21 @@ public class PlayerActions : MonoBehaviour
 
     public void Undo()
     {
-        if(Character.instance.isMoving || actionList.Count < 1)
-            return;
-        ActionData data = actionList.Last<ActionData>();
-        data.GetObstacle().OnUndo(data);
-        actionList.Remove(data);
-        Debug.Log("Undo Action was Pressed!");
-        PlayerLevelData.Instance.IncrementPlayerMoves(1);
-        Character.instance.GetPath();
+        Debug.Assert(false, "ERROR: Should not be called!");
+        // if(Character.instance.isMoving || actionList.Count < 1)
+        //     return;
+        // ActionData data = actionList.Last<ActionData>();
+        // // data.GetObstacle().OnUndo(data);
+        // actionList.Remove(data);
+        // Debug.Log("Undo Action was Pressed!");
+        // GameData.IncrementPlayerMoves(1);
+        // Character.instance.GetPath();
         // add a penalty reducing the time by n amount every time player undo an action.
     }
 
     public void PerformAction(InputAction.CallbackContext context)
     {
-        if (actionsNotAllowed || PlayerLevelData.Instance.levelData.moves <= 0)
+        if (actionsNotAllowed || GameData.levelData.moves <= 0)
             return;
         switch(currentTool)
         {
@@ -76,6 +76,7 @@ public class PlayerActions : MonoBehaviour
             case Tool.Lightning:
                 LightningAnimation(this.currentTileOrigin);
                 InteractNodes();
+                GameData.IncrementPlayerMoves(-1);
                 break;
             case Tool.Tremor:
                 InteractNodes();
@@ -284,7 +285,7 @@ public class PlayerActions : MonoBehaviour
         start           = playerInput.actions["Start"];
         reset           = playerInput.actions["Reset"];
         currentTileNodes = new List<Node>(4); 
-        actionList = new List<ActionData>();
+        // actionList = new List<ActionData>();
         currentInteractables = new List<IInteractable>();
     }
 

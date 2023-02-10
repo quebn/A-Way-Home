@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -104,6 +105,13 @@ public class NodeGrid : MonoBehaviour
         return nodes;
     }
     
+    // public static IEnumerator SetNodes(Vector2 nodeTileCenter, int width, int height, List<Node> nodes)
+    // {
+    //     while(Instance.grid.Count != Instance.gridSizeInt.x * Instance.gridSizeInt.y)
+    //         yield return null;
+    //     nodes = GetNodes(nodeTileCenter, width, height);
+    // }
+
     public static List<Node> GetNodes(Vector2 nodeTileCenter, int width, int height, NodeType excludedType)
     {
         List<Node> nodes = new List<Node>(width * height);

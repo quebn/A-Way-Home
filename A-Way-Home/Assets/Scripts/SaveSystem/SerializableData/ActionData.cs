@@ -5,35 +5,26 @@ using UnityEngine;
 [System.Serializable]
 public class ActionData 
 {
-    public Tool tool;
     // Depending on the Obstacle interacted with should contain:
     //  - Type of Obstacle
     //  - previous Data
-    public string ID {private get; set;}
-    public bool isActive {private get; set;}
-    public int hitpoints {private get; set;}
-    public SerializedVector3 previousPosition {private get; set;}
-    // public Plant.Stage growthStage {private get; set;}
+    private List<ObstacleData> obstacleDatas;
+    private List<SpawnedData> spawnedDatas;
 
-    public ActionData(Obstacle obstacle, Tool toolUsed)
+    public ActionData(List<ObstacleData> obstacles, List<SpawnedData> spawneds)
     {
-        this.tool = toolUsed;
-        obstacle.SetActionData(this);
+        obstacleDatas = obstacles;
+        spawnedDatas = spawneds;
     }
-
-
-    public Obstacle GetObstacle()
-    {
-        return Obstacle.list[this.ID];
-    }
-
-    public bool GetLogData()
-    {
-        return isActive;
-    }
-
-    public Tuple<bool, int> GetBoulderData()
-    {
-        return new Tuple<bool, int>(isActive, hitpoints);
-    }   
 }
+
+[System.Serializable]
+public struct ObstacleData
+{
+    public string ID;
+    public Type type;
+    public int damage;
+}
+
+
+

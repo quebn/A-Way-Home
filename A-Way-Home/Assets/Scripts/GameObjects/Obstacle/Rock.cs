@@ -15,7 +15,6 @@ public class Rock : Obstacle, IInteractable
         if(currentTool != Tool.Lightning && currentTool != Tool.Tremor)
             return;
         this.spriteRenderer.color = Color.white;
-
     }
 
     public virtual void OnHighlight()
@@ -35,7 +34,19 @@ public class Rock : Obstacle, IInteractable
 
     public void ClearRock()
     {
+        hitpoints -= 1;
+        Debug.Assert(hitpoints == 0, "ERROR: hp should be but is not 0");
         ClearNodes();
         this.gameObject.SetActive(false);
+    }
+
+    public override void LoadData(LevelData levelData)
+    {
+        base.LoadData(levelData);
+        if(hitpoints != 0)
+            return;
+        ClearNodes();
+        this.gameObject.SetActive(false);
+
     }
 }

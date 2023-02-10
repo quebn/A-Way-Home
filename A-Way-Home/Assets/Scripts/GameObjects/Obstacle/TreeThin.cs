@@ -7,14 +7,19 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
     [SerializeField] private SpriteRenderer upperRenderer;
     [SerializeField] private GameObject upper;
     [SerializeField] private Animator animatorUpper;
-    [SerializeField] private Animator animatorLower;
+    // [SerializeField] private Animator animatorLower;
     [SerializeField] private List<GameObject> logs;
     private Dictionary<Vector2, List<Node>> placeableNodes;
     private Vector2 currentPlaceable;
     private bool isHovered;
+    private int hp = 2;
 
-    private bool isFullyDestroyed => !this.gameObject.activeSelf;
-    private bool isCutDown => !this.upper.activeSelf;
+    private bool isFullyDestroyed => hitpoints == 0;
+    private bool isCutDown => hitpoints == 1;
+    protected override int hitpoints{
+        get => hp;
+        set => hp = value;
+    } 
 
     private void Update()
     {
@@ -36,7 +41,8 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
         spriteRenderer.color = Color.white;
         upperRenderer.color = Color.white;;
         isHovered = false;
-        Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);
+        if(currentPlaceable != Vector2.zero)
+            Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);
     }
 
     public void OnHighlight()
@@ -46,6 +52,7 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
         spriteRenderer.color = Color.green;
         upperRenderer.color = new Color32(255, 255, 255, 100);;
         isHovered = true;
+        // TODO: Move highlight placeable function here
     }
 
     public void OnInteract()
@@ -54,10 +61,26 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
             return;
         if(currentTool != Tool.Lightning)
             return;
-        if(!isCutDown)
+        hitpoints -= 1;
+        if(isCutDown)
             StartCoroutine(CutDown());
         else
             DestroyTrunk();
+    }
+
+    public override void LoadData(LevelData levelData)
+    {
+        base.LoadData(levelData);
+        // Debug.LogError(hitpoints);
+        if(isFullyDestroyed)
+        {
+            DestroyTrunk();
+            return;
+        }
+        else if(isCutDown)
+            upper.SetActive(false);
+        // SetPlaceableLocations();
+        // StartCoroutine(SetNodesOnLoad(this.worldPos, NodeType.Obstacle, this));
     }
 
     private IEnumerator CutDown()
@@ -65,8 +88,10 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
         yield return new WaitForSeconds(CutDownTreeAnimation()); 
         this.upper.SetActive(false);
         Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);
-        for(int i = 0; i < placeableNodes[currentPlaceable].Count; i++)
-            Instantiate(logs[i], placeableNodes[currentPlaceable][i].worldPosition, Quaternion.identity);
+        for(int i = 0; i < placeableNodes[currentPlaceable].Count; i++){
+            TreeLog log = Instantiate(logs[i], placeableNodes[currentPlaceable][i].worldPosition, Quaternion.identity).GetComponent<TreeLog>();
+            log.AddAsSpawned();
+        }
     }
 
     private void HighlightPlaceLocations()
@@ -96,6 +121,11 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
             placeableNodes.Add(pos, NodeGrid.GetNodes(pos, 2, 1));
         }
     }
+
+    // private IEnumerator SetPlaceableLocations()
+    // {
+
+    // }
 
     private Vector2 GetMouseDirection()
     {

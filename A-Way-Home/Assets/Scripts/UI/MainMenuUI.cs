@@ -197,7 +197,7 @@ public class MainMenuUI : MonoBehaviour
 
     public static uint GetCharacterIndex()
     {
-        string name = PlayerLevelData.Instance.levelData.characterName;
+        string name = GameData.levelData.characterName;
         if (name == Instance.char1Name)
             return 1;
         else if (name == Instance.char2Name)

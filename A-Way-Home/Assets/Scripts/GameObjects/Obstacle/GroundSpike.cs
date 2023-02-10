@@ -4,6 +4,12 @@ using System.Collections;
 public class GroundSpike : Obstacle, ITrap, IInteractable
 {
     [SerializeField] private Animator animator;
+
+    protected override int hitpoints {
+        get => animator.GetInteger("hitpoints");
+        set => animator.SetInteger("hitpoints", value);
+    }
+
     private bool isTriggered {
         get => animator.GetBool("isTriggered");
         set => animator.SetBool("isTriggered", value);
@@ -52,6 +58,7 @@ public class GroundSpike : Obstacle, ITrap, IInteractable
     public void TriggerDeath()
     {
         ClearNodes();
+        hitpoints -= 1;
         StartCoroutine(DeathAnimation());
     }
 
@@ -81,7 +88,7 @@ public class GroundSpike : Obstacle, ITrap, IInteractable
 
     private IEnumerator DeathAnimation()
     {
-        this.animator.Play("SmallExplosion_Death");
+        // this.animator.Play("SmallExplosion_Death");
         // yield return new WaitForSeconds(this.animator.GetCurrentAnimatorStateInfo(0).length);
         yield return new WaitForSeconds(this.animator.GetCurrentAnimatorClipInfo(0).Length);
         // yield return new WaitForSeconds(.6f);

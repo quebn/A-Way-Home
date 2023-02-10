@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Essence : MonoBehaviour
+public class Essence : MonoBehaviour, ISaveable
 {
     [SerializeField] private string ID;
     [SerializeField] private int energyRestored;
@@ -12,7 +12,7 @@ public class Essence : MonoBehaviour
 
     public Vector3 worldPosition => NodeGrid.GetMiddle(this.transform.position);
 
-    public static Dictionary<Vector2, Essence> list;
+    public static Dictionary<Vector2, Essence> list; // <- maybe remove and put in GameData.levelData.essences
     
     private void Start()
     {
@@ -24,6 +24,8 @@ public class Essence : MonoBehaviour
     {
         Debug.Assert(list != null, "ERROR: List is null");
         list.Add(worldPosition, this);
+        if(!GameData.levelData.essences.ContainsKey(ID))
+            GameData.levelData.essences.Add(ID, this.gameObject.activeSelf);
     }
 
     public void OnConsume(Character character)
@@ -52,5 +54,17 @@ public class Essence : MonoBehaviour
     private void GenerateID() 
     {
         this.ID = System.Guid.NewGuid().ToString();
+    }
+
+    public void SaveData(LevelData levelData)
+    {
+        Debug.Assert(GameData.levelData.essences.ContainsKey(this.ID), $"ERROR: essences with id of {ID} should be in this dictionary.");
+        GameData.levelData.essences[ID] = this.gameObject.activeSelf;
+    }
+
+    public void LoadData(LevelData levelData)
+    {
+        Debug.Assert(GameData.levelData.essences.ContainsKey(this.ID), $"ERROR: essences with id of {ID} should be in this dictionary.");
+        this.gameObject.SetActive(levelData.essences[ID]);
     }
 }

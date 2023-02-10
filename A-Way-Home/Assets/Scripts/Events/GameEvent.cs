@@ -32,7 +32,7 @@ public static class GameEvent
     public static string GetNextLevel()
     {
         uint currentChar = MainMenuUI.GetCharacterIndex();
-        uint currentLevel = PlayerLevelData.Instance.levelData.level;
+        uint currentLevel = GameData.levelData.level;
         Debug.Assert(currentChar != 0, "ERROR: character index is 0");
         return $"Char{currentChar}Level{currentLevel+1}";
     }
@@ -61,13 +61,13 @@ public static class GameEvent
             SceneManager.LoadScene("Sandbox");
             return;
         }
-        if (PlayerLevelData.Instance.levelData.lives > 1){
+        if (GameData.levelData.lives > 1){
             loadType = LevelLoadType.RestartGame;
             restartCounter++;       
             Debug.Log($"GameEvent Restart counter :{restartCounter}");
             SceneManager.LoadScene("LevelScene");
         } else {
-            Debug.Log($"You have {PlayerLevelData.Instance.levelData.lives}! you cant restart anymore!");
+            Debug.Log($"You have {GameData.levelData.lives}! you cant restart anymore!");
         }
     }
 
