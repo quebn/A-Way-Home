@@ -130,14 +130,13 @@ public class PlayerActions : MonoBehaviour
 
     public void SetCurrentTool(int index)
     {
-        Tool newTool = (Tool)index;
-        if (index > 5 || index < 0)
+        if (index > 5 || index < 0 || index > PlayerLevelData.Instance.unlockedTools)
             return;
+        Tool newTool = (Tool)index;
         if(currentTool != newTool)
             OnChangeTool();
         currentTool = newTool;
         Cursor.SetCursor(mouseTextures[index], Vector2.zero, CursorMode.Auto);
-
     }
 
     private void OnChangeTool()

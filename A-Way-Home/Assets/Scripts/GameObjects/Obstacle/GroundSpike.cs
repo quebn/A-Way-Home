@@ -78,8 +78,8 @@ public class GroundSpike : Obstacle, ITrap, IInteractable
     public IEnumerator Kill(RockCrab rockCrab)
     {
         PopUp();
-        Debug.LogWarning($"GroundSpike SmallExplosion_Death Time: {this.animator.GetCurrentAnimatorClipInfo(0).Length}");
-        Debug.LogWarning($"GroundSpike state Time: {this.animator.GetCurrentAnimatorStateInfo(0).length}");
+        // Debug.LogWarning($"GroundSpike SmallExplosion_Death Time: {this.animator.GetCurrentAnimatorClipInfo(0).Length}");
+        // Debug.LogWarning($"GroundSpike state Time: {this.animator.GetCurrentAnimatorStateInfo(0).length}");
         // yield return new WaitForSeconds(this.animator.GetCurrentAnimatorClipInfo(0).Length);
         yield return new WaitForSeconds(this.animator.GetCurrentAnimatorStateInfo(0).length);
         rockCrab.TriggerDeath();

@@ -47,7 +47,7 @@ public class Plant : Obstacle , IInteractable, ITrap
 
     public void OnDehighlight()
     {
-        if((currentTool == Tool.Grow && !isAdult ) || currentTool == Tool.Grow)
+        if((currentTool == Tool.Grow && !isAdult ) || currentTool == Tool.Lightning)
             spriteRenderer.color = Color.white;
 
     }
@@ -70,22 +70,22 @@ public class Plant : Obstacle , IInteractable, ITrap
                 DamagePlant(isAdult ? 2 : 1);
                 break;
         }
-        if(!GameData.levelData.obstacles.ContainsKey(id))
-        {
-            foreach(KeyValuePair<string, int> pair in GameData.levelData.obstacles)
-            {
-                Debug.LogWarning($"{pair.Key} -> {pair.Value}");
-            }
+        // if(!GameData.levelData.obstacles.ContainsKey(id))
+        // {
+        //     foreach(KeyValuePair<string, int> pair in GameData.levelData.obstacles)
+        //     {
+        //         Debug.LogWarning($"{pair.Key} -> {pair.Value}");
+        //     }
 
-            Debug.LogWarning($"THIS: {this.id} -> {this.hitpoints}");
-        }
+        //     Debug.LogWarning($"THIS: {this.id} -> {this.hitpoints}");
+        // }
     }
 
     public void OnTrapTrigger(Character character)
     {
         if(isAdult)
             return;
-        character.IncrementEnergy(-5);
+        character.IncrementEnergy(5);
         DamagePlant(1);
     }
 

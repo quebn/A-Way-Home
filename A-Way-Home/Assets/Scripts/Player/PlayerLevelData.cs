@@ -8,13 +8,12 @@ public class PlayerLevelData : MonoBehaviour
 
     [SerializeField] private uint characterLevel;
     [SerializeField] private int characterEnergy;
-    [SerializeField] private int characterSkillCount;
     [SerializeField] private int playerLives;
     [SerializeField] private int playerMoves;
     [SerializeField] private int essenceNeeded;
     [SerializeField] private float timeLimitInSecs;
     [SerializeField] private Vector2 cameraBoundary;
-
+    [SerializeField] public int unlockedTools = 0;
     // [HideInInspector] public LevelData levelData;// should be in GameData
     [HideInInspector] public List<Vector3> currentDestinations;// should be in GameData
     public Vector2 levelBoundary => this.cameraBoundary;
@@ -68,9 +67,10 @@ public class PlayerLevelData : MonoBehaviour
             moves = playerMoves,
             characterRequiredEssence = this.essenceNeeded,
             score = 0,
+            spawnCount = 0,
             secondsLeft = this.timeLimitInSecs,
-            obstacles = new Dictionary<string, int>(),
-            spawneds = new Dictionary<string, SpawnedData>(),
+            obstacles = new Dictionary<string, ObstacleData>(),
+            // spawneds = new Dictionary<string, ObstacleData>(),
             essences = new Dictionary<string, bool>()
         };
     }
@@ -85,9 +85,10 @@ public class PlayerLevelData : MonoBehaviour
             moves = playerMoves,
             characterRequiredEssence = this.essenceNeeded,
             score = GameData.levelData.score, //<-TODO: score should be retained from previous game
+            spawnCount = 0,
             secondsLeft = this.timeLimitInSecs,
-            obstacles = new Dictionary<string, int>(),
-            spawneds = new Dictionary<string, SpawnedData>(),
+            obstacles = new Dictionary<string, ObstacleData>(),
+            // spawneds = new Dictionary<string, ObstacleData>(),
             essences = new Dictionary<string, bool>()
         };
         Debug.Assert(playerLives > 0, "ERROR: Lives is less than 1");
@@ -95,12 +96,12 @@ public class PlayerLevelData : MonoBehaviour
     
     public void LoadGame()
     {
-        GameData.levelData = GameData.loadedLevelData.levelData;
-        foreach(KeyValuePair<string, int> pair in GameData.levelData.obstacles)
+        Debug.Assert(GameData.levelData != null, "ERROR: No load level data found");
+        Debug.Assert(this.characterLevel == GameData.levelData.level, "ERROR: Level does not match");
+        foreach(KeyValuePair<string, ObstacleData> pair in GameData.levelData.obstacles)
             Debug.LogWarning($"{pair.Key} -> {pair.Value}");
         foreach(ISaveable saveable in SaveSystem.saveables)
             saveable.LoadData(GameData.levelData);
-        Debug.Assert(this.characterLevel == GameData.levelData.level, "ERROR: Level does not match");
     }
 
     public LevelData SaveGame()
@@ -123,14 +124,23 @@ public class PlayerLevelData : MonoBehaviour
 
     public void LoadSpawnedObstacles()
     {
-        List<SpawnedData> spawnedDatas = new List<SpawnedData>(GameData.levelData.spawneds.Values.ToList());
-        foreach(SpawnedData spawnedData in spawnedDatas)
+        for (int i = 1; i <= GameData.levelData.spawnCount; i++)
         {
-            if(spawnedData.typeName == typeof(TreeLog).ToString()){
-                TreeLog log = GameObject.Instantiate( logPrefab, spawnedData.spawnedLocation, Quaternion.identity, this.gameObject.transform).GetComponent<TreeLog>();
-                log.AddAsSpawned();
+            string ID = $"{i}";
+            if(GameData.levelData.obstacles[ID].typeName == typeof(TreeLog).ToString())
+            {
+                TreeLog log = GameObject.Instantiate(logPrefab, GameData.levelData.obstacles[ID].position, Quaternion.identity).GetComponent<TreeLog>();
+                log.AddAsSpawned(ID);
             }
         }
+        // List<ObstacleData> spawnedDatas = new List<ObstacleData>(GameData.levelData.spawneds.Values.ToList());
+        // foreach(ObstacleData spawnedData in spawnedDatas)
+        // {
+            // if(spawnedData.typeName == typeof(TreeLog).ToString()){
+                // TreeLog log = GameObject.Instantiate( logPrefab, spawnedData.spawnedLocation, Quaternion.identity, this.gameObject.transform).GetComponent<TreeLog>();
+                // log.AddAsSpawned();
+            // }
+        // }
         SaveSystem.saveables = GetAllSaveables();
     }
 

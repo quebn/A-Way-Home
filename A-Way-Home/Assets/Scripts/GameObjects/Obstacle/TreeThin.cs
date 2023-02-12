@@ -89,8 +89,9 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
         this.upper.SetActive(false);
         Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);
         for(int i = 0; i < placeableNodes[currentPlaceable].Count; i++){
+            Debug.LogWarning(placeableNodes[currentPlaceable][i].worldPosition);
             TreeLog log = Instantiate(logs[i], placeableNodes[currentPlaceable][i].worldPosition, Quaternion.identity).GetComponent<TreeLog>();
-            log.AddAsSpawned();
+            log.AddAsSpawned($"{GameData.levelData.spawnCount += 1}");
         }
     }
 
@@ -116,10 +117,11 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
         placeableNodes  = new Dictionary<Vector2, List<Node>>(2);
         for(float f = -1.5f; f < 3; f += 3){
             Vector2 pos = new Vector2(this.worldPos.x + f, this.worldPos.y);
-            if(!NodeGrid.CheckTileIsWalkable(pos, 2, 1))
+            if(!NodeGrid.CheckTileIsTerrain(pos, 2, 1))
                 continue;
             placeableNodes.Add(pos, NodeGrid.GetNodes(pos, 2, 1));
         }
+        Debug.Log($"tree on {transform.position} placeables count-> {placeableNodes.Count}");
     }
 
     // private IEnumerator SetPlaceableLocations()

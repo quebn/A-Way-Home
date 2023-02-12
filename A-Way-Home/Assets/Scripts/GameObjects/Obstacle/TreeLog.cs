@@ -11,6 +11,7 @@ public class TreeLog : Obstacle, IInteractable//, IInteractable, INodeInteractab
     protected override void Initialize()
     {
         base.Initialize();
+        DestroyNodeObstacles();
         SetNodes(this.transform.position, NodeType.Obstacle, this);
     }
 
@@ -34,17 +35,39 @@ public class TreeLog : Obstacle, IInteractable//, IInteractable, INodeInteractab
         this.spriteRenderer.color = Color.white;
     }
 
-    public void AddAsSpawned()
+    public void AddAsSpawned(string id)
     {
-        if(!GameData.levelData.spawneds.ContainsKey(id))
-            GameData.levelData.spawneds.Add(id, new SpawnedData(this.GetType().ToString(), hitpoints, this.worldPos));
-        if(GameData.levelData.obstacles.ContainsKey(id))
-        {
-            Debug.LogWarning($"{id} Was in obstacles and is being removed.");
+        if(GameData.levelData.obstacles.ContainsKey(this.id))
             GameData.levelData.obstacles.Remove(id);
-        }
-        // animation spawn here.
+        this.id = id;
+        Debug.Assert(!GameData.levelData.obstacles.ContainsKey(id), "ERROR: obstacle with id of {id} should not exist!");
+        base.Initialize();
         animator.Play("Log_Spawn");
+    }
+
+    private void DestroyNodeObstacles()
+    {
+        Node node = NodeGrid.NodeWorldPointPos(this.worldPos);
+        if(node.IsObstacle(typeof(GroundSpike)))
+        {
+            GroundSpike groundSpike = (GroundSpike)node.GetObstacle();
+            groundSpike.TriggerDeath();
+        }
+        else if(node.IsObstacle(typeof(RockCrab)))
+        {
+            RockCrab rockCrab = (RockCrab)node.GetObstacle();
+            rockCrab.TriggerDeath();
+        }
+        else if(node.IsObstacle(typeof(Rock)))
+        {
+            Rock rock = (Rock)node.GetObstacle();
+            rock.ClearRock();
+        }
+        else if(node.IsObstacle(typeof(Plant)))
+        {
+            Plant plant = (Plant)node.GetObstacle();
+            plant.DamagePlant();
+        }
     }
 
     private void RemoveLog()

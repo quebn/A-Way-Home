@@ -48,6 +48,7 @@ public class Boulder : Obstacle, IInteractable
         Debug.Log("Hit Boulder");
         if(hitpoints > 0)
             return;
+        ClearNodes();
         animator.Play("BigBoulder_Destroy");
         float delay = animator.GetCurrentAnimatorStateInfo(0).length;
         Invoke("OnDestroy", delay);
@@ -55,6 +56,7 @@ public class Boulder : Obstacle, IInteractable
 
     public override void LoadData(LevelData levelData)
     {
+        Debug.LogWarning($"{levelData.obstacles[id].position} position");
         base.LoadData(levelData);
         if(hitpoints == 0)
             this.gameObject.SetActive(false);
@@ -62,7 +64,6 @@ public class Boulder : Obstacle, IInteractable
 
     private void OnDestroy()
     {
-        ClearNodes();
         this.gameObject.SetActive(false);
     }
 

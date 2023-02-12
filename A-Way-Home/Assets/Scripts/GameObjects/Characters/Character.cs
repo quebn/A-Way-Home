@@ -20,8 +20,8 @@ public class Character : MonoBehaviour, ISaveable
     public Sprite image => spriteRenderer.sprite;
     public Essence currentEssence => Essence.list[currentPosition];
     public Vector3 currentPosition => transform.position;
-    public bool isHome => requiredEssence <= 0;
-    public bool destinationReached => Essence.GetCurrentDestinations().Contains(currentPosition);
+    public bool isHome => requiredEssence == 0 && currentPosition == Home.instance.transform.position;
+    public bool destinationReached => Essence.GetCurrentDestinations().Contains(currentPosition) || currentPosition == Home.instance.transform.position;
     public bool isMoving => isGoingHome;
     public bool hasPath => path.Count > 0;
 
@@ -81,9 +81,16 @@ public class Character : MonoBehaviour, ISaveable
     {
         if(path != null)
             Node.ToggleNodes(path, NodeGrid.nodesVisibility);
-        List<Vector3> destinations = Essence.GetCurrentDestinations();
-        path = Pathfinding.FindPath(currentPosition, destinations);
-        Debug.Log($"{requiredEssence} essence required! => {destinations.Count} Essence Found!");
+        if(requiredEssence != 0)
+        {
+            List<Vector3> destinations = Essence.GetCurrentDestinations();
+            path = Pathfinding.FindPath(currentPosition, destinations);
+            Debug.Log($"{requiredEssence} essence required! => {destinations.Count} Essence Found!");
+        }
+        else{
+            List<Vector3> homes = new List<Vector3>(){Home.instance.transform.position};
+            path = Pathfinding.FindPath(currentPosition, homes);
+        }
         if(path.Count <= 0)
         {
             Debug.LogWarning("No Path Found for Character");
@@ -96,8 +103,10 @@ public class Character : MonoBehaviour, ISaveable
 
     public void GoHome()
     {
-        if (path.Count <=0)
-            return;
+        if (path.Count <=0){
+            TriggerDeath();
+            return ;
+        }
         currentTargetNode = path[0];
         targetIndex = 0;
         isGoingHome = true;
@@ -130,7 +139,7 @@ public class Character : MonoBehaviour, ISaveable
     protected bool EndConditions()
     {
         if (destinationReached)
-            return Consume(currentEssence);
+            return currentPosition == Home.instance.transform.position ? TriggerLevelComplete() : Consume(currentEssence);
         if (energy == 0)
             return TriggerDeath();
         return false;
@@ -142,17 +151,18 @@ public class Character : MonoBehaviour, ISaveable
         Essence.OnConsume(this);
         this.isGoingHome = false;
         if (isHome)
-            TriggerLevelComplete();
+            return TriggerLevelComplete();
         else
             GetPath();
         Debug.Log($"Current Essence Needed: {this.requiredEssence}");
         return true;
     }
 
-    public void TriggerLevelComplete()
+    public bool TriggerLevelComplete()
     {
         this.gameObject.SetActive(false);
         GameEvent.SetEndWindowActive(EndGameType.LevelClear);
+        return true;
     }
 
     public bool TriggerDeath(float animDelay = 0)

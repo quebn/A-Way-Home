@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 [System.Serializable] 
@@ -19,7 +20,7 @@ public class GameData {
 
     // Statics;
     public static LevelData levelData;
-    public static SaveFileData loadedLevelData = null;
+    // public static SaveFileData loadedLevelData = null;
     public static Dictionary<string, Sprite> characterSprites;
     public static Dictionary<int, SavedSlotUI> saveSlotUIDict;
     public static List<SaveFileData> savedDataFiles;
@@ -54,20 +55,23 @@ public class GameData {
         levelData.moves += increment;
         InGameUI.Instance.playerMovesUI = levelData.moves;
     }
+
+
+
 }
 
 [System.Serializable]
-public class SpawnedData
+public class ObstacleData
 {
     public string typeName;
     public int hitpoints;
-    public SerializedVector3 spawnedLocation;
+    public SerializedVector3 position;
 
-    public SpawnedData(string obstacleType, int hp, Vector3 location)
+    public ObstacleData(Type obstacleType, int hp, Vector3 location)
     {
-        typeName = obstacleType;
-        hitpoints = hp;
-        spawnedLocation = location;
+        this.typeName = obstacleType.Name;
+        this.hitpoints = hp;
+        this.position = location;
     }
     
 }
@@ -86,8 +90,8 @@ public class LevelData
     public int lives;
     public int moves;
     public int score;
+    public uint spawnCount;
     public float secondsLeft;
-    public Dictionary<string, int> obstacles;
-    public Dictionary<string, SpawnedData> spawneds;
+    public Dictionary<string, ObstacleData> obstacles;
     public Dictionary<string, bool> essences;
 }

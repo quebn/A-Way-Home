@@ -7,28 +7,23 @@ public enum Tool { Inspect, Lightning, Command, Grow, Tremor}//, PlaceMode }
 
 public class Obstacle : MonoBehaviour, ISaveable
 {
-    public static string TAG = "Obstacle";
+    public const string TAG = "Obstacle";
+
     [SerializeField] private Vector2Int tileSize;
     private int HP = 1;
 
     [SerializeField] protected SpriteRenderer spriteRenderer;
+    [SerializeField] protected string id;
     protected List<Node> nodes;
     // protected bool isActive;
 
 
-    public string id;
     protected Vector2 worldPos => this.transform.position; 
     protected int nodeCount => tileSize.x * tileSize.y; 
     protected Tool currentTool => PlayerActions.Instance.currentTool;
     protected virtual int hitpoints {
         get => HP;
         set => HP = value;
-    }
-
-
-    private void Awake()
-    {
-        this.id = $"{this.gameObject.GetType().ToString()}{this.gameObject.name}{this.worldPos}";
     }
 
     private void Start()
@@ -40,12 +35,13 @@ public class Obstacle : MonoBehaviour, ISaveable
     protected virtual void Initialize()
     {
         // id = $"{this.gameObject.name}{this.worldPos}";
-        if(GameData.levelData.spawneds.ContainsKey(id))
-            return;
+        // Debug.Assert(id != "", "ERROR: id is empty");
+        // if(GameEvent.loadType != LevelLoadType.LoadGame)
+            // Debug.Assert(!GameData.levelData.obstacles.ContainsKey(id), $"ERROR: {id} should not be in obstacle dictionary");
         if(!GameData.levelData.obstacles.ContainsKey(id))
         {
-            GameData.levelData.obstacles.Add(id, hitpoints);
-            Debug.Log($"Added {id} in dictionary GameData.levelData.obstacles with hp of {hitpoints}");
+            GameData.levelData.obstacles.Add(id, new ObstacleData(this.GetType(), this.hitpoints, this.transform.position));
+            // Debug.Log($"Added {id} in dictionary GameData.levelData.obstacles with hp of {hitpoints}");
         }
         Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), "ERROR: Not in obstacle dictionary");
         // if(!GameData.levelData.obstacles.ContainsKey(ID) || !GameData.levelData.spawneds.ContainsKey(ID))
@@ -102,35 +98,31 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     public virtual void SaveData(LevelData levelData)
     {
-        Debug.Assert(levelData.obstacles.ContainsKey(id) || levelData.spawneds.ContainsKey(id));
-        if(levelData.spawneds.ContainsKey(id)){
-            Debug.Log("Saving spawned data");
-            levelData.spawneds[id].hitpoints = this.hitpoints;
-        }
+        Debug.Assert(levelData.obstacles.ContainsKey(id));
         if(levelData.obstacles.ContainsKey(id))
         {
             Debug.Log("Saving obstacle data");
-            levelData.obstacles[id] = this.hitpoints;
+            levelData.obstacles[id].hitpoints = this.hitpoints;
+            levelData.obstacles[id].position = this.gameObject.transform.position;
         }
     }
 
     public virtual void LoadData(LevelData levelData)
     {
-        this.id = $"{this.gameObject.GetType().ToString()}{this.gameObject.name}{this.worldPos}";
-        Debug.Assert(levelData.obstacles.ContainsKey(id) || levelData.spawneds.ContainsKey(id), $"ERROR: {id} not found");
-        if(levelData.spawneds.ContainsKey(id))
-        {
-            Debug.Log("Loading spawned data");
-            hitpoints = levelData.spawneds[id].hitpoints;
-        }
+        Debug.Assert(levelData.obstacles.ContainsKey(id), $"ERROR: {id} not found");
         if(levelData.obstacles.ContainsKey(id))
         {
             Debug.Log("Loading obstacle data");
-            hitpoints = levelData.obstacles[id];
+            this.hitpoints = levelData.obstacles[id].hitpoints;
+            this.gameObject.transform.position = levelData.obstacles[id].position;
         }
     }
 
-
+    [ContextMenu("Generate Essence ID")]
+    private void GenerateID() 
+    {
+        this.id = System.Guid.NewGuid().ToString();
+    }
 }
 
 public interface ITrap

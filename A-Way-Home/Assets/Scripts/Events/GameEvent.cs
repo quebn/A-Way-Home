@@ -77,8 +77,9 @@ public static class GameEvent
             UnpauseGame();
         restartCounter = 0;
         loadType = LevelLoadType.LoadGame;
-        GameData.loadedLevelData = GameData.savedDataFiles[index];
-        prefabLevelName = $"Char{MainMenuUI.GetCharacterIndex(GameData.loadedLevelData.levelData.characterName)}Level{GameData.loadedLevelData.levelData.level}";
+        GameData.levelData = GameData.savedDataFiles[index].levelData;
+        // GameData.loadedLevelData = GameData.savedDataFiles[index];
+        prefabLevelName = $"Char{MainMenuUI.GetCharacterIndex(GameData.levelData.characterName)}Level{GameData.levelData.level}";
         SceneManager.LoadScene("LevelScene");
     }
 

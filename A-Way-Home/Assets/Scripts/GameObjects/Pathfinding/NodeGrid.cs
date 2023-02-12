@@ -74,8 +74,8 @@ public class NodeGrid : MonoBehaviour
                 Gizmos.color = Color.blue;
                 Gizmos.DrawWireCube(worldPoint, new Vector3(diameter, diameter, 0));
                 if (enableValues)
-                    UnityEditor.Handles.Label(new Vector3(worldPoint.x - .25f, worldPoint.y), $"{x}, {y}");
-                    // UnityEditor.Handles.Label(new Vector3(worldPoint.x - .25f, worldPoint.y), $"{worldPoint.x}, {worldPoint.y}");
+                    // UnityEditor.Handles.Label(new Vector3(worldPoint.x - .25f, worldPoint.y), $"{x}, {y}");
+                    UnityEditor.Handles.Label(new Vector3(worldPoint.x - .25f, worldPoint.y), $"{worldPoint.x}, {worldPoint.y}");
             }
         }
         Gizmos.color = Color.white;
@@ -137,11 +137,11 @@ public class NodeGrid : MonoBehaviour
         return nodes;
     }
 
-    public static bool CheckTileIsWalkable(Vector2 nodeTileCenter, int width, int height)
+    public static bool CheckTileIsTerrain(Vector2 nodeTileCenter, int width, int height)
     {
         List<Node> nodes = GetNodes(nodeTileCenter, width, height);
         foreach(Node node in nodes)
-            if(!node.IsWalkable())
+            if(node.IsType(NodeType.Terrain))
                 return false;
         return true;
     }
