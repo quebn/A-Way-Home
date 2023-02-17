@@ -56,7 +56,7 @@ public class Node
     {
         if(obstacleType != null && interactableObstacle != null)
             return IsObstacle(obstacleType);
-        return (currentNodeType == nodeType ||currentNodeType == NodeType.Walkable );
+        return (currentNodeType == nodeType || currentNodeType == NodeType.Walkable );
     }
 
     public bool IsType(NodeType nodeType)
@@ -74,15 +74,10 @@ public class Node
         return interactableObstacle;
     }
 
-    // public bool TryGetTrap(out ITrap trap)
-    // {
-        // if(interactableObstacle is ITrap){
-            // trap = (ITrap)interactableObstacle;
-            // return true;
-        // }
-        // trap = null;
-        // return false;
-    // }
+    public bool IsEmpty(NodeType walkableNodeType = NodeType.Walkable)
+    {
+        return interactableObstacle == null && IsWalkable(walkableNodeType);
+    }
 
     private void UpdateColor()
     {
@@ -150,13 +145,21 @@ public class Node
         UpdateColor();
     }
 
-    public void InteractObstacle()
+    public bool InteractObstacle()
     {
         if(interactableObstacle == null)
-            return;
+            return false;
         interactableObstacle.OnInteract();
+        return true;
     }
 
+    public bool InteractObstacleAfterShock()
+    {
+        if(interactableObstacle == null)
+            return false;
+        interactableObstacle.OnAfterShock();
+        return true;
+    }
 
     public static void RevealNodes(List<Node> nodeList)
     {
@@ -213,7 +216,15 @@ public class Node
             return;
         foreach (Node node in nodeList)
             node.InteractObstacle();
-    } 
+    }
+
+    public static void TriggerObstacleAfterShock(List<Node> nodeList)
+    {
+        if(nodeList == null ||nodeList.Count == 0)
+            return;
+        foreach (Node node in nodeList)
+            node.InteractObstacleAfterShock();
+    }
     
     public static void ToggleNodes(List<Node> nodeList, bool toggle, Character character)
     {

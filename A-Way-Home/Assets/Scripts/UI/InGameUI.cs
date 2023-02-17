@@ -58,16 +58,11 @@ public class InGameUI : MonoBehaviour
 
     private void Start()
     {
-        Debug.Assert(Character.instance != null, "Character is null");
+        // Debug.Assert(Character.instance != null, "Character is null");
         InitCharacterUI(GameData.levelData, Character.instance);
         endGameType = EndGameType.None;
     }
 
-    private void Update()
-    {
-        if (!Character.instance.isMoving)
-            TimeCountdown();
-    }
 
     public void TimeCountdown()
     {
@@ -81,6 +76,7 @@ public class InGameUI : MonoBehaviour
                 Character.instance.TriggerDeath();
         }
     }
+
 
     // move to character initialization
     private void InitCharacterUI(LevelData levelData, Character character) 

@@ -44,12 +44,6 @@ public class Obstacle : MonoBehaviour, ISaveable
             // Debug.Log($"Added {id} in dictionary GameData.levelData.obstacles with hp of {hitpoints}");
         }
         Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), "ERROR: Not in obstacle dictionary");
-        // if(!GameData.levelData.obstacles.ContainsKey(ID) || !GameData.levelData.spawneds.ContainsKey(ID))
-        //     return;
-        // if(GameData.levelData.obstacles.ContainsKey(ID))
-        //     hitpoints = GameData.levelData.obstacles[ID];
-        // else if(GameData.levelData.spawneds.ContainsKey(ID))
-        //     hitpoints = GameData.levelData.spawneds[ID].hitpoints;
     }
 
     protected void SetNodes(Vector3 worldPos, NodeType nodeType, IInteractable interactable = null)
@@ -133,8 +127,7 @@ public interface ITrap
 public interface IInteractable
 {
     public void OnInteract();
-    
     public void OnHighlight();
-
     public void OnDehighlight();
+    public void OnAfterShock(){}
 }

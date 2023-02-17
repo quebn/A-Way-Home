@@ -13,8 +13,8 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] private Animator animatorExplosion;
     [SerializeField] private int toolCount;
     [SerializeField] private List<Texture2D> mouseTextures;
-    [HideInInspector] public Tool currentTool;
 
+    [HideInInspector] public Tool currentTool;
     private Mouse mouse;
     private Camera mainCamera;
     private PlayerInput playerInput;
@@ -29,7 +29,6 @@ public class PlayerActions : MonoBehaviour
     private List<IInteractable> currentInteractables;
 
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
-    private bool actionsNotAllowed => ( IsMouseOverUI() ||  Character.instance.isMoving);
     // private bool uninteractable => this.currentTool == Tool.PlaceMode;
 
     private void Start()
@@ -66,7 +65,7 @@ public class PlayerActions : MonoBehaviour
 
     public void PerformAction(InputAction.CallbackContext context)
     {
-        if (actionsNotAllowed || GameData.levelData.moves <= 0)
+        if (ActionsNotAllowed())
             return;
         switch(currentTool)
         {
@@ -76,6 +75,7 @@ public class PlayerActions : MonoBehaviour
             case Tool.Lightning:
                 LightningAnimation(this.currentTileOrigin);
                 InteractNodes();
+                ThunderInteractNodes();
                 GameData.IncrementPlayerMoves(-1);
                 break;
             case Tool.Tremor:
@@ -91,9 +91,23 @@ public class PlayerActions : MonoBehaviour
         Character.instance.GetPath();
     }
 
+    private bool ActionsNotAllowed()
+    {
+        return  IsMouseOverUI() || 
+        GameData.levelData.moves == 0 ||
+        Character.instance.isMoving;
+    }
+
     private void InteractNodes()
     {
         Node.TriggerNodesObstacle(currentTileNodes);
+    }
+
+    private void ThunderInteractNodes()
+    {
+        Debug.Assert(currentTileNodes.Count == 1, "ERROR: Expected count to be 1.");
+        List<Node> surroundingNodes = NodeGrid.GetNeighorNodes(currentTileNodes[0], NodeGrid.Instance.grid, 1).Values.ToList();
+        Node.TriggerObstacleAfterShock(surroundingNodes);
     }
 
     // private void Place()
@@ -157,7 +171,7 @@ public class PlayerActions : MonoBehaviour
 
     private void Hover()
     {
-        if(actionsNotAllowed)
+        if(ActionsNotAllowed())
             return;
         switch(currentTool)
         {

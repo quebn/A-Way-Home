@@ -6,7 +6,8 @@ public class PlayerLevelData : MonoBehaviour
 {
     public static PlayerLevelData Instance {get; private set;}
 
-    [SerializeField] private uint characterLevel;
+    [SerializeField] private uint currentStage;
+    [SerializeField] private uint currentLevel;
     [SerializeField] private int characterEnergy;
     [SerializeField] private int playerLives;
     [SerializeField] private int playerMoves;
@@ -14,11 +15,11 @@ public class PlayerLevelData : MonoBehaviour
     [SerializeField] private float timeLimitInSecs;
     [SerializeField] private Vector2 cameraBoundary;
     [SerializeField] public int unlockedTools = 0;
+    [SerializeField] private GameObject characterLocation;
     // [HideInInspector] public LevelData levelData;// should be in GameData
     [HideInInspector] public List<Vector3> currentDestinations;// should be in GameData
     public Vector2 levelBoundary => this.cameraBoundary;
     public GameObject logPrefab;
-    public static string characterName;
 
 
     private void Awake()
@@ -47,21 +48,28 @@ public class PlayerLevelData : MonoBehaviour
                 RestartGame();
                 break;
         }
+        GameObject.Instantiate(
+            GameData.selectedCharacter.prefab, 
+            this.characterLocation.transform.position, 
+            Quaternion.identity, 
+            this.transform
+        );
+        Destroy(characterLocation);
         LoadSpawnedObstacles();
-
     }
 
     private void Start()
     {
         Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initializing Character with {GameData.levelData.characterEnergy} energy and {GameData.levelData.characterRequiredEssence} ");
-        Character.instance.Initialize(GameData.levelData.characterEnergy, GameData.levelData.characterRequiredEssence);
+        Character.instance.Initialize(GameData.levelData);
     }
 
     private void NewGame()
     {
         GameData.levelData = new LevelData {
-            level = this.characterLevel,
-            characterName = characterName,
+            stage = this.currentStage,
+            level = this.currentLevel,
+            characterName = GameData.selectedCharacter.name,
             characterEnergy = this.characterEnergy,
             lives = playerLives,
             moves = playerMoves,
@@ -78,8 +86,9 @@ public class PlayerLevelData : MonoBehaviour
     private void RestartGame()
     {
         GameData.levelData = new LevelData {
-            level = this.characterLevel,
-            characterName = characterName,
+            stage = this.currentStage,
+            level = this.currentLevel,
+            characterName = GameData.selectedCharacter.name,
             characterEnergy = this.characterEnergy,
             lives = playerLives - GameEvent.restartCounter,
             moves = playerMoves,
@@ -88,7 +97,6 @@ public class PlayerLevelData : MonoBehaviour
             spawnCount = 0,
             secondsLeft = this.timeLimitInSecs,
             obstacles = new Dictionary<string, ObstacleData>(),
-            // spawneds = new Dictionary<string, ObstacleData>(),
             essences = new Dictionary<string, bool>()
         };
         Debug.Assert(playerLives > 0, "ERROR: Lives is less than 1");
@@ -97,7 +105,7 @@ public class PlayerLevelData : MonoBehaviour
     public void LoadGame()
     {
         Debug.Assert(GameData.levelData != null, "ERROR: No load level data found");
-        Debug.Assert(this.characterLevel == GameData.levelData.level, "ERROR: Level does not match");
+        Debug.Assert(this.currentLevel == GameData.levelData.level, "ERROR: Level does not match");
         foreach(KeyValuePair<string, ObstacleData> pair in GameData.levelData.obstacles)
             Debug.LogWarning($"{pair.Key} -> {pair.Value}");
         foreach(ISaveable saveable in SaveSystem.saveables)
@@ -133,14 +141,6 @@ public class PlayerLevelData : MonoBehaviour
                 log.AddAsSpawned(ID);
             }
         }
-        // List<ObstacleData> spawnedDatas = new List<ObstacleData>(GameData.levelData.spawneds.Values.ToList());
-        // foreach(ObstacleData spawnedData in spawnedDatas)
-        // {
-            // if(spawnedData.typeName == typeof(TreeLog).ToString()){
-                // TreeLog log = GameObject.Instantiate( logPrefab, spawnedData.spawnedLocation, Quaternion.identity, this.gameObject.transform).GetComponent<TreeLog>();
-                // log.AddAsSpawned();
-            // }
-        // }
         SaveSystem.saveables = GetAllSaveables();
     }
 

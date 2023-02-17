@@ -2559,12 +2559,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0781942aaa3441489cec04c77adfcdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  char1Sprite: {fileID: 21300000, guid: f4ba7a5e8b25ae241a6c94d4d6df858d, type: 3}
-  char1Name: Gaia
-  char2Sprite: {fileID: 21300000, guid: b8fd21ad16123364aaee0da8f1b3746b, type: 3}
-  char2Name: Terra
-  char3Sprite: {fileID: 21300000, guid: d78e009f5bb799b42bbf3c801af824ac, type: 3}
-  char3Name: Aqua
+  characters:
+  - name: Gaia
+    prefab: {fileID: 7541503505314504048, guid: b317529421e489d43a4a355b9c7b2437, type: 3}
+  - name: Terra
+    prefab: {fileID: 7233497297596977977, guid: c7f7bb80f4f803c4b971771c2c32aab0, type: 3}
+  - name: Aqua
+    prefab: {fileID: 925674271569063024, guid: 4058ef6374b8e554daba94aa3ca20439, type: 3}
   characterSelectionWindow: {fileID: 995894827915268305}
   loadSelectionWindow: {fileID: 995894828607838040}
   levelSelectionwindow: {fileID: 995894826826998937}
@@ -2572,7 +2573,6 @@ MonoBehaviour:
   closeGameWindow: {fileID: 995894827296098579}
   leaderboardsWindow: {fileID: 995894827404173746}
   howtoPlayWindow: {fileID: 995894826900857063}
-  selectedCharacter: 0
   deleteConfirmWindow: {fileID: 995894828051146984}
 --- !u!114 &2340208814416602249
 MonoBehaviour:
@@ -13046,10 +13046,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 995894826787068313}
     m_Modifications:
-    - target: {fileID: 366884273278529029, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: d78e009f5bb799b42bbf3c801af824ac, type: 3}
     - target: {fileID: 1405993513899155246, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -13157,6 +13153,12 @@ PrefabInstance:
     - target: {fileID: 4498977785478437589, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
       propertyPath: sceneLevelName
       value: Char3Level4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5243688365666724324, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
+      propertyPath: m_text
+      value: 'Stage 3
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 5431135828598981081, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
       propertyPath: m_Name
@@ -13330,7 +13332,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3298031936489557802, guid: 779cf9dc03bae44459249af2a8b813cf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3298031936489557802, guid: 779cf9dc03bae44459249af2a8b813cf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
@@ -13488,7 +13490,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3298031936489557802, guid: 779cf9dc03bae44459249af2a8b813cf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3298031936489557802, guid: 779cf9dc03bae44459249af2a8b813cf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
@@ -13939,10 +13941,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 995894826787068313}
     m_Modifications:
-    - target: {fileID: 366884273278529029, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: b8fd21ad16123364aaee0da8f1b3746b, type: 3}
     - target: {fileID: 1405993513899155246, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -14050,6 +14048,10 @@ PrefabInstance:
     - target: {fileID: 4498977785478437589, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
       propertyPath: sceneLevelName
       value: Char2Level4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5243688365666724324, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
+      propertyPath: m_text
+      value: Stage 2
       objectReference: {fileID: 0}
     - target: {fileID: 5431135828598981081, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
       propertyPath: m_Name
@@ -14999,10 +15001,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 995894826787068313}
     m_Modifications:
-    - target: {fileID: 366884273278529029, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: f4ba7a5e8b25ae241a6c94d4d6df858d, type: 3}
     - target: {fileID: 1405993513899155246, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -15122,6 +15120,10 @@ PrefabInstance:
     - target: {fileID: 4498977785478437589, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
       propertyPath: sceneLevelName
       value: Char1Level4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5243688365666724324, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
+      propertyPath: m_text
+      value: Stage 1
       objectReference: {fileID: 0}
     - target: {fileID: 5431135828598981081, guid: fe188250f89a4284fbb5a704f9056ed5, type: 3}
       propertyPath: m_Name
@@ -17171,7 +17173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3298031936489557802, guid: 779cf9dc03bae44459249af2a8b813cf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3298031936489557802, guid: 779cf9dc03bae44459249af2a8b813cf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument

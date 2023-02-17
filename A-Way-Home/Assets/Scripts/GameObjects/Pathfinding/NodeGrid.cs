@@ -13,10 +13,10 @@ public class NodeGrid : MonoBehaviour
     [SerializeField] private Tilemap tileMap; 
     [SerializeField] private Tile tile; 
 
-    public Dictionary<Vector2Int, Node> grid;
     private Vector2Int gridSizeInt;
     private float nodeDiameter;
     
+    public Dictionary<Vector2Int, Node> grid;
 
     public static bool nodesVisibility = false; 
     public static Tilemap tilemap => Instance.tileMap;

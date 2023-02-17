@@ -46,7 +46,7 @@ public class LeaderboardSlotUI : MonoBehaviour
 
     private void SetValues(PlayerScoreData data)
     {
-        this.characterImage.sprite = GameData.characterSprites[data.charName];
+        // this.characterImage.sprite = GameData.characterSprites[data.charName];
         this.playerName.text = data.playerName;
         this.characterName.text = data.charName;
         this.score.text = data.score.ToString();

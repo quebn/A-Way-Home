@@ -97,7 +97,7 @@ public class SavedSlotUI : MonoBehaviour
     {
         this.fileName.text = data.fileName;
         this.characterName.text = data.levelData.characterName;
-        this.characterImage.sprite = GameData.characterSprites[data.levelData.characterName];
+        // this.characterImage.sprite = GameData.characterSprites[data.levelData.characterName];
         this.energy.text = data.levelData.characterEnergy.ToString();
         this.moves.text = data.levelData.moves.ToString();
         this.lives.text = data.levelData.lives.ToString();

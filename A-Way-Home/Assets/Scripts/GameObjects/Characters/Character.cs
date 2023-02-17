@@ -33,7 +33,6 @@ public class Character : MonoBehaviour, ISaveable
         set => this.spriteRenderer.flipX = value;
     }
     
-    
     private void Awake()
     {
         if (instance == null)
@@ -42,7 +41,9 @@ public class Character : MonoBehaviour, ISaveable
 
     private void Update()
     {
-        if (isGoingHome)
+        if (!isGoingHome)
+            InGameUI.Instance.TimeCountdown();
+        else
             Step();
     }
 
@@ -53,11 +54,11 @@ public class Character : MonoBehaviour, ISaveable
     }
 
 
-    public void Initialize(int energy, int essenceNeeded)
+    public void Initialize(LevelData levelData)
     {
-        IncrementEssence(essenceNeeded);
-        SetMaxEnergy(energy);
-        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {energy} energy and {essenceNeeded} ");
+        IncrementEssence(levelData.characterRequiredEssence);
+        SetMaxEnergy(levelData.characterEnergy);
+        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {energy} energy and {levelData.characterRequiredEssence} ");
         Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {this.energy} energy and {this.requiredEssence} ");
         StartCoroutine(GetPathOnInit());
         // if (GameEvent.isSceneSandbox)
@@ -228,18 +229,6 @@ public class Character : MonoBehaviour, ISaveable
 
     public void LoadData(LevelData levelData)
     {
-        // this.energy = levelData.characterEnergy;
         this.transform.position = levelData.characterPosition;
-        // this.requiredEssence = levelData.characterRequiredEssence;
     }
-
-    // public void SaveData(LevelData levelData)
-    // {
-    //     ((ISaveable)instance).SaveData(levelData);
-    // }
-
-    // public void LoadData(LevelData levelData)
-    // {
-    //     ((ISaveable)instance).LoadData(levelData);
-    // }
 }

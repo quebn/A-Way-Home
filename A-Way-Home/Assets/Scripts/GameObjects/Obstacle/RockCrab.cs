@@ -12,7 +12,7 @@ public class RockCrab : Rock , ITrap
     private Dictionary<Vector2Int, Node> travelRangeGrid;
     private List<Node> path;
     private List<Vector3> targetPositions;
-    protected Node currentTargetNode;
+    private Node currentTargetNode;
     private int targetIndex;
 
     private bool hasPath => path.Count > 0;

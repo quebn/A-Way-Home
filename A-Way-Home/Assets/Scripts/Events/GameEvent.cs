@@ -22,6 +22,7 @@ public static class GameEvent
             UnpauseGame();
         GameObject levelPrefab = Resources.Load<GameObject>($"Levels/{prefabLevelName}");
         GameObject.Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
+
     }
 
     public static void LoadEndScene()
@@ -29,26 +30,23 @@ public static class GameEvent
         SceneManager.LoadScene("EndScene");
     }
 
-    public static string GetNextLevel()
-    {
-        uint currentChar = MainMenuUI.GetCharacterIndex();
-        uint currentLevel = GameData.levelData.level;
-        Debug.Assert(currentChar != 0, "ERROR: character index is 0");
-        return $"Char{currentChar}Level{currentLevel+1}";
-    }
+    // public static string GetNextLevel()
+    // {
+    //     uint currentStage = MainMenuUI.GetStageIndex();
+    //     uint currentLevel = GameData.levelData.level;
+    //     Debug.Assert(currentStage != 0, "ERROR: character index is 0");
+    //     return $"Char{currentStage}Level{currentLevel+1}";
+    // }
 
     public static void NextLevel()
     {
-        NewGame(GetNextLevel());
+        Debug.Assert(false, "UNIMPLEMENTED");
+        // NewGame(GetNextLevel());
     }
 
     public static void NewGame(string levelName)
     {
-        if (!GameData.Instance.unlockLevels.Contains(levelName))
-        {
-            Debug.Log(levelName + " Does not Exist");
-            return;
-        }
+        Debug.Assert(GameData.Instance.unlockedLevels.Contains(levelName), $"ERROR: {levelName} does not exist!");
         restartCounter = 0;
         loadType = LevelLoadType.NewGame;
         prefabLevelName = levelName;
@@ -79,7 +77,7 @@ public static class GameEvent
         loadType = LevelLoadType.LoadGame;
         GameData.levelData = GameData.savedDataFiles[index].levelData;
         // GameData.loadedLevelData = GameData.savedDataFiles[index];
-        prefabLevelName = $"Char{MainMenuUI.GetCharacterIndex(GameData.levelData.characterName)}Level{GameData.levelData.level}";
+        prefabLevelName = $"Stage{GameData.levelData.stage}Level{GameData.levelData.level}";
         SceneManager.LoadScene("LevelScene");
     }
 

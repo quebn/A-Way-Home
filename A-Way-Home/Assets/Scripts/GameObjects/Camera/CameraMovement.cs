@@ -46,7 +46,7 @@ public class CameraMovement : MonoBehaviour
 
     public void NewMoveCamera()
     {
-        if (Character.instance.isHome || GameEvent.isPaused)
+        if (GameEvent.isPaused || Character.instance.isHome)
             return;
         Vector3 cameraPos = transform.position;
         if (Mouse.current.rightButton.isPressed)

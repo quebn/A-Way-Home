@@ -1,15 +1,17 @@
 using UnityEngine;
+using System.Collections.Generic;
 using System.Linq;
-public enum CharacterType { None , Character1, Character2, Character3 }
+
 public class MainMenuUI : MonoBehaviour
 {
     public static MainMenuUI Instance {get; private set;}
-    [SerializeField] private Sprite char1Sprite;
-    [SerializeField] private string char1Name;
-    [SerializeField] private Sprite char2Sprite;
-    [SerializeField] private string char2Name;
-    [SerializeField] private Sprite char3Sprite;
-    [SerializeField] private string char3Name;
+    [SerializeField] private List<CharacterInfo> characters;
+    // [SerializeField] private Sprite char1Sprite;
+    // [SerializeField] private string char1Name;
+    // [SerializeField] private Sprite char2Sprite;
+    // [SerializeField] private string char2Name;
+    // [SerializeField] private Sprite char3Sprite;
+    // [SerializeField] private string char3Name;
 
     [SerializeField] private GameObject characterSelectionWindow;
     [SerializeField] private GameObject loadSelectionWindow;
@@ -18,7 +20,6 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject closeGameWindow;
     [SerializeField] private GameObject leaderboardsWindow;
     [SerializeField] private GameObject howtoPlayWindow;
-    [HideInInspector] public CharacterType selectedCharacter;
 
     private bool isActive;
     public GameObject deleteConfirmWindow;
@@ -32,13 +33,10 @@ public class MainMenuUI : MonoBehaviour
     private void Start()
     {
         isActive = true;
-        selectedCharacter = CharacterType.None;
-
         if (Instance == null)
             Instance = this;
         Debug.Assert(Instance != null, "Error: MainMenuUI instance is null");
         Debug.Assert(GameData.Instance != null, "Error: GameData instance is null");
-        InitializeSpriteList();
         // Debug.Log(GameData.saveFileDataList.Count);
     }
 
@@ -89,27 +87,26 @@ public class MainMenuUI : MonoBehaviour
     public void SelectCharButton(int characterIndex)
     {
         Debug.Assert(characterIndex <= 3, "Error: Character number exceeded at 3!");
-        PlayerLevelData.characterName = GameData.characterSprites.ElementAt(characterIndex - 1).Key;
-        selectedCharacter = (CharacterType)characterIndex;
-        Debug.Log("Character Selected: " + PlayerLevelData.characterName);
+        // PlayerLevelData.characterName = GameData.characterSprites.ElementAt(characterIndex - 1).Key;
+        GameData.selectedCharacter = characters[characterIndex];
+        Debug.Log($"Character Selected: {GameData.selectedCharacter.name}");
     }
 
     public void CloseCharWindow()
     {
-        selectedCharacter = CharacterType.None;
+        GameData.selectedCharacter = new CharacterInfo();
         SetWindowInactive(characterSelectionWindow);
     }
 
     public void StartGame()
     {
-        if (selectedCharacter == CharacterType.None)
+        if (!characters.Contains(GameData.selectedCharacter))
         {
             Debug.Log("No Character Selected");
             return;
         }
-        int characterIndex = (int)this.selectedCharacter;
         // GameEvent.instance.NewGame(GameData.Instance.currentCharacterLevel[characterIndex - 1]);
-        GameEvent.NewGame(GameData.Instance.currentCharacterLevel[characterIndex - 1]);
+        GameEvent.NewGame("Stage1Level1");
     }
     #endregion
     #region Load selection window button functions
@@ -186,45 +183,28 @@ public class MainMenuUI : MonoBehaviour
         window.SetActive(true);
     }
     
-    private void InitializeSpriteList()
-    {
-        if (GameData.characterSprites.Count == 3)
-            return;
-        GameData.characterSprites.Add(char1Name, char1Sprite);
-        GameData.characterSprites.Add(char2Name, char2Sprite);
-        GameData.characterSprites.Add(char3Name, char3Sprite);
-    }
-
-    public static uint GetCharacterIndex()
-    {
-        string name = GameData.levelData.characterName;
-        if (name == Instance.char1Name)
-            return 1;
-        else if (name == Instance.char2Name)
-            return 2;
-        else if (name == Instance.char3Name)
-            return 3;
-        return 0;
-    }
-    
-    public static uint GetCharacterIndex(string characterName)
-    {
-        if (characterName == Instance.char1Name)
-            return 1;
-        else if (characterName == Instance.char2Name)
-            return 2;
-        else if (characterName == Instance.char3Name)
-            return 3;
-        return 0;
-
-    }
-    // public string GetCharacterName(int index)
+    // public static uint GetStageIndex()
     // {
-    //     if (index == 1)
-    //         return char1Name;
-    //     else if (index == 2)
-    //         return char2Name;
-    //     else 
-    //         return char3Name;
+    //     string name = GameData.levelData.characterName;
+    //     if (name == Instance.char1Name)
+    //         return 1;
+    //     else if (name == Instance.char2Name)
+    //         return 2;
+    //     else if (name == Instance.char3Name)
+    //         return 3;
+    //     return 0;
+    // }
+    
+    // public static uint GetStageIndex(string characterName)
+    // {
+    //     if (characterName == Instance.char1Name)
+    //         return 1;
+    //     else if (characterName == Instance.char2Name)
+    //         return 2;
+    //     else if (characterName == Instance.char3Name)
+    //         return 3;
+    //     return 0;
+
     // }
 }
+

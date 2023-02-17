@@ -11,13 +11,13 @@ public class LevelSelectButtonUI : MonoBehaviour
 
     public void SelectLevel()
     {
-        if (GameData.Instance.unlockLevels.Contains(sceneLevelName))
+        if (GameData.Instance.unlockedLevels.Contains(sceneLevelName))
             GameEvent.NewGame(sceneLevelName);
     }
     
     private void Initialize()
     {
-        if (GameData.Instance.unlockLevels.Contains(sceneLevelName))
+        if (GameData.Instance.unlockedLevels.Contains(sceneLevelName))
             lockedPanel.SetActive(false);
         else
             lockedPanel.SetActive(true);

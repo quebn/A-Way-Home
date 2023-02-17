@@ -77,19 +77,19 @@ public class GameEndUI : MonoBehaviour
 
     private void UnlockNextLevel()
     {
-        if (GameData.levelData.level == 5)
-        {
-            Debug.Log($"Max Level ({GameData.levelData.level}) reached!");
-            return;
-        }
-        string sceneLevelName = GameEvent.GetNextLevel();
-        Debug.Log($"Next Level Scene Name: {sceneLevelName}");
-        if (!GameData.allLevels.Contains(sceneLevelName))
-        {
-            Debug.Assert(false, $"Scene: {sceneLevelName} does not exist!");
-            return;
-        }
-        GameData.Instance.unlockLevels.Add(sceneLevelName);
+        // if (GameData.levelData.level == 5)
+        // {
+        //     Debug.Log($"Max Level ({GameData.levelData.level}) reached!");
+        //     return;
+        // }
+        // string sceneLevelName = GameEvent.GetNextLevel();
+        // Debug.Log($"Next Level Scene Name: {sceneLevelName}");
+        // if (!GameData.allLevels.Contains(sceneLevelName))
+        // {
+        //     Debug.Assert(false, $"Scene: {sceneLevelName} does not exist!");
+        //     return;
+        // }
+        // GameData.Instance.unlockedLevels.Add(sceneLevelName);
     }
 
 
@@ -126,9 +126,9 @@ public class GameEndUI : MonoBehaviour
     private void NextLevel()
     {
         Debug.Log("Loading Next Level......");
-        if(GameData.Instance.unlockLevels.Contains(GameEvent.GetNextLevel()))
-            GameEvent.NextLevel();
-        else
+        // if(GameData.Instance.unlockedLevels.Contains(GameEvent.GetNextLevel()))
+        //     GameEvent.NextLevel();
+        // else
             ConfirmEndRun();
     }
 

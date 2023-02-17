@@ -14,17 +14,16 @@ public class GameData {
     public Dictionary<string, string> keybinds;
     // LeaderBoards Data
     public List<PlayerScoreData> leaderboards;
-    public string[] currentCharacterLevel;
-    public List<string> unlockLevels;
+    public string currentStageLevel;
+    public List<string> unlockedLevels;
 
 
     // Statics;
     public static LevelData levelData;
-    // public static SaveFileData loadedLevelData = null;
-    public static Dictionary<string, Sprite> characterSprites;
+    public static CharacterInfo selectedCharacter;
     public static Dictionary<int, SavedSlotUI> saveSlotUIDict;
     public static List<SaveFileData> savedDataFiles;
-    public static List<string> allLevels = new List<string>(){"Char1Level1", "Char2Level1", "Char3Level1"};
+    public static List<string> allLevels = new List<string>(){"Stage1Level1", "Stage2Level1", "Stage3Level1"};
 
     private GameData()
     {
@@ -35,19 +34,22 @@ public class GameData {
         audio = 100;
         gameSpeed = 5;
         // GameData 
-        currentCharacterLevel = new string[3]{"Char1Level1", "Char2Level1", "Char3Level1"};
-        unlockLevels = new List<string>{currentCharacterLevel[0], currentCharacterLevel[1], currentCharacterLevel[2]};
+        currentStageLevel = "Stage1Level1";
+        unlockedLevels = new List<string>{currentStageLevel};
         leaderboards = new List<PlayerScoreData>();
     }
 
     public static void InitGameDataInstance()
     {
-        characterSprites = new Dictionary<string, Sprite>(3);
+        // characterSprites = new Dictionary<string, Sprite>(3);
         saveSlotUIDict = new Dictionary<int, SavedSlotUI>(5);
         savedDataFiles = new List<SaveFileData>(5);
         Instance = SaveSystem.LoadGameData();
         if (Instance == null)
             Instance = new GameData();
+        Debug.LogWarning($"Current Level: {Instance.currentStageLevel}");
+        foreach(string levels in Instance.unlockedLevels)
+            Debug.LogWarning($"Unlocked Levels: [{levels}]");
     }
 
     public static void IncrementPlayerMoves(int increment)
@@ -86,6 +88,7 @@ public class LevelData
     public int characterRequiredEssence;
     public SerializedVector3 characterPosition;
     // Player Data 
+    public uint stage;
     public uint level;
     public int lives;
     public int moves;
@@ -94,4 +97,11 @@ public class LevelData
     public float secondsLeft;
     public Dictionary<string, ObstacleData> obstacles;
     public Dictionary<string, bool> essences;
+}
+
+[System.Serializable]
+public class CharacterInfo{
+    public string name;
+    public GameObject prefab;
+
 }
