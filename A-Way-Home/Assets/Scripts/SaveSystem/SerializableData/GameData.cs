@@ -20,9 +20,10 @@ public class GameData {
 
     // Statics;
     public static LevelData levelData;
-    public static CharacterInfo selectedCharacter;
-    public static Dictionary<int, SavedSlotUI> saveSlotUIDict;
-    public static List<SaveFileData> savedDataFiles;
+    public static string selectedCharacter = "NA";
+    public static Dictionary<string, GameObject> characters;
+    public static Dictionary<int, SavedSlotUI> saveSlotUIDict = new Dictionary<int, SavedSlotUI>(5);
+    public static List<SaveFileData> savedDataFiles = new List<SaveFileData>(5);
     public static List<string> allLevels = new List<string>(){"Stage1Level1", "Stage2Level1", "Stage3Level1"};
 
     private GameData()
@@ -42,8 +43,6 @@ public class GameData {
     public static void InitGameDataInstance()
     {
         // characterSprites = new Dictionary<string, Sprite>(3);
-        saveSlotUIDict = new Dictionary<int, SavedSlotUI>(5);
-        savedDataFiles = new List<SaveFileData>(5);
         Instance = SaveSystem.LoadGameData();
         if (Instance == null)
             Instance = new GameData();

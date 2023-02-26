@@ -17,7 +17,13 @@ public static class GameEvent
     public static void InitializeLevel()
     {
         if(isSceneSandbox)
+        {
+            GameData.selectedCharacter = "SBChar";
             return;
+        }
+        // {
+            // GameData.selectedCharacter = new CharacterInfo(){name = "SandboxCharacter"};
+        // }
         if(isPaused)
             UnpauseGame();
         GameObject levelPrefab = Resources.Load<GameObject>($"Levels/{prefabLevelName}");

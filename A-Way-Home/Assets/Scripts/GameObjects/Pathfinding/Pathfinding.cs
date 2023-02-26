@@ -5,12 +5,10 @@ using UnityEngine;
 public static class Pathfinding
 {
 
-    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, NodeType walkableNodeType = NodeType.Walkable, Type type = null)
+    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, Dictionary<Vector2Int, Node> grid, NodeType walkableNodeType = NodeType.Walkable, Type type = null)
     {
         Debug.Assert(targetPos.Count > 0, "ERROR: No Target in list");
-        NodeGrid nodeGrid = NodeGrid.Instance;
         List<Node> path = new List<Node>();
-
         Node startNode = NodeGrid.NodeWorldPointPos(startingPos);
         List<Node> endNodes = NodeGrid.NodeWorldPointPos(targetPos);
         if (!startNode.IsWalkable(walkableNodeType, type) && !Node.CheckNodesType(endNodes, walkableNodeType, type))
@@ -35,7 +33,7 @@ public static class Pathfinding
                 path = RetracePath(startNode, currentNode);
                 break;
             }
-            foreach (Node neighbor in NodeGrid.GetPathNeighborNodes(currentNode, nodeGrid.grid))
+            foreach (Node neighbor in NodeGrid.GetPathNeighborNodes(currentNode, grid))
             {
                 if (!neighbor.IsWalkable(walkableNodeType, type) || closedSet.Contains(neighbor))
                     continue;
@@ -52,6 +50,11 @@ public static class Pathfinding
             }
         }
         return path;
+    }
+
+    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, NodeType walkableNodeType = NodeType.Walkable, Type type = null)
+    {
+        return FindPath(startingPos, targetPos, NodeGrid.Instance.grid, walkableNodeType, type);
     }
 
     private static List<Node> RetracePath(Node startNode, Node endNode)

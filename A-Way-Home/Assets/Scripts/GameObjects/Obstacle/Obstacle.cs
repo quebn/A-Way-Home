@@ -112,7 +112,7 @@ public class Obstacle : MonoBehaviour, ISaveable
         }
     }
 
-    [ContextMenu("Generate Essence ID")]
+    [ContextMenu("Generate Obstacle ID")]
     private void GenerateID() 
     {
         this.id = System.Guid.NewGuid().ToString();

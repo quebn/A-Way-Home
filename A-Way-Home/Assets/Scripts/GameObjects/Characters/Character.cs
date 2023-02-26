@@ -58,8 +58,8 @@ public class Character : MonoBehaviour, ISaveable
     {
         IncrementEssence(levelData.characterRequiredEssence);
         SetMaxEnergy(levelData.characterEnergy);
-        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {energy} energy and {levelData.characterRequiredEssence} ");
-        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {this.energy} energy and {this.requiredEssence} ");
+        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {levelData.characterEnergy} energy and {levelData.characterRequiredEssence} required Essence");
+        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {this.energy} energy and {this.requiredEssence} required Essence");
         StartCoroutine(GetPathOnInit());
         // if (GameEvent.isSceneSandbox)
         //     this.speed = 5f;    

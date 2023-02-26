@@ -14,8 +14,10 @@ public class SavedSlotUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI characterName;  
     [SerializeField] private TextMeshProUGUI fileName;  
     [SerializeField] private TextMeshProUGUI energy;  
+    [SerializeField] private TextMeshProUGUI essence;  
     [SerializeField] private TextMeshProUGUI moves;  
     [SerializeField] private TextMeshProUGUI lives;  
+    [SerializeField] private TextMeshProUGUI stage;  
     [SerializeField] private TextMeshProUGUI level;  
     [SerializeField] private TextMeshProUGUI date;  
     [SerializeField] private TextMeshProUGUI time;  
@@ -99,8 +101,10 @@ public class SavedSlotUI : MonoBehaviour
         this.characterName.text = data.levelData.characterName;
         // this.characterImage.sprite = GameData.characterSprites[data.levelData.characterName];
         this.energy.text = data.levelData.characterEnergy.ToString();
+        this.essence.text = data.levelData.characterRequiredEssence.ToString();
         this.moves.text = data.levelData.moves.ToString();
         this.lives.text = data.levelData.lives.ToString();
+        this.stage.text = data.levelData.stage.ToString();
         this.level.text = data.levelData.level.ToString();
         this.date.text = data.date;
         this.time.text = data.time;

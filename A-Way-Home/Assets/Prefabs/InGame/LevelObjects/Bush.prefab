@@ -8,7 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4343589406785813309}
+  - component: {fileID: 1192952559257448191}
+  - component: {fileID: 6699650434305900731}
   - component: {fileID: 357769214428011812}
   - component: {fileID: 2538069640895182141}
   m_Layer: 3
@@ -18,26 +19,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &4343589406785813309
-RectTransform:
+--- !u!4 &1192952559257448191
+Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1529273009267642185}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.019108517}
+  m_LocalPosition: {x: -3, y: -6.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -6.04, y: -2.57}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6699650434305900731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529273009267642185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64dfa6a19ff94d84aa4973b299c45e5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileSize: {x: 2, y: 1}
+  spriteRenderer: {fileID: 2538069640895182141}
+  id: 
 --- !u!61 &357769214428011812
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -54,8 +65,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.875, y: 2.1875}
+    pivot: {x: 0.5, y: 0.28}
+    oldSize: {x: 1.9375, y: 1.8125}
     newSize: {x: 2.9375, y: 2.6875}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -105,7 +116,7 @@ SpriteRenderer:
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Sprite: {fileID: 1375931829, guid: bf3abe8d20ca3114f9d956ea07d9c7f3, type: 3}
+  m_Sprite: {fileID: -37139290, guid: bf3abe8d20ca3114f9d956ea07d9c7f3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

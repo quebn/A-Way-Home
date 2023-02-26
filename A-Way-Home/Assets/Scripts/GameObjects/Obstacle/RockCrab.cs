@@ -144,7 +144,7 @@ public class RockCrab : Rock , ITrap
     private void SetGrid()
     {
         Debug.Assert(nodes.Count > 0, "ERROR: Node is empty");
-        travelRangeGrid = NodeGrid.GetNeighorNodes(nodes[0], NodeGrid.Instance.grid, tileRange);
+        travelRangeGrid = NodeGrid.GetNeighborNodes(nodes[0], NodeGrid.Instance.grid, tileRange);
         Debug.Assert(travelRangeGrid.Count > 0, "ERROR: Grid Travel Range is empty");
     }
 
@@ -176,7 +176,7 @@ public class RockCrab : Rock , ITrap
         if(targetPositions.Count < 1)
             return false;
         Debug.Assert(targetPositions.Count > 0, "ERROR: No Target!");
-        path = Pathfinding.FindPath(this.worldPos, targetPositions, type: type);
+        path = Pathfinding.FindPath(this.worldPos, targetPositions, travelRangeGrid, type: type);
         return path.Count > 0;
     }
 
@@ -222,7 +222,7 @@ public class RockCrab : Rock , ITrap
     {
         targetPositions = new List<Vector3>();
         targetPositions = Node.GetRandomWorldPos(travelRangeGrid, 4);
-        path = Pathfinding.FindPath(this.worldPos, targetPositions);
+        path = Pathfinding.FindPath(this.worldPos, targetPositions, travelRangeGrid);
         if(!hasPath)
             SetRandomPath();
     }

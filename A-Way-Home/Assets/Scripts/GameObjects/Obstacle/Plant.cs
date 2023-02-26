@@ -5,7 +5,7 @@ using UnityEngine;
 public class Plant : Obstacle , IInteractable, ITrap
 {
     
-    [SerializeField] private Animator animator;
+    [SerializeField] protected Animator animator;
     
     protected override int hitpoints {
         get => animator.GetInteger("hitpoints");
@@ -21,7 +21,7 @@ public class Plant : Obstacle , IInteractable, ITrap
         switch(hitpoints)
         {
             case 4:
-                Grow();
+                OnGrow();
                 break;
             case 3:
                 Debug.LogError("ERROR: SHOULD BE UNREACHABLE!");
@@ -36,57 +36,40 @@ public class Plant : Obstacle , IInteractable, ITrap
                 DestroyPlant();
                 break;
         }
-
         Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), $"ERROR: {id} Not in obstacle dictionary:");
-    //     spriteRenderer = GetComponent<SpriteRenderer>();
-    //     animator = GetComponent<Animator>();
-    //     InitializeNodes(worldPos);
-    //     if(adult)
-    //         GrowUp();
     }
 
-    public void OnDehighlight()
+    public virtual void OnDehighlight()
     {
-        if((currentTool == Tool.Grow && !isAdult ) || currentTool == Tool.Lightning)
+        if(currentTool == Tool.Grow || currentTool == Tool.Lightning)
             spriteRenderer.color = Color.white;
 
     }
 
-    public void OnHighlight()
+    public virtual void OnHighlight()
     {
         if((currentTool == Tool.Grow && !isAdult )|| currentTool == Tool.Lightning)
             spriteRenderer.color = Color.green;
     }
 
-    public void OnInteract()
+    public virtual void OnInteract()
     {
         switch(currentTool)
         {
             case Tool.Grow:
                 if(!isAdult)
-                    Grow();
+                    OnGrow();
                 break;
             case Tool.Lightning:
                 DamagePlant(isAdult ? 2 : 1);
                 break;
         }
-        // if(!GameData.levelData.obstacles.ContainsKey(id))
-        // {
-        //     foreach(KeyValuePair<string, int> pair in GameData.levelData.obstacles)
-        //     {
-        //         Debug.LogWarning($"{pair.Key} -> {pair.Value}");
-        //     }
-
-        //     Debug.LogWarning($"THIS: {this.id} -> {this.hitpoints}");
-        // }
     }
 
-    public void OnTrapTrigger(Character character)
+    public virtual void OnTrapTrigger(Character character)
     {
         if(isAdult)
             return;
-        character.IncrementEnergy(5);
-        DamagePlant(1);
     }
 
     public override void SaveData(LevelData levelData)
@@ -97,23 +80,21 @@ public class Plant : Obstacle , IInteractable, ITrap
     public override void LoadData(LevelData levelData)
     {
         base.LoadData(levelData);
-        Debug.LogWarning($"loaded plant hp: {levelData.obstacles[id]}");
     }
 
-    private void HarvestPlant()
+    protected void HarvestPlant()
     {
         Harvested();
     }
 
-
-    private void Spawn()
+    protected void Spawn()
     {
         Debug.Assert(!isAdult, "ERROR: isAdult bool true, and hitpoints isnt full");
         animator.Play("Plant_Spawn");
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
-    private void Grow()
+    protected void OnGrow()
     {
         if(hitpoints != 4)
             hitpoints = 4;
@@ -121,18 +102,12 @@ public class Plant : Obstacle , IInteractable, ITrap
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
-    private void Harvested()
+    protected void Harvested()
     {
         // if(isAdult && hitpoints > 2)
             // currentStage = Stage.Harvested;
         Debug.Assert(hitpoints == 2, "ERROR: hitpoints not equal to 2!");
-        animator.Play("Plant_Harvested");
-    }
-
-
-    private void SpawnFruit()
-    {
-        Debug.Assert(false, "ERROR: Not implemented");
+        animator.Play("Plant_Middle");
     }
 
     private void DestroyPlant()
@@ -160,7 +135,6 @@ public class Plant : Obstacle , IInteractable, ITrap
                 break;
         }
     }
-
 
     public IEnumerator OnClear()
     {

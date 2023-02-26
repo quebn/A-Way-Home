@@ -82,7 +82,7 @@ public class PlayerActions : MonoBehaviour
                 InteractNodes();
                 break;
             case Tool.Grow:
-                InteractObject();
+                InteractNodes();
                 break;
             case Tool.Command:
                 InteractObject();
@@ -106,7 +106,7 @@ public class PlayerActions : MonoBehaviour
     private void ThunderInteractNodes()
     {
         Debug.Assert(currentTileNodes.Count == 1, "ERROR: Expected count to be 1.");
-        List<Node> surroundingNodes = NodeGrid.GetNeighorNodes(currentTileNodes[0], NodeGrid.Instance.grid, 1).Values.ToList();
+        List<Node> surroundingNodes = NodeGrid.GetNeighborNodes(currentTileNodes[0], NodeGrid.Instance.grid, 1).Values.ToList();
         Node.TriggerObstacleAfterShock(surroundingNodes);
     }
 
@@ -180,7 +180,7 @@ public class PlayerActions : MonoBehaviour
                 break;
             case Tool.Command:
             case Tool.Grow:
-                HighlightObject();
+                HighlightTile(1, 1, Node.colorGreen);
                 break;
             case Tool.Tremor:
                 HighlightTile(2, 2, Node.colorYellow);

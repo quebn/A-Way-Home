@@ -124,18 +124,6 @@ public class NodeGrid : MonoBehaviour
         return nodes;
     }
 
-    public static List<Node> GetWalkableNodes(Vector2 nodeTileCenter, int width, int height)
-    {
-        List<Node> nodes = new List<Node>(width * height);
-        List<Vector2> vector2s = GetNodeWorldPos(nodeTileCenter, width, height);
-        for(int i = 0; i < vector2s.Count; i++){
-            Node node  = NodeWorldPointPos(vector2s[i]);
-            if (!node.IsWalkable())
-                continue;
-            nodes.Add(node);
-        }
-        return nodes;
-    }
 
     public static bool CheckTileIsTerrain(Vector2 nodeTileCenter, int width, int height)
     {
@@ -175,7 +163,7 @@ public class NodeGrid : MonoBehaviour
         return Instance.grid[index];
     }
 
-    public static Dictionary<Vector2Int, Node> GetNeighorNodes(Node node, Dictionary<Vector2Int, Node> grid, int size)
+    public static Dictionary<Vector2Int, Node> GetNeighborNodes(Node node, Dictionary<Vector2Int, Node> grid, int size)
     {
         Dictionary<Vector2Int, Node> nodes = new Dictionary<Vector2Int, Node>(size * size);
         Vector2Int gridPosition;
@@ -190,6 +178,7 @@ public class NodeGrid : MonoBehaviour
         }
         return nodes;
     }
+
 
     public static List<Node> GetPathNeighborNodes(Node node, Dictionary<Vector2Int, Node> grid, Vector2Int gridsize)
     {
@@ -277,6 +266,5 @@ public class NodeGrid : MonoBehaviour
                 worldPositions.Add(pair.Value.worldPosition);
         return worldPositions;
     }
-
 
 }

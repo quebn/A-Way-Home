@@ -35,6 +35,13 @@ public class PlayerLevelData : MonoBehaviour
         this.currentDestinations = new List<Vector3>();
         // this.saveables = FindAllSaveableObjects();
         // Debug.Log($"Saveable objects count: {saveables.Count}"); 
+        if(!GameEvent.isSceneSandbox)
+            GameObject.Instantiate(
+                GameData.characters[GameData.levelData.characterName], 
+                this.characterLocation.transform.position, 
+                Quaternion.identity, 
+                this.transform
+            );
         SaveSystem.saveables = GetAllSaveables();
         switch(GameEvent.loadType)
         {
@@ -48,12 +55,7 @@ public class PlayerLevelData : MonoBehaviour
                 RestartGame();
                 break;
         }
-        GameObject.Instantiate(
-            GameData.selectedCharacter.prefab, 
-            this.characterLocation.transform.position, 
-            Quaternion.identity, 
-            this.transform
-        );
+
         Destroy(characterLocation);
         LoadSpawnedObstacles();
     }
@@ -69,7 +71,7 @@ public class PlayerLevelData : MonoBehaviour
         GameData.levelData = new LevelData {
             stage = this.currentStage,
             level = this.currentLevel,
-            characterName = GameData.selectedCharacter.name,
+            characterName = GameData.selectedCharacter,
             characterEnergy = this.characterEnergy,
             lives = playerLives,
             moves = playerMoves,
@@ -88,7 +90,7 @@ public class PlayerLevelData : MonoBehaviour
         GameData.levelData = new LevelData {
             stage = this.currentStage,
             level = this.currentLevel,
-            characterName = GameData.selectedCharacter.name,
+            characterName = GameData.selectedCharacter,
             characterEnergy = this.characterEnergy,
             lives = playerLives - GameEvent.restartCounter,
             moves = playerMoves,
@@ -106,6 +108,7 @@ public class PlayerLevelData : MonoBehaviour
     {
         Debug.Assert(GameData.levelData != null, "ERROR: No load level data found");
         Debug.Assert(this.currentLevel == GameData.levelData.level, "ERROR: Level does not match");
+        GameData.selectedCharacter = GameData.levelData.characterName;
         foreach(KeyValuePair<string, ObstacleData> pair in GameData.levelData.obstacles)
             Debug.LogWarning($"{pair.Key} -> {pair.Value}");
         foreach(ISaveable saveable in SaveSystem.saveables)

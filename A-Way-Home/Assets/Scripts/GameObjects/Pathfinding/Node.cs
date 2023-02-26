@@ -64,6 +64,13 @@ public class Node
         return currentNodeType == nodeType;
     }
 
+    public bool CheckIf(NodeType nodeType, bool containsObs)
+    {
+        return containsObs ? 
+            IsType(nodeType) && interactableObstacle != null: 
+            IsType(nodeType) && interactableObstacle == null;
+    }
+
     public bool IsObstacle(Type type)
     {
         return interactableObstacle != null && type.IsAssignableFrom(interactableObstacle.GetType());
@@ -72,11 +79,6 @@ public class Node
     public IInteractable GetObstacle()
     {
         return interactableObstacle;
-    }
-
-    public bool IsEmpty(NodeType walkableNodeType = NodeType.Walkable)
-    {
-        return interactableObstacle == null && IsWalkable(walkableNodeType);
     }
 
     private void UpdateColor()
@@ -269,12 +271,33 @@ public class Node
         return grid.Values.ToList()[UnityEngine.Random.Range(0, grid.Count)].worldPosition;
     }
 
+    public static Vector3 GetRandomWorldPos(Dictionary<Vector2Int, Node> grid, NodeType nodeTypeGet, bool containsObs)
+    {
+        List<Node> nodes = grid.Values.ToList();
+        Node node = nodes[UnityEngine.Random.Range(0, grid.Count)]; 
+        while(!node.CheckIf(nodeTypeGet, containsObs))
+            node = nodes[UnityEngine.Random.Range(0, grid.Count)];
+        return node.worldPosition;
+    }
+
     public static List<Vector3> GetRandomWorldPos(Dictionary<Vector2Int, Node> grid, int count)
     {
         Debug.Assert(count > 0, "ERROR: Count should be greater than 0!");
+        Debug.Assert(grid.Count > 0, "ERROR: GridCount should be greater than 0!");
         List<Vector3> positions = new List<Vector3>(count);
         for (int i = 0; i < count ; i++)
             positions.Add(GetRandomWorldPos(grid));
         return positions;
     }
+
+    public static List<Vector3> GetRandomWorldPos(Dictionary<Vector2Int, Node> grid, int count, NodeType nodeTypeGet, bool containsObs)
+    {
+        Debug.Assert(count > 0, "ERROR: Count should be greater than 0!");
+        Debug.Assert(grid.Count > 0, "ERROR: GridCount should be greater than 0!");
+        List<Vector3> positions = new List<Vector3>(count);
+        for (int i = 0; i < count ; i++)
+            positions.Add(GetRandomWorldPos(grid, nodeTypeGet, containsObs));
+        return positions;
+    }
+
 }

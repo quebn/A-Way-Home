@@ -9,15 +9,14 @@ public class Bat : Obstacle , IInteractable
     // - killed by directly hit by lightning.
     [SerializeField] private Animator animator;
 
-    private bool isMoving = false;
     private Dictionary<Vector2Int, Node> nodeGridRange;
-    private List<Node> path;
-    private List<Vector3> targetPositions;
-    private Node currentTargetNode;
-    private int targetIndex;
+    private Vector3 targetPosition;
+    // private List<Node> path;
+    // private Node currentTargetNode;
+    // private int targetIndex;
     private Node destionationNode;
 
-    private bool destinationReached => this.transform.position == destionationNode.worldPosition;
+    private bool destinationReached => targetPosition == (Vector3)worldPos;
 
     protected override int hitpoints { 
         get => animator.GetInteger("hitpoints"); 
@@ -26,6 +25,12 @@ public class Bat : Obstacle , IInteractable
     protected bool isFlying {
         get => animator.GetBool("isFlying"); 
         set => animator.SetBool("isFlying", value); 
+    }
+
+    private void Update()
+    {
+        if(isFlying)
+            Step();
     }
 
     public void OnDehighlight()
@@ -43,10 +48,7 @@ public class Bat : Obstacle , IInteractable
     public void OnInteract()
     {
         if(currentTool == Tool.Lightning)
-        {
-            ClearNodes();
-            this.gameObject.SetActive(false);
-        }
+            TriggerDeath();
 
     }
 
@@ -60,14 +62,16 @@ public class Bat : Obstacle , IInteractable
     {
         base.Initialize();
         SetNodeGridRange();
+        SetRandomPosition();
     }
 
     private void Move()
     {
-        Debug.Assert(path.Count > 0, "ERROE: Bat has no Path!");
-        isMoving = true;
+        // Debug.Assert(path.Count > 0, "ERROE: Bat has no Path!");
+        isFlying = true;
         ClearNodes();
-        throw new System.NotImplementedException();
+        // currentTargetNode = path[0];
+        // targetIndex = 0;
     }
 
     private void SetNodeGridRange()
@@ -75,36 +79,53 @@ public class Bat : Obstacle , IInteractable
         // if(nodes != null || nodes.Count > 0 )
         //     ClearNodes();
         SetNodes(this.worldPos, NodeType.Walkable, this);
-        nodeGridRange = NodeGrid.GetNeighorNodes(nodes[0], NodeGrid.Instance.grid, 5);
+        nodeGridRange = NodeGrid.GetNeighborNodes(nodes[0], NodeGrid.Instance.grid, 5);
     }
 
     private void Step()
     {
-        if(this.transform.position == currentTargetNode.worldPosition)
+        // if(this.transform.position == currentTargetNode.worldPosition)
+        // {
+            // targetIndex++;
+            // if(destinationReached)
+            // {
+                // OnStop();
+                // return;
+            // }
+            // currentTargetNode = path[targetIndex];
+        // }
+        if(destinationReached)
         {
-            targetIndex++;
-            if(destinationReached)
-            {
-                isMoving = false;
-                return;
-            }
-            currentTargetNode = path[targetIndex];
+            OnStop();
+            return;
         }
-        this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
+        this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, 5f * Time.deltaTime);
     }
-
-    private void SetPath()
-    {
-        // destionationNode = 
-        // Debug.Assert(destionationNode != null, "ERROR: Destination is null");
-        // path = 
-    }
-
 
     private void OnStop()
     {
+        isFlying = false;
         SetNodes(this.worldPos, NodeType.Walkable, this);
+        SetNodeGridRange();
+        SetRandomPosition();
     }
+
+    private void SetRandomPosition()
+    {
+        targetPosition = new Vector3();
+        targetPosition = Node.GetRandomWorldPos(nodeGridRange, NodeType.Walkable, false);
+        // path = Pathfinding.FindPath(this.worldPos, targetPositions, nodeGridRange);
+        // if(path.Count == 0)
+            // SetRandomPath();
+    }
+
+    private void TriggerDeath()
+    {
+        hitpoints = 0;
+        ClearNodes();
+        this.gameObject.SetActive(false);
+    }
+
     // private void HighlightNodes()
     // {
     //     Node.HideNodes(nodes);

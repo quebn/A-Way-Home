@@ -1,17 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 
 public class MainMenuUI : MonoBehaviour
 {
     public static MainMenuUI Instance {get; private set;}
     [SerializeField] private List<CharacterInfo> characters;
-    // [SerializeField] private Sprite char1Sprite;
-    // [SerializeField] private string char1Name;
-    // [SerializeField] private Sprite char2Sprite;
-    // [SerializeField] private string char2Name;
-    // [SerializeField] private Sprite char3Sprite;
-    // [SerializeField] private string char3Name;
 
     [SerializeField] private GameObject characterSelectionWindow;
     [SerializeField] private GameObject loadSelectionWindow;
@@ -26,6 +19,9 @@ public class MainMenuUI : MonoBehaviour
 
     private void Awake()
     {
+        GameData.characters = new Dictionary<string, GameObject>();
+        foreach(CharacterInfo info in characters)
+            GameData.characters.Add(info.name, info.prefab);
         if (GameData.Instance == null)
             GameData.InitGameDataInstance();
     }
@@ -37,10 +33,10 @@ public class MainMenuUI : MonoBehaviour
             Instance = this;
         Debug.Assert(Instance != null, "Error: MainMenuUI instance is null");
         Debug.Assert(GameData.Instance != null, "Error: GameData instance is null");
+        GameData.selectedCharacter = "NA";
         // Debug.Log(GameData.saveFileDataList.Count);
     }
 
-    #region MainMenu button functions
     public void PlayGame()
     {
         SetWindowActive(characterSelectionWindow);
@@ -82,25 +78,25 @@ public class MainMenuUI : MonoBehaviour
         SetWindowActive(closeGameWindow);
         Debug.Log("Pressed CloseGame Button");
     }
-    #endregion
-    #region Character selection window functions
+
     public void SelectCharButton(int characterIndex)
     {
         Debug.Assert(characterIndex <= 3, "Error: Character number exceeded at 3!");
         // PlayerLevelData.characterName = GameData.characterSprites.ElementAt(characterIndex - 1).Key;
-        GameData.selectedCharacter = characters[characterIndex];
-        Debug.Log($"Character Selected: {GameData.selectedCharacter.name}");
+        GameData.selectedCharacter = characters[characterIndex].name;
+        Debug.Log($"Character Selected: {GameData.selectedCharacter}");
     }
 
     public void CloseCharWindow()
     {
-        GameData.selectedCharacter = new CharacterInfo();
+        GameData.selectedCharacter = "NA";
         SetWindowInactive(characterSelectionWindow);
     }
 
     public void StartGame()
     {
-        if (!characters.Contains(GameData.selectedCharacter))
+        Debug.Assert(GameData.characters != null, "ERROR: Char list is null ");
+        if (!GameData.characters.ContainsKey(GameData.selectedCharacter))
         {
             Debug.Log("No Character Selected");
             return;
@@ -108,8 +104,7 @@ public class MainMenuUI : MonoBehaviour
         // GameEvent.instance.NewGame(GameData.Instance.currentCharacterLevel[characterIndex - 1]);
         GameEvent.NewGame("Stage1Level1");
     }
-    #endregion
-    #region Load selection window button functions
+
     public void ConfirmDeleteSlot()
     {
         SaveSystem.DeleteFileData(SavedSlotUI.FileNameToBeDeleted);
@@ -128,20 +123,27 @@ public class MainMenuUI : MonoBehaviour
     {
         SetWindowInactive(loadSelectionWindow);
     }
-    #endregion
-    #region Level selection window button functions
+
     public void CloseLevelWindow()
     {
         SetWindowInactive(levelSelectionwindow);
     }
-    #endregion
-    #region Settings window button functions
+
+    public void StartSelectedLevel()
+    {
+        if (!GameData.characters.ContainsKey(GameData.selectedCharacter))
+        {
+            Debug.Log("No Character Selected");
+            return;
+        }
+        GameEvent.NewGame(LevelSelectButtonUI.selectedStageLevel);
+    }
+
     public void CloseSettingsWindow()
     {
         SetWindowInactive(settingsWindow);
     }
-    #endregion 
-    #region Close game window button functions
+
     public void CloseGameYes()
     {
         SaveSystem.SaveGameData();
@@ -153,19 +155,16 @@ public class MainMenuUI : MonoBehaviour
     {
         SetWindowInactive(closeGameWindow);
     }
-    #endregion
-    #region Leaderboards window button functions
+
     public void CloseLeaderboardsWindow()
     {
         SetWindowInactive(leaderboardsWindow);
     }
-    #endregion
-    #region HowtoPlay window button functions
+
     public void CloseHowtoPlayWindow()
     {
         SetWindowInactive(howtoPlayWindow);
     }
-    #endregion
 
     // General window functions
     private void SetWindowInactive(GameObject window)
@@ -182,29 +181,5 @@ public class MainMenuUI : MonoBehaviour
         isActive = false;
         window.SetActive(true);
     }
-    
-    // public static uint GetStageIndex()
-    // {
-    //     string name = GameData.levelData.characterName;
-    //     if (name == Instance.char1Name)
-    //         return 1;
-    //     else if (name == Instance.char2Name)
-    //         return 2;
-    //     else if (name == Instance.char3Name)
-    //         return 3;
-    //     return 0;
-    // }
-    
-    // public static uint GetStageIndex(string characterName)
-    // {
-    //     if (characterName == Instance.char1Name)
-    //         return 1;
-    //     else if (characterName == Instance.char2Name)
-    //         return 2;
-    //     else if (characterName == Instance.char3Name)
-    //         return 3;
-    //     return 0;
-
-    // }
 }
 
