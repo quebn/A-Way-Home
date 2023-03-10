@@ -82,6 +82,13 @@ public class TreeLog : Obstacle, IInteractable//, IInteractable, INodeInteractab
         //     GameData.levelData.obstacles[id] = hitpoints;
     }
 
+    public void Clear()
+    {
+        ClearNodes();
+        hitpoints = 0;
+        this.gameObject.SetActive(false);
+    }
+
     public override void LoadData(LevelData levelData)
     {
         base.LoadData(levelData);

@@ -46,6 +46,7 @@ public class Plant : Obstacle , IInteractable, ITrap
 
     }
 
+
     public virtual void OnHighlight()
     {
         if((currentTool == Tool.Grow && !isAdult )|| currentTool == Tool.Lightning)
@@ -68,8 +69,7 @@ public class Plant : Obstacle , IInteractable, ITrap
 
     public virtual void OnTrapTrigger(Character character)
     {
-        if(isAdult)
-            return;
+        Debug.Assert(!isAdult, "ERROR: consumed plant is adult");
     }
 
     public override void SaveData(LevelData levelData)
@@ -82,7 +82,7 @@ public class Plant : Obstacle , IInteractable, ITrap
         base.LoadData(levelData);
     }
 
-    protected void HarvestPlant()
+    protected virtual void HarvestPlant()
     {
         Harvested();
     }
@@ -94,7 +94,7 @@ public class Plant : Obstacle , IInteractable, ITrap
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
-    protected void OnGrow()
+    protected virtual void OnGrow()
     {
         if(hitpoints != 4)
             hitpoints = 4;

@@ -3,7 +3,7 @@ using System.Linq;
 using System;
 using UnityEngine;
 
-public enum NodeType{ Walkable, Water, Terrain, Obstacle}
+public enum NodeType{ Walkable, Water, Terrain, Obstacle, Poisoned}
 public class Node
 {
     public Vector3 worldPosition;
@@ -13,10 +13,13 @@ public class Node
     public List<int> hCosts ;
 
     private NodeType currentNodeType;
-    private IInteractable interactableObstacle;//Maybe should be an Obstacle instead of of IInteractable.
+    private Obstacle obstacle; 
+    // private IInteractable obstacle;//Maybe should be an Obstacle instead of of IInteractable.
 
+    private bool isInteractable => obstacle is IInteractable;
     private Color nodeColor {set => NodeGrid.tilemap.SetColor((Vector3Int)this.gridPos ,value); }
-    private bool isWalkable => currentNodeType == NodeType.Walkable ;
+    private bool isWalkable => currentNodeType == NodeType.Walkable;
+    public bool hasObstacle => obstacle != null;
     public int hCost => MinHCost(); 
     public int fCost => gCost + hCost;
     public NodeType currentType {  
@@ -30,6 +33,7 @@ public class Node
     public static Color colorGreen  => new Color32(0, 255, 0, 150);
     public static Color colorBlue   => new Color32(0, 0, 255, 150);
     public static Color colorYellow   => new Color32(255, 255, 0, 150);
+    public static Color colorPurple => new Color32(166, 0, 255, 150);
     public static Color colorClear  => Color.clear; 
     
     public Node(NodeType nodeType, Vector3 worldpos, Vector2Int grid)
@@ -54,7 +58,7 @@ public class Node
 
     public bool IsWalkable(NodeType nodeType = NodeType.Walkable, Type obstacleType = null)
     {
-        if(obstacleType != null && interactableObstacle != null)
+        if(obstacleType != null && obstacle != null)
             return IsObstacle(obstacleType);
         return (currentNodeType == nodeType || currentNodeType == NodeType.Walkable );
     }
@@ -67,18 +71,18 @@ public class Node
     public bool CheckIf(NodeType nodeType, bool containsObs)
     {
         return containsObs ? 
-            IsType(nodeType) && interactableObstacle != null: 
-            IsType(nodeType) && interactableObstacle == null;
+            IsType(nodeType) && obstacle != null: 
+            IsType(nodeType) && obstacle == null;
     }
 
     public bool IsObstacle(Type type)
     {
-        return interactableObstacle != null && type.IsAssignableFrom(interactableObstacle.GetType());
+        return obstacle != null && type.IsAssignableFrom(obstacle.GetType());
     }
 
-    public IInteractable GetObstacle()
+    public Obstacle GetObstacle()
     {
-        return interactableObstacle;
+        return obstacle;
     }
 
     private void UpdateColor()
@@ -100,12 +104,22 @@ public class Node
         UpdateColor();
     }
 
+
+    private void HighlightWalkable()
+    {
+        if(obstacle != null)
+            obstacle.OnRevealNodeColor();
+        else
+            nodeColor = colorWhite;
+    }
+
+
     public void RevealNode()
     {
         switch(currentNodeType)
         {
             case NodeType.Walkable:
-                nodeColor = colorWhite;
+                HighlightWalkable();
                 break;
             case NodeType.Terrain:
                 HideNode();
@@ -140,26 +154,28 @@ public class Node
             HideNode();
     }
 
-    public void SetInteractable(IInteractable obstacle, NodeType nodeType)
+    public void SetObstacle(Obstacle obstacle, NodeType nodeType)
     {
-        this.interactableObstacle = obstacle;
+        this.obstacle = obstacle;
         this.currentNodeType = nodeType;
         UpdateColor();
     }
 
     public bool InteractObstacle()
     {
-        if(interactableObstacle == null)
+        if(!isInteractable)
             return false;
-        interactableObstacle.OnInteract();
+        IInteractable interactable = (IInteractable)obstacle;
+        interactable.OnInteract();
         return true;
     }
 
     public bool InteractObstacleAfterShock()
     {
-        if(interactableObstacle == null)
+        if(!isInteractable)
             return false;
-        interactableObstacle.OnAfterShock();
+        IInteractable interactable = (IInteractable)obstacle;
+        interactable.OnAfterShock();
         return true;
     }
 
@@ -204,12 +220,12 @@ public class Node
     }
 
 
-    public static void SetNodesInteractable(List<Node> nodeList, NodeType nodeType, IInteractable interactable = null)
+    public static void SetNodesObstacle(List<Node> nodeList, NodeType nodeType, Obstacle obstacle = null)
     {
         if(nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
-            node.SetInteractable(interactable, nodeType);
+            node.SetObstacle(obstacle, nodeType);
     }
 
     public static void TriggerNodesObstacle(List<Node> nodeList)
@@ -261,8 +277,11 @@ public class Node
     {
         List<IInteractable> interactables = new List<IInteractable>();
         foreach(Node node in nodeList)
-            if(node.interactableObstacle != null && !interactables.Contains(node.interactableObstacle))
-                interactables.Add(node.interactableObstacle);
+        {
+            if(!node.isInteractable)
+                continue;
+            interactables.Add((IInteractable)node.obstacle);
+        }
         return interactables;
     }
 

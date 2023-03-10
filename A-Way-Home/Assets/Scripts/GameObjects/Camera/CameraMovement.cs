@@ -26,6 +26,11 @@ public class CameraMovement : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
+        mainCamera.transform.position = new Vector3(
+            PlayerLevelData.Instance.cameraCenterPos.x,
+            PlayerLevelData.Instance.cameraCenterPos.y,
+            -10
+        );
         zoom = mainCamera.orthographicSize;
         Vector2 center = Vector2.zero;
         mapMinX = center.x - cameraBoundary.x * 0.5f;

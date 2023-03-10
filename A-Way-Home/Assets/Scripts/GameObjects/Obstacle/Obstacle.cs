@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 [System.Serializable]
-public enum Tool { Inspect, Lightning, Command, Grow, Tremor}//, PlaceMode }
+public enum Tool { Inspect, Lightning, Grow, Command, Tremor}//, PlaceMode }
 
 public class Obstacle : MonoBehaviour, ISaveable
 {
@@ -46,14 +46,14 @@ public class Obstacle : MonoBehaviour, ISaveable
         Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), "ERROR: Not in obstacle dictionary");
     }
 
-    protected void SetNodes(Vector3 worldPos, NodeType nodeType, IInteractable interactable = null)
+    protected void SetNodes(Vector3 worldPos, NodeType nodeType, Obstacle obstacle = null)
     {
         // Initialize Node should:
         //      - Set what and how many nodes are assigned to the obstacle;
         //      - Set what are nodeType the node behaves as.
         //      - Set the what obstacle the nodes contains. 
         nodes = NodeGrid.GetNodes(worldPos, tileSize.x, tileSize.y);
-        Node.SetNodesInteractable(nodes, nodeType, interactable);
+        Node.SetNodesObstacle(nodes, nodeType, obstacle);
         // Debug.Log($"{this.gameObject.name} -> Nodes count{nodes.Count}");
     }
 
@@ -68,7 +68,7 @@ public class Obstacle : MonoBehaviour, ISaveable
     {
         if (nodes == null || nodes.Count == 0 || Node.GetNodesInteractable(nodes).Count == 0)
             return;
-        Node.SetNodesInteractable(nodes, NodeType.Walkable);
+        Node.SetNodesObstacle(nodes, NodeType.Walkable);
         nodes = new List<Node>();
     }
 
@@ -112,6 +112,18 @@ public class Obstacle : MonoBehaviour, ISaveable
         }
     }
 
+    public virtual void OnRevealNodeColor()
+    {
+        Node.RevealNodes(nodes, Node.colorWhite);
+    }
+
+    public void ForceClear()
+    {
+        hitpoints = 0;
+        ClearNodes();
+        this.gameObject.SetActive(false);
+    }
+
     [ContextMenu("Generate Obstacle ID")]
     private void GenerateID() 
     {
@@ -126,6 +138,7 @@ public interface ITrap
 
 public interface IInteractable
 {
+
     public void OnInteract();
     public void OnHighlight();
     public void OnDehighlight();

@@ -34,6 +34,13 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
         SetPlaceableLocations();
     }
 
+    public void DestroyCompletely()
+    {
+        ClearNodes();
+        this.hitpoints = 0;
+        this.gameObject.SetActive(false);
+    }
+
     public void OnDehighlight()
     {
         if(currentTool != Tool.Lightning)
@@ -123,11 +130,6 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
         }
         Debug.Log($"tree on {transform.position} placeables count-> {placeableNodes.Count}");
     }
-
-    // private IEnumerator SetPlaceableLocations()
-    // {
-
-    // }
 
     private Vector2 GetMouseDirection()
     {

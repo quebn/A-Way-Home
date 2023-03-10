@@ -16,10 +16,13 @@ public class PlayerLevelData : MonoBehaviour
     [SerializeField] private Vector2 cameraBoundary;
     [SerializeField] public int unlockedTools = 0;
     [SerializeField] private GameObject characterLocation;
+    [SerializeField] private Vector2 startCameraPos;
     // [HideInInspector] public LevelData levelData;// should be in GameData
     [HideInInspector] public List<Vector3> currentDestinations;// should be in GameData
     public Vector2 levelBoundary => this.cameraBoundary;
+    public Vector3 cameraCenterPos => startCameraPos;
     public GameObject logPrefab;
+    public GameObject miasmaPrefab;
 
 
     private void Awake()

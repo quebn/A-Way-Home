@@ -9,7 +9,7 @@ public class PlayerActions : MonoBehaviour
 {
     public static PlayerActions Instance { get; private set; }
 
-    [SerializeField] private Animator animatorLighting;
+    [SerializeField] private Animator animatorTool;
     [SerializeField] private Animator animatorExplosion;
     [SerializeField] private int toolCount;
     [SerializeField] private List<Texture2D> mouseTextures;
@@ -82,6 +82,7 @@ public class PlayerActions : MonoBehaviour
                 InteractNodes();
                 break;
             case Tool.Grow:
+                GrowAnimation(this.currentTileOrigin);
                 InteractNodes();
                 break;
             case Tool.Command:
@@ -128,10 +129,16 @@ public class PlayerActions : MonoBehaviour
 
     private float LightningAnimation(Vector2 location)
     {
-        animatorLighting.transform.position = location;
-        animatorLighting.Play("Lightning_Strike");
+        animatorTool.transform.position = location;
+        animatorTool.Play("Lightning_Strike");
         animatorExplosion.Play("SmallExplosion_Destroy");
-        return animatorLighting.GetNextAnimatorStateInfo(0).length;
+        return animatorTool.GetNextAnimatorStateInfo(0).length;
+    }
+
+    private void GrowAnimation(Vector2 location)
+    {
+        animatorTool.transform.position = location;
+        animatorTool.Play("Grow");
     }
 
     private void SetCurrentTool(InputAction.CallbackContext context)
