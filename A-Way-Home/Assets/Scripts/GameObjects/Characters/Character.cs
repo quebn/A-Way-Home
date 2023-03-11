@@ -15,7 +15,7 @@ public class Character : MonoBehaviour, ISaveable
     protected bool isGoingHome = false;
     protected List<Node> path;
     protected Node currentTargetNode;
-
+    protected bool isAilve = true;
 
     public Sprite image => spriteRenderer.sprite;
     public Essence currentEssence => Essence.list[currentPosition];
@@ -24,7 +24,7 @@ public class Character : MonoBehaviour, ISaveable
     public bool destinationReached => Essence.GetCurrentDestinations().Contains(currentPosition) || currentPosition == Home.instance.transform.position;
     public bool isMoving => isGoingHome;
     public bool hasPath => path.Count > 0;
-
+    public bool isDead => !isAilve;
     protected Vector3 currentTargetPos => currentTargetNode.worldPosition;
 
     protected int xPosDiff => (int)(currentTargetPos.x - currentPosition.x); 
@@ -169,6 +169,7 @@ public class Character : MonoBehaviour, ISaveable
     public bool TriggerDeath(float animDelay = 0)
     {
         this.isGoingHome = false;
+        this.isAilve = false;
         this.animator.SetBool("isWalk", isGoingHome);
         StartCoroutine(PlayDeathAnim(animDelay));
         return true;

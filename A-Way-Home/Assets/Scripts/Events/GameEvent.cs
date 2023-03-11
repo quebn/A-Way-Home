@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public enum LevelLoadType{ NewGame, LoadGame, RestartGame}// <- should not exist
 
@@ -13,6 +14,7 @@ public static class GameEvent
     private static string  prefabLevelName;
 
     public static bool isSceneSandbox {get { return SceneManager.GetActiveScene().name == "Sandbox" ;}}
+    
 
     public static void InitializeLevel()
     {
@@ -27,6 +29,7 @@ public static class GameEvent
         if(isPaused)
             UnpauseGame();
         GameObject levelPrefab = Resources.Load<GameObject>($"Levels/{prefabLevelName}");
+        PlayerActions.onPlayerActions = new List<IOnPlayerAction>();
         GameObject.Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
 
     }

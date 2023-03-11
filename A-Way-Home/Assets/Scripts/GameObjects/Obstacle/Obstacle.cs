@@ -124,6 +124,13 @@ public class Obstacle : MonoBehaviour, ISaveable
         this.gameObject.SetActive(false);
     }
 
+    protected static void AddToOnPlayerActionList(IOnPlayerAction obstacle)
+    {
+        if(PlayerActions.onPlayerActions == null)
+            PlayerActions.onPlayerActions = new List<IOnPlayerAction>();
+        PlayerActions.onPlayerActions.Add(obstacle);
+    }
+
     [ContextMenu("Generate Obstacle ID")]
     private void GenerateID() 
     {
@@ -143,4 +150,10 @@ public interface IInteractable
     public void OnHighlight();
     public void OnDehighlight();
     public void OnAfterShock(){}
+}
+
+public interface IOnPlayerAction
+{
+
+    public void OnPerformAction();
 }

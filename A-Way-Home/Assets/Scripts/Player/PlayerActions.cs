@@ -29,7 +29,7 @@ public class PlayerActions : MonoBehaviour
     private List<IInteractable> currentInteractables;
 
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
-    // private bool uninteractable => this.currentTool == Tool.PlaceMode;
+    public static List<IOnPlayerAction> onPlayerActions;
 
     private void Start()
     {
@@ -69,7 +69,8 @@ public class PlayerActions : MonoBehaviour
             return;
         switch(currentTool)
         {
-            // case Tool.Inspect:
+            case Tool.Inspect:
+                return;
                 // Inspect();
                 // break;
             case Tool.Lightning:
@@ -89,7 +90,17 @@ public class PlayerActions : MonoBehaviour
                 InteractObject();
                 break;
         }
+        UpdateOnActionObstacles();
         Character.instance.GetPath();
+    }
+
+    private void UpdateOnActionObstacles()
+    {
+        // List<IOnPlayerAction> onPlayerActions = new List<IOnPlayerAction>(FindObjectsOfType<MonoBehaviour>(true).OfType<IOnPlayerAction>());
+        if(onPlayerActions.Count == 0)
+            return;
+        foreach(IOnPlayerAction obstacle in onPlayerActions)
+            obstacle.OnPerformAction();
     }
 
     private bool ActionsNotAllowed()

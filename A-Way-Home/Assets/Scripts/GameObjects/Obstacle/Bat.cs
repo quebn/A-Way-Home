@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bat : Obstacle , IInteractable
+public class Bat : Obstacle , IInteractable,  ITrap
 {
     // Bat should 
     // - fly to random node when hit near a lightning
     // - killed by directly hit by lightning.
     [SerializeField] private Animator animator;
+    [SerializeField] private int damage;
 
     private Dictionary<Vector2Int, Node> nodeGridRange;
     private Vector3 targetPosition;
     // private List<Node> path;
     // private Node currentTargetNode;
     // private int targetIndex;
-    private Node destionationNode;
 
     private bool destinationReached => targetPosition == (Vector3)worldPos;
 
@@ -124,6 +124,11 @@ public class Bat : Obstacle , IInteractable
         hitpoints = 0;
         ClearNodes();
         this.gameObject.SetActive(false);
+    }
+
+    public void OnTrapTrigger(Character character)
+    {
+        character.IncrementEnergy(damage);
     }
 
     // private void HighlightNodes()
