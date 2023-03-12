@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,10 +6,12 @@ using UnityEngine;
 public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private int damage; 
     [SerializeField] private int travelSpeed; 
     [SerializeField] private bool canPhase; 
+    [SerializeField] private bool canRevive; 
+    [SerializeField] private int deathTimer;
     
+    private int maxHitpoints;
     private List<Node> path;
     private Node currentTargetNode;
     private int currentTargetIndex;
@@ -16,6 +19,7 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
     private int  yPositionDiff => (int)(currentTargetNode.worldPosition.y - this.worldPos.y);
     private bool canMove => currentTargetIndex < travelSpeed;
     private bool isMoving {get => animator.GetBool("isMoving"); set => animator.SetBool("isMoving", value); }
+    private bool isImmobile => hitpoints <= 0;
     protected override int hitpoints {get => animator.GetInteger("hitpoints"); set => animator.SetInteger("hitpoints", value); }
 
     private void Update()
@@ -32,8 +36,10 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
     protected override void Initialize()
     {
         base.Initialize();
+        maxHitpoints = hitpoints;
         AddToOnPlayerActionList(this);
-        SetNodes(this.worldPos, NodeType.Obstacle, this);
+        SetNodes(this.worldPos, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
+        // currentNodePos = this.nodes[0].worldPosition;
         TrySetPath();
     }
 
@@ -47,13 +53,20 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
         List<Vector3> targetPositions = new List<Vector3>();
         targetPositions.Add(Character.instance.currentPosition);
         path = !canPhase ? Pathfinding.FindPath(this.worldPos, targetPositions) : Pathfinding.FindPathPhased(this.worldPos, targetPositions, NodeGrid.Instance.grid);
-        // Debug.LogWarning($"Skeleton Path is {path.Count}");
         return path.Count > 0;
     }
 
     private void Move()
     {
-        if(TrySetPath())
+        if(isImmobile && canRevive)
+        {
+            if(deathTimer <= 0)
+                Mobilized();
+            else
+                deathTimer--;
+            return;
+        }
+        if(TrySetPath() && !isImmobile)
         {
             ClearNodes();
             isMoving = true;
@@ -64,15 +77,16 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
 
     private void Step()
     {
-        // if(currentTargetIndex > travelSpeed)
-        //     return;
         if(this.transform.position == currentTargetNode.worldPosition)
         {
             currentTargetIndex ++;
             if(Character.instance.isDead || !canMove)
             {
-                SetNodes(this.worldPos, NodeType.Obstacle, this);
+
                 isMoving = false;
+                if(canPhase && currentTargetNode.IsType(NodeType.Obstacle) && currentTargetNode.hasObstacle)
+                    return;
+                OnStop();
                 return;
             }
             Debug.Assert(path.Count > currentTargetIndex, $"ERROR: Tried to access index {currentTargetIndex} with path of size {path.Count}");
@@ -80,6 +94,48 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
         }
         UpdateAnimation();
         this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
+        if(canPhase)
+            Debug.LogWarning($"Ghost index is {this.currentTargetIndex}");
+    }
+
+    private void OnStop()
+    {
+        if(currentTargetNode.hasObstacle)
+        {
+            Type type = currentTargetNode.GetObstacleType();
+            Obstacle obstacle = currentTargetNode.GetObstacle();
+            if(type == typeof(Bat))
+            {
+                Bat bat = obstacle as Bat;
+                bat.Move();
+            }
+            else if(type == typeof(PlantPoison) || type == typeof(PlantEnergy) )
+            {
+                if(canPhase) return;
+                Plant plant = obstacle as Plant;
+                plant.DamagePlant();
+            }
+            else if(type == typeof(RockCrab) )
+            {
+                RockCrab crab = obstacle as RockCrab;
+                if(!crab.hasShell)
+                    TriggerDeath();
+            }
+            else if(type == typeof(GroundSpike))
+            {
+                GroundSpike groundSpike = obstacle as GroundSpike;
+                groundSpike.Kill(this); 
+            }
+            else if(type == typeof(PoisonMiasma))
+            {
+                if(canPhase)
+                    return;
+                PoisonMiasma miasma = obstacle as PoisonMiasma;
+                miasma.Kill(this);
+            }
+        }
+        Debug.Assert(!currentTargetNode.hasObstacle || !canPhase, "ERROR: Node still has an obstacle");
+        SetNodes(this.worldPos, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
     }
 
     private void UpdateAnimation()
@@ -97,18 +153,23 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
 
     public void OnInteract()
     {
+        if(canPhase || isImmobile)
+            return;
         if(currentTool == Tool.Lightning)
             Damage(1);
     }
 
     public void OnHighlight()
     {
+        if(canPhase)
+            return;
         if(currentTool == Tool.Lightning)
             spriteRenderer.color = Color.green;
     }
 
     public void OnDehighlight()
     {
+        if(canPhase)
         if(currentTool == Tool.Lightning)
             spriteRenderer.color = Color.white;
     }
@@ -123,11 +184,40 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
             TriggerDeath();
     }
 
-    public void TriggerDeath()
+    public void TriggerDeath(bool forceClear = false, bool killPhasers = false)
     {
         // Debug.Assert(false, "ERROR: UNIMPLEMENTED");
-        this.gameObject.SetActive(false);
+        if(!killPhasers && canPhase)
+            return;
+        if(canRevive)
+            Immobilized(forceClear);
+        else
+            StartCoroutine(PlayDeathAnimation());
+    }
+
+    private void Mobilized()
+    {
+        hitpoints = maxHitpoints;
+        // animator.Play("Revive");
+        SetNodes(this.worldPos, NodeType.Obstacle, this);
+    }
+
+    private void Immobilized(bool forceClear)
+    {
+        hitpoints = 0;
+        animator.Play("Death");
+        if(forceClear)
+            ForceClear();
+        else
+            SetNodes(this.worldPos, NodeType.Walkable, this);
+    }
+
+    private IEnumerator PlayDeathAnimation()
+    {
         ClearNodes();
+        animator.Play("Death");
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        this.gameObject.SetActive(false);
     }
 
     public void OnPerformAction()

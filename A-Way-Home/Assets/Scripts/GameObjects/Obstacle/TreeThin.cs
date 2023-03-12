@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
+public class TreeThin : Obstacle, IInteractable, IHoverable//, IPlaceable
 {
     [SerializeField] private SpriteRenderer upperRenderer;
     [SerializeField] private GameObject upper;
@@ -26,6 +26,21 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
         if(isHovered && !isCutDown)
             HighlightPlaceLocations();
     }
+
+
+    // private void OnMouseEnter()
+    // {
+    //     Debug.Log( $"Is Hovering on collider of {name}");
+    //     upperRenderer.color = new Color32(255, 255, 255, 50);
+
+    // }
+
+    // private void OnMouseExit()
+    // {
+    //     // Debug.Log( $"Is Hovering on collider of {name}");
+    //     upperRenderer.color = Color.white;
+
+    // }
 
     protected override void Initialize()
     {
@@ -147,5 +162,16 @@ public class TreeThin : Obstacle, IInteractable//, IInteractable, IPlaceable
         else if (currentPlaceable.x < this.worldPos.x)
             animatorUpper.Play("TreeUpper_FallLeft");
         return animatorUpper.GetCurrentAnimatorStateInfo(0).length;
+    }
+
+    public void OnHover()
+    {
+        upperRenderer.color = new Color32(255, 255, 255, 50);
+
+    }
+
+    public void OnDehover()
+    {
+        upperRenderer.color = Color.white;
     }
 }

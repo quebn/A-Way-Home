@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6472071751987544864}
   - component: {fileID: 2577153117812211383}
-  - component: {fileID: 7922437100171256276}
   - component: {fileID: 5142473099469508756}
+  - component: {fileID: 3712581894967883911}
   m_Layer: 0
   m_Name: Tree(Shadowless)
   m_TagString: Obstacle
@@ -61,32 +61,6 @@ MonoBehaviour:
   logs:
   - {fileID: 5422225815226669122, guid: 4e3dd637919e4e347b4471a7abc9f6e6, type: 3}
   - {fileID: 2371021394028175847, guid: 14c42fd5dbfba8949bc3f1b377e2f218, type: 3}
---- !u!61 &7922437100171256276
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2577153117812211381}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.4}
-    oldSize: {x: 1, y: 1.25}
-    newSize: {x: 1, y: 1.25}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
 --- !u!212 &5142473099469508756
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -139,6 +113,46 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!60 &3712581894967883911
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2577153117812211381}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.4}
+    oldSize: {x: 1, y: 1.25}
+    newSize: {x: 1, y: 1.25}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 1.9393749, y: 2.85}
+      - {x: 1.5643749, y: 3.225}
+      - {x: 1.4393749, y: 3.6625}
+      - {x: 1.1268749, y: 3.85}
+      - {x: -0.31062508, y: 3.85}
+      - {x: -0.9981251, y: 3.6}
+      - {x: -1.2481251, y: 3.475}
+      - {x: -1.6856251, y: 2.725}
+      - {x: -1.6856251, y: 0.9749999}
+      - {x: -0.6856251, y: 0.9749999}
+      - {x: -0.5606251, y: 0.3499999}
+      - {x: 0.6268749, y: 0.3499999}
+      - {x: 1.0643749, y: 0.9124999}
+      - {x: 1.5643749, y: 0.9749999}
+      - {x: 1.9393749, y: 2.0375}
 --- !u!1 &2577153118406074728
 GameObject:
   m_ObjectHideFlags: 0

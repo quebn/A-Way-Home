@@ -65,7 +65,7 @@ public class Bat : Obstacle , IInteractable,  ITrap
         SetRandomPosition();
     }
 
-    private void Move()
+    public void Move()
     {
         // Debug.Assert(path.Count > 0, "ERROE: Bat has no Path!");
         isFlying = true;
@@ -129,6 +129,7 @@ public class Bat : Obstacle , IInteractable,  ITrap
     public void OnTrapTrigger(Character character)
     {
         character.IncrementEnergy(damage);
+        Move();
     }
 
     // private void HighlightNodes()

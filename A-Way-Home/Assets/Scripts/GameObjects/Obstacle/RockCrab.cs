@@ -16,7 +16,7 @@ public class RockCrab : Rock , ITrap
     private int targetIndex;
 
     private bool hasPath => path.Count > 0;
-    private bool hasShell => hitpoints == 2;
+    public bool hasShell => hitpoints == 2;
 
     protected override int hitpoints {
         get => animator.GetInteger("hitpoints");
@@ -87,6 +87,7 @@ public class RockCrab : Rock , ITrap
     private void Remove()
     {
         if (currentTool == Tool.Lightning)
+            return;
         if(hasShell)
             RemoveRock();
         else 

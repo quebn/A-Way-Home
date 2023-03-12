@@ -77,6 +77,11 @@ public class PlantPoison : Plant
                 plant.ForceClear();
                 Debug.LogWarning("Cleared Plant");
             }
+            else if(node.IsObstacle(typeof(Undead)))
+            {
+                Undead undead = (Undead)node.GetObstacle();
+                undead.TriggerDeath(true);
+            }
             return true;
         }
 

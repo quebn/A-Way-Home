@@ -27,6 +27,7 @@ public class PlayerActions : MonoBehaviour
     private Vector2 currentTileOrigin;
     private List<Node> currentTileNodes;
     private List<IInteractable> currentInteractables;
+    private IHoverable hoveredObstacle;
 
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
     public static List<IOnPlayerAction> onPlayerActions;
@@ -81,13 +82,16 @@ public class PlayerActions : MonoBehaviour
                 break;
             case Tool.Tremor:
                 InteractNodes();
+                GameData.IncrementPlayerMoves(-1);
                 break;
             case Tool.Grow:
                 GrowAnimation(this.currentTileOrigin);
                 InteractNodes();
+                GameData.IncrementPlayerMoves(-1);
                 break;
             case Tool.Command:
                 InteractObject();
+                GameData.IncrementPlayerMoves(-1);
                 break;
         }
         UpdateOnActionObstacles();
@@ -97,7 +101,7 @@ public class PlayerActions : MonoBehaviour
     private void UpdateOnActionObstacles()
     {
         // List<IOnPlayerAction> onPlayerActions = new List<IOnPlayerAction>(FindObjectsOfType<MonoBehaviour>(true).OfType<IOnPlayerAction>());
-        if(onPlayerActions.Count == 0)
+        if(onPlayerActions == null||onPlayerActions.Count == 0)
             return;
         foreach(IOnPlayerAction obstacle in onPlayerActions)
             obstacle.OnPerformAction();
@@ -191,12 +195,15 @@ public class PlayerActions : MonoBehaviour
     {
         if(ActionsNotAllowed())
             return;
+        OnHoverObstacle();
         switch(currentTool)
         {
             case Tool.Lightning:
                 HighlightTile(1, 1, Node.colorCyan);
                 break;
             case Tool.Command:
+                HighlightTile(1, 1, Node.colorPurple);
+                break;
             case Tool.Grow:
                 HighlightTile(1, 1, Node.colorGreen);
                 break;
@@ -204,6 +211,25 @@ public class PlayerActions : MonoBehaviour
                 HighlightTile(2, 2, Node.colorYellow);
                 break;
         }
+    }
+
+    private void OnHoverObstacle()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
+        RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
+        if(hit2D.collider == null) //|| hit2D.collider.gameObject.tag != Obstacle.TAG)
+        {
+            if(hoveredObstacle != null)
+            {
+                hoveredObstacle.OnDehover();
+                hoveredObstacle = null;
+            }
+            return;
+        }
+        hoveredObstacle = hit2D.collider.gameObject.GetComponent<Obstacle>() as IHoverable;
+        if(hoveredObstacle == null)
+            return;
+        hoveredObstacle.OnHover();
     }
 
     private void HighlightObject()

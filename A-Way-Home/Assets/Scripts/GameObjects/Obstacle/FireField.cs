@@ -1,30 +1,19 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonMiasma : Obstacle, ITrap
+public class FireField : Obstacle, ITrap
 {
-    [SerializeField] private int damage;
+
+    public void OnTrapTrigger(Character character)
+    {
+        // add burning effect on character;
+    }
 
     protected override void Initialize()
     {
         base.Initialize();
         SetNodes(this.worldPos, NodeType.Walkable, this);
-        // SetNodes(this.worldPos, NodeType.Walkable, this);
-    }
-
-
-    public override void OnRevealNodeColor()
-    {
-        Node.RevealNodes(nodes, Node.colorPurple);
-    }
-
-    public void OnTrapTrigger(Character character)
-    {
-        character.IncrementEnergy(damage);
-    }
-
-    public void Kill(Undead undead)
-    {
-        undead.ForceClear();
     }
 
     public void AddAsSpawned(string id)
@@ -41,7 +30,7 @@ public class PoisonMiasma : Obstacle, ITrap
         if(GameData.levelData.obstacles.ContainsKey(this.id))
             GameData.levelData.obstacles.Remove(id);
         ClearNodes();
-        Debug.Log("Poison Miasma Cleared");
+        Debug.Log("Fire Field Cleared");
         GameObject.Destroy(this.gameObject);
     }
 

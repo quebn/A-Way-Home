@@ -85,6 +85,11 @@ public class Node
         return obstacle;
     }
 
+    public Type GetObstacleType()
+    {
+        return obstacle.GetType();
+    }
+
     private void UpdateColor()
     {
         if(!NodeGrid.nodesVisibility){

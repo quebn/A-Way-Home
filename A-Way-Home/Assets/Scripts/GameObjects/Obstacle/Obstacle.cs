@@ -31,7 +31,6 @@ public class Obstacle : MonoBehaviour, ISaveable
         Initialize();
     }
 
-
     protected virtual void Initialize()
     {
         // id = $"{this.gameObject.name}{this.worldPos}";
@@ -131,6 +130,42 @@ public class Obstacle : MonoBehaviour, ISaveable
         PlayerActions.onPlayerActions.Add(obstacle);
     }
 
+    public static void DestroyOrganicObstacles(Node node)
+    {
+        if(node.IsObstacle(typeof(TreeThin)))
+        {
+            TreeThin tree = (TreeThin)node.GetObstacle();
+            tree.DestroyCompletely();
+        }
+        else if(node.IsObstacle(typeof(TreeLog)))
+        {
+            TreeLog log = (TreeLog)node.GetObstacle();
+            log.Clear();
+        }
+        else if(node.IsObstacle(typeof(GroundSpike)))
+        {
+            GroundSpike spike = (GroundSpike)node.GetObstacle();
+            spike.ForceClear();
+            Debug.LogWarning("Cleared Spike");
+        }
+        else if(node.IsObstacle(typeof(RockCrab)))
+        {
+            RockCrab crab = (RockCrab)node.GetObstacle();
+            crab.ForceClear();
+        }
+        else if(node.IsObstacle(typeof(PlantEnergy)))
+        {
+            PlantEnergy plant = (PlantEnergy)node.GetObstacle();
+            plant.ForceClear();
+            Debug.LogWarning("Cleared Plant");
+        }
+        else if(node.IsObstacle(typeof(Undead)))
+        {
+            Undead undead = (Undead)node.GetObstacle();
+            undead.TriggerDeath(true);
+        }
+    }
+
     [ContextMenu("Generate Obstacle ID")]
     private void GenerateID() 
     {
@@ -154,6 +189,11 @@ public interface IInteractable
 
 public interface IOnPlayerAction
 {
-
     public void OnPerformAction();
+}
+
+public interface IHoverable
+{
+    public void OnHover();
+    public void OnDehover();
 }
