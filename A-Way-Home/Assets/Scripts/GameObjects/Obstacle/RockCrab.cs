@@ -86,7 +86,7 @@ public class RockCrab : Rock , ITrap
 
     private void Remove()
     {
-        if (currentTool == Tool.Lightning)
+        if (currentTool != Tool.Lightning)
             return;
         if(hasShell)
             RemoveRock();

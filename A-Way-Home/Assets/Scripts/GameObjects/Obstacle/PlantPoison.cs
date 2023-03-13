@@ -88,6 +88,7 @@ public class PlantPoison : Plant
         return false;
     }
 
+
     protected override void HarvestPlant()
     {
         base.HarvestPlant();

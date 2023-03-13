@@ -75,8 +75,9 @@ public class PlayerActions : MonoBehaviour
                 // Inspect();
                 // break;
             case Tool.Lightning:
-                LightningAnimation(this.currentTileOrigin);
                 InteractNodes();
+                if(currentTileNodes.Count == 0) return;
+                LightningAnimation(this.currentTileOrigin);
                 ThunderInteractNodes();
                 GameData.IncrementPlayerMoves(-1);
                 break;

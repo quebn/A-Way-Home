@@ -116,7 +116,8 @@ public class Obstacle : MonoBehaviour, ISaveable
         Node.RevealNodes(nodes, Node.colorWhite);
     }
 
-    public void ForceClear()
+
+    public virtual void ForceClear() //Trigger death but for all
     {
         hitpoints = 0;
         ClearNodes();
