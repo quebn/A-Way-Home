@@ -23,9 +23,6 @@ public class Plant : Obstacle , IInteractable, ITrap
             case 4:
                 OnGrow();
                 break;
-            case 3:
-                Debug.LogError("ERROR: SHOULD BE UNREACHABLE!");
-                break;
             case 2:
                 HarvestPlant();
                 break;
@@ -33,7 +30,10 @@ public class Plant : Obstacle , IInteractable, ITrap
                 Spawn();
                 break;
             case 0:
-                DestroyPlant();
+                ForceClear();
+                break;
+            default:
+                Debug.LogError("ERROR: SHOULD BE UNREACHABLE!");
                 break;
         }
         Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), $"ERROR: {id} Not in obstacle dictionary:");
@@ -110,9 +110,14 @@ public class Plant : Obstacle , IInteractable, ITrap
         animator.Play("Plant_Middle");
     }
 
-    private void DestroyPlant()
+    public override void ForceClear()
     {
-        Debug.Assert(hitpoints == 0, "ERROR: Plant Cleared despite hp is above 0!");
+        // Debug.Assert(hitpoints == 0, "ERROR: Plant Cleared despite hp is above 0!");
+        if(hitpoints> 0)
+        {
+            hitpoints = 0;
+            Debug.LogWarning("Plant Cleared with hitpoints above 0");
+        }
         StartCoroutine(OnClear());
         ClearNodes();
     }
@@ -131,7 +136,7 @@ public class Plant : Obstacle , IInteractable, ITrap
                 HarvestPlant();
                 break;
             case 0:
-                DestroyPlant();
+                ForceClear();
                 break;
         }
     }

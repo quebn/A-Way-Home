@@ -38,13 +38,10 @@ public class PlayerLevelData : MonoBehaviour
         this.currentDestinations = new List<Vector3>();
         // this.saveables = FindAllSaveableObjects();
         // Debug.Log($"Saveable objects count: {saveables.Count}"); 
+        // Debug.Assert(GameData.levelData != null , "ERROR:LevelData is null");
         if(!GameEvent.isSceneSandbox)
-            GameObject.Instantiate(
-                GameData.characters[GameData.levelData.characterName], 
-                this.characterLocation.transform.position, 
-                Quaternion.identity, 
-                this.transform
-            );
+            Debug.Assert(GameData.characters != null || GameData.characters.Count != 0, "ERROR:Characters not found!");
+
         SaveSystem.saveables = GetAllSaveables();
         switch(GameEvent.loadType)
         {
@@ -58,7 +55,13 @@ public class PlayerLevelData : MonoBehaviour
                 RestartGame();
                 break;
         }
-
+        if(!GameEvent.isSceneSandbox)
+            GameObject.Instantiate(
+                GameData.characters[GameData.levelData.characterName], 
+                this.characterLocation.transform.position, 
+                Quaternion.identity, 
+                this.transform
+            );
         Destroy(characterLocation);
         LoadSpawnedObstacles();
     }

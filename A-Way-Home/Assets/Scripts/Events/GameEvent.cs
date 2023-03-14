@@ -30,8 +30,8 @@ public static class GameEvent
             UnpauseGame();
         GameObject levelPrefab = Resources.Load<GameObject>($"Levels/{prefabLevelName}");
         PlayerActions.onPlayerActions = new List<IOnPlayerAction>();
+        Debug.Assert(levelPrefab != null, $"ERROR: {prefabLevelName} is null/not found!");
         GameObject.Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
-
     }
 
     public static void LoadEndScene()
@@ -55,7 +55,7 @@ public static class GameEvent
 
     public static void NewGame(string levelName)
     {
-        Debug.Assert(GameData.Instance.unlockedLevels.Contains(levelName), $"ERROR: {levelName} does not exist!");
+        Debug.Assert(GameData.Instance.unlockedLevels.Contains(levelName) ||  MainMenuUI.isAllLevelUnlock, $"ERROR: {levelName} does not exist!");
         restartCounter = 0;
         loadType = LevelLoadType.NewGame;
         prefabLevelName = levelName;

@@ -6,14 +6,11 @@ public class Spider : Obstacle, IInteractable, IOnPlayerAction
 {
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject webPrefab;
-    [SerializeField] private int gridRange;
 
-    private List<Node> path;
-    private int currentTargetIndex;
     private Node currentTargetNode;
     private Node lastNode;
-    private Dictionary<Vector2Int, Node> walkableGrid;
-
+    private List<Node> walkableNodes;
+    private bool canWeb = true;
 
     private bool isMoving {
         get => animator.GetBool("isMoving"); 
@@ -37,42 +34,61 @@ public class Spider : Obstacle, IInteractable, IOnPlayerAction
         base.Initialize();
         AddToOnPlayerActionList(this);
         SetNodes(this.worldPos, NodeType.Obstacle, this);
-        SetPath();
-        Debug.Assert(path.Count > 0);
+        walkableNodes = NodeGrid.GetPathNeighborNodes(nodes[0], NodeGrid.Instance.grid);
+        Debug.Assert(walkableNodes.Count > 0);
     }
 
     public void OnDehighlight()
     {
-        throw new System.NotImplementedException();
+        if(currentTool == Tool.Lightning || currentTool == Tool.Command)
+            spriteRenderer.color = Color.white;
     }
 
     public void OnHighlight()
     {
-        throw new System.NotImplementedException();
+        if(currentTool == Tool.Lightning || currentTool == Tool.Command)
+            spriteRenderer.color = Color.red;
     }
 
     public void OnInteract()
     {
-        throw new System.NotImplementedException();
+        if(currentTool == Tool.Lightning)
+            ForceClear();
+        if( currentTool == Tool.Command)
+            canWeb = !canWeb;
     }
 
     public void OnPerformAction()
     {
-        Move();
+        if(canWeb)
+            Move();
     }
 
     private void Move()
     {
-        if(path.Count == 0)
-            SetPath();
-        if(path.Count > 0)
-        {
-            isMoving = true;
-            currentTargetIndex = 0;
-            currentTargetNode = path[0];
-            lastNode = nodes[0];
-            ClearNodes();
-            // SpawnWeb();
+        if(walkableNodes == null || walkableNodes.Count == 0 || hitpoints <= 0)
+            return;
+        SetCurrentTargetNode();
+        if(currentTargetNode == null)
+            return;
+        Debug.Log($"Targetnode pos => {currentTargetNode.worldPosition}");
+        lastNode = nodes[0];
+        // lastNode = NodeGrid.NodeWorldPointPos(nodes[0].worldPosition);
+        ClearNodes();
+        SpawnWeb();
+        isMoving = true;
+    }
+
+    private void SetCurrentTargetNode()
+    {
+        if(walkableNodes == null || walkableNodes.Count == 0)
+            return;
+        int randomIndex = UnityEngine.Random.Range(0, walkableNodes.Count);
+        currentTargetNode = walkableNodes[randomIndex];
+        if(!currentTargetNode.IsType(NodeType.Walkable) || currentTargetNode.hasObstacle){
+            walkableNodes.Remove(currentTargetNode);
+            currentTargetNode = null;
+            SetCurrentTargetNode();
         }
     }
 
@@ -80,27 +96,23 @@ public class Spider : Obstacle, IInteractable, IOnPlayerAction
     {
         if(this.transform.position == currentTargetNode.worldPosition)
         {
-            currentTargetIndex ++;
-            // Debug.Assert(path.Count > currentTargetIndex, $"ERROR: Tried to access index {currentTargetIndex} with path of size {path.Count}");
-            currentTargetNode = path[currentTargetIndex];
-            isMoving = false;
-            SetNodes(this.worldPos, NodeType.Obstacle, this);
+            Stop();
             return;
         }
         this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
     }
 
-    private void SetPath()
+    private void Stop()
     {
-        Debug.Assert(nodes.Count > 0, "ERROR: spider is not in node");
-        walkableGrid = NodeGrid.GetNeighborNodes(this.nodes[0], NodeGrid.Instance.grid, gridRange); 
-        List<Vector3> targets = Node.GetRandomWorldPos(walkableGrid, 3);
-        path = Pathfinding.FindPath(this.nodes[0].worldPosition, targets);
+        isMoving = false;
+        currentTargetNode = null;
+        SetNodes(this.worldPos, NodeType.Obstacle, this);
+        walkableNodes = NodeGrid.GetPathNeighborNodes(nodes[0], NodeGrid.Instance.grid);
     }
 
     private void SpawnWeb()
     {
-        Web web = GameObject.Instantiate(webPrefab, lastNode.worldPosition, Quaternion.identity, this.transform).GetComponent<Web>();
+        Web web = GameObject.Instantiate(webPrefab, lastNode.worldPosition, Quaternion.identity).GetComponent<Web>();
         web.AddAsSpawned($"{GameData.levelData.spawnCount += 1}");
     }
 }

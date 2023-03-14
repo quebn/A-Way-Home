@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlantEnergy : Plant
 {
 
-
     protected override void Initialize()
     {
         base.Initialize();

@@ -49,7 +49,10 @@ public class Character : MonoBehaviour, ISaveable
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
+        Debug.LogWarning($"Trap {collider.gameObject.name} collided");
         ITrap trap = collider.gameObject.GetComponent<ITrap>();
+        if(trap == null)
+            return;
         trap.OnTrapTrigger(this);
     }
 
@@ -112,6 +115,13 @@ public class Character : MonoBehaviour, ISaveable
         targetIndex = 0;
         isGoingHome = true;
         animator.SetBool("isWalk", true);
+    }
+
+    public void Relocate(Vector2 location)
+    {
+        this.transform.position = location;
+        GetPath();
+        Debug.Log($"Relocated Character to {location}");
     }
 
     private void Step()

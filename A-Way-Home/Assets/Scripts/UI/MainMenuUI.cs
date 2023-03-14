@@ -13,9 +13,10 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject closeGameWindow;
     [SerializeField] private GameObject leaderboardsWindow;
     [SerializeField] private GameObject howtoPlayWindow;
-
+    [SerializeField] private bool unlockedAllLevels;
     private bool isActive;
     public GameObject deleteConfirmWindow;
+    public static bool isAllLevelUnlock;
 
     private void Awake()
     {
@@ -24,6 +25,7 @@ public class MainMenuUI : MonoBehaviour
             GameData.characters.Add(info.name, info.prefab);
         if (GameData.Instance == null)
             GameData.InitGameDataInstance();
+        isAllLevelUnlock = this.unlockedAllLevels;
     }
 
     private void Start()

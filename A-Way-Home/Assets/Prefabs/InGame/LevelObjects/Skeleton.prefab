@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8951625771223775744}
   m_Layer: 0
   m_Name: Skeleton
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51,9 +51,10 @@ MonoBehaviour:
   spriteRenderer: {fileID: 8951625771223775758}
   id: 
   animator: {fileID: 8951625771223775759}
-  damage: 5
   travelSpeed: 1
   canPhase: 0
+  canRevive: 0
+  deathTimer: 0
 --- !u!212 &8951625771223775758
 SpriteRenderer:
   m_ObjectHideFlags: 0

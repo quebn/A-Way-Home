@@ -880,8 +880,10 @@ MonoBehaviour:
   cameraBoundary: {x: 42, y: 36}
   unlockedTools: 4
   characterLocation: {fileID: 1830720278718303189}
+  startCameraPos: {x: 0, y: 0}
   currentDestinations: []
   logPrefab: {fileID: 5422225815226669122, guid: 4e3dd637919e4e347b4471a7abc9f6e6, type: 3}
+  miasmaPrefab: {fileID: 8745363850703227746, guid: 371b5b5e167558b4eb34d05f91f5511b, type: 3}
   enableBoundaryGizmo: 1
 --- !u!114 &8677180441651858464
 MonoBehaviour:
@@ -2674,7 +2676,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 30
-      m_TileSpriteIndex: 25
+      m_TileSpriteIndex: 32
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -6983,8 +6985,8 @@ Tilemap:
     m_Data: {fileID: 2109136464, guid: f677a9e5c4d498f44b930e7aeeada0ae, type: 3}
   - m_RefCount: 5
     m_Data: {fileID: 627743234, guid: f677a9e5c4d498f44b930e7aeeada0ae, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: -923632792, guid: f677a9e5c4d498f44b930e7aeeada0ae, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 14
     m_Data: {fileID: -1100796525, guid: f677a9e5c4d498f44b930e7aeeada0ae, type: 3}
   - m_RefCount: 13
@@ -6997,8 +6999,8 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: -923632792, guid: f677a9e5c4d498f44b930e7aeeada0ae, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: -1582308547, guid: f677a9e5c4d498f44b930e7aeeada0ae, type: 3}
   - m_RefCount: 1

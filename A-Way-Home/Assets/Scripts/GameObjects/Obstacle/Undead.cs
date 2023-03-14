@@ -94,8 +94,6 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
         }
         UpdateAnimation();
         this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
-        if(canPhase)
-            Debug.LogWarning($"Ghost index is {this.currentTargetIndex}");
     }
 
     private void OnStop()
