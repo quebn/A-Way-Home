@@ -172,7 +172,32 @@ public class NodeGrid : MonoBehaviour
         return nodes;
     }
 
+    public static Dictionary<Vector2Int, Node> GetNeighborNodes(Node node, int size)
+    {
+        return GetNeighborNodes(node, Instance.grid, size);
+    }
 
+    public static List<Node> GetNeighborNodeList(Node node, Dictionary<Vector2Int, Node> grid, int size)
+    {
+        List<Node> nodes = new List<Node>(size * size);
+        Vector2Int gridPosition;
+        for (int x = -size; x <= size; x++){
+            for (int y = -size; y <= size; y++){
+                if(x == 0 && y == 0)
+                    continue;
+                gridPosition = new Vector2Int(node.gridPos.x + x, node.gridPos.y + y);
+                if (Instance.grid.ContainsKey(gridPosition))
+                    nodes.Add(Instance.grid[gridPosition]);
+            }
+        }
+        return nodes;
+    }
+
+    public static List<Node> GetNeighborNodeList(Node node, int size)
+    {
+        return GetNeighborNodeList(node, Instance.grid, size);
+    }
+    
     public static List<Node> GetPathNeighborNodes(Node node, Dictionary<Vector2Int, Node> grid, Vector2Int gridsize)
     {
         List<Node> neighbors = new List<Node>();

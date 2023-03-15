@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bat : Obstacle , IInteractable,  ITrap
+public class Bat : Obstacle, ITrap, ILightning
 {
     // Bat should 
     // - fly to random node when hit near a lightning
@@ -33,29 +33,15 @@ public class Bat : Obstacle , IInteractable,  ITrap
             Step();
     }
 
-    public void OnDehighlight()
+    public void OnLightningHit()
     {
-        if(currentTool == Tool.Lightning)
-            spriteRenderer.color = Color.white;
+        TriggerDeath();
     }
 
-    public void OnHighlight()
-    {
-        if(currentTool == Tool.Lightning)
-            spriteRenderer.color = Color.green;
-    }
 
-    public void OnInteract()
+    public void OnAftershock()
     {
-        if(currentTool == Tool.Lightning)
-            TriggerDeath();
-
-    }
-
-    public void OnAfterShock()
-    {
-        if(currentTool == Tool.Lightning)
-            Move();
+        Move();
     }
 
     protected override void Initialize()
@@ -131,6 +117,8 @@ public class Bat : Obstacle , IInteractable,  ITrap
         character.IncrementEnergy(damage);
         Move();
     }
+
+
 
     // private void HighlightNodes()
     // {

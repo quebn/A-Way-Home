@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Boulder : Obstacle, IInteractable
+public class Boulder : Obstacle, ILightning, ITremor
 {
 
     [SerializeField] private Animator animator;
@@ -24,27 +24,20 @@ public class Boulder : Obstacle, IInteractable
     //     hitpoints = 4;
     }
 
-    public void OnDehighlight()
+    public void OnLightningHit()
     {
-        if(currentTool != Tool.Tremor && currentTool != Tool.Lightning)
-            return;
-        spriteRenderer.color = Color.white;
+        Damage(2);
     }
 
-    public void OnHighlight()
+    public void OnTremor()
     {
-        if(currentTool != Tool.Tremor && currentTool != Tool.Lightning)
-            return;
-        spriteRenderer.color = Color.green;
-
+        Damage(1);
     }
 
-    public void OnInteract()
+    protected void Damage(int value)
     {
-        if(currentTool != Tool.Tremor && currentTool != Tool.Lightning)
-            return;
         if(hitpoints > 0)
-            hitpoints--;
+            hitpoints -= value;
         Debug.Log("Hit Boulder");
         if(hitpoints > 0)
             return;
@@ -52,7 +45,7 @@ public class Boulder : Obstacle, IInteractable
         animator.Play("BigBoulder_Destroy");
         float delay = animator.GetCurrentAnimatorStateInfo(0).length;
         Invoke("OnDestroy", delay);
-    }
+    } 
 
     public override void LoadData(LevelData levelData)
     {
@@ -66,5 +59,6 @@ public class Boulder : Obstacle, IInteractable
     {
         this.gameObject.SetActive(false);
     }
+
 
 }

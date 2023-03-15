@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plant : Obstacle , IInteractable, ITrap
+public class Plant : Obstacle , ITrap, ILightning, IGrow
 {
     
     [SerializeField] protected Animator animator;
@@ -39,32 +39,23 @@ public class Plant : Obstacle , IInteractable, ITrap
         Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), $"ERROR: {id} Not in obstacle dictionary:");
     }
 
-    public virtual void OnDehighlight()
+
+    protected override void OnHighlight(Tool tool)
     {
-        if(currentTool == Tool.Grow || currentTool == Tool.Lightning)
-            spriteRenderer.color = Color.white;
-
-    }
-
-
-    public virtual void OnHighlight()
-    {
-        if((currentTool == Tool.Grow && !isAdult )|| currentTool == Tool.Lightning)
+        if((tool == Tool.Grow && !isAdult )|| tool == Tool.Lightning)
             spriteRenderer.color = Color.green;
     }
 
-    public virtual void OnInteract()
+
+    public void OnLightningHit()
     {
-        switch(currentTool)
-        {
-            case Tool.Grow:
-                if(!isAdult)
-                    OnGrow();
-                break;
-            case Tool.Lightning:
-                DamagePlant(isAdult ? 2 : 1);
-                break;
-        }
+        DamagePlant(isAdult ? 2 : 1);
+    }
+
+    void IGrow.OnGrow()
+    {
+        if(!isAdult)
+            OnGrow();
     }
 
     public virtual void OnTrapTrigger(Character character)
@@ -148,4 +139,5 @@ public class Plant : Obstacle , IInteractable, ITrap
         yield return new WaitForSeconds(delay);
         this.gameObject.SetActive(false);
     }
+
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spider : Obstacle, IInteractable, IOnPlayerAction
+public class Spider : Obstacle, IOnPlayerAction, ILightning, ICommand
 {
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject webPrefab;
@@ -38,25 +38,24 @@ public class Spider : Obstacle, IInteractable, IOnPlayerAction
         Debug.Assert(walkableNodes.Count > 0);
     }
 
-    public void OnDehighlight()
-    {
-        if(currentTool == Tool.Lightning || currentTool == Tool.Command)
-            spriteRenderer.color = Color.white;
-    }
 
-    public void OnHighlight()
+    protected override void OnHighlight(Tool tool)
     {
-        if(currentTool == Tool.Lightning || currentTool == Tool.Command)
+        if(tool == Tool.Lightning || tool == Tool.Command)
             spriteRenderer.color = Color.red;
     }
 
-    public void OnInteract()
+    public void OnLightningHit()
     {
-        if(currentTool == Tool.Lightning)
-            ForceClear();
-        if( currentTool == Tool.Command)
-            canWeb = !canWeb;
+        ForceClear();
     }
+
+    public void OnCommand()
+    {
+        canWeb = !canWeb;
+
+    }
+
 
     public void OnPerformAction()
     {
@@ -115,4 +114,5 @@ public class Spider : Obstacle, IInteractable, IOnPlayerAction
         Web web = GameObject.Instantiate(webPrefab, lastNode.worldPosition, Quaternion.identity).GetComponent<Web>();
         web.AddAsSpawned($"{GameData.levelData.spawnCount += 1}");
     }
+
 }

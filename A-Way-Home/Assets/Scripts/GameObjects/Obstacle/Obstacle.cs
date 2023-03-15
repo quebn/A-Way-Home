@@ -10,17 +10,18 @@ public class Obstacle : MonoBehaviour, ISaveable
     public const string TAG = "Obstacle";
 
     [SerializeField] private Vector2Int tileSize;
-    private int HP = 1;
-
     [SerializeField] protected SpriteRenderer spriteRenderer;
     [SerializeField] protected string id;
+    [SerializeField] private List<Tool> toolsUsed;
+
+    private int HP = 1;
+    private bool isHiglighted = false;
     protected List<Node> nodes;
     // protected bool isActive;
 
 
     protected Vector2 worldPos => this.transform.position; 
     protected int nodeCount => tileSize.x * tileSize.y; 
-    protected Tool currentTool => PlayerActions.Instance.currentTool;
     protected virtual int hitpoints {
         get => HP;
         set => HP = value;
@@ -71,21 +72,45 @@ public class Obstacle : MonoBehaviour, ISaveable
         nodes = new List<Node>();
     }
 
-
-    public static void HighlightInteractables(List<IInteractable> list)
+    public void Highlight(Tool tool)
     {
-        if(list.Count == 0)
+        if(!toolsUsed.Contains(tool)|| isHiglighted)
             return;
-        foreach(IInteractable interactable in list)
-            interactable.OnHighlight();
+        isHiglighted = true;
+        OnHighlight(tool);
     }
 
-    public static void DehighlightInteractables(List<IInteractable> list)
+    public void Dehighlight(Tool tool)
+    {
+        if(!isHiglighted)
+            return;
+        OnDehighlight(tool);
+    }
+    
+    protected virtual void OnDehighlight(Tool tool)
+    {
+        spriteRenderer.color = Color.white;
+    }
+
+    protected virtual void OnHighlight(Tool tool)
+    {
+        spriteRenderer.color = Color.green;
+    } 
+
+    public static void HighlightObstacles(List<Obstacle> list, Tool tool)
     {
         if(list.Count == 0)
             return;
-        foreach(IInteractable interactable in list)
-            interactable.OnDehighlight();
+        foreach(Obstacle obstacle in list)
+            obstacle.Highlight(tool);
+    }
+
+    public static void DehighlightObstacles(List<Obstacle> list, Tool tool)
+    {
+        if(list.Count == 0)
+            return;
+        foreach(Obstacle obstacle in list)
+            obstacle.Dehighlight(tool);
 
     }
 
@@ -131,42 +156,6 @@ public class Obstacle : MonoBehaviour, ISaveable
         PlayerActions.onPlayerActions.Add(obstacle);
     }
 
-    public static void DestroyOrganicObstacles(Node node)
-    {
-        if(node.IsObstacle(typeof(TreeThin)))
-        {
-            TreeThin tree = (TreeThin)node.GetObstacle();
-            tree.DestroyCompletely();
-        }
-        else if(node.IsObstacle(typeof(TreeLog)))
-        {
-            TreeLog log = (TreeLog)node.GetObstacle();
-            log.Clear();
-        }
-        else if(node.IsObstacle(typeof(GroundSpike)))
-        {
-            GroundSpike spike = (GroundSpike)node.GetObstacle();
-            spike.ForceClear();
-            Debug.LogWarning("Cleared Spike");
-        }
-        else if(node.IsObstacle(typeof(RockCrab)))
-        {
-            RockCrab crab = (RockCrab)node.GetObstacle();
-            crab.ForceClear();
-        }
-        else if(node.IsObstacle(typeof(PlantEnergy)))
-        {
-            PlantEnergy plant = (PlantEnergy)node.GetObstacle();
-            plant.ForceClear();
-            Debug.LogWarning("Cleared Plant");
-        }
-        else if(node.IsObstacle(typeof(Undead)))
-        {
-            Undead undead = (Undead)node.GetObstacle();
-            undead.TriggerDeath(true);
-        }
-    }
-
     [ContextMenu("Generate Obstacle ID")]
     private void GenerateID() 
     {
@@ -174,18 +163,35 @@ public class Obstacle : MonoBehaviour, ISaveable
     }
 }
 
+public interface IInspect
+{
+    public void OnInspect();
+}
+
+public interface ILightning
+{
+    public void OnLightningHit();
+    public void OnAftershock(){}
+}
+
+public interface IGrow
+{
+    public void OnGrow();
+}
+
+public interface ICommand
+{
+    public void OnCommand();
+}
+
+public interface ITremor
+{
+    public void OnTremor();
+}
+
 public interface ITrap
 {
     public void OnTrapTrigger(Character character);
-}
-
-public interface IInteractable
-{
-
-    public void OnInteract();
-    public void OnHighlight();
-    public void OnDehighlight();
-    public void OnAfterShock(){}
 }
 
 public interface IOnPlayerAction

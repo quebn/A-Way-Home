@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TreeLog : Obstacle, IInteractable//, IInteractable, INodeInteractable
+public class TreeLog : Obstacle, ILightning
 {
 
     // public bool notSpawned;
@@ -15,24 +15,9 @@ public class TreeLog : Obstacle, IInteractable//, IInteractable, INodeInteractab
         SetNodes(this.transform.position, NodeType.Obstacle, this);
     }
 
-    public void OnInteract()
+    public void OnLightningHit()
     {
-        if(currentTool == Tool.Lightning)
-            RemoveLog();
-    }
-
-    public void OnHighlight()
-    {
-        if(currentTool != Tool.Lightning)
-            return;
-        this.spriteRenderer.color = Color.green;
-    }
-
-    public void OnDehighlight()
-    {
-        if(currentTool != Tool.Lightning)
-            return;
-        this.spriteRenderer.color = Color.white;
+        RemoveLog();
     }
 
     public void AddAsSpawned(string id)
@@ -99,4 +84,6 @@ public class TreeLog : Obstacle, IInteractable//, IInteractable, INodeInteractab
         Debug.Assert(hitpoints == 0, "ERROR: Hitpoints should be 0!");
         this.gameObject.SetActive(false);
     }
+
+
 }

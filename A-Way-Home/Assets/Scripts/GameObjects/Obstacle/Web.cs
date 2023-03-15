@@ -2,28 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Web : Obstacle, IInteractable
+public class Web : Obstacle
 {
 
     protected override void Initialize()
     {
         base.Initialize();
         SetNodes(this.worldPos, NodeType.Obstacle, this);
-    }
-
-    public void OnDehighlight()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnHighlight()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnInteract()
-    {
-        throw new System.NotImplementedException();
     }
 
     public void AddAsSpawned(string id)

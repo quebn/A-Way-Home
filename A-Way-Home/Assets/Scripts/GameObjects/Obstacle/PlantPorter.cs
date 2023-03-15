@@ -13,13 +13,16 @@ public class PlantPorter : Plant
 
     public override void OnTrapTrigger(Character character)
     {
-        base.OnTrapTrigger(character);
+        DamagePlant();
+        character.TriggerDeath();
     }
 
     private void TeleportCharacter(Vector2 location)
     {
         Character.instance.Relocate(location);
+        Character.instance.IncrementEnergy(-5);
     }
+
 
     protected override void OnGrow()
     {

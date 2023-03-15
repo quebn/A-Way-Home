@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class Rock : Obstacle, IInteractable
+public class Rock : Obstacle, ILightning
 {
 
     protected override void Initialize()
@@ -10,26 +10,24 @@ public class Rock : Obstacle, IInteractable
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
-    public virtual void OnDehighlight()
+    public virtual void OnLightningHit()
     {
-        if(currentTool != Tool.Lightning && currentTool != Tool.Tremor)
+        ClearRock();
+    }
+
+
+    protected override void OnDehighlight(Tool tool)
+    {
+        if(tool != Tool.Lightning && tool != Tool.Tremor)
             return;
         this.spriteRenderer.color = Color.white;
     }
 
-    public virtual void OnHighlight()
+    protected override void OnHighlight(Tool tool)
     {
-        if(currentTool != Tool.Lightning && currentTool != Tool.Tremor)
+        if(tool != Tool.Lightning && tool != Tool.Tremor)
             return;
         this.spriteRenderer.color = Color.green;
-    }
-
-    public virtual void OnInteract()
-    {
-        if(currentTool == Tool.Lightning)
-        {
-            ClearRock();
-        }
     }
 
     public void ClearRock()
@@ -49,4 +47,6 @@ public class Rock : Obstacle, IInteractable
         this.gameObject.SetActive(false);
 
     }
+
+
 }

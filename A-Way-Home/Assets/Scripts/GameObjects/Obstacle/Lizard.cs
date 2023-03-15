@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lizard : Obstacle, IInteractable
+public class Lizard : Obstacle, ICommand
 {
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject fireField;
@@ -15,23 +15,9 @@ public class Lizard : Obstacle, IInteractable
     private List<Node> fireNodes;
     private bool isBreathing { get => animator.GetBool("isBreathing"); set => animator.SetBool("isBreathing", value);}
 
-    public void OnDehighlight()
+    public void OnCommand()
     {
-        if(currentTool == Tool.Command)
-            spriteRenderer.color = Color.white;
-    }
-
-    public void OnHighlight()
-    {
-        if(currentTool == Tool.Command)
-            spriteRenderer.color = Color.magenta;
-    }
-
-    public void OnInteract()
-    {
-        if(currentTool == Tool.Command)
-            ToggleFire();
-
+        ToggleFire();
     }
 
     protected override void Initialize()
@@ -154,4 +140,5 @@ public class Lizard : Obstacle, IInteractable
             gridPosIncrement += fireDirectionDiff;
         }
     }
+
 }

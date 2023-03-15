@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bush : Obstacle, IInteractable
+public class Bush : Obstacle
 {
 
     private int hp = 2;
@@ -24,11 +24,6 @@ public class Bush : Obstacle, IInteractable
         spriteRenderer.color = Color.white;
     }
 
-    public void OnHighlight()
-    {
-        if(currentTool == Tool.Lightning || currentTool == Tool.Grow )
-            spriteRenderer.color = Color.green;
-    }
 
     public void OnInteract()
     {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
+public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
 {
     [SerializeField] private Animator animator;
     [SerializeField] private int travelSpeed; 
@@ -43,6 +43,25 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
         TrySetPath();
     }
 
+    protected override void OnHighlight(Tool tool)
+    {
+        if(canPhase)
+            return;
+        base.OnHighlight(tool);
+    }
+
+    protected override void OnDehighlight(Tool tool)
+    {
+        if(canPhase)
+        base.OnDehighlight(tool);
+    }
+
+    public void OnLightningHit()
+    {
+        if(canPhase || isImmobile)
+            return;
+        Damage(1);
+    }
     public void OnTrapTrigger(Character character)
     {
         character.TriggerDeath();
@@ -149,29 +168,6 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
             animator.Play("Forward");
     }
 
-    public void OnInteract()
-    {
-        if(canPhase || isImmobile)
-            return;
-        if(currentTool == Tool.Lightning)
-            Damage(1);
-    }
-
-    public void OnHighlight()
-    {
-        if(canPhase)
-            return;
-        if(currentTool == Tool.Lightning)
-            spriteRenderer.color = Color.green;
-    }
-
-    public void OnDehighlight()
-    {
-        if(canPhase)
-        if(currentTool == Tool.Lightning)
-            spriteRenderer.color = Color.white;
-    }
-
     public void Damage(int damage)
     {
         if(canPhase)
@@ -223,4 +219,5 @@ public class Undead : Obstacle, ITrap, IInteractable, IOnPlayerAction
         // Debug.Log($"Undead({this.gameObject.name}) moved to {currentTargetNode.worldPosition}");
         Move();
     }
+
 }

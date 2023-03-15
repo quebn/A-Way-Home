@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TreeThin : Obstacle, IInteractable, IHoverable//, IPlaceable
+public class TreeThin : Obstacle, IHoverable, ILightning
 {
     [SerializeField] private SpriteRenderer upperRenderer;
     [SerializeField] private GameObject upper;
@@ -27,21 +27,6 @@ public class TreeThin : Obstacle, IInteractable, IHoverable//, IPlaceable
             HighlightPlaceLocations();
     }
 
-
-    // private void OnMouseEnter()
-    // {
-    //     Debug.Log( $"Is Hovering on collider of {name}");
-    //     upperRenderer.color = new Color32(255, 255, 255, 50);
-
-    // }
-
-    // private void OnMouseExit()
-    // {
-    //     // Debug.Log( $"Is Hovering on collider of {name}");
-    //     upperRenderer.color = Color.white;
-
-    // }
-
     protected override void Initialize()
     {
         base.Initialize();
@@ -56,9 +41,21 @@ public class TreeThin : Obstacle, IInteractable, IHoverable//, IPlaceable
         this.gameObject.SetActive(false);
     }
 
-    public void OnDehighlight()
+    public void OnLightningHit()
     {
-        if(currentTool != Tool.Lightning)
+        if(isFullyDestroyed)
+            return;
+        hitpoints -= 1;
+        if(isCutDown)
+            StartCoroutine(CutDown());
+        else
+            DestroyTrunk();
+    }
+
+    
+    protected override void OnDehighlight(Tool tool)
+    {
+        if(tool != Tool.Lightning)
             return;
         spriteRenderer.color = Color.white;
         upperRenderer.color = Color.white;;
@@ -67,9 +64,9 @@ public class TreeThin : Obstacle, IInteractable, IHoverable//, IPlaceable
             Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);
     }
 
-    public void OnHighlight()
+    protected override void OnHighlight(Tool tool)
     {
-        if(currentTool != Tool.Lightning)
+        if(tool != Tool.Lightning)
             return;
         spriteRenderer.color = Color.green;
         upperRenderer.color = new Color32(255, 255, 255, 100);;
@@ -77,18 +74,6 @@ public class TreeThin : Obstacle, IInteractable, IHoverable//, IPlaceable
         // TODO: Move highlight placeable function here
     }
 
-    public void OnInteract()
-    {
-        if(isFullyDestroyed)
-            return;
-        if(currentTool != Tool.Lightning)
-            return;
-        hitpoints -= 1;
-        if(isCutDown)
-            StartCoroutine(CutDown());
-        else
-            DestroyTrunk();
-    }
 
     public override void LoadData(LevelData levelData)
     {
@@ -174,4 +159,6 @@ public class TreeThin : Obstacle, IInteractable, IHoverable//, IPlaceable
     {
         upperRenderer.color = Color.white;
     }
+
+
 }

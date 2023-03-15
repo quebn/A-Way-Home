@@ -14,9 +14,12 @@ public class Node
 
     private NodeType currentNodeType;
     private Obstacle obstacle; 
-    // private IInteractable obstacle;//Maybe should be an Obstacle instead of of IInteractable.
 
-    private bool isInteractable => obstacle is IInteractable;
+    private bool isInspectable => obstacle is IInspect;
+    private bool isShockable => obstacle is ILightning;
+    private bool isGrowable => obstacle is IGrow;
+    private bool isCommandable => obstacle is ICommand;
+    private bool isTremorable => obstacle is ITremor;
     private Color nodeColor {set => NodeGrid.tilemap.SetColor((Vector3Int)this.gridPos ,value); }
     private bool isWalkable => currentNodeType == NodeType.Walkable;
     public bool hasObstacle => obstacle != null;
@@ -166,21 +169,57 @@ public class Node
         UpdateColor();
     }
 
-    public bool InteractObstacle()
+    public bool InspectObstacle()
     {
-        if(!isInteractable)
+        if(!isShockable)
             return false;
-        IInteractable interactable = (IInteractable)obstacle;
-        interactable.OnInteract();
+        IInspect interactable = obstacle as IInspect;
+        interactable.OnInspect();
+        return true;
+    }
+    
+    private bool ShockObstacle()
+    {
+        if(!isShockable)
+            return false;
+        ILightning interactable = obstacle as ILightning;
+        interactable.OnLightningHit();
         return true;
     }
 
-    public bool InteractObstacleAfterShock()
+    private bool ShockObstacleAfter()
     {
-        if(!isInteractable)
+        if(!isShockable)
             return false;
-        IInteractable interactable = (IInteractable)obstacle;
-        interactable.OnAfterShock();
+        ILightning interactable = obstacle as ILightning;
+        interactable.OnAftershock();
+        return true;
+    }
+
+    public bool GrowObstacle()
+    {
+        if(!isShockable)
+            return false;
+        IGrow interactable = obstacle as IGrow;
+        interactable.OnGrow();
+        return true;
+    }
+
+    public bool CommandObstacle()
+    {
+        if(!isShockable)
+            return false;
+        ICommand interactable = obstacle as ICommand;
+        interactable.OnCommand();
+        return true;
+    }
+
+    private bool TremorObstacle()
+    {
+        if(!isShockable)
+            return false;
+        ITremor interactable = obstacle as ITremor;
+        interactable.OnTremor();
         return true;
     }
 
@@ -233,20 +272,24 @@ public class Node
             node.SetObstacle(obstacle, nodeType);
     }
 
-    public static void TriggerNodesObstacle(List<Node> nodeList)
+    public static void ShockNode(Node node)
     {
-        if(nodeList == null ||nodeList.Count == 0)
+        if(node == null)
             return;
-        foreach (Node node in nodeList)
-            node.InteractObstacle();
+        node.ShockObstacle();
+        List<Node> nodes = NodeGrid.GetNeighborNodeList(node, NodeGrid.Instance.grid, 1);
+        if(nodes.Count == 0)
+            return;
+        foreach(Node n in nodes)
+            n.ShockObstacleAfter();
     }
 
-    public static void TriggerObstacleAfterShock(List<Node> nodeList)
+    public static void TremorNodes(List<Node> nodeList)
     {
         if(nodeList == null ||nodeList.Count == 0)
             return;
         foreach (Node node in nodeList)
-            node.InteractObstacleAfterShock();
+            node.TremorObstacle();
     }
     
     public static void ToggleNodes(List<Node> nodeList, bool toggle, Character character)
@@ -278,16 +321,16 @@ public class Node
         return false;
     }
 
-    public static List<IInteractable> GetNodesInteractable(List<Node> nodeList)
+    public static List<Obstacle> GetNodesInteractable(List<Node> nodeList)
     {
-        List<IInteractable> interactables = new List<IInteractable>();
+        List<Obstacle> obstacles = new List<Obstacle>();
         foreach(Node node in nodeList)
         {
-            if(!node.isInteractable)
+            if(node.obstacle == null)
                 continue;
-            interactables.Add((IInteractable)node.obstacle);
+            obstacles.Add(node.obstacle);
         }
-        return interactables;
+        return obstacles;
     }
 
     public static Vector3 GetRandomWorldPos(Dictionary<Vector2Int, Node> grid)

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class GroundSpike : Obstacle, ITrap, IInteractable
+public class GroundSpike : Obstacle, ITrap, ILightning
 {
     [SerializeField] private Animator animator;
 
@@ -21,30 +21,24 @@ public class GroundSpike : Obstacle, ITrap, IInteractable
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
-    public void OnInteract()
+    public void OnLightningHit()
     {
-        // if(currentTool == Tool.Tremor && !isTriggered)
-        //     PopUp();
-        if(currentTool == Tool.Lightning && isTriggered)
-        {
-            TriggerDeath();
-        }
-
+        TriggerDeath();
     }
 
-    public void OnHighlight()
+    protected override void OnHighlight(Tool tool)
     {
         if(!isTriggered)
             return;
-        if(currentTool == Tool.Lightning || isTriggered)
+        if(tool == Tool.Lightning || isTriggered)
             spriteRenderer.color = Color.green;
     }
 
-    public void OnDehighlight()
+    protected override void OnDehighlight(Tool tool)
     {
         if(!isTriggered)
             return;
-        if(currentTool == Tool.Lightning || isTriggered)
+        if(tool == Tool.Lightning || isTriggered)
             spriteRenderer.color = Color.white;
 
     }

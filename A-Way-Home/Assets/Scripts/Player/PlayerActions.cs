@@ -14,7 +14,7 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] private int toolCount;
     [SerializeField] private List<Texture2D> mouseTextures;
 
-    [HideInInspector] public Tool currentTool;
+    private Tool currentTool;
     private Mouse mouse;
     private Camera mainCamera;
     private PlayerInput playerInput;
@@ -26,7 +26,7 @@ public class PlayerActions : MonoBehaviour
     private InputAction reset;
     private Vector2 currentTileOrigin;
     private List<Node> currentTileNodes;
-    private List<IInteractable> currentInteractables;
+    private List<Obstacle> currentObstacles;
     private IHoverable hoveredObstacle;
 
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
@@ -53,48 +53,33 @@ public class PlayerActions : MonoBehaviour
     public void Undo()
     {
         Debug.Assert(false, "ERROR: Should not be called!");
-        // if(Character.instance.isMoving || actionList.Count < 1)
-        //     return;
-        // ActionData data = actionList.Last<ActionData>();
-        // // data.GetObstacle().OnUndo(data);
-        // actionList.Remove(data);
-        // Debug.Log("Undo Action was Pressed!");
-        // GameData.IncrementPlayerMoves(1);
-        // Character.instance.GetPath();
-        // add a penalty reducing the time by n amount every time player undo an action.
     }
 
     public void PerformAction(InputAction.CallbackContext context)
     {
-        if (ActionsNotAllowed())
+        if (ActionsNotAllowed() || currentTileNodes.Count == 0)
             return;
         switch(currentTool)
         {
             case Tool.Inspect:
+                currentTileNodes[0].InspectObstacle();
                 return;
-                // Inspect();
-                // break;
             case Tool.Lightning:
-                InteractNodes();
-                if(currentTileNodes.Count == 0) return;
+                Node.ShockNode(currentTileNodes[0]);
                 LightningAnimation(this.currentTileOrigin);
-                ThunderInteractNodes();
-                GameData.IncrementPlayerMoves(-1);
                 break;
             case Tool.Tremor:
-                InteractNodes();
-                GameData.IncrementPlayerMoves(-1);
+                Node.TremorNodes(currentTileNodes);
                 break;
             case Tool.Grow:
                 GrowAnimation(this.currentTileOrigin);
-                InteractNodes();
-                GameData.IncrementPlayerMoves(-1);
+                currentTileNodes[0].GrowObstacle();
                 break;
             case Tool.Command:
-                InteractObject();
-                GameData.IncrementPlayerMoves(-1);
+                currentTileNodes[0].CommandObstacle();
                 break;
         }
+        GameData.IncrementPlayerMoves(-1);
         UpdateOnActionObstacles();
         Character.instance.GetPath();
     }
@@ -115,33 +100,10 @@ public class PlayerActions : MonoBehaviour
         Character.instance.isMoving;
     }
 
-    private void InteractNodes()
-    {
-        Node.TriggerNodesObstacle(currentTileNodes);
-    }
-
-    private void ThunderInteractNodes()
-    {
-        Debug.Assert(currentTileNodes.Count == 1, "ERROR: Expected count to be 1.");
-        List<Node> surroundingNodes = NodeGrid.GetNeighborNodes(currentTileNodes[0], NodeGrid.Instance.grid, 1).Values.ToList();
-        Node.TriggerObstacleAfterShock(surroundingNodes);
-    }
-
     // private void Place()
     // {
 
     // }
-
-    private void InteractObject()
-    {
-        if(currentInteractables.Count < 1)
-            return;
-        currentInteractables[0].OnInteract();
-        // currentInteractable = hit2D.collider.gameObject.GetComponent<IInteractable>();
-        // if (currentInteractable == null)
-            // return;
-        // actionList.Add(new ActionData((Obstacle)currentInteractable, currentTool));
-    }
 
     private float LightningAnimation(Vector2 location)
     {
@@ -181,16 +143,20 @@ public class PlayerActions : MonoBehaviour
         switch(currentTool)
         {
             case Tool.Lightning:
+            case Tool.Grow:
+            case Tool.Command:
             case Tool.Tremor:
                 currentTileOrigin = new Vector2();
-                Obstacle.DehighlightInteractables(currentInteractables);
+                Obstacle.DehighlightObstacles(currentObstacles, currentTool);
                 Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, Character.instance);
-                currentInteractables = new List<IInteractable>();
+                currentObstacles = new List<Obstacle>();
                 currentTileNodes = new List<Node>();
                 break;
         }
         Debug.Log("Change");
     }
+
+
 
     private void Hover()
     {
@@ -239,16 +205,16 @@ public class PlayerActions : MonoBehaviour
         RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
         if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
         {
-            if (currentInteractables.Count > 0)
+            if (currentObstacles.Count > 0)
             {
-                currentInteractables[0].OnDehighlight();
-                currentInteractables = new List<IInteractable>();
+                currentObstacles[0].Dehighlight(currentTool);
+                currentObstacles = new List<Obstacle>();
             }
             return;
         }
-        if(currentInteractables.Count < 1)
-            currentInteractables.Add(hit2D.collider.gameObject.GetComponent<IInteractable>());
-        currentInteractables[0].OnHighlight();
+        if(currentObstacles.Count < 1)
+            currentObstacles.Add(hit2D.collider.gameObject.GetComponent<Obstacle>());
+        currentObstacles[0].Highlight(currentTool);
         // Debug.Log("Hovering on Object");
     }
 
@@ -259,39 +225,21 @@ public class PlayerActions : MonoBehaviour
             return;
         Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, Character.instance);
         currentTileNodes = NodeGrid.GetNodes(origin, tileWidth, tileHeight, NodeType.Terrain);
-        HiglightInteractables(origin);
+        HiglightObstacles(origin);
         currentTileOrigin = origin;
         Node.RevealNodes(currentTileNodes, color);
     }
 
-    private void HiglightInteractables(Vector2 origin)
+    private void HiglightObstacles(Vector2 origin)
     {
-        List<IInteractable> interactables = Node.GetNodesInteractable(currentTileNodes);
-        if(interactables == currentInteractables)
+        List<Obstacle> interactables = Node.GetNodesInteractable(currentTileNodes);
+        if(interactables == currentObstacles)
             return;
         if(origin != currentTileOrigin)
-            Obstacle.DehighlightInteractables(currentInteractables);
-        currentInteractables = interactables;
-        Obstacle.HighlightInteractables(currentInteractables);
+            Obstacle.DehighlightObstacles(currentObstacles, currentTool);
+        currentObstacles = interactables;
+        Obstacle.HighlightObstacles(currentObstacles, currentTool);
     } 
-
-    // private void HighlightObject()
-    // {
-    //     Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
-    //     RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
-    //     if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
-    //     {
-    //         if (currentInteractable != null)
-    //         {
-    //             currentInteractable.OnDehover();
-    //             currentInteractable = null;
-    //         }
-    //         return;
-    //     }
-    //     if (currentInteractable == null)
-    //         currentInteractable = hit2D.collider.gameObject.GetComponent<IInteractable>();
-    //     currentInteractable.OnHover();
-    // }
 
     private void StartCharacter(InputAction.CallbackContext context)
     {
@@ -344,7 +292,7 @@ public class PlayerActions : MonoBehaviour
         reset           = playerInput.actions["Reset"];
         currentTileNodes = new List<Node>(4); 
         // actionList = new List<ActionData>();
-        currentInteractables = new List<IInteractable>();
+        currentObstacles = new List<Obstacle>();
     }
 
     private void SubscribeFunctions()

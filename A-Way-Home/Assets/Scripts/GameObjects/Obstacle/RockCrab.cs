@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 
-public class RockCrab : Rock , ITrap
+public class RockCrab : Rock , ITrap, ITremor, ICommand
 {
     // Should maybe eat Juvenile Plants
     [SerializeField] private Animator animator;
@@ -45,33 +45,38 @@ public class RockCrab : Rock , ITrap
             // SetPath();
     }
 
-    public override void OnInteract()
+    public override void OnLightningHit()
     {
-        if(currentTool == Tool.Lightning)
-            Remove();
-        if(currentTool == Tool.Command && !hasShell) 
-            MoveLocation();
-        if(currentTool == Tool.Tremor)
-        {
-            SetPath();
-            MoveLocation();
-        }
+        Remove();
     }
 
-    public override void OnHighlight()
+    public void OnTremor()
     {
-        base.OnHighlight();
-        if(currentTool == Tool.Command && !hasShell)
+        SetPath();
+        MoveLocation();
+    }
+
+    public void OnCommand()
+    {
+        if(!hasShell)
+            MoveLocation();
+    }
+    
+ 
+    protected override void OnHighlight(Tool tool)
+    {
+        base.OnHighlight(tool);
+        if(tool == Tool.Command && !hasShell)
         {
             Node.ToggleNodes(path, Color.magenta, NodeGrid.nodesVisibility);
             spriteRenderer.color = Color.red;
         }
     }
 
-    public override void OnDehighlight()
+    protected override void OnDehighlight(Tool tool)
     {
-        base.OnDehighlight();
-        if(currentTool == Tool.Command)
+        base.OnDehighlight(tool);
+        if(tool == Tool.Command)
         {
             Node.ToggleNodes(path, NodeGrid.nodesVisibility);
             spriteRenderer.color = Color.white;
@@ -86,8 +91,6 @@ public class RockCrab : Rock , ITrap
 
     private void Remove()
     {
-        if (currentTool != Tool.Lightning)
-            return;
         if(hasShell)
             RemoveRock();
         else 
