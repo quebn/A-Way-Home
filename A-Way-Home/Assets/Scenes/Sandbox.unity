@@ -7139,6 +7139,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2885877817300611882, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8387097
+      objectReference: {fileID: 0}
     - target: {fileID: 3213137050973477118, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.1
@@ -7215,6 +7219,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6239197555149134391, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8387097
+      objectReference: {fileID: 0}
     - target: {fileID: 6333802561460634794, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.1
@@ -7243,9 +7251,21 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6634313901822134221, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8387097
+      objectReference: {fileID: 0}
+    - target: {fileID: 6982259760951493208, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8387097
+      objectReference: {fileID: 0}
     - target: {fileID: 7329893680528576789, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
       propertyPath: unlockedTools
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7571164938195293055, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8387097
       objectReference: {fileID: 0}
     - target: {fileID: 8072523493088335151, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
       propertyPath: m_LocalScale.x
@@ -7258,6 +7278,10 @@ PrefabInstance:
     - target: {fileID: 8072523493088335151, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
       propertyPath: m_LocalScale.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8283831036881031427, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8387097
       objectReference: {fileID: 0}
     - target: {fileID: 8358112557608373235, guid: 75a4b96a3c7463642a54cad7fb3fc373, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17928,6 +17952,7 @@ MonoBehaviour:
   tileSize: {x: 1, y: 1}
   spriteRenderer: {fileID: 1886700136}
   id: 05d44e55-0d37-46c2-bfd9-b0476da6a0b6
+  toolsUsed: 
   animator: {fileID: 1886700135}
 --- !u!61 &1886700138
 BoxCollider2D:
