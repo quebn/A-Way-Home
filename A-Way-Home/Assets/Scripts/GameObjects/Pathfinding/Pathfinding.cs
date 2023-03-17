@@ -11,9 +11,8 @@ public static class Pathfinding
         List<Node> path = new List<Node>();
         Node startNode = NodeGrid.NodeWorldPointPos(startingPos);
         List<Node> endNodes = NodeGrid.NodeWorldPointPos(targetPos);
-        if (!startNode.IsWalkable(walkableNodeType, type) && !Node.CheckNodesType(endNodes, walkableNodeType, type))
+        if (!startNode.Is(walkableNodeType, type) && !Node.CheckNodesType(endNodes, walkableNodeType, type))
         {
-            // Debug.LogWarning($"Start node and End Nodes are Unwalkable! node type -> {walkableNodeType.ToString()} | obstacle type => {type.ToString()}");
             return path;
         }
         List<Node> openSet = new List<Node>();
@@ -35,7 +34,7 @@ public static class Pathfinding
             }
             foreach (Node neighbor in NodeGrid.GetPathNeighborNodes(currentNode, grid))
             {
-                if (!neighbor.IsWalkable(walkableNodeType, type) || closedSet.Contains(neighbor))
+                if (!neighbor.IsWalkable() || closedSet.Contains(neighbor))
                     continue;
                 int newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
                 if (newMovementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
@@ -50,6 +49,11 @@ public static class Pathfinding
             }
         }
         return path;
+    }
+
+    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, NodeType walkableNodeType = NodeType.Walkable, Type type = null)
+    {
+        return FindPath(startingPos, targetPos, NodeGrid.Instance.grid, walkableNodeType, type);
     }
 
     public static List<Node> FindPathPhased(Vector3 startingPos, List<Vector3> targetPos,Dictionary<Vector2Int, Node> grid, Type type = null)
@@ -92,11 +96,6 @@ public static class Pathfinding
             }
         }
         return path;
-    }
-
-    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, NodeType walkableNodeType = NodeType.Walkable, Type type = null)
-    {
-        return FindPath(startingPos, targetPos, NodeGrid.Instance.grid, walkableNodeType, type);
     }
 
     private static List<Node> RetracePath(Node startNode, Node endNode)

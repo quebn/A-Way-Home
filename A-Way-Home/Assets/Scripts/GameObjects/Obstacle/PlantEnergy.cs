@@ -14,7 +14,7 @@ public class PlantEnergy : Plant
     {
         base.OnTrapTrigger(character);
         character.IncrementEnergy(5);
-        DamagePlant(1);
+        Damage(1);
     }
 
 }

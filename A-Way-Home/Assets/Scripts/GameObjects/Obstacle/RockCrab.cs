@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 using System;
 
-public class RockCrab : Rock , ITrap, ITremor, ICommand
+public class RockCrab : Rock , ITrap, ITremor, ICommand, IOnPlayerAction
 {
     // Should maybe eat Juvenile Plants
     [SerializeField] private Animator animator;
@@ -39,6 +40,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand
     protected override void Initialize()
     {
         base.Initialize();
+        AddToOnPlayerActionList(this);
         SetGrid();
         if(!hasShell)
             Invoke("SetPath", .5f);
@@ -47,12 +49,11 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand
 
     public override void OnLightningHit()
     {
-        Remove();
+        Damage(1);
     }
 
     public void OnTremor()
     {
-        SetPath();
         MoveLocation();
     }
 
@@ -86,34 +87,33 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand
     public void OnTrapTrigger(Character character)
     {
         if(isWalking || !hasShell)
-        character.TriggerDeath();
+            character.TriggerDeath();
     }
 
-    private void Remove()
+    public void OnPerformAction()
     {
-        if(hasShell)
-            RemoveRock();
-        else 
-            TriggerDeath();
-    }
-
-    private void RemoveRock()
-    {
-        hitpoints -= 1;
-        Debug.Assert(hitpoints == 1, "ERROR: HP is not equals to 1");
-        SetNodes(this.worldPos, NodeType.Walkable, this);
         SetPath();
     }
 
-    public void TriggerDeath()
+    public override void Damage(int value = 1)
+    {
+        hitpoints -= value;
+        if(!hasShell)
+            SetPath();
+        else if(hitpoints == 0)
+            Remove();
+    }
+
+    public override void Remove()
     {
         ClearNodes();
         hitpoints = 0;
         StartCoroutine(DeathAnimation());
-    }
+    } 
 
     private IEnumerator DeathAnimation()
     {
+
         yield return new WaitForSeconds(this.animator.GetCurrentAnimatorClipInfo(0).Length);
         this.gameObject.SetActive(false);
     }
@@ -132,7 +132,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand
             if(currentTargetNode.IsObstacle(typeof(GroundSpike)) && !hasShell)
             {
                 isWalking = false;
-                GroundSpike spike = (GroundSpike)currentTargetNode.GetObstacle();
+                GroundSpike spike = currentTargetNode.GetObstacle() as GroundSpike;
                 StartCoroutine(spike.Kill(this));
                 return;
             }
@@ -155,11 +155,15 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand
     private void SetPath()
     {
         path = new List<Node>();
-        Debug.LogWarning($"hasShell: {hasShell} | hp: {hitpoints}");
-        if(!hasShell) 
-            TryGetCrabPath(typeof(Rock));
+        Debug.Log($"Looking for Path");
+        if(!hasShell)
+        {
+            bool success = TryGetCrabPath(NodeType.Obstacle, typeof(Rock));
+            if(!success)
+                Debug.LogWarning($"Looking for Rock.... Failed");
+        } 
         if(!hasPath) 
-            TryGetCrabPath(typeof(Plant));
+            TryGetCrabPath(NodeType.Walkable, typeof(Plant));
         if(!hasPath)
             SetRandomPath();
         Debug.Assert(path.Count > 0, $"ERROR: Crab path is empty | Path count:{path.Count}");
@@ -167,20 +171,15 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand
         currentTargetNode = path[0];
     }
 
-    private void Eat(Plant plant)
-    {
-        plant.DamagePlant();
-    }
-
-    private bool TryGetCrabPath(Type type)
+    private bool TryGetCrabPath(NodeType nodeType, Type type)
     {
         // Debug.Log($"Trying to get path with target node of {type.ToString()}");
         targetPositions = new List<Vector3>();
-        targetPositions = NodeGrid.GetReachableWorldPos(type, travelRangeGrid);
+        targetPositions = NodeGrid.GetNodesPositions(type, travelRangeGrid);
         if(targetPositions.Count < 1)
             return false;
         Debug.Assert(targetPositions.Count > 0, "ERROR: No Target!");
-        path = Pathfinding.FindPath(this.worldPos, targetPositions, travelRangeGrid, type: type);
+        path = Pathfinding.FindPath(this.worldPos, targetPositions, travelRangeGrid,nodeType, type: type);//should have obstacle
         return path.Count > 0;
     }
 
@@ -189,11 +188,11 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand
         isWalking = false;
         Node node  = NodeGrid.NodeWorldPointPos(this.worldPos);
         if(node.IsObstacle(typeof(Rock)))
-            PickUpRock((Rock)node.GetObstacle());
+            RegenerateShell((Rock)node.GetObstacle());
         else if(node.IsObstacle(typeof(Plant)))
-            Eat((Plant)node.GetObstacle());
+            Destroy(node.GetObstacle());
         else if(node.IsObstacle(typeof(GroundSpike)))
-            GroundSpikeInteract((GroundSpike)node.GetObstacle());
+            Destroy(node.GetObstacle());
         SettleDown(node);
     }
 
@@ -209,17 +208,11 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand
             SetPath();
     }
 
-    private void GroundSpikeInteract(GroundSpike groundSpike)
+    private void RegenerateShell(Rock rock)
     {
-        Debug.Assert(hasShell, "ERROR: this should have shell!");
-        groundSpike.TriggerDeath();
-    }
-
-    private void PickUpRock(Rock rock)
-    {
-        hitpoints += 1;
+        hitpoints = 2;
         Debug.Assert(hitpoints == 2, "ERROR: HP is not equals to 1");
-        rock.ClearRock();
+        Destroy(rock);
     }
 
     private void SetRandomPath()
@@ -230,4 +223,5 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand
         if(!hasPath)
             SetRandomPath();
     }
+
 }

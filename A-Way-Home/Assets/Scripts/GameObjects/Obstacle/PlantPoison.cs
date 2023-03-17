@@ -18,7 +18,7 @@ public class PlantPoison : Plant
     {
         base.OnTrapTrigger(character);
         character.IncrementEnergy(-5);
-        DamagePlant(1);
+        Damage(1);
     }
 
     public override void OnRevealNodeColor()
@@ -63,18 +63,18 @@ public class PlantPoison : Plant
             else if(node.IsObstacle(typeof(GroundSpike)))
             {
                 GroundSpike spike = (GroundSpike)node.GetObstacle();
-                spike.ForceClear();
+                spike.Remove();
                 Debug.LogWarning("Cleared Spike");
             }
             else if(node.IsObstacle(typeof(RockCrab)))
             {
                 RockCrab crab = (RockCrab)node.GetObstacle();
-                crab.ForceClear();
+                crab.Remove();
             }
             else if(node.IsObstacle(typeof(PlantEnergy)))
             {
                 PlantEnergy plant = (PlantEnergy)node.GetObstacle();
-                plant.ForceClear();
+                plant.Remove();
                 Debug.LogWarning("Cleared Plant");
             }
             else if(node.IsObstacle(typeof(Undead)))

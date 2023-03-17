@@ -18,6 +18,7 @@ public class Lizard : Obstacle, ICommand
     public void OnCommand()
     {
         ToggleFire();
+        Debug.Log("Breathing Fire....");
     }
 
     protected override void Initialize()
@@ -49,24 +50,24 @@ public class Lizard : Obstacle, ICommand
                     if(node.IsObstacle(typeof(GroundSpike)))
                     {
                         GroundSpike spike = (GroundSpike)node.GetObstacle();
-                        spike.ForceClear();
+                        spike.Remove();
                         Debug.LogWarning("Cleared Spike");
                     }
                     else if(node.IsObstacle(typeof(RockCrab)))
                     {
                         RockCrab crab = (RockCrab)node.GetObstacle();
-                        crab.ForceClear();
+                        crab.Remove();
                     }
                     else if(node.IsObstacle(typeof(PlantEnergy)))
                     {
                         PlantEnergy plant = (PlantEnergy)node.GetObstacle();
-                        plant.ForceClear();
+                        plant.Remove();
                         Debug.LogWarning("Cleared Plant");
                     }
                     else if(node.IsObstacle(typeof(PlantPoison)))
                     {
                         PlantPoison plant = (PlantPoison)node.GetObstacle();
-                        plant.ForceClear();
+                        plant.Remove();
                         Debug.LogWarning("Cleared Plant");
                     }
                     else if(node.IsObstacle(typeof(Undead)))
@@ -96,13 +97,13 @@ public class Lizard : Obstacle, ICommand
                 else if(node.IsObstacle(typeof(PlantEnergy)))
                 {
                     PlantEnergy plant = (PlantEnergy)node.GetObstacle();
-                    plant.ForceClear();
+                    plant.Remove();
                     Debug.LogWarning("Cleared Plant");
                 }
                 else if(node.IsObstacle(typeof(PlantPoison)))
                 {
                     PlantPoison plant = (PlantPoison)node.GetObstacle();
-                    plant.ForceClear();
+                    plant.Remove();
                     Debug.LogWarning("Cleared Plant");
                 }
                 else

@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 3856496701694408763}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.5, y: -6.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -50,6 +50,7 @@ MonoBehaviour:
   tileSize: {x: 1, y: 1}
   spriteRenderer: {fileID: 3856496701694408760}
   id: a16b2b9a-6728-4204-ba33-28e45336ce63
+  toolsUsed: 
   animator: {fileID: 3856496701694408761}
   prefabPoisonMiasma: {fileID: 8745363850703227746, guid: 371b5b5e167558b4eb34d05f91f5511b, type: 3}
 --- !u!61 &3856496701694408743

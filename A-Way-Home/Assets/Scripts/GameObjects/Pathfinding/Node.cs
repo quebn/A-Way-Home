@@ -20,7 +20,6 @@ public class Node
     private bool isGrowable => obstacle is IGrow;
     private bool isCommandable => obstacle is ICommand;
     private bool isTremorable => obstacle is ITremor;
-    private Color nodeColor {set => NodeGrid.tilemap.SetColor((Vector3Int)this.gridPos ,value); }
     private bool isWalkable => currentNodeType == NodeType.Walkable;
     public bool hasObstacle => obstacle != null;
     public int hCost => MinHCost(); 
@@ -59,11 +58,23 @@ public class Node
         // return hcost;
     }
 
-    public bool IsWalkable(NodeType nodeType = NodeType.Walkable, Type obstacleType = null)
+    private void SetColor(Color color)
     {
-        if(obstacleType != null && obstacle != null)
-            return IsObstacle(obstacleType);
-        return (currentNodeType == nodeType || currentNodeType == NodeType.Walkable );
+        if(NodeGrid.tilemap == null)
+            return;
+        NodeGrid.tilemap.SetColor((Vector3Int)this.gridPos ,color);
+    }
+
+    public bool IsWalkable()
+    {
+        return currentNodeType == NodeType.Walkable;
+    }
+
+    public bool Is(NodeType nodeType, Type obstacleType)
+    {
+        if(obstacleType == null)
+            return currentNodeType == nodeType;
+        return obstacle == null? false : currentNodeType == nodeType && IsObstacle(obstacleType);
     }
 
     public bool IsType(NodeType nodeType)
@@ -103,8 +114,10 @@ public class Node
     }
 
     public void HideNode()
-    {
-        nodeColor = colorClear;
+    {        
+        if(NodeGrid.tilemap == null)
+            return;
+        SetColor(colorClear);
     }
 
     public void UpdateNodeColor()
@@ -115,10 +128,12 @@ public class Node
 
     private void HighlightWalkable()
     {
+        if(NodeGrid.tilemap == null)
+            return;
         if(obstacle != null)
             obstacle.OnRevealNodeColor();
         else
-            nodeColor = colorWhite;
+            SetColor(colorWhite);
     }
 
 
@@ -133,17 +148,19 @@ public class Node
                 HideNode();
                 break;
             case NodeType.Water:
-                nodeColor = colorBlue;
+                SetColor(colorBlue);
                 break;
             case NodeType.Obstacle:
-                nodeColor = colorRed;
+                SetColor(colorRed);
                 break;
         }
     }
 
     public void RevealNode(Color color)
     {
-        nodeColor = color;
+        if(NodeGrid.tilemap == null)
+            return;
+        SetColor(color);
     }
 
     public void ToggleNode(bool toggle)
@@ -198,7 +215,7 @@ public class Node
 
     public bool GrowObstacle()
     {
-        if(!isShockable)
+        if(!isGrowable)
             return false;
         IGrow interactable = obstacle as IGrow;
         interactable.OnGrow();
@@ -207,7 +224,7 @@ public class Node
 
     public bool CommandObstacle()
     {
-        if(!isShockable)
+        if(!isCommandable)
             return false;
         ICommand interactable = obstacle as ICommand;
         interactable.OnCommand();
@@ -216,7 +233,7 @@ public class Node
 
     private bool TremorObstacle()
     {
-        if(!isShockable)
+        if(!isTremorable)
             return false;
         ITremor interactable = obstacle as ITremor;
         interactable.OnTremor();
@@ -316,7 +333,7 @@ public class Node
         if(nodeList == null ||nodeList.Count == 0)
             return false;
         foreach (Node node in nodeList)
-            if(node.IsWalkable(nodeType, type))
+            if(node.Is(nodeType, type))
                 return true;
         return false;
     }

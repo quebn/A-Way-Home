@@ -34,7 +34,7 @@ public class Boulder : Obstacle, ILightning, ITremor
         Damage(1);
     }
 
-    protected void Damage(int value)
+    public override void Damage(int value)
     {
         if(hitpoints > 0)
             hitpoints -= value;

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5142473099469508756}
   - component: {fileID: 3712581894967883911}
   m_Layer: 0
-  m_Name: Tree(Shadowless)
+  m_Name: TreeGreen(Shadowless)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,6 +55,7 @@ MonoBehaviour:
   tileSize: {x: 1, y: 1}
   spriteRenderer: {fileID: 5142473099469508756}
   id: 
+  toolsUsed: 
   upperRenderer: {fileID: 2577153118406074730}
   upper: {fileID: 2577153118406074728}
   animatorUpper: {fileID: 2577153118406074731}
@@ -101,7 +102,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 1430544556, guid: 624da7e40efe50d46a7a2f60e881aab9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -227,7 +228,7 @@ SpriteRenderer:
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
   m_SortingOrder: 3
-  m_Sprite: {fileID: -115188860, guid: 624da7e40efe50d46a7a2f60e881aab9, type: 3}
+  m_Sprite: {fileID: 1323516983, guid: 624da7e40efe50d46a7a2f60e881aab9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

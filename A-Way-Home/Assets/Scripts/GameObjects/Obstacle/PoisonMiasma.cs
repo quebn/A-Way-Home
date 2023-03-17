@@ -22,10 +22,6 @@ public class PoisonMiasma : Obstacle, ITrap
         character.IncrementEnergy(damage);
     }
 
-    public void Kill(Undead undead)
-    {
-        undead.ForceClear();
-    }
 
     public void AddAsSpawned(string id)
     {

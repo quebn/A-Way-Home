@@ -266,23 +266,12 @@ public class NodeGrid : MonoBehaviour
         return new Vector3(GetMiddle(vector3.x, x), GetMiddle(vector3.y, y));
     }
 
-    public static Node GetNode(Type obstacleType, Dictionary<Vector2Int, Node> grid)
-    {
-        foreach (KeyValuePair<Vector2Int, Node> pair in grid)
-            if(pair.Value.IsObstacle(obstacleType))
-                return pair.Value;
-        return null;
-    }
-
-
-    public static List<Vector3> GetReachableWorldPos(Type obstacleType, Dictionary<Vector2Int, Node> grid)
+    public static List<Vector3> GetNodesPositions(Type obstacleType, Dictionary<Vector2Int, Node> grid)
     {
         List<Vector3> worldPositions = new List<Vector3>();
-        // Should Check if up down left right is walkable and if true add.;
         foreach (KeyValuePair<Vector2Int, Node> pair in grid)
             if(pair.Value.IsObstacle(obstacleType))
                 worldPositions.Add(pair.Value.worldPosition);
         return worldPositions;
     }
-
 }

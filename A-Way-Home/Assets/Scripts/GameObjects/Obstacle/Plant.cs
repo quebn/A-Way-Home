@@ -30,7 +30,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
                 Spawn();
                 break;
             case 0:
-                ForceClear();
+                Remove();
                 break;
             default:
                 Debug.LogError("ERROR: SHOULD BE UNREACHABLE!");
@@ -49,7 +49,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
 
     public void OnLightningHit()
     {
-        DamagePlant(isAdult ? 2 : 1);
+        Damage(isAdult ? 2 : 1);
     }
 
     void IGrow.OnGrow()
@@ -101,7 +101,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
         animator.Play("Plant_Middle");
     }
 
-    public override void ForceClear()
+    public override void Remove()
     {
         // Debug.Assert(hitpoints == 0, "ERROR: Plant Cleared despite hp is above 0!");
         if(hitpoints> 0)
@@ -113,7 +113,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
         ClearNodes();
     }
 
-    public void DamagePlant(int damage = 0)
+    public override void Damage(int damage = 0)
     {
         Debug.Log($"Plant Damage: {damage}");
         hitpoints -= (damage == 0) ? hitpoints : damage;
@@ -127,7 +127,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
                 HarvestPlant();
                 break;
             case 0:
-                ForceClear();
+                Remove();
                 break;
         }
     }

@@ -13,7 +13,7 @@ public class PlantPorter : Plant
 
     public override void OnTrapTrigger(Character character)
     {
-        DamagePlant();
+        Damage();
         character.TriggerDeath();
     }
 
@@ -27,7 +27,7 @@ public class PlantPorter : Plant
     protected override void OnGrow()
     {
         Vector2 location = nodes[0].worldPosition;
-        DamagePlant();
+        Damage();
         TeleportCharacter(location);
     }
 }

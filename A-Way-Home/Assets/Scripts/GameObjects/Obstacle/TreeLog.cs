@@ -36,22 +36,22 @@ public class TreeLog : Obstacle, ILightning
         if(node.IsObstacle(typeof(GroundSpike)))
         {
             GroundSpike groundSpike = (GroundSpike)node.GetObstacle();
-            groundSpike.TriggerDeath();
+            Destroy(node.GetObstacle());
         }
         else if(node.IsObstacle(typeof(RockCrab)))
         {
             RockCrab rockCrab = (RockCrab)node.GetObstacle();
-            rockCrab.TriggerDeath();
+            Destroy(rockCrab);
         }
         else if(node.IsObstacle(typeof(Rock)))
         {
             Rock rock = (Rock)node.GetObstacle();
-            rock.ClearRock();
+            Destroy(rock);
         }
         else if(node.IsObstacle(typeof(Plant)))
         {
             Plant plant = (Plant)node.GetObstacle();
-            plant.DamagePlant();
+            Destroy(plant);
         }
     }
 

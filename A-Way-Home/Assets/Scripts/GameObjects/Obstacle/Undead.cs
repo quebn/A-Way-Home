@@ -53,6 +53,7 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
     protected override void OnDehighlight(Tool tool)
     {
         if(canPhase)
+            return;
         base.OnDehighlight(tool);
     }
 
@@ -130,7 +131,7 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
             {
                 if(canPhase) return;
                 Plant plant = obstacle as Plant;
-                plant.DamagePlant();
+                Destroy(plant);
             }
             else if(type == typeof(RockCrab) )
             {
@@ -148,7 +149,7 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
                 if(canPhase)
                     return;
                 PoisonMiasma miasma = obstacle as PoisonMiasma;
-                miasma.Kill(this);
+                miasma.Destroy(this);
             }
         }
         Debug.Assert(!currentTargetNode.hasObstacle || !canPhase, "ERROR: Node still has an obstacle");
@@ -168,7 +169,7 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
             animator.Play("Forward");
     }
 
-    public void Damage(int damage)
+    public override void Damage(int damage)
     {
         if(canPhase)
             return;
@@ -201,7 +202,7 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
         hitpoints = 0;
         animator.Play("Death");
         if(forceClear)
-            ForceClear();
+            Remove();
         else
             SetNodes(this.worldPos, NodeType.Walkable, this);
     }

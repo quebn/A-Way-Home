@@ -47,7 +47,7 @@ public class Spider : Obstacle, IOnPlayerAction, ILightning, ICommand
 
     public void OnLightningHit()
     {
-        ForceClear();
+        Remove();
     }
 
     public void OnCommand()

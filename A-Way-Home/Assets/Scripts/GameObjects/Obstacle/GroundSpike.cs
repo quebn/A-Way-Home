@@ -23,7 +23,7 @@ public class GroundSpike : Obstacle, ITrap, ILightning
 
     public void OnLightningHit()
     {
-        TriggerDeath();
+        Remove();
     }
 
     protected override void OnHighlight(Tool tool)
@@ -46,10 +46,10 @@ public class GroundSpike : Obstacle, ITrap, ILightning
     public void OnTrapTrigger(Character character)
     {
         PopUp();
-        StartCoroutine(KillCharacter(character));
+        StartCoroutine(Kill(character));
     }
 
-    public void TriggerDeath()
+    public override void Remove()
     {
         ClearNodes();
         hitpoints -= 1;
@@ -61,7 +61,7 @@ public class GroundSpike : Obstacle, ITrap, ILightning
         isTriggered = true;
     }
 
-    private IEnumerator KillCharacter(Character character)
+    private IEnumerator Kill(Character character)
     {
         while(character.currentPosition != this.nodes[0].worldPosition)
             yield return null;
@@ -69,14 +69,11 @@ public class GroundSpike : Obstacle, ITrap, ILightning
         character.TriggerDeath(animator.GetCurrentAnimatorStateInfo(0).length);
     }
 
-    public IEnumerator Kill(RockCrab rockCrab)
+    public  IEnumerator Kill(RockCrab rockCrab)
     {
-        // Debug.LogWarning($"GroundSpike SmallExplosion_Death Time: {this.animator.GetCurrentAnimatorClipInfo(0).Length}");
-        // Debug.LogWarning($"GroundSpike state Time: {this.animator.GetCurrentAnimatorStateInfo(0).length}");
-        // yield return new WaitForSeconds(this.animator.GetCurrentAnimatorClipInfo(0).Length);
         PopUp();
         yield return new WaitForSeconds(this.animator.GetCurrentAnimatorStateInfo(0).length);
-        rockCrab.TriggerDeath();
+        Destroy(rockCrab);
         PopDown();
     }
 

@@ -12,12 +12,10 @@ public class Obstacle : MonoBehaviour, ISaveable
     [SerializeField] private Vector2Int tileSize;
     [SerializeField] protected SpriteRenderer spriteRenderer;
     [SerializeField] protected string id;
-    [SerializeField] private List<Tool> toolsUsed;
 
     private int HP = 1;
-    private bool isHiglighted = false;
+    // private bool isHiglighted = false;
     protected List<Node> nodes;
-    // protected bool isActive;
 
 
     protected Vector2 worldPos => this.transform.position; 
@@ -32,12 +30,13 @@ public class Obstacle : MonoBehaviour, ISaveable
         Initialize();
     }
 
+    private void OnDisable()
+    {
+        ClearNodes();
+    }
+
     protected virtual void Initialize()
     {
-        // id = $"{this.gameObject.name}{this.worldPos}";
-        // Debug.Assert(id != "", "ERROR: id is empty");
-        // if(GameEvent.loadType != LevelLoadType.LoadGame)
-            // Debug.Assert(!GameData.levelData.obstacles.ContainsKey(id), $"ERROR: {id} should not be in obstacle dictionary");
         if(!GameData.levelData.obstacles.ContainsKey(id))
         {
             GameData.levelData.obstacles.Add(id, new ObstacleData(this.GetType(), this.hitpoints, this.transform.position));
@@ -57,13 +56,6 @@ public class Obstacle : MonoBehaviour, ISaveable
         // Debug.Log($"{this.gameObject.name} -> Nodes count{nodes.Count}");
     }
 
-    // protected IEnumerator SetNodesOnLoad(Vector3 worldPos, NodeType nodeType, IInteractable interactable = null)
-    // {
-    //     while(NodeGrid.Instance.grid.Count != NodeGrid.Instance.maxSize)
-    //         yield return null;
-    //     SetNodes(worldPos, nodeType, interactable);
-    // }
-
     protected void ClearNodes()
     {
         if (nodes == null || nodes.Count == 0 || Node.GetNodesInteractable(nodes).Count == 0)
@@ -72,21 +64,6 @@ public class Obstacle : MonoBehaviour, ISaveable
         nodes = new List<Node>();
     }
 
-    public void Highlight(Tool tool)
-    {
-        if(!toolsUsed.Contains(tool)|| isHiglighted)
-            return;
-        isHiglighted = true;
-        OnHighlight(tool);
-    }
-
-    public void Dehighlight(Tool tool)
-    {
-        if(!isHiglighted)
-            return;
-        OnDehighlight(tool);
-    }
-    
     protected virtual void OnDehighlight(Tool tool)
     {
         spriteRenderer.color = Color.white;
@@ -96,6 +73,25 @@ public class Obstacle : MonoBehaviour, ISaveable
     {
         spriteRenderer.color = Color.green;
     } 
+
+    public virtual void Destroy(Obstacle obstacle)
+    {
+        obstacle.Remove();
+    }
+
+    public void Highlight(Tool tool)
+    {
+        // isHiglighted = true;
+        OnHighlight(tool);
+    }
+
+    public void Dehighlight(Tool tool)
+    {
+        // if(!isHiglighted)
+            // return;
+        // isHiglighted = false;
+        OnDehighlight(tool);
+    }
 
     public static void HighlightObstacles(List<Obstacle> list, Tool tool)
     {
@@ -141,11 +137,16 @@ public class Obstacle : MonoBehaviour, ISaveable
         Node.RevealNodes(nodes, Node.colorWhite);
     }
 
+    public virtual void Damage(int value)
+    {
+        hitpoints -= value;
+        if(hitpoints <= 0)
+            Remove();
+    }
 
-    public virtual void ForceClear() //Trigger death but for all
+    public virtual void Remove() //Trigger death but for all
     {
         hitpoints = 0;
-        ClearNodes();
         this.gameObject.SetActive(false);
     }
 
