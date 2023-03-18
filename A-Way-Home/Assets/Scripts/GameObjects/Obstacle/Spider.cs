@@ -10,7 +10,7 @@ public class Spider : Obstacle, IOnPlayerAction, ILightning, ICommand
     private Node currentTargetNode;
     private Node lastNode;
     private List<Node> walkableNodes;
-    private bool canWeb = true;
+    private bool canWeb => hitpoints > 1;
 
     private bool isMoving {
         get => animator.GetBool("isMoving"); 
@@ -52,8 +52,7 @@ public class Spider : Obstacle, IOnPlayerAction, ILightning, ICommand
 
     public void OnCommand()
     {
-        canWeb = !canWeb;
-
+        hitpoints = canWeb? 1 : 2;
     }
 
 
@@ -70,9 +69,8 @@ public class Spider : Obstacle, IOnPlayerAction, ILightning, ICommand
         SetCurrentTargetNode();
         if(currentTargetNode == null)
             return;
-        Debug.Log($"Targetnode pos => {currentTargetNode.worldPosition}");
+        Debug.LogWarning($"Targetnode pos => {currentTargetNode.worldPosition}");
         lastNode = nodes[0];
-        // lastNode = NodeGrid.NodeWorldPointPos(nodes[0].worldPosition);
         ClearNodes();
         SpawnWeb();
         isMoving = true;
@@ -80,15 +78,15 @@ public class Spider : Obstacle, IOnPlayerAction, ILightning, ICommand
 
     private void SetCurrentTargetNode()
     {
-        if(walkableNodes == null || walkableNodes.Count == 0)
+        if(walkableNodes.Count == 0)
             return;
         int randomIndex = UnityEngine.Random.Range(0, walkableNodes.Count);
-        currentTargetNode = walkableNodes[randomIndex];
-        if(!currentTargetNode.IsType(NodeType.Walkable) || currentTargetNode.hasObstacle){
-            walkableNodes.Remove(currentTargetNode);
+        if(!walkableNodes[randomIndex].IsType(NodeType.Walkable) || walkableNodes[randomIndex].hasObstacle){
+            walkableNodes.RemoveAt(randomIndex);
             currentTargetNode = null;
             SetCurrentTargetNode();
-        }
+        }else
+            currentTargetNode = walkableNodes[randomIndex];
     }
 
     private void Step()

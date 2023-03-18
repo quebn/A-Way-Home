@@ -100,7 +100,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IOnPlayerAction
         hitpoints -= value;
         if(!hasShell)
             SetPath();
-        else if(hitpoints == 0)
+        if(hitpoints == 0)
             Remove();
     }
 
@@ -218,7 +218,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IOnPlayerAction
     private void SetRandomPath()
     {
         targetPositions = new List<Vector3>();
-        targetPositions = Node.GetRandomWorldPos(travelRangeGrid, 4);
+        targetPositions = Node.GetRandomWorldPos(travelRangeGrid, 1);
         path = Pathfinding.FindPath(this.worldPos, targetPositions, travelRangeGrid);
         if(!hasPath)
             SetRandomPath();

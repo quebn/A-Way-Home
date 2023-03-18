@@ -20,7 +20,6 @@ public class Node
     private bool isGrowable => obstacle is IGrow;
     private bool isCommandable => obstacle is ICommand;
     private bool isTremorable => obstacle is ITremor;
-    private bool isWalkable => currentNodeType == NodeType.Walkable;
     public bool hasObstacle => obstacle != null;
     public int hCost => MinHCost(); 
     public int fCost => gCost + hCost;
@@ -68,6 +67,13 @@ public class Node
     public bool IsWalkable()
     {
         return currentNodeType == NodeType.Walkable;
+    }
+
+    public bool IsWalkable(NodeType nodeType, Type type)
+    {
+        return (type == null || obstacle == null) ? 
+            currentNodeType == nodeType || IsWalkable() : 
+            IsObstacle(type) || IsWalkable();
     }
 
     public bool Is(NodeType nodeType, Type obstacleType)
@@ -333,7 +339,7 @@ public class Node
         if(nodeList == null ||nodeList.Count == 0)
             return false;
         foreach (Node node in nodeList)
-            if(node.Is(nodeType, type))
+            if(node.IsWalkable(nodeType, type))
                 return true;
         return false;
     }

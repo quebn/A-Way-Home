@@ -40,7 +40,6 @@ public class Obstacle : MonoBehaviour, ISaveable
         if(!GameData.levelData.obstacles.ContainsKey(id))
         {
             GameData.levelData.obstacles.Add(id, new ObstacleData(this.GetType(), this.hitpoints, this.transform.position));
-            // Debug.Log($"Added {id} in dictionary GameData.levelData.obstacles with hp of {hitpoints}");
         }
         Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), "ERROR: Not in obstacle dictionary");
     }

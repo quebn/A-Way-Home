@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TreeThin : Obstacle, IHoverable, ILightning
+public class TreeThin : Obstacle, ILightning
 {
     [SerializeField] private SpriteRenderer upperRenderer;
     [SerializeField] private GameObject upper;
@@ -148,17 +148,4 @@ public class TreeThin : Obstacle, IHoverable, ILightning
             animatorUpper.Play("TreeUpper_FallLeft");
         return animatorUpper.GetCurrentAnimatorStateInfo(0).length;
     }
-
-    public void OnHover()
-    {
-        upperRenderer.color = new Color32(255, 255, 255, 50);
-
-    }
-
-    public void OnDehover()
-    {
-        upperRenderer.color = Color.white;
-    }
-
-
 }

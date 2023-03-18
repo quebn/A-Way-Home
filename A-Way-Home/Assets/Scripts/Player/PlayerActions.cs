@@ -27,7 +27,7 @@ public class PlayerActions : MonoBehaviour
     private Vector2 currentTileOrigin;
     private List<Node> currentTileNodes;
     private List<Obstacle> currentObstacles;
-    private IHoverable hoveredObstacle;
+    private IHoverable hoverable;
 
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
     public static List<IOnPlayerAction> onPlayerActions;
@@ -184,38 +184,20 @@ public class PlayerActions : MonoBehaviour
     {
         Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
         RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
-        if(hit2D.collider == null) //|| hit2D.collider.gameObject.tag != Obstacle.TAG)
+        if(hit2D.collider == null || hit2D.collider.gameObject.tag != "Hoverable")
         {
-            if(hoveredObstacle != null)
+            if(hoverable != null)
             {
-                hoveredObstacle.OnDehover();
-                hoveredObstacle = null;
+                hoverable.OnDehover();
+                hoverable = null;
             }
             return;
         }
-        hoveredObstacle = hit2D.collider.gameObject.GetComponent<Obstacle>() as IHoverable;
-        if(hoveredObstacle == null)
-            return;
-        hoveredObstacle.OnHover();
-    }
-
-    private void HighlightObject()
-    {
-        Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
-        RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
-        if (hit2D.collider == null || hit2D.collider.gameObject.tag != Obstacle.TAG)
-        {
-            if (currentObstacles.Count > 0)
-            {
-                currentObstacles[0].Dehighlight(currentTool);
-                currentObstacles = new List<Obstacle>();
-            }
-            return;
-        }
-        if(currentObstacles.Count < 1)
-            currentObstacles.Add(hit2D.collider.gameObject.GetComponent<Obstacle>());
-        currentObstacles[0].Highlight(currentTool);
-        // Debug.Log("Hovering on Object");
+        IHoverable newHovered = hit2D.collider.gameObject.GetComponent<IHoverable>(); 
+        if(hoverable != null && newHovered != hoverable)
+            hoverable.OnDehover();
+        hoverable = hit2D.collider.gameObject.GetComponent<IHoverable>();
+        hoverable.OnHover();
     }
 
     private void HighlightTile(int tileWidth, int tileHeight, Color color)

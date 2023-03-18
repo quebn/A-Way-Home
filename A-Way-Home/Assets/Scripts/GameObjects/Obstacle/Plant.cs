@@ -18,25 +18,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
     protected override void Initialize()
     {
         base.Initialize();
-        switch(hitpoints)
-        {
-            case 4:
-                OnGrow();
-                break;
-            case 2:
-                HarvestPlant();
-                break;
-            case 1: 
-                Spawn();
-                break;
-            case 0:
-                Remove();
-                break;
-            default:
-                Debug.LogError("ERROR: SHOULD BE UNREACHABLE!");
-                break;
-        }
-        Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), $"ERROR: {id} Not in obstacle dictionary:");
+        OnInitialize();
     }
 
 
@@ -47,15 +29,15 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
     }
 
 
-    public void OnLightningHit()
+    public virtual void OnLightningHit()
     {
         Damage(isAdult ? 2 : 1);
     }
 
-    void IGrow.OnGrow()
+    public virtual void OnGrow()
     {
         if(!isAdult)
-            OnGrow();
+            Grow();
     }
 
     public virtual void OnTrapTrigger(Character character)
@@ -85,7 +67,29 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
-    protected virtual void OnGrow()
+    protected virtual void OnInitialize()
+    {
+        switch(hitpoints)
+        {
+            case 4:
+                Grow();
+                break;
+            case 2:
+                HarvestPlant();
+                break;
+            case 1: 
+                Spawn();
+                break;
+            case 0:
+                Remove();
+                break;
+            default:
+                Debug.LogError("ERROR: SHOULD BE UNREACHABLE!");
+                break;
+        }
+    }
+
+    protected virtual void Grow()
     {
         if(hitpoints != 4)
             hitpoints = 4;
@@ -132,7 +136,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
         }
     }
 
-    public IEnumerator OnClear()
+    private IEnumerator OnClear()
     {
         animator.Play("Plant_Destroy");
         float delay = animator.GetCurrentAnimatorStateInfo(0).length;

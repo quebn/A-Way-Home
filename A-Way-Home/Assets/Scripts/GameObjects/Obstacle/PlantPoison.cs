@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlantPoison : Plant
 {
+    [SerializeField] private int damage; 
     [SerializeField] private GameObject prefabPoisonMiasma; 
     private Dictionary<Vector2Int, Node> tilesPoisoned;
 
@@ -17,7 +18,7 @@ public class PlantPoison : Plant
     public override void OnTrapTrigger(Character character)
     {
         base.OnTrapTrigger(character);
-        character.IncrementEnergy(-5);
+        character.IncrementEnergy(-damage);
         Damage(1);
     }
 
@@ -26,9 +27,9 @@ public class PlantPoison : Plant
         Node.RevealNodes(nodes, Node.colorPurple);
     }
 
-    protected override void OnGrow()
+    protected override void Grow()
     {
-        base.OnGrow();
+        base.Grow();
         GeneratePoisonTiles();
     }
 

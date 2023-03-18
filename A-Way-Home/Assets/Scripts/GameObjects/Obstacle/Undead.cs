@@ -92,6 +92,7 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
             isMoving = true;
             currentTargetIndex = 0;
             currentTargetNode = path[0];
+            SetNodes(path[travelSpeed - 1].worldPosition, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
         }
     } 
 
@@ -153,7 +154,6 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
             }
         }
         Debug.Assert(!currentTargetNode.hasObstacle || !canPhase, "ERROR: Node still has an obstacle");
-        SetNodes(this.worldPos, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
     }
 
     private void UpdateAnimation()

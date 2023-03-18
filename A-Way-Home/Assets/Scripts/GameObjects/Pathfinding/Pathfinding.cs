@@ -11,7 +11,7 @@ public static class Pathfinding
         List<Node> path = new List<Node>();
         Node startNode = NodeGrid.NodeWorldPointPos(startingPos);
         List<Node> endNodes = NodeGrid.NodeWorldPointPos(targetPos);
-        if (!startNode.Is(walkableNodeType, type) && !Node.CheckNodesType(endNodes, walkableNodeType, type))
+        if (!startNode.IsWalkable(walkableNodeType, type) && !Node.CheckNodesType(endNodes, walkableNodeType, type))
         {
             return path;
         }
@@ -34,7 +34,7 @@ public static class Pathfinding
             }
             foreach (Node neighbor in NodeGrid.GetPathNeighborNodes(currentNode, grid))
             {
-                if (!neighbor.IsWalkable() || closedSet.Contains(neighbor))
+                if (!neighbor.IsWalkable(walkableNodeType, type) || closedSet.Contains(neighbor))
                     continue;
                 int newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
                 if (newMovementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
