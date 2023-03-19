@@ -5,28 +5,41 @@ using UnityEngine;
 public class Melon : Plant
 {
     [SerializeField] private int heal;
-    [SerializeField] private int growthStage = 2;
 
     protected override void OnInitialize()
     {
-        hitpoints = growthStage;
+        animator.Play(CurrentAnimationName());
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
     public override void OnLightningHit()
     {
-        Remove();
+        Damage(hitpoints);
     }
 
     public override void OnTrapTrigger(Character character)
     {
-        character.IncrementEnergy(heal);
+        switch(hitpoints)
+        {
+            case 1:
+                character.IncrementEnergy(1);
+                break;
+            case 2:
+                character.IncrementEnergy(heal);
+                break;
+            case 3:
+                character.IncrementEnergy(heal * 2);
+                break;
+        }
         Remove();
     }
 
     public override void OnGrow()
     {
-        Grow();
+        if(hitpoints > 2)
+            return;
+        hitpoints++;
+        animator.Play(CurrentAnimationName());
     }
 
     protected override void OnHighlight(Tool tool)
@@ -35,16 +48,27 @@ public class Melon : Plant
             spriteRenderer.color = Color.green;
     }
 
-    protected override void Grow()
-    {
-        if(hitpoints > 2)
-            return;
-        hitpoints++;
-    }
-
     public override void Damage(int damage = 0)
     {
         hitpoints -= damage;
+        animator.Play(CurrentAnimationName());
+        if(hitpoints <= 0)
+            Remove();
     }
 
+    protected override string CurrentAnimationName()
+    {
+        switch(hitpoints)
+        {
+            case 1:
+                return youngling;
+            case 2:
+                return middle;
+            case 3:
+                return fullGrown;
+            default:
+                Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");
+                return destroy;
+        }
+    }
 }

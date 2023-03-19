@@ -73,7 +73,7 @@ public class Lizard : Obstacle, ICommand
                     else if(node.IsObstacle(typeof(Undead)))
                     {
                         Undead undead = (Undead)node.GetObstacle();
-                        undead.TriggerDeath(true);
+                        undead.Remove(true);
                     }
                 }
             }
@@ -92,7 +92,7 @@ public class Lizard : Obstacle, ICommand
                 else if(node.IsObstacle(typeof(Undead)))
                 {
                     Undead undead = (Undead)node.GetObstacle();
-                    undead.TriggerDeath(true);
+                    undead.Remove(true);
                 }
                 else if(node.IsObstacle(typeof(PlantEnergy)))
                 {

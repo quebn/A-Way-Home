@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections;
+using System;
 using UnityEngine;
 
 [System.Serializable]
@@ -7,8 +8,6 @@ public enum Tool { Inspect, Lightning, Grow, Command, Tremor}//, PlaceMode }
 
 public class Obstacle : MonoBehaviour, ISaveable
 {
-    public const string TAG = "Obstacle";
-
     [SerializeField] private Vector2Int tileSize;
     [SerializeField] protected SpriteRenderer spriteRenderer;
     [SerializeField] protected string id;
@@ -16,7 +15,6 @@ public class Obstacle : MonoBehaviour, ISaveable
     private int HP = 1;
     // private bool isHiglighted = false;
     protected List<Node> nodes;
-
 
     protected Vector2 worldPos => this.transform.position; 
     protected int nodeCount => tileSize.x * tileSize.y; 
@@ -50,6 +48,7 @@ public class Obstacle : MonoBehaviour, ISaveable
         //      - Set what and how many nodes are assigned to the obstacle;
         //      - Set what are nodeType the node behaves as.
         //      - Set the what obstacle the nodes contains. 
+        nodes = new List<Node>();
         nodes = NodeGrid.GetNodes(worldPos, tileSize.x, tileSize.y);
         Node.SetNodesObstacle(nodes, nodeType, obstacle);
         // Debug.Log($"{this.gameObject.name} -> Nodes count{nodes.Count}");
@@ -80,15 +79,11 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     public void Highlight(Tool tool)
     {
-        // isHiglighted = true;
         OnHighlight(tool);
     }
 
     public void Dehighlight(Tool tool)
     {
-        // if(!isHiglighted)
-            // return;
-        // isHiglighted = false;
         OnDehighlight(tool);
     }
 
@@ -154,6 +149,14 @@ public class Obstacle : MonoBehaviour, ISaveable
         if(PlayerActions.onPlayerActions == null)
             PlayerActions.onPlayerActions = new List<IOnPlayerAction>();
         PlayerActions.onPlayerActions.Add(obstacle);
+    }
+
+    protected void DestroyWalkableObstacle(Node node)
+    {
+        if(node.IsObstacle(typeof(Plant)))
+            this.Destroy(node.GetObstacle());
+        else if( node.IsObstacle(typeof(PoisonMiasma)) || node.IsObstacle(typeof(FireField)))
+            node.GetObstacle().Destroy(this);
     }
 
     [ContextMenu("Generate Obstacle ID")]

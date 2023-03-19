@@ -27,9 +27,17 @@ public class PlantPoison : Plant
         Node.RevealNodes(nodes, Node.colorPurple);
     }
 
-    protected override void Grow()
+    public override void OnLightningHit()
     {
-        base.Grow();
+        base.OnLightningHit();
+        if(hitpoints == 2)
+            RemoveMiasma();
+        
+    }
+
+    public override void OnGrow()
+    {
+        base.OnGrow();
         GeneratePoisonTiles();
     }
 
@@ -81,7 +89,7 @@ public class PlantPoison : Plant
             else if(node.IsObstacle(typeof(Undead)))
             {
                 Undead undead = (Undead)node.GetObstacle();
-                undead.TriggerDeath(true);
+                undead.Remove(true);
             }
             return true;
         }
@@ -90,9 +98,8 @@ public class PlantPoison : Plant
     }
 
 
-    protected override void HarvestPlant()
+    private void RemoveMiasma()
     {
-        base.HarvestPlant();
         foreach(KeyValuePair<Vector2Int, Node> pair in tilesPoisoned)
         {
             if(pair.Value.IsObstacle(typeof(PoisonMiasma)))

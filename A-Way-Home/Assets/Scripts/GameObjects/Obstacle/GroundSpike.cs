@@ -49,6 +49,11 @@ public class GroundSpike : Obstacle, ITrap, ILightning
         StartCoroutine(Kill(character));
     }
 
+    public override void Destroy(Obstacle obstacle)
+    {
+        StartCoroutine(Kill(obstacle));
+    }
+
     public override void Remove()
     {
         ClearNodes();
@@ -69,19 +74,11 @@ public class GroundSpike : Obstacle, ITrap, ILightning
         character.TriggerDeath(animator.GetCurrentAnimatorStateInfo(0).length);
     }
 
-    public  IEnumerator Kill(RockCrab rockCrab)
+    private  IEnumerator Kill(Obstacle obstacle)
     {
         PopUp();
         yield return new WaitForSeconds(this.animator.GetCurrentAnimatorStateInfo(0).length);
-        Destroy(rockCrab);
-        PopDown();
-    }
-
-    public IEnumerator Kill(Undead undead)
-    {
-        PopUp();
-        yield return new WaitForSeconds(this.animator.GetCurrentAnimatorStateInfo(0).length);
-        undead.TriggerDeath();
+        base.Destroy(obstacle);
         PopDown();
     }
 

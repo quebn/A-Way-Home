@@ -63,6 +63,7 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
             return;
         Damage(1);
     }
+
     public void OnTrapTrigger(Character character)
     {
         character.TriggerDeath();
@@ -92,7 +93,8 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
             isMoving = true;
             currentTargetIndex = 0;
             currentTargetNode = path[0];
-            SetNodes(path[travelSpeed - 1].worldPosition, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
+            Node endNode = path[travelSpeed - 1];
+
         }
     } 
 
@@ -101,6 +103,17 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
         if(this.transform.position == currentTargetNode.worldPosition)
         {
             currentTargetIndex ++;
+            if(!canPhase)
+            {
+                if(currentTargetNode.IsObstacle(typeof(Plant)))
+                    Destroy(currentTargetNode.GetObstacle());
+                else if(currentTargetNode.IsObstacle(typeof(PoisonMiasma)) || currentTargetNode.IsObstacle(typeof(FireField)) || (currentTargetNode.IsObstacle(typeof(GroundSpike))))
+                {
+                    isMoving = false;
+                    currentTargetNode.GetObstacle().Destroy(this);
+                    return;
+                }
+            }
             if(Character.instance.isDead || !canMove)
             {
 
@@ -117,43 +130,36 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
         this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
     }
 
+
     private void OnStop()
     {
         if(currentTargetNode.hasObstacle)
         {
-            Type type = currentTargetNode.GetObstacleType();
-            Obstacle obstacle = currentTargetNode.GetObstacle();
-            if(type == typeof(Bat))
+            if(currentTargetNode.IsObstacle(typeof(Bat)))
             {
-                Bat bat = obstacle as Bat;
+                Bat bat = currentTargetNode.GetObstacle() as Bat;
                 bat.Move();
             }
-            else if(type == typeof(PlantPoison) || type == typeof(PlantEnergy) )
+            if(canPhase) return;
+            if(currentTargetNode.IsObstacle(typeof(Plant)))
             {
-                if(canPhase) return;
-                Plant plant = obstacle as Plant;
-                Destroy(plant);
+                Destroy(currentTargetNode.GetObstacle());
             }
-            else if(type == typeof(RockCrab) )
+            else if(currentTargetNode.IsObstacle(typeof(RockCrab)))
             {
-                RockCrab crab = obstacle as RockCrab;
+                RockCrab crab = currentTargetNode.GetObstacle() as RockCrab;
                 if(!crab.hasShell)
-                    TriggerDeath();
+                    Destroy(crab);
             }
-            else if(type == typeof(GroundSpike))
+            else if(currentTargetNode.IsObstacle(typeof(GroundSpike)) || 
+                    currentTargetNode.IsObstacle(typeof(PoisonMiasma)))
             {
-                GroundSpike groundSpike = obstacle as GroundSpike;
-                groundSpike.Kill(this); 
-            }
-            else if(type == typeof(PoisonMiasma))
-            {
-                if(canPhase)
-                    return;
-                PoisonMiasma miasma = obstacle as PoisonMiasma;
-                miasma.Destroy(this);
+                currentTargetNode.GetObstacle().Destroy(this); 
             }
         }
         Debug.Assert(!currentTargetNode.hasObstacle || !canPhase, "ERROR: Node still has an obstacle");
+        SetNodes(currentTargetNode.worldPosition, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
+
     }
 
     private void UpdateAnimation()
@@ -176,10 +182,20 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
         hitpoints -= damage;
         Debug.Log($"hitpoints:{hitpoints}");
         if(hitpoints <= 0 )
-            TriggerDeath();
+            Remove(false, false);
     }
 
-    public void TriggerDeath(bool forceClear = false, bool killPhasers = false)
+    public override void Remove()
+    {
+        TriggerDeath(true, true);
+    }
+
+    public void Remove(bool forceClear, bool killPhasers = false)
+    {
+        TriggerDeath(forceClear, killPhasers);
+    }
+
+    private void TriggerDeath(bool forceClear = false, bool killPhasers = false)
     {
         // Debug.Assert(false, "ERROR: UNIMPLEMENTED");
         if(!killPhasers && canPhase)

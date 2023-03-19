@@ -36,6 +36,10 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IOnPlayerAction
             Step();
     }
 
+    private void OnDestroy()
+    {
+        PlayerActions.onPlayerActions.Remove(this);
+    }
 
     protected override void Initialize()
     {
@@ -129,11 +133,12 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IOnPlayerAction
         if(this.transform.position == currentTargetNode.worldPosition)
         {
             targetIndex++;
-            if(currentTargetNode.IsObstacle(typeof(GroundSpike)) && !hasShell)
+            if(currentTargetNode.IsObstacle(typeof(Plant)))
+                Destroy(currentTargetNode.GetObstacle());
+            else if(currentTargetNode.IsObstacle(typeof(PoisonMiasma)) || currentTargetNode.IsObstacle(typeof(FireField)) || (currentTargetNode.IsObstacle(typeof(GroundSpike)) && !hasShell))
             {
                 isWalking = false;
-                GroundSpike spike = currentTargetNode.GetObstacle() as GroundSpike;
-                StartCoroutine(spike.Kill(this));
+                currentTargetNode.GetObstacle().Destroy(this);
                 return;
             }
             if (targetPositions.Contains(this.transform.position)){
@@ -144,6 +149,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IOnPlayerAction
         }
         this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
     }
+
 
     private void SetGrid()
     {
@@ -189,9 +195,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IOnPlayerAction
         Node node  = NodeGrid.NodeWorldPointPos(this.worldPos);
         if(node.IsObstacle(typeof(Rock)))
             RegenerateShell((Rock)node.GetObstacle());
-        else if(node.IsObstacle(typeof(Plant)))
-            Destroy(node.GetObstacle());
-        else if(node.IsObstacle(typeof(GroundSpike)))
+        else if(node.IsObstacle(typeof(Plant)) || node.IsObstacle(typeof(GroundSpike)))
             Destroy(node.GetObstacle());
         SettleDown(node);
     }

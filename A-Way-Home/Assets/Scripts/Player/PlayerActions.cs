@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -28,6 +29,7 @@ public class PlayerActions : MonoBehaviour
     private List<Node> currentTileNodes;
     private List<Obstacle> currentObstacles;
     private IHoverable hoverable;
+    private bool obstaclesDone = true;
 
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
     public static List<IOnPlayerAction> onPlayerActions;
@@ -59,6 +61,7 @@ public class PlayerActions : MonoBehaviour
     {
         if (ActionsNotAllowed() || currentTileNodes.Count == 0)
             return;
+        obstaclesDone = false;
         switch(currentTool)
         {
             case Tool.Inspect:
@@ -81,8 +84,20 @@ public class PlayerActions : MonoBehaviour
         }
         GameData.IncrementPlayerMoves(-1);
         UpdateOnActionObstacles();
+        obstaclesDone = true; // TO BE REMOVE AFTER COROUTINE IMPLEMENTATION IS FINISHED.
+        // StartCoroutine(WaitForObstaclesAction());
         Character.instance.GetPath();
+        if(GameData.levelData.moves == 0)
+            Dehighlight();
     }
+
+    // private IEnumerator WaitForObstaclesAction()
+    // {
+    //     bool obstaclesDone = UpdateOnActionObstacles();
+    //     while(!obstaclesDone)
+    //         yield return null;
+    //     Character.instance.GetPath();
+    // }
 
     private void UpdateOnActionObstacles()
     {
@@ -97,13 +112,9 @@ public class PlayerActions : MonoBehaviour
     {
         return  IsMouseOverUI() || 
         GameData.levelData.moves == 0 ||
-        Character.instance.isMoving;
+        Character.instance.isMoving || 
+        !obstaclesDone;
     }
-
-    // private void Place()
-    // {
-
-    // }
 
     private float LightningAnimation(Vector2 location)
     {
@@ -133,30 +144,20 @@ public class PlayerActions : MonoBehaviour
             return;
         Tool newTool = (Tool)index;
         if(currentTool != newTool)
-            OnChangeTool();
+            Dehighlight();
         currentTool = newTool;
         Cursor.SetCursor(mouseTextures[index], Vector2.zero, CursorMode.Auto);
     }
 
-    private void OnChangeTool()
+    private void Dehighlight()
     {
-        switch(currentTool)
-        {
-            case Tool.Lightning:
-            case Tool.Grow:
-            case Tool.Command:
-            case Tool.Tremor:
-                currentTileOrigin = new Vector2();
-                Obstacle.DehighlightObstacles(currentObstacles, currentTool);
-                Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, Character.instance);
-                currentObstacles = new List<Obstacle>();
-                currentTileNodes = new List<Node>();
-                break;
-        }
+        currentTileOrigin = new Vector2();
+        Obstacle.DehighlightObstacles(currentObstacles, currentTool);
+        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, Character.instance);
+        currentObstacles = new List<Obstacle>();
+        currentTileNodes = new List<Node>();
         Debug.Log("Change");
     }
-
-
 
     private void Hover()
     {
@@ -225,7 +226,7 @@ public class PlayerActions : MonoBehaviour
 
     private void StartCharacter(InputAction.CallbackContext context)
     {
-        if (Character.instance.isMoving)
+        if (Character.instance.isMoving || !obstaclesDone)
             return;
         Character.instance.GoHome();
     }

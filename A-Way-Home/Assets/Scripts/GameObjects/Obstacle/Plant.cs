@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class Plant : Obstacle , ITrap, ILightning, IGrow
 {
-    
     [SerializeField] protected Animator animator;
-    
+    [SerializeField] private int initialStage = 1;
+
+    protected const string youngling    = "Plant_Youngling";
+    protected const string middle       = "Plant_Middle";
+    protected const string fullGrown    = "Plant_FullGrown";
+    protected const string destroy      = "Plant_Destroy";
+
     protected override int hitpoints {
-        get => animator.GetInteger("hitpoints");
-        set => animator.SetInteger("hitpoints", value);
+        get => initialStage;
+        set => initialStage = value;
     } 
+
     private bool isAdult {
         get => hitpoints > 1;
     }
@@ -21,13 +27,17 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
         OnInitialize();
     }
 
+    protected virtual void OnInitialize()
+    {
+        animator.Play(CurrentAnimationName());
+        SetNodes(this.worldPos, isAdult? NodeType.Obstacle: NodeType.Walkable, this);
+    }
 
     protected override void OnHighlight(Tool tool)
     {
         if((tool == Tool.Grow && !isAdult )|| tool == Tool.Lightning)
             spriteRenderer.color = Color.green;
     }
-
 
     public virtual void OnLightningHit()
     {
@@ -36,8 +46,11 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
 
     public virtual void OnGrow()
     {
-        if(!isAdult)
-            Grow();
+        if(hitpoints != 4)
+            hitpoints = 4;
+        animator.Play(CurrentAnimationName());
+        Debug.Assert(isAdult, "ERROR: isnt adult and hitpoints not equal to 1!");
+        SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
     public virtual void OnTrapTrigger(Character character)
@@ -55,93 +68,48 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
         base.LoadData(levelData);
     }
 
-    protected virtual void HarvestPlant()
-    {
-        Harvested();
-    }
-
-    protected void Spawn()
-    {
-        Debug.Assert(!isAdult, "ERROR: isAdult bool true, and hitpoints isnt full");
-        animator.Play("Plant_Spawn");
-        SetNodes(this.worldPos, NodeType.Walkable, this);
-    }
-
-    protected virtual void OnInitialize()
-    {
-        switch(hitpoints)
-        {
-            case 4:
-                Grow();
-                break;
-            case 2:
-                HarvestPlant();
-                break;
-            case 1: 
-                Spawn();
-                break;
-            case 0:
-                Remove();
-                break;
-            default:
-                Debug.LogError("ERROR: SHOULD BE UNREACHABLE!");
-                break;
-        }
-    }
-
-    protected virtual void Grow()
-    {
-        if(hitpoints != 4)
-            hitpoints = 4;
-        Debug.Assert(isAdult, "ERROR: isnt adult and hitpoints not equal to 1!");
-        SetNodes(this.worldPos, NodeType.Obstacle, this);
-    }
-
-    protected void Harvested()
-    {
-        // if(isAdult && hitpoints > 2)
-            // currentStage = Stage.Harvested;
-        Debug.Assert(hitpoints == 2, "ERROR: hitpoints not equal to 2!");
-        animator.Play("Plant_Middle");
-    }
-
     public override void Remove()
     {
-        // Debug.Assert(hitpoints == 0, "ERROR: Plant Cleared despite hp is above 0!");
-        if(hitpoints> 0)
+        if(hitpoints > 0)
         {
             hitpoints = 0;
             Debug.LogWarning("Plant Cleared with hitpoints above 0");
         }
-        StartCoroutine(OnClear());
+        animator.Play(CurrentAnimationName());
         ClearNodes();
+        StartCoroutine(RemoveAnimation());
     }
 
     public override void Damage(int damage = 0)
     {
         Debug.Log($"Plant Damage: {damage}");
         hitpoints -= (damage == 0) ? hitpoints : damage;
-        switch(hitpoints)
-        {
-            case 4:
-            case 1:
-                Debug.LogError("ERROR: SHOULD BE UNREACHABLE!");
-                break;
-            case 2:
-                HarvestPlant();
-                break;
-            case 0:
-                Remove();
-                break;
-        }
+        animator.Play(CurrentAnimationName());
+        SetNodes(this.worldPos, isAdult? NodeType.Obstacle: NodeType.Walkable, this);
+        if(hitpoints <= 0)
+            Remove();
     }
 
-    private IEnumerator OnClear()
+    private IEnumerator RemoveAnimation()
     {
-        animator.Play("Plant_Destroy");
-        float delay = animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
         this.gameObject.SetActive(false);
+    }
+
+    protected virtual string CurrentAnimationName()
+    {
+        switch(hitpoints)
+        {
+            case 1:
+                return youngling;
+            case 2:
+                return middle;
+            case 4:
+                return fullGrown;
+            default:
+                Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");
+                return destroy;
+        }
     }
 
 }

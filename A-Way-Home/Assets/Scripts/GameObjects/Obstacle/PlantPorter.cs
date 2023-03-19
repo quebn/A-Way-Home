@@ -21,19 +21,18 @@ public class PlantPorter : Plant
         character.TriggerDeath();
     }
 
-    private void TeleportCharacter(Vector2 location)
-    {
-        Character.instance.Relocate(location);
-        Character.instance.IncrementEnergy(-damage);
-    }
-
-
-    protected override void Grow()
+    public override void OnGrow()
     {
         isTeleporting = true;
         Vector2 location = nodes[0].worldPosition;
         TeleportCharacter(location);
         Damage();
+    }
+    
+    private void TeleportCharacter(Vector2 location)
+    {
+        Character.instance.Relocate(location);
+        Character.instance.IncrementEnergy(-damage);
     }
 }
 

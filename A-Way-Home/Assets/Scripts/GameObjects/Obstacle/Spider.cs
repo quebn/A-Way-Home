@@ -29,6 +29,11 @@ public class Spider : Obstacle, IOnPlayerAction, ILightning, ICommand
         }
     }
 
+    private void OnDestroy()
+    {
+        PlayerActions.onPlayerActions.Remove(this);
+    }
+    
     protected override void Initialize()
     {
         base.Initialize();
