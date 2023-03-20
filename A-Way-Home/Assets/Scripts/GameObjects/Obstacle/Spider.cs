@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spider : Obstacle, IOnPlayerAction, ILightning, ICommand
+public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
 {
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject webPrefab;
@@ -23,21 +23,13 @@ public class Spider : Obstacle, IOnPlayerAction, ILightning, ICommand
 
     private void Update()
     {
-        if(isMoving)
-        {
-            Step();
-        }
+        // if(isMoving)
+        //     Step();
     }
 
-    private void OnDestroy()
-    {
-        PlayerActions.onPlayerActions.Remove(this);
-    }
-    
     protected override void Initialize()
     {
         base.Initialize();
-        AddToOnPlayerActionList(this);
         SetNodes(this.worldPos, NodeType.Obstacle, this);
         walkableNodes = NodeGrid.GetPathNeighborNodes(nodes[0], NodeGrid.Instance.grid);
         Debug.Assert(walkableNodes.Count > 0);
@@ -61,10 +53,25 @@ public class Spider : Obstacle, IOnPlayerAction, ILightning, ICommand
     }
 
 
-    public void OnPerformAction()
+    public void OnPlayerAction()
     {
         if(canWeb)
             Move();
+    }
+
+    public IEnumerator FollowPath()
+    {
+        Move();
+        while(isMoving)
+        {
+            if(this.transform.position == currentTargetNode.worldPosition)
+            {
+                Stop();
+                yield break;
+            }
+            this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
+            yield return null;
+        }
     }
 
     private void Move()

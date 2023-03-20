@@ -29,7 +29,8 @@ public static class GameEvent
         if(isPaused)
             UnpauseGame();
         GameObject levelPrefab = Resources.Load<GameObject>($"Levels/{prefabLevelName}");
-        PlayerActions.onPlayerActions = new List<IOnPlayerAction>();
+        // PlayerActions.onPlayerActions = new List<IOnPlayerAction>();
+        // PlayerActions.actionWaitProcesses = new HashSet<IActionWaitProcess>();
         Debug.Assert(levelPrefab != null, $"ERROR: {prefabLevelName} is null/not found!");
         GameObject.Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
     }

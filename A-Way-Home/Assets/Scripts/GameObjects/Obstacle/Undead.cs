@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
+public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
 {
     [SerializeField] private Animator animator;
     [SerializeField] private int travelSpeed; 
@@ -28,16 +28,11 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
             Step();
     }
 
-    private void OnDestroy()
-    {
-        PlayerActions.onPlayerActions.Remove(this);
-    }
 
     protected override void Initialize()
     {
         base.Initialize();
         maxHitpoints = hitpoints;
-        AddToOnPlayerActionList(this);
         SetNodes(this.worldPos, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
         // currentNodePos = this.nodes[0].worldPosition;
         TrySetPath();
@@ -116,11 +111,14 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
             }
             if(Character.instance.isDead || !canMove)
             {
-
                 isMoving = false;
                 if(canPhase && currentTargetNode.IsType(NodeType.Obstacle) && currentTargetNode.hasObstacle)
+                {
+                    PlayerActions.FinishProcess(this);
                     return;
+                }
                 OnStop();
+                PlayerActions.FinishProcess(this);
                 return;
             }
             Debug.Assert(path.Count > currentTargetIndex, $"ERROR: Tried to access index {currentTargetIndex} with path of size {path.Count}");
@@ -159,7 +157,6 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
         }
         Debug.Assert(!currentTargetNode.hasObstacle || !canPhase, "ERROR: Node still has an obstacle");
         SetNodes(currentTargetNode.worldPosition, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
-
     }
 
     private void UpdateAnimation()
@@ -231,9 +228,8 @@ public class Undead : Obstacle, ITrap, IOnPlayerAction, ILightning
         this.gameObject.SetActive(false);
     }
 
-    public void OnPerformAction()
+    public void OnPlayerAction()
     {
-        // Debug.Log($"Undead({this.gameObject.name}) moved to {currentTargetNode.worldPosition}");
         Move();
     }
 

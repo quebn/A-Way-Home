@@ -4,7 +4,7 @@ using System.Collections;
 using System.Linq;
 using System;
 
-public class RockCrab : Rock , ITrap, ITremor, ICommand, IOnPlayerAction
+public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
 {
     // Should maybe eat Juvenile Plants
     [SerializeField] private Animator animator;
@@ -36,15 +36,9 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IOnPlayerAction
             Step();
     }
 
-    private void OnDestroy()
-    {
-        PlayerActions.onPlayerActions.Remove(this);
-    }
-
     protected override void Initialize()
     {
         base.Initialize();
-        AddToOnPlayerActionList(this);
         SetGrid();
         if(!hasShell)
             Invoke("SetPath", .5f);
@@ -94,9 +88,10 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IOnPlayerAction
             character.TriggerDeath();
     }
 
-    public void OnPerformAction()
+    public void OnPlayerAction()
     {
         SetPath();
+        PlayerActions.OnPlayerActionFinish(this);
     }
 
     public override void Damage(int value = 1)

@@ -31,8 +31,12 @@ public class PlayerActions : MonoBehaviour
     private IHoverable hoverable;
     private bool obstaclesDone = true;
 
+    public static bool finishedProcessing => Instance.obstaclesDone;
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
-    public static List<IOnPlayerAction> onPlayerActions;
+    // public static List<IOnPlayerAction> onPlayerActions;
+    private static HashSet<IActionWaitProcess> actionWaitProcesses;
+    private static HashSet<IActionWaitProcess> finishedProcesses;
+    
 
     private void Start()
     {
@@ -83,29 +87,70 @@ public class PlayerActions : MonoBehaviour
                 break;
         }
         GameData.IncrementPlayerMoves(-1);
-        UpdateOnActionObstacles();
-        obstaclesDone = true; // TO BE REMOVE AFTER COROUTINE IMPLEMENTATION IS FINISHED.
-        // StartCoroutine(WaitForObstaclesAction());
-        Character.instance.GetPath();
+        ProcessObstaclesAction();
+        StartCoroutine(WaitForObstaclesAction());
         if(GameData.levelData.moves == 0)
             Dehighlight();
     }
 
-    // private IEnumerator WaitForObstaclesAction()
-    // {
-    //     bool obstaclesDone = UpdateOnActionObstacles();
-    //     while(!obstaclesDone)
-    //         yield return null;
-    //     Character.instance.GetPath();
-    // }
-
-    private void UpdateOnActionObstacles()
+    private IEnumerator WaitForObstaclesAction()
     {
+        // Pause Timer
+        while(!obstaclesDone)
+        {
+            if(actionWaitProcesses.Count == 0)
+            {
+                obstaclesDone = true;
+                Character.instance.GetPath();
+                // Resume Timer
+                yield break;
+            }
+            Debug.LogWarning($"Waiting to process: {actionWaitProcesses.Count}");
+            yield return null;
+        }
+    }
+
+    private HashSet<IActionWaitProcess> FetchAllProcess()
+    {
+        IEnumerable<IActionWaitProcess> saveables = FindObjectsOfType<MonoBehaviour>(false).OfType<IActionWaitProcess>();
+        return new HashSet<IActionWaitProcess>(saveables);
+    }
+
+    private void ProcessObstaclesAction()
+    {
+        finishedProcesses = new HashSet<IActionWaitProcess>();
+        actionWaitProcesses = FetchAllProcess();
         // List<IOnPlayerAction> onPlayerActions = new List<IOnPlayerAction>(FindObjectsOfType<MonoBehaviour>(true).OfType<IOnPlayerAction>());
-        if(onPlayerActions == null||onPlayerActions.Count == 0)
+        if(actionWaitProcesses == null||actionWaitProcesses.Count == 0)
+        {
+            obstaclesDone = true;
             return;
-        foreach(IOnPlayerAction obstacle in onPlayerActions)
-            obstacle.OnPerformAction();
+        }
+        foreach(IActionWaitProcess obstacle in actionWaitProcesses)
+            obstacle.OnPlayerAction();
+        foreach(IActionWaitProcess process in finishedProcesses)
+            FinishProcess(process);
+        finishedProcesses.Clear();
+    }
+
+    public static void OnPlayerActionFinish(IActionWaitProcess process)
+    {
+        if(!finishedProcesses.Contains(process))
+            finishedProcesses.Add(process);
+    }
+
+    public static void FinishProcess(IActionWaitProcess process)
+    {
+        if(actionWaitProcesses != null && actionWaitProcesses.Contains(process))
+        {
+            Debug.LogWarning($"Process Finished {(process as Obstacle).gameObject.name}");
+            actionWaitProcesses.Remove(process);
+        }
+    }
+
+    public static void BeginProcess(IActionWaitProcess process)
+    {
+        actionWaitProcesses.Add(process);
     }
 
     private bool ActionsNotAllowed()

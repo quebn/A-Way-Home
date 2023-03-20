@@ -41,9 +41,9 @@ public class Character : MonoBehaviour, ISaveable
 
     private void Update()
     {
-        if (!isGoingHome)
+        if (!isGoingHome && PlayerActions.finishedProcessing)
             InGameUI.Instance.TimeCountdown();
-        else
+        if(isGoingHome)
             Step();
     }
 

@@ -30,6 +30,8 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     private void OnDisable()
     {
+        if(this is IActionWaitProcess)
+            PlayerActions.FinishProcess(this as IActionWaitProcess);
         ClearNodes();
     }
 
@@ -144,12 +146,6 @@ public class Obstacle : MonoBehaviour, ISaveable
         this.gameObject.SetActive(false);
     }
 
-    protected static void AddToOnPlayerActionList(IOnPlayerAction obstacle)
-    {
-        if(PlayerActions.onPlayerActions == null)
-            PlayerActions.onPlayerActions = new List<IOnPlayerAction>();
-        PlayerActions.onPlayerActions.Add(obstacle);
-    }
 
     protected void DestroyWalkableObstacle(Node node)
     {
@@ -164,6 +160,11 @@ public class Obstacle : MonoBehaviour, ISaveable
     {
         this.id = System.Guid.NewGuid().ToString();
     }
+
+    // protected struct PlayerWaitProcess
+    // {
+
+    // }
 }
 
 public interface IInspect
@@ -197,13 +198,14 @@ public interface ITrap
     public void OnTrapTrigger(Character character);
 }
 
-public interface IOnPlayerAction
-{
-    public void OnPerformAction();
-}
 
 public interface IHoverable
 {
     public void OnHover();
     public void OnDehover();
+}
+
+public interface IActionWaitProcess
+{
+    public void OnPlayerAction();
 }
