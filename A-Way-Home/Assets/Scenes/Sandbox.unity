@@ -1145,10 +1145,14 @@ MonoBehaviour:
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 8
+  openSpotMask:
+    serializedVersion: 2
+    m_Bits: 0
   gridSize: {x: 22, y: 20}
   nodeRadius: 0.5
   tileMap: {fileID: 0}
   tile: {fileID: 11400000, guid: 624cd456949571040a96b2a923a00d85, type: 2}
+  canBeCovered: 0
   enableValues: 0
 --- !u!114 &161895846
 MonoBehaviour:

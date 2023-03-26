@@ -8,11 +8,13 @@ public class NodeGrid : MonoBehaviour
 {
     public static NodeGrid Instance {get; private set;}
     [SerializeField] private LayerMask unwalkableMask;
+    [SerializeField] private LayerMask openSpotMask;
     [SerializeField] private Vector2 gridSize;
     [SerializeField] private float nodeRadius;
     [SerializeField] private Tilemap tileMap; 
     [SerializeField] private Tile tile; 
-
+    [SerializeField] private bool canBeCovered  = false;
+    
     private Vector2Int gridSizeInt;
     private float nodeDiameter;
     
@@ -53,14 +55,15 @@ public class NodeGrid : MonoBehaviour
         this.tileMap.SetTileFlags((Vector3Int)gridPosition, TileFlags.None);
         NodeType nodeType = NodeType.Walkable;
         Vector3 worldPoint = worldBottomLeft + Vector3.right * (gridPosition.x * nodeDiameter + nodeRadius) + Vector3.up * (gridPosition.y * nodeDiameter + nodeRadius);
-        Collider2D collider2D = Physics2D.OverlapCircle(worldPoint, nodeRadius, unwalkableMask);
-        if (collider2D == null)
+        Collider2D unwalkableCollider2D = Physics2D.OverlapCircle(worldPoint, nodeRadius, unwalkableMask);
+        Collider2D openSpotCollider2D = Physics2D.OverlapCircle(worldPoint, nodeRadius, openSpotMask);
+        if (unwalkableCollider2D == null)
             nodeType = NodeType.Walkable;
-        else if (collider2D.gameObject.tag == "Water")
+        else if (unwalkableCollider2D.gameObject.tag == "Water")
             nodeType = NodeType.Water;
-        else if (collider2D.gameObject.tag == "Terrain")
+        else if (unwalkableCollider2D.gameObject.tag == "Terrain")
             nodeType = NodeType.Terrain;
-        grid[gridPosition] = new Node(nodeType, worldPoint, gridPosition);
+        grid[gridPosition] = new Node(nodeType, worldPoint, gridPosition, canBeCovered? openSpotCollider2D != null : true);
     }
     
     [SerializeField] private bool enableValues;
@@ -105,18 +108,20 @@ public class NodeGrid : MonoBehaviour
         return nodes;
     }
     
-    public static List<Node> GetNodes(Vector2 nodeTileCenter, int width, int height, NodeType excludedType)
+    public static List<Node> GetNodes(Vector2 nodeTileCenter, int width, int height, NodeType excludedType, bool canLightning = false)
     {
         List<Node> nodes = new List<Node>(width * height);
         List<Vector2> vector2s = GetNodeWorldPos(nodeTileCenter, width, height);
         for(int i = 0; i < vector2s.Count; i++){
             Node node = NodeWorldPointPos(vector2s[i]);
-            if (!node.IsType(excludedType))
+            if (!node.IsType(excludedType) && (canLightning ? node.canLightning : true))
+            {
+                Debug.Assert(node.currentType != excludedType, "ERROR: should not pass");
                 nodes.Add(node);
+            }
         }
         return nodes;
     }
-
 
     public static bool CheckTileIsTerrain(Vector2 nodeTileCenter, int width, int height)
     {

@@ -28585,6 +28585,9 @@ MonoBehaviour:
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 8
+  openSpotMask:
+    serializedVersion: 2
+    m_Bits: 64
   gridSize: {x: 34, y: 28}
   nodeRadius: 0.5
   tileMap: {fileID: 9113453663569127793}
@@ -31242,7 +31245,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10
+      m_AnimationSpeed: 10.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 2, y: 0, z: 0}
@@ -31770,7 +31773,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10
+      m_AnimationSpeed: 10.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 2, y: 3, z: 0}

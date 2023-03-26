@@ -92,6 +92,7 @@ public class Character : MonoBehaviour, ISaveable
             Debug.Log($"{requiredEssence} essence required! => {destinations.Count} Essence Found!");
         }
         else{
+            Home.instance.ActivateHome();
             List<Vector3> homes = new List<Vector3>(){Home.instance.transform.position};
             path = Pathfinding.FindPath(currentPosition, homes);
         }

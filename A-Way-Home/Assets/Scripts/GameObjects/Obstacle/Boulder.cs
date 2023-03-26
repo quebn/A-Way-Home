@@ -26,7 +26,7 @@ public class Boulder : Obstacle, ILightning, ITremor
 
     public void OnLightningHit()
     {
-        Damage(2);
+        Damage(1);
     }
 
     public void OnTremor()
@@ -38,13 +38,12 @@ public class Boulder : Obstacle, ILightning, ITremor
     {
         if(hitpoints > 0)
             hitpoints -= value;
-        Debug.Log("Hit Boulder");
         if(hitpoints > 0)
             return;
         ClearNodes();
         animator.Play("BigBoulder_Destroy");
         float delay = animator.GetCurrentAnimatorStateInfo(0).length;
-        Invoke("OnDestroy", delay);
+        Invoke("OnRemove", delay);
     } 
 
     public override void LoadData(LevelData levelData)
@@ -55,10 +54,8 @@ public class Boulder : Obstacle, ILightning, ITremor
             this.gameObject.SetActive(false);
     }
 
-    private void OnDestroy()
+    private void OnRemove()
     {
         this.gameObject.SetActive(false);
     }
-
-
 }

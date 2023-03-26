@@ -212,7 +212,7 @@ public class PlayerActions : MonoBehaviour
         switch(currentTool)
         {
             case Tool.Lightning:
-                HighlightTile(1, 1, Node.colorCyan);
+                HighlightTile(1, 1, Node.colorCyan, true);
                 break;
             case Tool.Command:
                 HighlightTile(1, 1, Node.colorPurple);
@@ -246,13 +246,15 @@ public class PlayerActions : MonoBehaviour
         hoverable.OnHover();
     }
 
-    private void HighlightTile(int tileWidth, int tileHeight, Color color)
+    private void HighlightTile(int tileWidth, int tileHeight, Color color, bool isOpenOnly = false)
     {
         Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos, tileWidth, tileHeight);
         if(currentTileOrigin == origin)
             return;
         Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, Character.instance);
-        currentTileNodes = NodeGrid.GetNodes(origin, tileWidth, tileHeight, NodeType.Terrain);
+        currentTileNodes = NodeGrid.GetNodes(origin, tileWidth, tileHeight, NodeType.Terrain, isOpenOnly);
+        if(currentTileNodes.Count == 0)
+            return;
         HiglightObstacles(origin);
         currentTileOrigin = origin;
         Node.RevealNodes(currentTileNodes, color);

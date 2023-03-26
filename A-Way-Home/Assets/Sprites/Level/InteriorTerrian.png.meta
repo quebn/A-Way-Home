@@ -111,7 +111,7 @@ TextureImporter:
         x: 0
         y: 80
         width: 64
-        height: 80
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -126,13 +126,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: InteriorTerrian_1
+      name: Vault_lower
       rect:
         serializedVersion: 2
         x: 64
         y: 80
         width: 64
-        height: 80
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -532,8 +532,8 @@ TextureImporter:
         y: 49
         width: 16
         height: 30
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.35}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -546,13 +546,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: InteriorTerrian_21
+      name: Smelter_lower
       rect:
         serializedVersion: 2
         x: 128
         y: 50
         width: 32
-        height: 62
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -567,13 +567,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: InteriorTerrian_22
+      name: Shelf_lower
       rect:
         serializedVersion: 2
         x: 160
         y: 64
         width: 48
-        height: 48
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -629,6 +629,69 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Vault_upper
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 112
+        width: 64
+        height: 48
+      alignment: 9
+      pivot: {x: 0.5, y: -0.33}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d6821431a0ee2b14e8acce8916629bef
+      internalID: 416194292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smelter_upper
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 66
+        width: 32
+        height: 34
+      alignment: 9
+      pivot: {x: 0.5, y: -0.23}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f5c8494108933924c8bcb0294ea133f9
+      internalID: -1950388965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shelf_upper
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 80
+        width: 48
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: -0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 952e79a671d517b44b5eb07804d84d2c
+      internalID: -1327980666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -640,22 +703,25 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      InteriorTerrian_0: 1417872247
       InteriorTerrian_7: -593610410
       InteriorTerrian_19: 1624571184
-      InteriorTerrian_1: -1722592648
+      InteriorTerrian_0: 1417872247
+      Vault_upper: 416194292
       InteriorTerrian_12: 1004548028
       InteriorTerrian_8: -474125674
+      Shelf_lower: 1352973366
       InteriorTerrian_16: -1197497628
       InteriorTerrian_23: 2031194178
       InteriorTerrian_9: -68142404
       InteriorTerrian_20: 1835112378
+      Smelter_upper: -1950388965
       InteriorTerrian_18: -474946912
       InteriorTerrian_13: -2088288580
+      Vault_lower: -1722592648
       InteriorTerrian_10: -1671612342
-      InteriorTerrian_22: 1352973366
+      Shelf_upper: -1327980666
       InteriorTerrian_3: 1051134698
-      InteriorTerrian_21: 880618582
+      Smelter_lower: 880618582
       InteriorTerrian_2: 1869989771
       InteriorTerrian_24: 1996577929
       InteriorTerrian_5: 1892032181

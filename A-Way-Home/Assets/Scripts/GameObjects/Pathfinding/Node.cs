@@ -11,7 +11,9 @@ public class Node
     public Node parent;
     public int gCost;
     public List<int> hCosts ;
+    public bool isConductive;
 
+    private bool isOpen;
     private NodeType currentNodeType;
     private Obstacle obstacle; 
 
@@ -21,6 +23,7 @@ public class Node
     private bool isCommandable => obstacle is ICommand;
     private bool isTremorable => obstacle is ITremor;
     public bool hasObstacle => obstacle != null;
+    public bool canLightning => isOpen || isConductive;
     public int hCost => MinHCost(); 
     public int fCost => gCost + hCost;
     public NodeType currentType {  
@@ -37,12 +40,14 @@ public class Node
     public static Color colorPurple => new Color32(166, 0, 255, 150);
     public static Color colorClear  => Color.clear; 
     
-    public Node(NodeType nodeType, Vector3 worldpos, Vector2Int grid)
+    public Node(NodeType nodeType, Vector3 worldpos, Vector2Int grid, bool isOpen)
     {
         this.worldPosition = worldpos;
         this.gridPos = grid;
         this.currentType = nodeType;
         this.hCosts = new List<int>();
+        this.isOpen = isOpen;
+        this.isConductive = isOpen;
     }
 
     private int MinHCost()
