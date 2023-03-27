@@ -89,7 +89,9 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
             currentTargetIndex = 0;
             currentTargetNode = path[0];
             Node endNode = path[travelSpeed - 1];
-
+        }else{
+            // Debug.Assert(path.Count == 0 && isImmobile, "ERROR: Path is is not null");
+            PlayerActions.OnPlayerActionFinish(this);
         }
     } 
 

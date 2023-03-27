@@ -29,6 +29,7 @@ public class WildFruit : Plant
 
     public override void OnTrapTrigger(Character character)
     {
+        Debug.Log("Triggered!");
         character.IncrementEnergy(heal);
         Remove();
     }
