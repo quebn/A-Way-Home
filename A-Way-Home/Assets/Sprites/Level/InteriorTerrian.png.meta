@@ -384,9 +384,9 @@ TextureImporter:
         x: 17
         y: 48
         width: 15
-        height: 19
+        height: 16
       alignment: 9
-      pivot: {x: 0.5, y: 0.4}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -405,9 +405,9 @@ TextureImporter:
         x: 1
         y: 48
         width: 15
-        height: 19
+        height: 16
       alignment: 9
-      pivot: {x: 0.5, y: 0.4}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -692,6 +692,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Logs_upper
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 64
+        width: 15
+        height: 16
+      alignment: 9
+      pivot: {x: 0.5, y: -0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8d0addbac36dd284e96094ee6831b07e
+      internalID: 1332454116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -725,6 +746,7 @@ TextureImporter:
       InteriorTerrian_2: 1869989771
       InteriorTerrian_24: 1996577929
       InteriorTerrian_5: 1892032181
+      Logs_upper: 1332454116
       InteriorTerrian_15: 1477448007
       InteriorTerrian_14: -1741306633
       InteriorTerrian_11: 1119001518

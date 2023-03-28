@@ -111,9 +111,9 @@ TextureImporter:
         x: 0
         y: 0
         width: 16
-        height: 32
+        height: 16
       alignment: 9
-      pivot: {x: 0.5, y: 0.25}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -132,9 +132,9 @@ TextureImporter:
         x: 17
         y: 0
         width: 28
-        height: 32
+        height: 16
       alignment: 9
-      pivot: {x: 0.5, y: 0.25}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -153,9 +153,9 @@ TextureImporter:
         x: 48
         y: 0
         width: 16
-        height: 32
+        height: 16
       alignment: 9
-      pivot: {x: 0.5, y: 0.25}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -163,6 +163,69 @@ TextureImporter:
       bones: []
       spriteID: b7e14332940b4c14e858e94976591c73
       internalID: 2134187351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Box_upper
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 16
+        width: 16
+        height: 16
+      alignment: 9
+      pivot: {x: 0.5, y: -0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 33de48db69b01b247bdf8fe940b09e1a
+      internalID: -1563414154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BarrelBig_upper
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 16
+        width: 28
+        height: 16
+      alignment: 9
+      pivot: {x: 0.5, y: -0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bec30fad18e1ede41af98a39e557a6e1
+      internalID: 1270247061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Barrel_upper
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 16
+        width: 16
+        height: 16
+      alignment: 9
+      pivot: {x: 0.5, y: -0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cde3f0c9c1385e340ab21a1dd2a4b237
+      internalID: -1994408515
       vertices: []
       indices: 
       edges: []
@@ -180,10 +243,10 @@ TextureImporter:
     nameFileIdTable:
       BarrelBig: 1565606831
       Barrel: 2134187351
-      Barrel_upper: 1305330294
-      BarrelBig_upper: -1205795306
+      Barrel_upper: -1994408515
+      BarrelBig_upper: 1270247061
       Box: -1164634862
-      Box_upper: -1025813062
+      Box_upper: -1563414154
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
