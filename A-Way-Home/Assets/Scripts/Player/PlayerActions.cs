@@ -14,6 +14,7 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] private Animator animatorExplosion;
     [SerializeField] private int toolCount;
     [SerializeField] private List<Texture2D> mouseTextures;
+    [SerializeField] private GameObject lilypadVisual;
 
     private Tool currentTool;
     private Mouse mouse;
@@ -30,13 +31,13 @@ public class PlayerActions : MonoBehaviour
     private List<Obstacle> currentObstacles;
     private IHoverable hoverable;
     private bool obstaclesDone = true;
+    private GameObject lilypad;
 
     public static bool finishedProcessing => Instance.obstaclesDone;
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
     // public static List<IOnPlayerAction> onPlayerActions;
     private static HashSet<IActionWaitProcess> actionWaitProcesses;
     private static HashSet<IActionWaitProcess> finishedProcesses;
-    
 
     private void Start()
     {
@@ -79,8 +80,7 @@ public class PlayerActions : MonoBehaviour
                 Node.TremorNodes(currentTileNodes);
                 break;
             case Tool.Grow:
-                GrowAnimation(this.currentTileOrigin);
-                currentTileNodes[0].GrowObstacle();
+                Grow();
                 break;
             case Tool.Command:
                 currentTileNodes[0].CommandObstacle();
@@ -91,6 +91,15 @@ public class PlayerActions : MonoBehaviour
         StartCoroutine(WaitForObstaclesAction());
         if(GameData.levelData.moves == 0)
             Dehighlight();
+    }
+
+    private void Grow()
+    {
+        GrowAnimation(this.currentTileOrigin);
+        if(currentTileNodes[0].currentType == NodeType.Water)
+            GameObject.Instantiate(lilypad, currentTileNodes[0].worldPosition, Quaternion.identity);
+        else
+            currentTileNodes[0].GrowObstacle();
     }
 
     private IEnumerator WaitForObstaclesAction()
@@ -196,6 +205,8 @@ public class PlayerActions : MonoBehaviour
 
     private void Dehighlight()
     {
+        if(lilypadVisual.activeSelf)
+            lilypadVisual.SetActive(false);
         currentTileOrigin = new Vector2();
         Obstacle.DehighlightObstacles(currentObstacles, currentTool);
         Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, Character.instance);
@@ -219,11 +230,24 @@ public class PlayerActions : MonoBehaviour
                 break;
             case Tool.Grow:
                 HighlightTile(1, 1, Node.colorGreen);
+                OnWaterHover();
                 break;
             case Tool.Tremor:
                 HighlightTile(2, 2, Node.colorYellow);
                 break;
         }
+    }
+
+    private void OnWaterHover()
+    {
+        if(currentTileNodes.Count != 0 &&currentTileNodes[0].currentType == NodeType.Water)
+        {
+            lilypadVisual.SetActive(true);
+            lilypadVisual.transform.position = currentTileOrigin;
+            Debug.Log("Hovering On water");
+        }
+        else lilypadVisual.SetActive(false);
+
     }
 
     private void OnHoverObstacle()
@@ -323,6 +347,8 @@ public class PlayerActions : MonoBehaviour
         currentTileNodes = new List<Node>(4); 
         // actionList = new List<ActionData>();
         currentObstacles = new List<Obstacle>();
+        lilypad = Resources.Load<GameObject>($"Spawnables/Lilypad");
+        Debug.Assert(lilypad != null);
     }
 
     private void SubscribeFunctions()

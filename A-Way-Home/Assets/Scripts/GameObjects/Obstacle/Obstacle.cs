@@ -56,11 +56,11 @@ public class Obstacle : MonoBehaviour, ISaveable
         // Debug.Log($"{this.gameObject.name} -> Nodes count{nodes.Count}");
     }
 
-    protected void ClearNodes()
+    protected void ClearNodes(NodeType nodeType = NodeType.Walkable)
     {
         if (nodes == null || nodes.Count == 0 || Node.GetNodesInteractable(nodes).Count == 0)
             return;
-        Node.SetNodesObstacle(nodes, NodeType.Walkable);
+        Node.SetNodesObstacle(nodes, nodeType);
         nodes = new List<Node>();
     }
 
