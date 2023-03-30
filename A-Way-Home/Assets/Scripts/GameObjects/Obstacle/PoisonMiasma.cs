@@ -1,20 +1,15 @@
 using UnityEngine;
 
-public class PoisonMiasma : Obstacle, ITrap
+public class PoisonMiasma : Spawnable, ITrap
 {
     [SerializeField] private int damage;
 
-    protected override void Initialize()
+    protected override void OnSpawn()
     {
-        base.Initialize();
+        DestroyNodeObstacle();
+        base.OnSpawn();
         SetNodes(this.worldPos, NodeType.Walkable, this);
         // SetNodes(this.worldPos, NodeType.Walkable, this);
-    }
-
-
-    public override void OnRevealNodeColor()
-    {
-        Node.RevealNodes(nodes, Node.colorPurple);
     }
 
     public void OnTrapTrigger(Character character)
@@ -22,17 +17,7 @@ public class PoisonMiasma : Obstacle, ITrap
         character.IncrementEnergy(damage);
     }
 
-
-    public void AddAsSpawned(string id)
-    {
-        if(GameData.levelData.obstacles.ContainsKey(this.id))
-            GameData.levelData.obstacles.Remove(id);
-        this.id = id;
-        Debug.Assert(!GameData.levelData.obstacles.ContainsKey(id), "ERROR: obstacle with id of {id} should not exist!");
-        base.Initialize();
-    }
-
-    public void Clear()
+    public override void Remove()
     {
         if(GameData.levelData.obstacles.ContainsKey(this.id))
             GameData.levelData.obstacles.Remove(id);
@@ -41,4 +26,10 @@ public class PoisonMiasma : Obstacle, ITrap
         GameObject.Destroy(this.gameObject);
     }
 
+    private void DestroyNodeObstacle()
+    {
+        Node node = NodeGrid.NodeWorldPointPos(this.worldPos);
+        if(node.hasObstacle)
+            Destroy(node.GetObstacle());
+    }
 }

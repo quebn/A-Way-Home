@@ -141,16 +141,16 @@ public class PlayerLevelData : MonoBehaviour
 
     public void LoadSpawnedObstacles()
     {
-        for (int i = 1; i <= GameData.levelData.spawnCount; i++)
-        {
-            string ID = $"{i}";
-            if(GameData.levelData.obstacles[ID].typeName == typeof(TreeLog).ToString())
-            {
-                TreeLog log = GameObject.Instantiate(logPrefab, GameData.levelData.obstacles[ID].position, Quaternion.identity).GetComponent<TreeLog>();
-                log.AddAsSpawned(ID);
-            }
-        }
-        SaveSystem.saveables = GetAllSaveables();
+        // for (int i = 1; i <= GameData.levelData.spawnCount; i++)
+        // {
+        //     string ID = $"{i}";
+        //     if(GameData.levelData.obstacles[ID].typeName == typeof(TreeLog).ToString())
+        //     {
+        //         TreeLog log = GameObject.Instantiate(logPrefab, GameData.levelData.obstacles[ID].position, Quaternion.identity).GetComponent<TreeLog>();
+        //         log.AddAsSpawned(ID);
+        //     }
+        // }
+        // SaveSystem.saveables = GetAllSaveables();
     }
 
     [SerializeField] private bool enableBoundaryGizmo;

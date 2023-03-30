@@ -45,56 +45,28 @@ public class PlantPoison : Plant
     {
         foreach(KeyValuePair<Vector2Int, Node> pair in tilesPoisoned)
         {
-            if(!DestroyObstacles(pair.Value))
+            if(!isSpawnable(pair.Value))
                 continue;
-            PoisonMiasma miasma = GameObject.Instantiate(prefabPoisonMiasma, pair.Value.worldPosition, Quaternion.identity).GetComponent<PoisonMiasma>();
-            miasma.AddAsSpawned($"{GameData.levelData.spawnCount += 1}");
-
+            GameObject.Instantiate(prefabPoisonMiasma, pair.Value.worldPosition, Quaternion.identity);
         } 
     }
 
-    private bool DestroyObstacles(Node node)
+    private bool isSpawnable(Node node)
     { 
         if(node.IsWalkable() && !node.hasObstacle)
             return true;
         if(node.hasObstacle)
         {
-            if(node.IsObstacle(typeof(TreeThin)))
-            {
-                TreeThin tree = (TreeThin)node.GetObstacle();
-                tree.DestroyCompletely();
-            }
-            else if(node.IsObstacle(typeof(TreeLog)))
-            {
-                TreeLog log = (TreeLog)node.GetObstacle();
-                log.Clear();
-            }
-            else if(node.IsObstacle(typeof(GroundSpike)))
-            {
-                GroundSpike spike = (GroundSpike)node.GetObstacle();
-                spike.Remove();
-                Debug.LogWarning("Cleared Spike");
-            }
-            else if(node.IsObstacle(typeof(RockCrab)))
-            {
-                RockCrab crab = (RockCrab)node.GetObstacle();
-                crab.Remove();
-            }
-            else if(node.IsObstacle(typeof(PlantEnergy)))
-            {
-                PlantEnergy plant = (PlantEnergy)node.GetObstacle();
-                plant.Remove();
-                Debug.LogWarning("Cleared Plant");
-            }
-            else if(node.IsObstacle(typeof(Undead)))
-            {
-                Undead undead = (Undead)node.GetObstacle();
-                undead.Remove(true);
-            }
-            return true;
+            if(
+                node.IsObstacle(typeof(TreeThin)) || 
+                node.IsObstacle(typeof(TreeLog)) ||
+                node.IsObstacle(typeof(Plant)) ||
+                node.IsObstacle(typeof(RockCrab)) ||
+                node.IsObstacle(typeof(Undead))
+            ) return true;
         }
-
         return false;
+
     }
 
 
@@ -103,9 +75,10 @@ public class PlantPoison : Plant
         foreach(KeyValuePair<Vector2Int, Node> pair in tilesPoisoned)
         {
             if(pair.Value.IsObstacle(typeof(PoisonMiasma)))
+            
             {
                 PoisonMiasma miasma = (PoisonMiasma)pair.Value.GetObstacle();
-                miasma.Clear();
+                miasma.Remove();
             }
 
         }

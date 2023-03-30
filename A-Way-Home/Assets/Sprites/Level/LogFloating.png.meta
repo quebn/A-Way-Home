@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2434ac70b3dca7b4188f5a8e9b587144
+guid: 7b3842028bd7a1c4e9c9fb5a21b9533d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 14
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -105,22 +105,43 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlantViolet_Adult_0
+      name: LogFloating_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 15
-        height: 26
-      alignment: 9
-      pivot: {x: 0.5, y: 0.32}
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 65f8355669a49624d9cb97aa7653a469
-      internalID: -171040298
+      spriteID: 1eff385a3864624409851cb4c2271c9d
+      internalID: 505960034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LogFloating_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 32a6c957952f1dd4e9176621d1fde3d4
+      internalID: 2000080165
       vertices: []
       indices: 
       edges: []
@@ -136,7 +157,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PlantViolet_Adult_0: -171040298
+      LogFloating_1: 2000080165
+      LogFloating_0: 505960034
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

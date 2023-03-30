@@ -5,9 +5,9 @@ using UnityEngine;
 public class WildFruit : Plant
 {
     [SerializeField] private int heal = 1;
-    protected override void Initialize()
+
+    protected override void OnInitialize()
     {
-        base.Initialize();
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 

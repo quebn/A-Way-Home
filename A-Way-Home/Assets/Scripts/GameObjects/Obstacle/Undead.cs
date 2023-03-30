@@ -186,10 +186,10 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
 
     public override void Remove()
     {
-        TriggerDeath(true, true);
+        TriggerDeath(true);
     }
 
-    public void Remove(bool forceClear, bool killPhasers = false)
+    public void Remove(bool forceClear = true, bool killPhasers = false)
     {
         TriggerDeath(forceClear, killPhasers);
     }

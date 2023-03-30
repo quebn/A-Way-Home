@@ -82,7 +82,7 @@ public class Lizard : Obstacle, ICommand
                 if(node.IsObstacle(typeof(TreeThin)))
                 {
                     TreeThin tree = (TreeThin)node.GetObstacle();
-                    tree.DestroyCompletely();
+                    tree.Remove();
                 }
                 else if(node.IsObstacle(typeof(TreeLog)))
                 {

@@ -11,60 +11,20 @@ public class TreeLog : Obstacle, ILightning
     protected override void Initialize()
     {
         base.Initialize();
-        DestroyNodeObstacles();
         SetNodes(this.transform.position, NodeType.Obstacle, this);
     }
 
     public void OnLightningHit()
     {
-        RemoveLog();
+        Remove();
     }
 
-    public void AddAsSpawned(string id)
-    {
-        if(GameData.levelData.obstacles.ContainsKey(this.id))
-            GameData.levelData.obstacles.Remove(id);
-        this.id = id;
-        Debug.Assert(!GameData.levelData.obstacles.ContainsKey(id), "ERROR: obstacle with id of {id} should not exist!");
-        base.Initialize();
-        animator.Play("Log_Spawn");
-    }
-
-    private void DestroyNodeObstacles()
-    {
-        Node node = NodeGrid.NodeWorldPointPos(this.worldPos);
-        if(node.IsObstacle(typeof(GroundSpike)))
-        {
-            GroundSpike groundSpike = (GroundSpike)node.GetObstacle();
-            Destroy(node.GetObstacle());
-        }
-        else if(node.IsObstacle(typeof(RockCrab)))
-        {
-            RockCrab rockCrab = (RockCrab)node.GetObstacle();
-            Destroy(rockCrab);
-        }
-        else if(node.IsObstacle(typeof(Rock)))
-        {
-            Rock rock = (Rock)node.GetObstacle();
-            Destroy(rock);
-        }
-        else if(node.IsObstacle(typeof(Plant)))
-        {
-            Plant plant = (Plant)node.GetObstacle();
-            Destroy(plant);
-        }
-    }
-
-    private void RemoveLog()
+    public override void Remove()
     {
         hitpoints -= 1;
         ClearNodes();
         Debug.Assert(hitpoints == 0, "ERROR: Hitpoints should be 0!");
         this.gameObject.SetActive(false);
-        // if(GameData.levelData.spawneds.ContainsKey(id))
-        //     GameData.levelData.spawneds.Remove(id);
-        // else if(GameData.levelData.obstacles.ContainsKey(id))
-        //     GameData.levelData.obstacles[id] = hitpoints;
     }
 
     public void Clear()

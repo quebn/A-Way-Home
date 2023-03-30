@@ -34,7 +34,7 @@ public class TreeThin : Obstacle, ILightning
         SetPlaceableLocations();
     }
 
-    public void DestroyCompletely()
+    public override void Remove()
     {
         ClearNodes();
         this.hitpoints = 0;
@@ -95,10 +95,13 @@ public class TreeThin : Obstacle, ILightning
         yield return new WaitForSeconds(CutDownTreeAnimation()); 
         this.upper.SetActive(false);
         Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);
-        for(int i = 0; i < placeableNodes[currentPlaceable].Count; i++){
-            Debug.LogWarning(placeableNodes[currentPlaceable][i].worldPosition);
-            TreeLog log = Instantiate(logs[i], placeableNodes[currentPlaceable][i].worldPosition, Quaternion.identity).GetComponent<TreeLog>();
-            log.AddAsSpawned($"{GameData.levelData.spawnCount += 1}");
+        for(int i = 0 ; i < placeableNodes[currentPlaceable].Count; i++)
+        {
+            GameObject.Instantiate(
+                placeableNodes[currentPlaceable][i].currentType == NodeType.Water ? logs[1] : logs[0],
+                placeableNodes[currentPlaceable][i].worldPosition,
+                Quaternion.identity
+            );
         }
     }
 
