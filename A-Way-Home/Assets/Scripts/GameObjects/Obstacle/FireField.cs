@@ -2,30 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireField : Obstacle, ITrap
+public class FireField : Spawnable, ITrap
 {
+
+    protected override void OnSpawn()
+    {
+        DestroyNodeObstacle();
+        base.OnSpawn();
+        SetNodes(this.worldPos, NodeType.Walkable, this);
+    }
 
     public void OnTrapTrigger(Character character)
     {
         // add burning effect on character;
     }
 
-    protected override void Initialize()
-    {
-        base.Initialize();
-        SetNodes(this.worldPos, NodeType.Walkable, this);
-    }
-
-    public void AddAsSpawned(string id)
-    {
-        if(GameData.levelData.obstacles.ContainsKey(this.id))
-            GameData.levelData.obstacles.Remove(id);
-        this.id = id;
-        Debug.Assert(!GameData.levelData.obstacles.ContainsKey(id), "ERROR: obstacle with id of {id} should not exist!");
-        base.Initialize();
-    }
-
-    public void Clear()
+    public override void Remove()
     {
         if(GameData.levelData.obstacles.ContainsKey(this.id))
             GameData.levelData.obstacles.Remove(id);

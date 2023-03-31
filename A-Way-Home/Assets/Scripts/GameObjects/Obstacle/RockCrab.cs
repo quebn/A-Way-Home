@@ -16,8 +16,14 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
     private Node currentTargetNode;
     private int targetIndex;
 
-    private bool hasPath => path.Count > 0;
+
+    public override bool isBurnable => true;
+    public override bool isTrampleable => !hasShell;
+    public override bool isFragile => !hasShell;
+    public override bool isCorrosive => true;
+    public override bool isMeltable => true;
     public bool hasShell => hitpoints == 2;
+    private bool hasPath => path.Count > 0;
 
     protected override int hitpoints {
         get => animator.GetInteger("hitpoints");

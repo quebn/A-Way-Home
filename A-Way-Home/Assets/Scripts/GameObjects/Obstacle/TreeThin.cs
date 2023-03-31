@@ -5,14 +5,17 @@ using UnityEngine;
 public class TreeThin : Obstacle, ILightning
 {
     [SerializeField] private SpriteRenderer upperRenderer;
+    [SerializeField] private Animator animator;
     [SerializeField] private GameObject upper;
-    [SerializeField] private Animator animatorUpper;
-    // [SerializeField] private Animator animatorLower;
     [SerializeField] private List<GameObject> logs;
     private Dictionary<Vector2, List<Node>> placeableNodes;
     private Vector2 currentPlaceable;
     private bool isHovered;
     private int hp = 2;
+
+    public override bool isCorrosive => true;
+    public override bool isMeltable => true;
+    public override bool isBurnable => isCutDown;
 
     private bool isFullyDestroyed => hitpoints == 0;
     private bool isCutDown => hitpoints == 1;
@@ -146,9 +149,9 @@ public class TreeThin : Obstacle, ILightning
     private float CutDownTreeAnimation()
     {
         if (currentPlaceable.x > this.worldPos.x)
-            animatorUpper.Play("TreeUpper_FallRight");
+            animator.Play("TreeFall_Right");
         else if (currentPlaceable.x < this.worldPos.x)
-            animatorUpper.Play("TreeUpper_FallLeft");
-        return animatorUpper.GetCurrentAnimatorStateInfo(0).length;
+            animator.Play("TreeFall_Left");
+        return animator.GetCurrentAnimatorStateInfo(0).length;
     }
 }

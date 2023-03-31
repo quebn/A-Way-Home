@@ -25,11 +25,4 @@ public class PoisonMiasma : Spawnable, ITrap
         Debug.Log("Poison Miasma Cleared");
         GameObject.Destroy(this.gameObject);
     }
-
-    private void DestroyNodeObstacle()
-    {
-        Node node = NodeGrid.NodeWorldPointPos(this.worldPos);
-        if(node.hasObstacle)
-            Destroy(node.GetObstacle());
-    }
 }

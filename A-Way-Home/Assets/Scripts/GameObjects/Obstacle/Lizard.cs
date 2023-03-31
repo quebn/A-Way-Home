@@ -37,81 +37,22 @@ public class Lizard : Obstacle, ICommand
             DestroyFire();
     }
 
+    private bool IfBurnable(Node node)
+    {
+        if(node.IsWalkable() && !node.hasObstacle )
+            return true;
+        if(node.IsType(NodeType.Terrain) || node.IsType(NodeType.Water))
+            return false;
+        return node.GetObstacle().isBurnable;
+    }
+
     private void BreathFire()
     {
         if(fireNodes == null || fireNodes.Count <= 0)
             return;
         foreach(Node node in fireNodes)
         {
-            if(node.IsType(NodeType.Walkable))
-            {
-                if(node.hasObstacle)
-                {
-                    if(node.IsObstacle(typeof(GroundSpike)))
-                    {
-                        GroundSpike spike = (GroundSpike)node.GetObstacle();
-                        spike.Remove();
-                        Debug.LogWarning("Cleared Spike");
-                    }
-                    else if(node.IsObstacle(typeof(RockCrab)))
-                    {
-                        RockCrab crab = (RockCrab)node.GetObstacle();
-                        crab.Remove();
-                    }
-                    else if(node.IsObstacle(typeof(PlantEnergy)))
-                    {
-                        PlantEnergy plant = (PlantEnergy)node.GetObstacle();
-                        plant.Remove();
-                        Debug.LogWarning("Cleared Plant");
-                    }
-                    else if(node.IsObstacle(typeof(PlantPoison)))
-                    {
-                        PlantPoison plant = (PlantPoison)node.GetObstacle();
-                        plant.Remove();
-                        Debug.LogWarning("Cleared Plant");
-                    }
-                    else if(node.IsObstacle(typeof(Undead)))
-                    {
-                        Undead undead = (Undead)node.GetObstacle();
-                        undead.Remove(true);
-                    }
-                }
-            }
-            else if(node.IsType(NodeType.Obstacle))
-            {
-                if(node.IsObstacle(typeof(TreeThin)))
-                {
-                    TreeThin tree = (TreeThin)node.GetObstacle();
-                    tree.Remove();
-                }
-                else if(node.IsObstacle(typeof(TreeLog)))
-                {
-                    TreeLog log = (TreeLog)node.GetObstacle();
-                    log.Clear();
-                }
-                else if(node.IsObstacle(typeof(Undead)))
-                {
-                    Undead undead = (Undead)node.GetObstacle();
-                    undead.Remove(true);
-                }
-                else if(node.IsObstacle(typeof(PlantEnergy)))
-                {
-                    PlantEnergy plant = (PlantEnergy)node.GetObstacle();
-                    plant.Remove();
-                    Debug.LogWarning("Cleared Plant");
-                }
-                else if(node.IsObstacle(typeof(PlantPoison)))
-                {
-                    PlantPoison plant = (PlantPoison)node.GetObstacle();
-                    plant.Remove();
-                    Debug.LogWarning("Cleared Plant");
-                }
-                else
-                    return;
-            }
-            else return;
             FireField fire = GameObject.Instantiate(fireField, node.worldPosition, Quaternion.identity, this.transform).GetComponent<FireField>();
-            fire.AddAsSpawned($"{GameData.levelData.spawnCount += 1}");
             fireFields.Add(fire);
         }
     }
@@ -119,7 +60,7 @@ public class Lizard : Obstacle, ICommand
     private void DestroyFire()
     {
         foreach(FireField fire in fireFields)
-            fire.Clear();
+            fire.Remove();
         fireFields = new List<FireField>();
     }
 
@@ -134,10 +75,8 @@ public class Lizard : Obstacle, ICommand
             if(!NodeGrid.Instance.grid.ContainsKey(gridPosIncrement))
                 return;
             Node node = NodeGrid.Instance.grid[gridPosIncrement];
-            // if(node.IsType(NodeType.Walkable))// && !node.hasObstacle)
-            fireNodes.Add(node);
-            // else 
-                // return;
+            if(IfBurnable(node))
+                fireNodes.Add(node);
             gridPosIncrement += fireDirectionDiff;
         }
     }

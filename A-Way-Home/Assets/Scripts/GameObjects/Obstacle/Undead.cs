@@ -10,11 +10,16 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
     [SerializeField] private bool canPhase; 
     [SerializeField] private bool canRevive; 
     [SerializeField] private int deathTimer;
-    
     private int maxHitpoints;
     private List<Node> path;
     private Node currentTargetNode;
     private int currentTargetIndex;
+
+    public override bool isBurnable => true;
+    public override bool isFragile => !canPhase;
+    public override bool isMeltable => !canPhase;
+    public override bool isCorrosive => !canPhase;
+
     private int  xPositionDiff => (int)(currentTargetNode.worldPosition.x - this.worldPos.x);
     private int  yPositionDiff => (int)(currentTargetNode.worldPosition.y - this.worldPos.y);
     private bool canMove => currentTargetIndex < travelSpeed;
@@ -102,9 +107,9 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
             currentTargetIndex ++;
             if(!canPhase)
             {
-                if(currentTargetNode.IsObstacle(typeof(Plant)))
+                if(currentTargetNode.hasObstacle && currentTargetNode.GetObstacle().isTrampleable)
                     Destroy(currentTargetNode.GetObstacle());
-                else if(currentTargetNode.IsObstacle(typeof(PoisonMiasma)) || currentTargetNode.IsObstacle(typeof(FireField)) || (currentTargetNode.IsObstacle(typeof(GroundSpike))))
+                else if(currentTargetNode.IsObstacle(typeof(GroundSpike)) || currentTargetNode.IsObstacle(typeof(PoisonMiasma)) || currentTargetNode.IsObstacle(typeof(FireField)))
                 {
                     isMoving = false;
                     currentTargetNode.GetObstacle().Destroy(this);
@@ -141,21 +146,6 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
                 bat.Move();
             }
             if(canPhase) return;
-            if(currentTargetNode.IsObstacle(typeof(Plant)))
-            {
-                Destroy(currentTargetNode.GetObstacle());
-            }
-            else if(currentTargetNode.IsObstacle(typeof(RockCrab)))
-            {
-                RockCrab crab = currentTargetNode.GetObstacle() as RockCrab;
-                if(!crab.hasShell)
-                    Destroy(crab);
-            }
-            else if(currentTargetNode.IsObstacle(typeof(GroundSpike)) || 
-                    currentTargetNode.IsObstacle(typeof(PoisonMiasma)))
-            {
-                currentTargetNode.GetObstacle().Destroy(this); 
-            }
         }
         Debug.Assert(!currentTargetNode.hasObstacle || !canPhase, "ERROR: Node still has an obstacle");
         SetNodes(currentTargetNode.worldPosition, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);

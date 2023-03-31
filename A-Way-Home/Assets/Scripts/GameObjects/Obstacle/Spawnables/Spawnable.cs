@@ -19,4 +19,11 @@ public class Spawnable : Obstacle
     {
         Debug.LogWarning($"Spawned #{id} !");
     }
+
+    protected void DestroyNodeObstacle()
+    {
+        Node node = NodeGrid.NodeWorldPointPos(this.worldPos);
+        if(node.hasObstacle)
+            Destroy(node.GetObstacle());
+    }
 }

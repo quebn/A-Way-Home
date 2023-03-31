@@ -8,12 +8,13 @@ public class PlantPoison : Plant
     [SerializeField] private GameObject prefabPoisonMiasma; 
     private Dictionary<Vector2Int, Node> tilesPoisoned;
 
+    public override bool isCorrosive => false;
+
     protected override void Initialize()
     {
         base.Initialize();
         tilesPoisoned = NodeGrid.GetNeighborNodes(this.nodes[0], NodeGrid.Instance.grid, 1);
     }
-
 
     public override void OnTrapTrigger(Character character)
     {
@@ -45,28 +46,19 @@ public class PlantPoison : Plant
     {
         foreach(KeyValuePair<Vector2Int, Node> pair in tilesPoisoned)
         {
-            if(!isSpawnable(pair.Value))
+            if(!IsCorrosive(pair.Value))
                 continue;
             GameObject.Instantiate(prefabPoisonMiasma, pair.Value.worldPosition, Quaternion.identity);
         } 
     }
 
-    private bool isSpawnable(Node node)
+    private bool IsCorrosive(Node node)
     { 
         if(node.IsWalkable() && !node.hasObstacle)
             return true;
-        if(node.hasObstacle)
-        {
-            if(
-                node.IsObstacle(typeof(TreeThin)) || 
-                node.IsObstacle(typeof(TreeLog)) ||
-                node.IsObstacle(typeof(Plant)) ||
-                node.IsObstacle(typeof(RockCrab)) ||
-                node.IsObstacle(typeof(Undead))
-            ) return true;
-        }
-        return false;
-
+        if(node.IsType(NodeType.Terrain) || node.IsType(NodeType.Water))
+            return false;
+        return node.GetObstacle().isCorrosive;
     }
 
 

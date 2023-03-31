@@ -22,6 +22,11 @@ public class Obstacle : MonoBehaviour, ISaveable
         get => HP;
         set => HP = value;
     }
+    public virtual bool isBurnable => false;
+    public virtual bool isCorrosive => false;
+    public virtual bool isMeltable => false;
+    public virtual bool isTrampleable => false;
+    public virtual bool isFragile => false;
 
     private void Start()
     {
@@ -161,10 +166,7 @@ public class Obstacle : MonoBehaviour, ISaveable
         this.id = System.Guid.NewGuid().ToString();
     }
 
-    // protected struct PlayerWaitProcess
-    // {
 
-    // }
 }
 
 public interface IInspect

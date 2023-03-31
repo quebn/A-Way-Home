@@ -4,6 +4,8 @@ using System.Collections.Generic;
 public class Rock : Obstacle, ILightning
 {
 
+    public override bool isMeltable => true;
+
     protected override void Initialize()
     {
         base.Initialize();

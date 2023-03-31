@@ -5,6 +5,11 @@ using UnityEngine;
 public class LogSpawned : Spawnable, ILightning
 {
 
+    public override bool isBurnable => true;
+    public override bool isFragile => true;
+    public override bool isMeltable => true;
+    public override bool isCorrosive => true;
+
     protected override void OnSpawn()
     {
         // Destroy Obstacle on spawn.
@@ -16,13 +21,6 @@ public class LogSpawned : Spawnable, ILightning
     public void OnLightningHit()
     {
         Remove();
-    }
-
-    private void DestroyNodeObstacle()
-    {
-        Node node = NodeGrid.NodeWorldPointPos(this.worldPos);
-        if(node.hasObstacle)
-            Destroy(node.GetObstacle());
     }
 
 }

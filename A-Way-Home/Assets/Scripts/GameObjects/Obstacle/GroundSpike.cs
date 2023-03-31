@@ -5,6 +5,11 @@ public class GroundSpike : Obstacle, ITrap, ILightning
 {
     [SerializeField] private Animator animator;
 
+    public override bool isBurnable => true;
+    public override bool isFragile => true;
+    public override bool isCorrosive => true;
+    public override bool isMeltable => true;
+
     protected override int hitpoints {
         get => animator.GetInteger("hitpoints");
         set => animator.SetInteger("hitpoints", value);

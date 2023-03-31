@@ -7,6 +7,12 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
     [SerializeField] protected Animator animator;
     [SerializeField] private int initialStage = 1;
 
+    public override bool isBurnable => true;
+    public override bool isCorrosive => true;
+    public override bool isFragile => true;
+    public override bool isTrampleable => true;
+    public override bool isMeltable => true;
+
     protected const string youngling    = "Plant_Youngling";
     protected const string middle       = "Plant_Middle";
     protected const string fullGrown    = "Plant_FullGrown";
