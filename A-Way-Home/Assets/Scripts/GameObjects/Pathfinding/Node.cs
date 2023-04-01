@@ -16,13 +16,15 @@ public class Node
     private bool isOpen;
     private NodeType currentNodeType;
     private Obstacle obstacle; 
+    private Obstacle platform;
 
-    private bool isInspectable => obstacle is IInspect;
-    private bool isShockable => obstacle is ILightning;
-    private bool isGrowable => obstacle is IGrow;
-    private bool isCommandable => obstacle is ICommand;
-    private bool isTremorable => obstacle is ITremor;
+    private bool isInspectable => obstacle is IInspect || platform is IInspect;
+    private bool isShockable => obstacle is ILightning || platform is ILightning;
+    private bool isGrowable => obstacle is IGrow || platform is IGrow;
+    private bool isCommandable => obstacle is ICommand || platform is ICommand;
+    private bool isTremorable => obstacle is ITremor || platform is ITremor;
     public bool hasObstacle => obstacle != null;
+    public bool hasPlatform => platform != null;
     public bool canLightning => isOpen || isConductive;
     public int hCost => MinHCost(); 
     public int fCost => gCost + hCost;
@@ -105,9 +107,9 @@ public class Node
         return obstacle != null && type.IsAssignableFrom(obstacle.GetType());
     }
 
-    public Obstacle GetObstacle()
+    public Obstacle GetObstacle(bool asPlatform = false)
     {
-        return obstacle;
+        return asPlatform ? platform : obstacle;
     }
 
     public Type GetObstacleType()
@@ -190,18 +192,21 @@ public class Node
             HideNode();
     }
 
-    public void SetObstacle(Obstacle obstacle, NodeType nodeType)
+    public void SetObstacle(Obstacle obstacle, NodeType nodeType, bool isPlatform = false)
     {
-        this.obstacle = obstacle;
+        if(isPlatform)
+            this.platform = obstacle;
+        else
+            this.obstacle = obstacle;
         this.currentNodeType = nodeType;
         UpdateColor();
     }
 
     public bool InspectObstacle()
     {
-        if(!isShockable)
+        if(!isInspectable)
             return false;
-        IInspect interactable = obstacle as IInspect;
+        IInspect interactable = ((hasObstacle) ? obstacle : platform ) as IInspect;
         interactable.OnInspect();
         return true;
     }
@@ -210,7 +215,7 @@ public class Node
     {
         if(!isShockable)
             return false;
-        ILightning interactable = obstacle as ILightning;
+        ILightning interactable = ((hasObstacle) ? obstacle : platform ) as ILightning;
         interactable.OnLightningHit();
         return true;
     }
@@ -219,7 +224,9 @@ public class Node
     {
         if(!isShockable)
             return false;
-        ILightning interactable = obstacle as ILightning;
+        ILightning interactable = ((hasObstacle) ? obstacle : platform ) as ILightning;
+        if(interactable == null)
+            return false;
         interactable.OnAftershock();
         return true;
     }
@@ -228,7 +235,7 @@ public class Node
     {
         if(!isGrowable)
             return false;
-        IGrow interactable = obstacle as IGrow;
+        IGrow interactable = ((hasObstacle) ? obstacle : platform ) as IGrow;
         interactable.OnGrow();
         return true;
     }
@@ -237,7 +244,7 @@ public class Node
     {
         if(!isCommandable)
             return false;
-        ICommand interactable = obstacle as ICommand;
+        ICommand interactable = ((hasObstacle) ? obstacle : platform ) as ICommand;
         interactable.OnCommand();
         return true;
     }
@@ -246,7 +253,7 @@ public class Node
     {
         if(!isTremorable)
             return false;
-        ITremor interactable = obstacle as ITremor;
+        ITremor interactable = ((hasObstacle) ? obstacle : platform ) as ITremor;
         interactable.OnTremor();
         return true;
     }
@@ -292,12 +299,12 @@ public class Node
     }
 
 
-    public static void SetNodesObstacle(List<Node> nodeList, NodeType nodeType, Obstacle obstacle = null)
+    public static void SetNodesObstacle(List<Node> nodeList, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false)
     {
         if(nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
-            node.SetObstacle(obstacle, nodeType);
+            node.SetObstacle(obstacle, nodeType, isPlatform);
     }
 
     public static void ShockNode(Node node)
@@ -349,14 +356,23 @@ public class Node
         return false;
     }
 
-    public static List<Obstacle> GetNodesInteractable(List<Node> nodeList)
+    public static List<Obstacle> GetNodesInteractable(List<Node> nodeList, bool isPlatform = false)
     {
         List<Obstacle> obstacles = new List<Obstacle>();
         foreach(Node node in nodeList)
         {
-            if(node.obstacle == null)
-                continue;
-            obstacles.Add(node.obstacle);
+            if(isPlatform)
+            {
+                if(!node.hasPlatform)
+                    continue;
+                obstacles.Add(node.platform);
+            }
+            else
+            {
+                if(!node.hasObstacle)
+                    continue;
+                obstacles.Add(node.obstacle);
+            }
         }
         return obstacles;
     }

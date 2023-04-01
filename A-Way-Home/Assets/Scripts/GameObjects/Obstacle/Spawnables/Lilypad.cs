@@ -8,12 +8,12 @@ public class Lilypad : Spawnable, ILightning
     protected override void OnSpawn()
     {
         base.OnSpawn();
-        SetNodes(this.worldPos, NodeType.Walkable, this);
+        SetNodes(this.worldPos, NodeType.Walkable, this , true);
     }
 
     public override void Remove()
     {
-        ClearNodes(NodeType.Water);
+        ClearNodes(NodeType.Water, true);
         base.Remove();
     }
 

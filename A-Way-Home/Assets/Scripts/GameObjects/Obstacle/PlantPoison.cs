@@ -7,6 +7,7 @@ public class PlantPoison : Plant
     [SerializeField] private int damage; 
     [SerializeField] private GameObject prefabPoisonMiasma; 
     private Dictionary<Vector2Int, Node> tilesPoisoned;
+    private HashSet<PoisonMiasma> miasmas;
 
     public override bool isCorrosive => false;
 
@@ -14,6 +15,7 @@ public class PlantPoison : Plant
     {
         base.Initialize();
         tilesPoisoned = NodeGrid.GetNeighborNodes(this.nodes[0], NodeGrid.Instance.grid, 1);
+        miasmas = new HashSet<PoisonMiasma>();
     }
 
     public override void OnTrapTrigger(Character character)
@@ -31,9 +33,8 @@ public class PlantPoison : Plant
     public override void OnLightningHit()
     {
         base.OnLightningHit();
-        if(hitpoints == 2)
+        if(hitpoints < 4 && miasmas.Count != 0)
             RemoveMiasma();
-        
     }
 
     public override void OnGrow()
@@ -42,18 +43,27 @@ public class PlantPoison : Plant
         GeneratePoisonTiles();
     }
 
+    public override void Remove()
+    {
+        base.Remove();
+        if(miasmas.Count != 0)
+            RemoveMiasma();
+    }
+
     private void GeneratePoisonTiles()
     {
         foreach(KeyValuePair<Vector2Int, Node> pair in tilesPoisoned)
         {
             if(!IsCorrosive(pair.Value))
                 continue;
-            GameObject.Instantiate(prefabPoisonMiasma, pair.Value.worldPosition, Quaternion.identity);
+            miasmas.Add(GameObject.Instantiate(prefabPoisonMiasma, pair.Value.worldPosition, Quaternion.identity).GetComponent<PoisonMiasma>());
         } 
     }
 
     private bool IsCorrosive(Node node)
-    { 
+    {
+        if(node.hasPlatform) 
+            return node.GetObstacle(true).isCorrosive; 
         if(node.IsWalkable() && !node.hasObstacle)
             return true;
         if(node.IsType(NodeType.Terrain) || node.IsType(NodeType.Water))
@@ -61,19 +71,11 @@ public class PlantPoison : Plant
         return node.GetObstacle().isCorrosive;
     }
 
-
     private void RemoveMiasma()
     {
-        foreach(KeyValuePair<Vector2Int, Node> pair in tilesPoisoned)
-        {
-            if(pair.Value.IsObstacle(typeof(PoisonMiasma)))
-            
-            {
-                PoisonMiasma miasma = (PoisonMiasma)pair.Value.GetObstacle();
-                miasma.Remove();
-            }
-
-        }
+        foreach(PoisonMiasma miasma in miasmas)
+            Destroy(miasma);
+        miasmas.Clear();
         Debug.Log("Poison Plant Cleared");
     }
 

@@ -100,6 +100,8 @@ public class TreeThin : Obstacle, ILightning
         Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);
         for(int i = 0 ; i < placeableNodes[currentPlaceable].Count; i++)
         {
+            if(placeableNodes[currentPlaceable][i].hasObstacle && !placeableNodes[currentPlaceable][i].GetObstacle().isFragile)
+                continue;
             GameObject.Instantiate(
                 placeableNodes[currentPlaceable][i].currentType == NodeType.Water ? logs[1] : logs[0],
                 placeableNodes[currentPlaceable][i].worldPosition,
@@ -111,7 +113,7 @@ public class TreeThin : Obstacle, ILightning
     private void HighlightPlaceLocations()
     {
         Vector2 pos = GetMouseDirection();
-        if(currentPlaceable == pos || !placeableNodes.ContainsKey(pos))
+        if(!placeableNodes.ContainsKey(pos))
             return;
         if(currentPlaceable != Vector2.zero)
             Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);

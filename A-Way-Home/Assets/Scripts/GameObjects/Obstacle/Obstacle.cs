@@ -49,7 +49,7 @@ public class Obstacle : MonoBehaviour, ISaveable
         Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), "ERROR: Not in obstacle dictionary");
     }
 
-    protected void SetNodes(Vector3 worldPos, NodeType nodeType, Obstacle obstacle = null)
+    protected void SetNodes(Vector3 worldPos, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false)
     {
         // Initialize Node should:
         //      - Set what and how many nodes are assigned to the obstacle;
@@ -57,17 +57,18 @@ public class Obstacle : MonoBehaviour, ISaveable
         //      - Set the what obstacle the nodes contains. 
         nodes = new List<Node>();
         nodes = NodeGrid.GetNodes(worldPos, tileSize.x, tileSize.y);
-        Node.SetNodesObstacle(nodes, nodeType, obstacle);
+        Node.SetNodesObstacle(nodes, nodeType, obstacle, isPlatform);
         // Debug.Log($"{this.gameObject.name} -> Nodes count{nodes.Count}");
     }
 
-    protected void ClearNodes(NodeType nodeType = NodeType.Walkable)
+    protected void ClearNodes(NodeType nodeType = NodeType.Walkable, bool isPlatform = false)
     {
-        if (nodes == null || nodes.Count == 0 || Node.GetNodesInteractable(nodes).Count == 0)
+        if (nodes == null || nodes.Count == 0 || Node.GetNodesInteractable(nodes, isPlatform).Count == 0)
             return;
-        Node.SetNodesObstacle(nodes, nodeType);
+        Node.SetNodesObstacle(nodes, nodeType, isPlatform: isPlatform);
         nodes = new List<Node>();
     }
+
 
     protected virtual void OnDehighlight(Tool tool)
     {
