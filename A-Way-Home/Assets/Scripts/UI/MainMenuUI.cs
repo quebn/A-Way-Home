@@ -14,6 +14,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject leaderboardsWindow;
     [SerializeField] private GameObject howtoPlayWindow;
     [SerializeField] private bool unlockedAllLevels;
+
     private bool isActive;
     public GameObject deleteConfirmWindow;
     public static bool isAllLevelUnlock;

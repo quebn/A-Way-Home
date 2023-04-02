@@ -26,7 +26,7 @@ public static class SaveSystem
     {
         string path = $"{filePathDir}/SavedFiles/{filename}.save";
         FileStream stream = new FileStream(path, FileMode.Create);
-        SaveFileData fileData = new SaveFileData(filename ,playerLevelData.SaveGame());
+        SaveFileData fileData = new SaveFileData(filename ,playerLevelData.SaveLevelData());
         Debug.Log($"Saving Level Data as '{filename}.save' in '{filePathDir}/SavedFiles/' !");
         formatter.Serialize(stream, fileData);
         stream.Close();

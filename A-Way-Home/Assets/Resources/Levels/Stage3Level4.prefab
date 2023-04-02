@@ -44107,8 +44107,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07dd7382ea7ac404d9fb83913ad2404b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentStage: 1
-  currentLevel: 1
+  currentStage: 3
+  currentLevel: 4
   characterEnergy: 30
   playerLives: 3
   playerMoves: 10
@@ -44144,6 +44144,7 @@ MonoBehaviour:
   nodeRadius: 0.5
   tileMap: {fileID: 950494256788708888}
   tile: {fileID: 11400000, guid: 624cd456949571040a96b2a923a00d85, type: 2}
+  canBeCovered: 0
   enableValues: 0
 --- !u!1001 &138285349103578013
 PrefabInstance:

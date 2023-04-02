@@ -75,24 +75,6 @@ public class GameEndUI : MonoBehaviour
         this.livesValueText.text = $"{GameData.levelData.lives + lifeIncrement}";
     }
 
-    private void UnlockNextLevel()
-    {
-        // if (GameData.levelData.level == 5)
-        // {
-        //     Debug.Log($"Max Level ({GameData.levelData.level}) reached!");
-        //     return;
-        // }
-        // string sceneLevelName = GameEvent.GetNextLevel();
-        // Debug.Log($"Next Level Scene Name: {sceneLevelName}");
-        // if (!GameData.allLevels.Contains(sceneLevelName))
-        // {
-        //     Debug.Assert(false, $"Scene: {sceneLevelName} does not exist!");
-        //     return;
-        // }
-        // GameData.Instance.unlockedLevels.Add(sceneLevelName);
-    }
-
-
     public void RedButton()
     {
         switch(InGameUI.Instance.endGameType)
@@ -126,10 +108,7 @@ public class GameEndUI : MonoBehaviour
     private void NextLevel()
     {
         Debug.Log("Loading Next Level......");
-        // if(GameData.Instance.unlockedLevels.Contains(GameEvent.GetNextLevel()))
-        //     GameEvent.NextLevel();
-        // else
-            ConfirmEndRun();
+        GameEvent.NextLevel();
     }
 
     private void TryAgain()

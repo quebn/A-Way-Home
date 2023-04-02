@@ -3,7 +3,9 @@ using System;
 using UnityEngine;
 
 [System.Serializable] 
-public class GameData {
+public class GameData 
+{
+    public const int PLAYER_STARTING_LIVES = 3;
     public static GameData Instance;
 
     // Settings Data
@@ -16,7 +18,6 @@ public class GameData {
     public List<PlayerScoreData> leaderboards;
     public string currentStageLevel;
     public List<string> unlockedLevels;
-
 
     // Statics;
     public static LevelData levelData;
@@ -57,8 +58,6 @@ public class GameData {
         InGameUI.Instance.playerMovesUI = levelData.moves;
     }
 
-
-
 }
 
 [System.Serializable]
@@ -80,7 +79,6 @@ public class ObstacleData
 [System.Serializable]
 public class LevelData
 {
-
     // Character Data
     public string characterName;
     public int characterEnergy;
@@ -99,7 +97,8 @@ public class LevelData
 }
 
 [System.Serializable]
-public class CharacterInfo{
+public class CharacterInfo
+{
     public string name;
     public GameObject prefab;
 

@@ -173,6 +173,7 @@ public class Character : MonoBehaviour, ISaveable
     public bool TriggerLevelComplete()
     {
         this.gameObject.SetActive(false);
+        GameEvent.UnlockNextStageLevel();
         GameEvent.SetEndWindowActive(EndGameType.LevelClear);
         return true;
     }
