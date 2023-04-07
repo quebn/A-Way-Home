@@ -8,7 +8,6 @@ public class LilypadNS : Obstacle, ILightning
 
     protected override void Initialize()
     {
-        Debug.Assert(!GameData.levelData.obstacles.ContainsKey(this.id));
         base.Initialize();
         SetNodes(this.worldPos, NodeType.Walkable, this, true);
     }

@@ -48,7 +48,6 @@ public class Boulder : Obstacle, ILightning, ITremor
 
     public override void LoadData(LevelData levelData)
     {
-        Debug.LogWarning($"{levelData.obstacles[id].position} position");
         base.LoadData(levelData);
         if(hitpoints == 0)
             this.gameObject.SetActive(false);

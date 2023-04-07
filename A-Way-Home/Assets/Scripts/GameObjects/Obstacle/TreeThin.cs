@@ -8,7 +8,7 @@ public class TreeThin : Obstacle, ILightning
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject upper;
     [SerializeField] private List<GameObject> logs;
-    private Dictionary<Vector2, List<Node>> placeableNodes;
+        private Dictionary<Vector2, List<Node>> placeableNodes;
     private Vector2 currentPlaceable;
     private bool isHovered;
     private int hp = 2;
@@ -136,7 +136,7 @@ public class TreeThin : Obstacle, ILightning
                 continue;
             placeableNodes.Add(pos, NodeGrid.GetNodes(pos, 2, 1));
         }
-        Debug.Log($"tree on {transform.position} placeables count-> {placeableNodes.Count}");
+        // Debug.Log($"tree on {transform.position} placeables count-> {placeableNodes.Count}");
     }
 
     private Vector2 GetMouseDirection()

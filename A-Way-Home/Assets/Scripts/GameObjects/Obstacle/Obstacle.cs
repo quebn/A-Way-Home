@@ -42,11 +42,7 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     protected virtual void Initialize()
     {
-        if(!GameData.levelData.obstacles.ContainsKey(id))
-        {
-            GameData.levelData.obstacles.Add(id, new ObstacleData(this.GetType(), this.hitpoints, this.transform.position));
-        }
-        Debug.Assert(GameData.levelData.obstacles.ContainsKey(id), "ERROR: Not in obstacle dictionary");
+
     }
 
     protected void SetNodes(Vector3 worldPos, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false)
@@ -114,24 +110,24 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     public virtual void SaveData(LevelData levelData)
     {
+        Debug.Assert(!levelData.obstacles.ContainsKey(id));
+        levelData.obstacles.Add(this.id, new ObstacleData(this.GetType(), this.hitpoints, this.worldPos));
         Debug.Assert(levelData.obstacles.ContainsKey(id));
-        if(levelData.obstacles.ContainsKey(id))
-        {
-            Debug.Log("Saving obstacle data");
-            levelData.obstacles[id].hitpoints = this.hitpoints;
-            levelData.obstacles[id].position = this.gameObject.transform.position;
-        }
     }
 
     public virtual void LoadData(LevelData levelData)
     {
+        Debug.Assert(id != "", $"ERROR: {this.GetType().Name} id is empty string");
         Debug.Assert(levelData.obstacles.ContainsKey(id), $"ERROR: {id} not found");
         if(levelData.obstacles.ContainsKey(id))
         {
             Debug.Log("Loading obstacle data");
-            this.hitpoints = levelData.obstacles[id].hitpoints;
+            this.hitpoints = levelData.obstacles[id].GetValue("hp");
             this.gameObject.transform.position = levelData.obstacles[id].position;
         }
+        if(hitpoints == 0)
+            gameObject.SetActive(false);
+        Debug.Assert(this.hitpoints == levelData.obstacles[id].GetValue("hp"), "ERROR: values doesnt match");
     }
 
     public virtual void OnRevealNodeColor()

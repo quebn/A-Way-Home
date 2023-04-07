@@ -84,12 +84,12 @@ public class OptionsUI : MonoBehaviour
             return;
         }
         SaveSystem.SaveLevelData(fileNameInput.text, PlayerLevelData.Instance);
-        CancelNewSaveFile();
+        CloseNewSaveFile();
         Debug.Log($"Saved data as {fileNameInput.text}.save");
         SavedSlotUI.UpdateSaveSlots();
     }
 
-    public void CancelNewSaveFile()
+    public void CloseNewSaveFile()
     {
         fileNameInput.text = "";
         createNewFileWindow.SetActive(false);

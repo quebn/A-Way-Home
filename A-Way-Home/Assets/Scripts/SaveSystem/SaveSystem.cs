@@ -7,7 +7,6 @@ public static class SaveSystem
 {
     private static string filePathDir = Application.persistentDataPath;
     private static BinaryFormatter formatter = new BinaryFormatter(); 
-    public static List<ISaveable> saveables;
 
     public static void DeleteFileData(string filename)
     {
@@ -26,7 +25,7 @@ public static class SaveSystem
     {
         string path = $"{filePathDir}/SavedFiles/{filename}.save";
         FileStream stream = new FileStream(path, FileMode.Create);
-        SaveFileData fileData = new SaveFileData(filename ,playerLevelData.SaveLevelData());
+        SaveFileData fileData = new SaveFileData(filename , playerLevelData.SaveLevelData());
         Debug.Log($"Saving Level Data as '{filename}.save' in '{filePathDir}/SavedFiles/' !");
         formatter.Serialize(stream, fileData);
         stream.Close();
@@ -105,10 +104,10 @@ public static class SaveSystem
             return null;
         }
         FileStream stream = new FileStream(path, FileMode.Open);
-        GameData fileData = formatter.Deserialize(stream) as GameData;
+        GameData fileGameData = formatter.Deserialize(stream) as GameData;
         stream.Close(); 
 
-        return fileData;
+        return fileGameData;
     }
 
 }

@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,9 +17,8 @@ public class PlayerLevelData : MonoBehaviour
     [SerializeField] public int unlockedTools = 0;
     [SerializeField] private GameObject characterLocation;
     [SerializeField] private Vector2 startCameraPos;
-    // [HideInInspector] public LevelData levelData;// should be in GameData
     [HideInInspector] public List<Vector3> currentDestinations;// should be in GameData
-    
+
     public string currentStageLevel => $"Stage{currentStage}Level{currentLevel}";
     public Vector2 levelBoundary => this.cameraBoundary;
     public Vector3 cameraCenterPos => startCameraPos;
@@ -43,7 +42,6 @@ public class PlayerLevelData : MonoBehaviour
         // Debug.Assert(GameData.levelData != null , "ERROR:LevelData is null");
         if(!GameEvent.isSceneSandbox)
             Debug.Assert(GameData.characters != null || GameData.characters.Count != 0, "ERROR:Characters not found!");
-        SaveSystem.saveables = GetAllSaveables();
         switch(GameEvent.loadType)
         {
             case LevelLoadType.NewGame:
@@ -69,7 +67,7 @@ public class PlayerLevelData : MonoBehaviour
             );
         Destroy(characterLocation);
         if(GameEvent.loadType == LevelLoadType.LoadGame)
-            LoadSpawnedObstacles();
+            LoadObstacles();
     }
 
     private void Start()
@@ -77,6 +75,7 @@ public class PlayerLevelData : MonoBehaviour
         Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initializing Character with {GameData.levelData.characterEnergy} energy and {GameData.levelData.characterRequiredEssence} ");
         Character.instance.Initialize(GameData.levelData);
     }
+
 
     private void NewLevelData()
     {
@@ -140,16 +139,26 @@ public class PlayerLevelData : MonoBehaviour
         Debug.Assert(this.currentLevel == GameData.levelData.level, "ERROR: Level does not match");
         GameData.selectedCharacter = GameData.levelData.characterName;
         foreach(KeyValuePair<string, ObstacleData> pair in GameData.levelData.obstacles)
-            Debug.LogWarning($"{pair.Key} -> {pair.Value}");
-        foreach(ISaveable saveable in SaveSystem.saveables)
-            saveable.LoadData(GameData.levelData);
+            Debug.Log($"Loaded Leveldata Obstacles :{pair.Value.typeName} with hp: {pair.Value.valuePairs["hp"]} -> {pair.Key}");
+
     }
 
     public LevelData SaveLevelData()
     {
-        foreach(ISaveable saveable in SaveSystem.saveables)
+        List<ISaveable> saveables = GetAllSaveables();
+        foreach(ISaveable saveable in saveables)
             saveable.SaveData(GameData.levelData);
         return GameData.levelData;
+    }
+
+    private void LoadObstacles()
+    {
+        Debug.LogWarning("-------------------Spawning Obstacles-----------------");
+        List<ISaveable> saveables = GetAllSaveables();
+        Debug.LogWarning("-------------------Loading Obstacles-----------------");
+        foreach(ISaveable saveable in saveables)
+            saveable.LoadData(GameData.levelData);
+        LoadSpawnedObstacles();
     }
 
     public List<ISaveable> GetAllSaveables()
@@ -165,18 +174,52 @@ public class PlayerLevelData : MonoBehaviour
 
     public void LoadSpawnedObstacles()
     {
-        throw new NotImplementedException();
-        // for (int i = 1; i <= GameData.levelData.spawnCount; i++)
-        // {
-        //     string ID = $"{i}";
-        //     if(GameData.levelData.obstacles[ID].typeName == typeof(TreeLog).ToString())
-        //     {
-        //         TreeLog log = GameObject.Instantiate(logPrefab, GameData.levelData.obstacles[ID].position, Quaternion.identity).GetComponent<TreeLog>();
-        //         log.AddAsSpawned(ID);
-        //     }
-        // }
-        // SaveSystem.saveables = GetAllSaveables();
+        GameObject fireField = Resources.Load<GameObject>("Spawnables/FireField");
+        GameObject lilyPad = Resources.Load<GameObject>("Spawnables/Lilypad");
+        GameObject logPlatform = Resources.Load<GameObject>("Spawnables/LogPlatform");
+        GameObject logSpawnable = Resources.Load<GameObject>("Spawnables/LogSpawnable");
+        GameObject poisonMiasma = Resources.Load<GameObject>("Spawnables/PoisonMiasma");
+        Debug.Assert(fireField != null);
+        Debug.Assert(lilyPad != null);
+        Debug.Assert(logPlatform != null);
+        Debug.Assert(logSpawnable != null);
+        Debug.Assert(poisonMiasma != null);
+        uint count = GameData.levelData.spawnCount;
+        GameData.levelData.spawnCount = 0;
+        for (uint i = 1; i <= count; i++)
+        {
+            string ID = $"{i}";
+            if(!GameData.levelData.obstacles.ContainsKey(ID))
+                continue;
+            ObstacleData obstacleData = GameData.levelData.obstacles[ID];
+            GameObject prefab;
+            switch(obstacleData.typeName)
+            {
+                case "FireField":
+                    prefab = fireField;
+                    break;
+                case "LilyPad":
+                    prefab = lilyPad;
+                    break;
+                case "LogPlatform":
+                    prefab = logPlatform;
+                    break;
+                case "LogSpawned":
+                    prefab = logSpawnable;
+                    break;
+                case "PoisonMiasma":
+                    prefab = poisonMiasma;
+                    break;
+                default:
+                    Debug.LogWarning($"TYPENAME: {obstacleData.typeName} not identified!!!!");
+                    continue;
+            }
+            ISaveable saveable = GameObject.Instantiate(prefab, obstacleData.position, Quaternion.identity).GetComponent<Spawnable>();
+            saveable.LoadData(GameData.levelData);
+            Debug.Log($"Type name:{obstacleData.typeName} \n hitpoints: {obstacleData.GetValue("hp")} \n position: {obstacleData.position.ToString()}");
+        }
     }
+
 
     public string GetNextStageLevel()
     {

@@ -19,8 +19,6 @@ public class FireField : Spawnable, ITrap
 
     public override void Remove()
     {
-        if(GameData.levelData.obstacles.ContainsKey(this.id))
-            GameData.levelData.obstacles.Remove(id);
         ClearNodes();
         Debug.Log("Fire Field Cleared");
         GameObject.Destroy(this.gameObject);

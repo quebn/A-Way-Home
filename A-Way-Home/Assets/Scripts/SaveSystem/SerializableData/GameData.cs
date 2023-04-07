@@ -64,16 +64,22 @@ public class GameData
 public class ObstacleData
 {
     public string typeName;
-    public int hitpoints;
+    public Dictionary<string, int> valuePairs = new Dictionary<string, int>();
     public SerializedVector3 position;
 
     public ObstacleData(Type obstacleType, int hp, Vector3 location)
     {
         this.typeName = obstacleType.Name;
-        this.hitpoints = hp;
+        this.valuePairs.Add("hp", hp);
         this.position = location;
     }
-    
+
+    public int GetValue(string key)
+    {
+        if(!valuePairs.ContainsKey(key))
+            throw new Exception("ERROR: Key does not exist in valuePairs");
+        return this.valuePairs[key];
+    }
 }
 
 [System.Serializable]

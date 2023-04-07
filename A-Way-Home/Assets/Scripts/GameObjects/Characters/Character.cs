@@ -59,8 +59,11 @@ public class Character : MonoBehaviour, ISaveable
 
     public void Initialize(LevelData levelData)
     {
+        // this.requiredEssence = levelData.characterRequiredEssence;
         IncrementEssence(levelData.characterRequiredEssence);
         SetMaxEnergy(levelData.characterEnergy);
+        Debug.Assert(this.requiredEssence == levelData.characterRequiredEssence, "ERROR: Character essence needed value mismatch");
+        Debug.Assert(this.energy == levelData.characterEnergy, "ERROR: Character energy value mismatch");
         Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {levelData.characterEnergy} energy and {levelData.characterRequiredEssence} required Essence");
         Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {this.energy} energy and {this.requiredEssence} required Essence");
         StartCoroutine(GetPathOnInit());
@@ -238,10 +241,13 @@ public class Character : MonoBehaviour, ISaveable
         levelData.characterEnergy = this.energy;
         levelData.characterPosition = this.currentPosition;
         levelData.characterRequiredEssence = this.requiredEssence;
+        Debug.Log($"Saved ff. Character Data -> Energy:{this.energy} \n Essence Required:{this.requiredEssence} \n Position{this.currentPosition}");
     }
 
     public void LoadData(LevelData levelData)
     {
         this.transform.position = levelData.characterPosition;
+        // this.requiredEssence = levelData.characterRequiredEssence;
+        // this.energy = levelData.characterEnergy;
     }
 }

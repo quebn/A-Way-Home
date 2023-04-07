@@ -122,7 +122,6 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
     private void SpawnWeb()
     {
         Web web = GameObject.Instantiate(webPrefab, lastNode.worldPosition, Quaternion.identity).GetComponent<Web>();
-        web.AddAsSpawned($"{GameData.levelData.spawnCount += 1}");
     }
 
 }

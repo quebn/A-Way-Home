@@ -72,6 +72,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
     public override void LoadData(LevelData levelData)
     {
         base.LoadData(levelData);
+        Debug.Log("22222222222222222222222222");
     }
 
     public override void Remove()
