@@ -2643,12 +2643,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characters:
-  - name: Gaia
-    prefab: {fileID: 7541503505314504048, guid: b317529421e489d43a4a355b9c7b2437, type: 3}
-  - name: Terra
-    prefab: {fileID: 7233497297596977977, guid: c7f7bb80f4f803c4b971771c2c32aab0, type: 3}
-  - name: Aqua
-    prefab: {fileID: 925674271569063024, guid: 4058ef6374b8e554daba94aa3ca20439, type: 3}
+  - Gaia
+  - Terra
+  - Aqua
   characterSelectionWindow: {fileID: 995894827915268305}
   loadSelectionWindow: {fileID: 995894828607838040}
   levelSelectionwindow: {fileID: 995894826826998937}
@@ -2656,6 +2653,7 @@ MonoBehaviour:
   closeGameWindow: {fileID: 995894827296098579}
   leaderboardsWindow: {fileID: 995894827404173746}
   howtoPlayWindow: {fileID: 995894826900857063}
+  unlockedAllLevels: 0
   deleteConfirmWindow: {fileID: 995894828051146984}
 --- !u!114 &2340208814416602249
 MonoBehaviour:

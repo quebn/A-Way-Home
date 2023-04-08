@@ -103,6 +103,13 @@ AnimationClip:
     path: 
     classID: 212
     script: {fileID: 0}
+  - curve:
+    - time: 0
+      value: {fileID: 76522696, guid: 4646daf274296084193f012e0b16b444, type: 3}
+    attribute: m_Sprite
+    path: Outline
+    classID: 212
+    script: {fileID: 0}
   m_SampleRate: 60
   m_WrapMode: 0
   m_Bounds:
@@ -138,8 +145,16 @@ AnimationClip:
       typeID: 212
       customType: 23
       isPPtrCurve: 1
+    - serializedVersion: 2
+      path: 2294442873
+      attribute: 0
+      script: {fileID: 0}
+      typeID: 212
+      customType: 23
+      isPPtrCurve: 1
     pptrCurveMapping:
     - {fileID: -171040298, guid: 2434ac70b3dca7b4188f5a8e9b587144, type: 3}
+    - {fileID: 76522696, guid: 4646daf274296084193f012e0b16b444, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

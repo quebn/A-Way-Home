@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class MainMenuUI : MonoBehaviour
 {
     public static MainMenuUI Instance {get; private set;}
-    [SerializeField] private List<CharacterInfo> characters;
+    [SerializeField] private List<string> characters;
 
     [SerializeField] private GameObject characterSelectionWindow;
     [SerializeField] private GameObject loadSelectionWindow;
@@ -21,9 +21,6 @@ public class MainMenuUI : MonoBehaviour
 
     private void Awake()
     {
-        GameData.characters = new Dictionary<string, GameObject>();
-        foreach(CharacterInfo info in characters)
-            GameData.characters.Add(info.name, info.prefab);
         if (GameData.Instance == null)
             GameData.InitGameDataInstance();
         isAllLevelUnlock = this.unlockedAllLevels;
@@ -86,7 +83,7 @@ public class MainMenuUI : MonoBehaviour
     {
         Debug.Assert(characterIndex <= 3, "Error: Character number exceeded at 3!");
         // PlayerLevelData.characterName = GameData.characterSprites.ElementAt(characterIndex - 1).Key;
-        GameData.selectedCharacter = characters[characterIndex].name;
+        GameData.selectedCharacter = characters[characterIndex];
         Debug.Log($"Character Selected: {GameData.selectedCharacter}");
     }
 
@@ -98,8 +95,7 @@ public class MainMenuUI : MonoBehaviour
 
     public void StartGame()
     {
-        Debug.Assert(GameData.characters != null, "ERROR: Char list is null ");
-        if (!GameData.characters.ContainsKey(GameData.selectedCharacter))
+        if (!characters.Contains(GameData.selectedCharacter))
         {
             Debug.Log("No Character Selected");
             return;
@@ -134,7 +130,7 @@ public class MainMenuUI : MonoBehaviour
 
     public void StartSelectedLevel()
     {
-        if (!GameData.characters.ContainsKey(GameData.selectedCharacter))
+        if (!characters.Contains(GameData.selectedCharacter))
         {
             Debug.Log("No Character Selected");
             return;

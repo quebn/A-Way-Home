@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-
+using UnityEngine.Rendering.Universal;
 
 public class PlayerActions : MonoBehaviour
 {
@@ -222,6 +222,9 @@ public class PlayerActions : MonoBehaviour
         OnHoverObstacle();
         switch(currentTool)
         {
+            case Tool.Inspect:
+                HighlightTile(1, 1, Node.colorClear);
+                break;
             case Tool.Lightning:
                 HighlightTile(1, 1, Node.colorCyan, true);
                 break;
@@ -236,6 +239,7 @@ public class PlayerActions : MonoBehaviour
                 HighlightTile(2, 2, Node.colorYellow);
                 break;
         }
+        Character.instance.CanHighlight(currentTileNodes.Contains(Character.instance.currentNode));
     }
 
     private void OnWaterHover()

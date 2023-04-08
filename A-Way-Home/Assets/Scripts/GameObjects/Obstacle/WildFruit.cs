@@ -13,8 +13,10 @@ public class WildFruit : Plant
 
     protected override void OnHighlight(Tool tool)
     {
+        if(outline == null  || outline.activeSelf)
+            return;
         if(tool == Tool.Lightning)
-            spriteRenderer.color = Color.green;
+            outline.SetActive(true);
     }
 
     public override void OnLightningHit()

@@ -42,6 +42,8 @@ public static class GameEvent
 
     public static void UnlockNextStageLevel()
     {
+        if(isSceneSandbox)
+            return;
         string nextStageLevel = PlayerLevelData.Instance.GetNextStageLevel();
         Debug.LogWarning($"Unlocking {nextStageLevel}............");
         if(!GameData.Instance.unlockedLevels.Contains(nextStageLevel))
@@ -51,6 +53,8 @@ public static class GameEvent
 
     public static void NextLevel()
     {
+        if(isSceneSandbox)
+            return;
         string nextStageLevel = PlayerLevelData.Instance.GetNextStageLevel();
         Debug.Log($"Loading Next Level: {nextStageLevel}......");
         Debug.Assert(GameData.Instance.unlockedLevels.Contains(nextStageLevel), $"ERROR: {nextStageLevel} not unlocked");

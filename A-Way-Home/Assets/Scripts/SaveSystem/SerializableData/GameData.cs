@@ -22,7 +22,6 @@ public class GameData
     // Statics;
     public static LevelData levelData;
     public static string selectedCharacter = "NA";
-    public static Dictionary<string, GameObject> characters;
     public static Dictionary<int, SavedSlotUI> saveSlotUIDict = new Dictionary<int, SavedSlotUI>(5);
     public static List<SaveFileData> savedDataFiles = new List<SaveFileData>(5);
     public static List<string> allLevels = new List<string>(){"Stage1Level1", "Stage2Level1", "Stage3Level1"};

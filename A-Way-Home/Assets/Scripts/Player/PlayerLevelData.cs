@@ -40,8 +40,8 @@ public class PlayerLevelData : MonoBehaviour
         // this.saveables = FindAllSaveableObjects();
         // Debug.Log($"Saveable objects count: {saveables.Count}"); 
         // Debug.Assert(GameData.levelData != null , "ERROR:LevelData is null");
-        if(!GameEvent.isSceneSandbox)
-            Debug.Assert(GameData.characters != null || GameData.characters.Count != 0, "ERROR:Characters not found!");
+        // if(!GameEvent.isSceneSandbox)
+        //     Debug.Assert(GameData.characters != null || GameData.characters.Count != 0, "ERROR:Characters not found!");
         switch(GameEvent.loadType)
         {
             case LevelLoadType.NewGame:
@@ -59,12 +59,15 @@ public class PlayerLevelData : MonoBehaviour
         }
         Debug.LogWarning($"Current Score:{GameData.levelData.score}");
         if(!GameEvent.isSceneSandbox)
+        {
+            GameObject character = Resources.Load<GameObject>($"Characters/{GameData.levelData.characterName}"); 
             GameObject.Instantiate(
-                GameData.characters[GameData.levelData.characterName], 
+                character, 
                 this.characterLocation.transform.position, 
                 Quaternion.identity, 
                 this.transform
             );
+        }
         Destroy(characterLocation);
         if(GameEvent.loadType == LevelLoadType.LoadGame)
             LoadObstacles();

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Character : MonoBehaviour, ISaveable
 {
@@ -8,6 +9,7 @@ public class Character : MonoBehaviour, ISaveable
 
     [SerializeField] protected SpriteRenderer spriteRenderer;
     [SerializeField] protected Animator animator;
+    [SerializeField] protected GameObject higlightLight;
     protected int energy;
     protected int requiredEssence;
     protected int targetIndex; 
@@ -16,6 +18,8 @@ public class Character : MonoBehaviour, ISaveable
     protected List<Node> path;
     protected Node currentTargetNode;
     protected bool isAilve = true;
+
+    public Node currentNode;
 
     public Sprite image => spriteRenderer.sprite;
     public Essence currentEssence => Essence.list[currentPosition];
@@ -26,7 +30,7 @@ public class Character : MonoBehaviour, ISaveable
     public bool hasPath => path.Count > 0;
     public bool isDead => !isAilve;
     protected Vector3 currentTargetPos => currentTargetNode.worldPosition;
-
+    
     protected int xPosDiff => (int)(currentTargetPos.x - currentPosition.x); 
     protected bool isFlipped {
         get => this.spriteRenderer.flipX; 
@@ -45,6 +49,13 @@ public class Character : MonoBehaviour, ISaveable
             InGameUI.Instance.TimeCountdown();
         if(isGoingHome)
             Step();
+    }
+
+    public void CanHighlight(bool condition)
+    {
+        if(condition == higlightLight.activeSelf)
+            return;
+        higlightLight.SetActive(condition);
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
@@ -66,6 +77,8 @@ public class Character : MonoBehaviour, ISaveable
         Debug.Assert(this.energy == levelData.characterEnergy, "ERROR: Character energy value mismatch");
         Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {levelData.characterEnergy} energy and {levelData.characterRequiredEssence} required Essence");
         Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {this.energy} energy and {this.requiredEssence} required Essence");
+        currentNode = NodeGrid.NodeWorldPointPos(this.currentPosition);
+        Debug.Assert(currentNode != null);
         StartCoroutine(GetPathOnInit());
         // if (GameEvent.isSceneSandbox)
         //     this.speed = 5f;    
@@ -124,6 +137,7 @@ public class Character : MonoBehaviour, ISaveable
     public void Relocate(Vector2 location)
     {
         this.transform.position = location;
+        currentNode = NodeGrid.NodeWorldPointPos(this.currentPosition); 
         GetPath();
         Debug.Log($"Relocated Character to {location}");
     }
@@ -160,15 +174,13 @@ public class Character : MonoBehaviour, ISaveable
         return false;
     }
 
-    public bool Consume(Essence Essence)
+    public bool Consume(Essence essence)
     {
         animator.SetBool("isWalk", false);
-        Essence.OnConsume(this);
+        essence.OnConsume(this);
         this.isGoingHome = false;
-        if (isHome)
-            return TriggerLevelComplete();
-        else
-            GetPath();
+        this.currentNode = currentTargetNode;
+        GetPath();
         Debug.Log($"Current Essence Needed: {this.requiredEssence}");
         return true;
     }

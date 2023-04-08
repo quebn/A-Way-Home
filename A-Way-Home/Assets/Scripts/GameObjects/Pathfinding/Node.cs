@@ -10,7 +10,7 @@ public class Node
     public Vector2Int gridPos;
     public Node parent;
     public int gCost;
-    public List<int> hCosts ;
+    public List<int> hCosts;
     public bool isConductive;
 
     private bool isOpen;

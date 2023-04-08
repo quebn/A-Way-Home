@@ -8,7 +8,9 @@ public class TreeThin : Obstacle, ILightning
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject upper;
     [SerializeField] private List<GameObject> logs;
-        private Dictionary<Vector2, List<Node>> placeableNodes;
+    [SerializeField] private GameObject UpperHighlight;
+    [SerializeField] private GameObject LowerHighlight;
+    private Dictionary<Vector2, List<Node>> placeableNodes;
     private Vector2 currentPlaceable;
     private bool isHovered;
     private int hp = 2;
@@ -60,8 +62,10 @@ public class TreeThin : Obstacle, ILightning
     {
         if(tool != Tool.Lightning)
             return;
-        spriteRenderer.color = Color.white;
-        upperRenderer.color = Color.white;;
+        if(LowerHighlight.activeSelf)
+            LowerHighlight.SetActive(false);
+        if(UpperHighlight.activeSelf && upper.activeSelf)
+            UpperHighlight.SetActive(false);
         isHovered = false;
         if(currentPlaceable != Vector2.zero)
             Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);
@@ -71,8 +75,10 @@ public class TreeThin : Obstacle, ILightning
     {
         if(tool != Tool.Lightning)
             return;
-        spriteRenderer.color = Color.green;
-        upperRenderer.color = new Color32(255, 255, 255, 100);;
+        if(!LowerHighlight.activeSelf)
+            LowerHighlight.SetActive(true);
+        if(!UpperHighlight.activeSelf && upper.activeSelf)
+            UpperHighlight.SetActive(true);
         isHovered = true;
         // TODO: Move highlight placeable function here
     }
@@ -95,6 +101,8 @@ public class TreeThin : Obstacle, ILightning
 
     private IEnumerator CutDown()
     {
+        if(UpperHighlight.activeSelf)
+            UpperHighlight.SetActive(false);
         yield return new WaitForSeconds(CutDownTreeAnimation()); 
         this.upper.SetActive(false);
         Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);

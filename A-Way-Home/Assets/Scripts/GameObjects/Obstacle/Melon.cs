@@ -44,8 +44,10 @@ public class Melon : Plant
 
     protected override void OnHighlight(Tool tool)
     {
-        if(tool == Tool.Lightning || tool == Tool.Grow)
-            spriteRenderer.color = Color.green;
+        if(outline == null  || outline.activeSelf)
+            return;
+        if(tool == Tool.Lightning || (tool == Tool.Grow && hitpoints < 3))
+            outline.SetActive(true);
     }
 
     public override void Damage(int damage = 0)
