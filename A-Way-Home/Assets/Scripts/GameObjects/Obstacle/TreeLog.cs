@@ -7,7 +7,7 @@ public class TreeLog : Obstacle, ILightning
 
     // public bool notSpawned;
     [SerializeField] private Animator animator;
-
+ 
     public override bool isBurnable => true;
     public override bool isFragile => true;
     public override bool isMeltable => true;
@@ -22,6 +22,13 @@ public class TreeLog : Obstacle, ILightning
     public void OnLightningHit()
     {
         Remove();
+    }
+
+    protected override void OnHighlight(Tool tool)
+    {
+        if(tool != Tool.Lightning && tool != Tool.Inspect)
+            return;
+        base.OnHighlight(tool);
     }
 
     public override void Remove()
@@ -41,6 +48,4 @@ public class TreeLog : Obstacle, ILightning
         Debug.Assert(hitpoints == 0, "ERROR: Hitpoints should be 0!");
         this.gameObject.SetActive(false);
     }
-
-
 }

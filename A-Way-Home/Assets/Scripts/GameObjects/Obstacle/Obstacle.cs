@@ -11,6 +11,8 @@ public class Obstacle : MonoBehaviour, ISaveable
     [SerializeField] private Vector2Int tileSize;
     [SerializeField] protected SpriteRenderer spriteRenderer;
     [SerializeField] protected string id;
+    [SerializeField] protected GameObject outline;
+    [SerializeField] protected bool isNotHoverable;
 
     private int HP = 1;
     // private bool isHiglighted = false;
@@ -68,12 +70,12 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     protected virtual void OnDehighlight(Tool tool)
     {
-        spriteRenderer.color = Color.white;
+        outline.SetActive(false);
     }
 
     protected virtual void OnHighlight(Tool tool)
     {
-        spriteRenderer.color = Color.green;
+        outline.SetActive(true);
     } 
 
     public virtual void Destroy(Obstacle obstacle)
@@ -83,12 +85,23 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     public void Highlight(Tool tool)
     {
+        if(isNotHoverable && (outline == null  || outline.activeSelf))
+            return;
         OnHighlight(tool);
     }
 
     public void Dehighlight(Tool tool)
     {
+        if(outline == null  || !outline.activeSelf)
+            return;
         OnDehighlight(tool);
+    }
+
+    protected void ForceDehighlight()
+    {
+        if(outline == null  || !outline.activeSelf)
+            return;
+        outline.SetActive(false);
     }
 
     public static void HighlightObstacles(List<Obstacle> list, Tool tool)
@@ -144,6 +157,7 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     public virtual void Remove() //Trigger death but for all
     {
+        ForceDehighlight();
         hitpoints = 0;
         this.gameObject.SetActive(false);
     }

@@ -9,7 +9,6 @@ public class TreeThin : Obstacle, ILightning
     [SerializeField] private GameObject upper;
     [SerializeField] private List<GameObject> logs;
     [SerializeField] private GameObject UpperHighlight;
-    [SerializeField] private GameObject LowerHighlight;
     private Dictionary<Vector2, List<Node>> placeableNodes;
     private Vector2 currentPlaceable;
     private bool isHovered;
@@ -41,8 +40,10 @@ public class TreeThin : Obstacle, ILightning
 
     public override void Remove()
     {
+        ForceDehighlight();
         ClearNodes();
-        this.hitpoints = 0;
+        if(hitpoints != 0)
+            this.hitpoints = 0;
         this.gameObject.SetActive(false);
     }
 
@@ -54,17 +55,14 @@ public class TreeThin : Obstacle, ILightning
         if(isCutDown)
             StartCoroutine(CutDown());
         else
-            DestroyTrunk();
+            Remove();
     }
 
     
     protected override void OnDehighlight(Tool tool)
     {
-        if(tool != Tool.Lightning)
-            return;
-        if(LowerHighlight.activeSelf)
-            LowerHighlight.SetActive(false);
-        if(UpperHighlight.activeSelf && upper.activeSelf)
+        base.OnDehighlight(tool);
+        if(upper.activeSelf && UpperHighlight.activeSelf)
             UpperHighlight.SetActive(false);
         isHovered = false;
         if(currentPlaceable != Vector2.zero)
@@ -73,13 +71,12 @@ public class TreeThin : Obstacle, ILightning
 
     protected override void OnHighlight(Tool tool)
     {
-        if(tool != Tool.Lightning)
+        if(tool != Tool.Lightning && tool != Tool.Inspect)
             return;
-        if(!LowerHighlight.activeSelf)
-            LowerHighlight.SetActive(true);
+        base.OnHighlight(tool);
         if(!UpperHighlight.activeSelf && upper.activeSelf)
             UpperHighlight.SetActive(true);
-        isHovered = true;
+        isHovered = tool == Tool.Lightning;
         // TODO: Move highlight placeable function here
     }
 
@@ -90,7 +87,7 @@ public class TreeThin : Obstacle, ILightning
         // Debug.LogError(hitpoints);
         if(isFullyDestroyed)
         {
-            DestroyTrunk();
+            Remove();
             return;
         }
         else if(isCutDown)
@@ -127,12 +124,6 @@ public class TreeThin : Obstacle, ILightning
             Node.ToggleNodes(placeableNodes[currentPlaceable], NodeGrid.nodesVisibility);
         currentPlaceable = pos;
         Node.RevealNodes(placeableNodes[currentPlaceable], Node.colorRed);
-    }
-
-    private void DestroyTrunk()
-    {
-        ClearNodes();
-        this.gameObject.SetActive(false);
     }
 
     private void SetPlaceableLocations()

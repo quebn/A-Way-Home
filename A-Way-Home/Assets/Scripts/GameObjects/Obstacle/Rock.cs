@@ -17,19 +17,11 @@ public class Rock : Obstacle, ILightning
         Remove();
     }
 
-
-    protected override void OnDehighlight(Tool tool)
-    {
-        if(tool != Tool.Lightning && tool != Tool.Tremor)
-            return;
-        this.spriteRenderer.color = Color.white;
-    }
-
     protected override void OnHighlight(Tool tool)
     {
-        if(tool != Tool.Lightning && tool != Tool.Tremor)
+        if(tool != Tool.Lightning && tool != Tool.Tremor && tool != Tool.Inspect)
             return;
-        this.spriteRenderer.color = Color.green;
+        base.OnHighlight(tool);
     }
 
     public override void LoadData(LevelData levelData)
@@ -41,6 +33,5 @@ public class Rock : Obstacle, ILightning
         this.gameObject.SetActive(false);
 
     }
-
 
 }

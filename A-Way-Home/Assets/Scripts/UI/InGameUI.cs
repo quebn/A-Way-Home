@@ -17,6 +17,7 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI essenceNeededTMP;
     [SerializeField] private TextMeshProUGUI timeCounter;
 
+    private bool activatedCharacter = false;
     public GameObject getGameEndWindow => gameEndWindow;
 
     public int energyValueUI {
@@ -60,6 +61,7 @@ public class InGameUI : MonoBehaviour
     {
         // Debug.Assert(Character.instance != null, "Character is null");
         InitCharacterUI(GameData.levelData, Character.instance);
+        activatedCharacter = false;
         endGameType = EndGameType.None;
     }
 
@@ -68,12 +70,10 @@ public class InGameUI : MonoBehaviour
     {
         if (timeCounterUI > 0)
             timeCounterUI -= Time.deltaTime;
-        if (timeCounterUI <= 0 && !GameEvent.isEndWindowActive)
+        if (timeCounterUI <= 0 && !GameEvent.isEndWindowActive && !activatedCharacter)
         {
-            if(Character.instance.hasPath)
-                Character.instance.GoHome();
-            else
-                Character.instance.TriggerDeath();
+            Character.instance.GoHome();
+            activatedCharacter = true;
         }
     }
 

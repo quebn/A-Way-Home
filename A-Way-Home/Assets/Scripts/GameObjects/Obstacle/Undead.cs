@@ -45,16 +45,9 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
 
     protected override void OnHighlight(Tool tool)
     {
-        if(canPhase)
+        if(canPhase || tool != Tool.Lightning && tool != Tool.Inspect)
             return;
         base.OnHighlight(tool);
-    }
-
-    protected override void OnDehighlight(Tool tool)
-    {
-        if(canPhase)
-            return;
-        base.OnDehighlight(tool);
     }
 
     public void OnLightningHit()
@@ -89,6 +82,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
         }
         if(TrySetPath() && !isImmobile)
         {
+            ForceDehighlight();
             ClearNodes();
             isMoving = true;
             currentTargetIndex = 0;

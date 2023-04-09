@@ -18,6 +18,13 @@ public class LogSpawned : Spawnable, ILightning
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
+    protected override void OnHighlight(Tool tool)
+    {
+        if(tool != Tool.Lightning && tool != Tool.Inspect)
+            return;
+        base.OnHighlight(tool);
+    }
+
     public void OnLightningHit()
     {
         Remove();

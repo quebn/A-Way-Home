@@ -58,6 +58,12 @@ public class Character : MonoBehaviour, ISaveable
         higlightLight.SetActive(condition);
     }
 
+    public void Interact()
+    {
+        higlightLight.SetActive(false);
+        GoHome();
+    }
+
     private void OnTriggerEnter2D(Collider2D collider)
     {
         Debug.LogWarning($"Trap {collider.gameObject.name} collided");
@@ -66,7 +72,6 @@ public class Character : MonoBehaviour, ISaveable
             return;
         trap.OnTrapTrigger(this);
     }
-
 
     public void Initialize(LevelData levelData)
     {

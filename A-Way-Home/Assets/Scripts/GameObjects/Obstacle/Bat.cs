@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class Bat : Obstacle, ITrap, ILightning
     [SerializeField] private Animator animator;
     [SerializeField] private int damage;
 
+    private bool isMoving = false;
     private Dictionary<Vector2Int, Node> nodeGridRange;
     private Vector3 targetPosition;
     // private List<Node> path;
@@ -22,14 +24,11 @@ public class Bat : Obstacle, ITrap, ILightning
         get => animator.GetInteger("hitpoints"); 
         set => animator.SetInteger("hitpoints", value); 
     }
-    protected bool isFlying {
-        get => animator.GetBool("isFlying"); 
-        set => animator.SetBool("isFlying", value); 
-    }
+
 
     private void Update()
     {
-        if(isFlying)
+        if(isMoving)
             Step();
     }
 
@@ -37,7 +36,6 @@ public class Bat : Obstacle, ITrap, ILightning
     {
         TriggerDeath();
     }
-
 
     public void OnAftershock()
     {
@@ -54,7 +52,7 @@ public class Bat : Obstacle, ITrap, ILightning
     public void Move()
     {
         // Debug.Assert(path.Count > 0, "ERROE: Bat has no Path!");
-        isFlying = true;
+        isMoving = true;
         ClearNodes();
         // currentTargetNode = path[0];
         // targetIndex = 0;
@@ -90,7 +88,7 @@ public class Bat : Obstacle, ITrap, ILightning
 
     private void OnStop()
     {
-        isFlying = false;
+        isMoving = false;
         SetNodes(this.worldPos, NodeType.Walkable, this);
         SetNodeGridRange();
         SetRandomPosition();
@@ -118,25 +116,16 @@ public class Bat : Obstacle, ITrap, ILightning
         Move();
     }
 
-
-
-    // private void HighlightNodes()
+    // public void OnPlayerAction()
     // {
-    //     Node.HideNodes(nodes);
+    //     StartCoroutine(WaitForBatMove());
     // }
 
-    // private void GoToDestination()
+    // private IEnumerator WaitForBatMove()
     // {
-    //     // Make the Bat wake up and go to its destination.
-    //     animator.Play("Bat_Flying");
-    //     batGameObject.transform.position = destination.transform.position;
-    //     ClosePath();
-    // }
-
-    // private void ClosePath()
-    // {
-    //     // Make the node that the bat overlaps unwalkable
-    //     this.gameObject.tag = "Interacted";
-    //     SetNodesType(NodeType.Obstacle);
+    //     while(isMoving)
+    //         yield return null;
+    //     Debug.Assert(!isMoving);
+    //     PlayerActions.FinishProcess(this);
     // }
 }

@@ -14,6 +14,7 @@ public class NodeGrid : MonoBehaviour
     [SerializeField] private Tilemap tileMap; 
     [SerializeField] private Tile tile; 
     [SerializeField] private bool canBeCovered  = false;
+    [SerializeField] PolygonCollider2D obsCollider2D;
     
     private Vector2Int gridSizeInt;
     private float nodeDiameter;
@@ -47,6 +48,7 @@ public class NodeGrid : MonoBehaviour
                 CreateNode(new Vector2Int(x, y), worldBottomLeft);
             }
         }
+        obsCollider2D.enabled = false;
     }
 
     private void CreateNode(Vector2Int gridPosition, Vector3 worldBottomLeft)
@@ -143,6 +145,7 @@ public class NodeGrid : MonoBehaviour
                 pair.Value.ToggleNode(active);
         }
     }
+
 
     public static Node NodeWorldPointPos(Vector3 worldpos)
     {

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 58589fb8e49c3bc4ab4e14befec3c795
+guid: fcb44cfb107fe714799e7dddd4f4134f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -45,8 +45,8 @@ TextureImporter:
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
+  alignment: 9
+  spritePivot: {x: 0.5, y: 0.25}
   spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
@@ -105,43 +105,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: LogPlatformOutline_0
+      name: LogsStackOutline_0
       rect:
         serializedVersion: 2
-        x: 23
-        y: 8
-        width: 18
-        height: 17
+        x: 0
+        y: 0
+        width: 16
+        height: 21
       alignment: 9
-      pivot: {x: 0.5, y: 0.47}
+      pivot: {x: 0.53, y: 0.43}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9518f75c2bc955c4ebb7dd4109e8b1b3
-      internalID: -1938498335
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: LogPlatformOutline_1
-      rect:
-        serializedVersion: 2
-        x: 4
-        y: 8
-        width: 18
-        height: 17
-      alignment: 9
-      pivot: {x: 0.5, y: 0.47}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ca9ab1133e74c6b4d9098f65e5dd2345
-      internalID: -1283833048
+      spriteID: 9c63cf5281cfa054b8e9f09ec4c08996
+      internalID: -2121944170
       vertices: []
       indices: 
       edges: []
@@ -150,15 +129,14 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 0
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      LogPlatformOutline_1: -1283833048
-      LogPlatformOutline_0: -1938498335
+      LogsStackOutline_0: -2121944170
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

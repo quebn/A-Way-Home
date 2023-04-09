@@ -34,16 +34,20 @@ public class Boulder : Obstacle, ILightning, ITremor
         Damage(1);
     }
 
+    protected override void OnHighlight(Tool tool)
+    {
+        if(tool != Tool.Lightning && tool != Tool.Tremor)
+            return;
+        base.OnHighlight(tool);
+    }
+
     public override void Damage(int value)
     {
         if(hitpoints > 0)
             hitpoints -= value;
         if(hitpoints > 0)
             return;
-        ClearNodes();
-        animator.Play("BigBoulder_Destroy");
-        float delay = animator.GetCurrentAnimatorStateInfo(0).length;
-        Invoke("OnRemove", delay);
+        Remove();
     } 
 
     public override void LoadData(LevelData levelData)
@@ -51,6 +55,18 @@ public class Boulder : Obstacle, ILightning, ITremor
         base.LoadData(levelData);
         if(hitpoints == 0)
             this.gameObject.SetActive(false);
+    }
+
+    public override void Remove()
+    {
+        ForceDehighlight();
+        if(hitpoints != 0)
+            hitpoints = 0;
+        Debug.Assert(hitpoints == 0, "ERROR: Boulder HP isnt Zero");
+        ClearNodes();
+        animator.Play("BigBoulder_Destroy");
+        float delay = animator.GetCurrentAnimatorStateInfo(0).length;
+        Invoke("OnRemove", delay);
     }
 
     private void OnRemove()

@@ -51,6 +51,8 @@ MonoBehaviour:
   tileSize: {x: 1, y: 1}
   spriteRenderer: {fileID: 8392494097562565323}
   id: 
+  outline: {fileID: 4894992880392304320}
+  isNotHoverable: 0
   upperRenderer: {fileID: 1217801454430243637}
   animator: {fileID: 2732236070465409902}
   upper: {fileID: 9009903351620820610}
@@ -58,7 +60,6 @@ MonoBehaviour:
   - {fileID: 4250390148095652541, guid: aebe6570a06a8354e87c8d7c74305e50, type: 3}
   - {fileID: 7010660713218782330, guid: 84e835fd2ea2411448c9ce41edf74ef6, type: 3}
   UpperHighlight: {fileID: 7160373683570281075}
-  LowerHighlight: {fileID: 4894992880392304320}
 --- !u!212 &8392494097562565323
 SpriteRenderer:
   m_ObjectHideFlags: 0

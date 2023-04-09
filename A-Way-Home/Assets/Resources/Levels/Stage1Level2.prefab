@@ -34245,7 +34245,6 @@ MonoBehaviour:
   currentStage: 1
   currentLevel: 2
   characterEnergy: 30
-  playerLives: 3
   playerMoves: 10
   essenceNeeded: 1
   timeLimitInSecs: 90
@@ -34280,6 +34279,7 @@ MonoBehaviour:
   tileMap: {fileID: 315160874106495539}
   tile: {fileID: 11400000, guid: 624cd456949571040a96b2a923a00d85, type: 2}
   canBeCovered: 0
+  obsCollider2D: {fileID: 737676111301918161}
   enableValues: 0
 --- !u!114 &8363250195897535834
 MonoBehaviour:

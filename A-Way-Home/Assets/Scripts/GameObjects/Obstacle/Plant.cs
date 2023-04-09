@@ -6,7 +6,6 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
 {
     [SerializeField] protected Animator animator;
     [SerializeField] private int initialStage = 1;
-    [SerializeField] protected GameObject outline;
 
     public override bool isBurnable => true;
     public override bool isCorrosive => true;
@@ -42,17 +41,8 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
 
     protected override void OnHighlight(Tool tool)
     {
-        if(outline == null  || outline.activeSelf)
-            return;
-        if((tool == Tool.Grow && !isAdult )|| tool == Tool.Lightning)
-            outline.SetActive(true);
-    }
-
-    protected override void OnDehighlight(Tool tool)
-    {
-        if(outline == null || !outline.activeSelf)
-            return;
-        outline.SetActive(false);
+        if((tool == Tool.Grow && !isAdult )|| tool == Tool.Lightning || tool == Tool.Inspect)
+            base.OnHighlight(tool);
     }
 
     public virtual void OnLightningHit()
@@ -87,6 +77,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
 
     public override void Remove()
     {
+        ForceDehighlight();
         if(hitpoints > 0)
         {
             hitpoints = 0;

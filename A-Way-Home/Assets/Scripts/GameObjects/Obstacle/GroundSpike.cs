@@ -33,20 +33,13 @@ public class GroundSpike : Obstacle, ITrap, ILightning
 
     protected override void OnHighlight(Tool tool)
     {
-        if(!isTriggered)
+        if(tool != Tool.Lightning && tool != Tool.Inspect && tool != Tool.Tremor)
             return;
-        if(tool == Tool.Lightning || isTriggered)
-            spriteRenderer.color = Color.green;
+        if(tool == Tool.Lightning && !isTriggered)
+            return;
+        base.OnHighlight(tool);
     }
 
-    protected override void OnDehighlight(Tool tool)
-    {
-        if(!isTriggered)
-            return;
-        if(tool == Tool.Lightning || isTriggered)
-            spriteRenderer.color = Color.white;
-
-    }
 
     public void OnTrapTrigger(Character character)
     {

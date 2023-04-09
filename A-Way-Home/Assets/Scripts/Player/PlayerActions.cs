@@ -71,6 +71,9 @@ public class PlayerActions : MonoBehaviour
         {
             case Tool.Inspect:
                 currentTileNodes[0].InspectObstacle();
+                if(currentTileNodes.Contains(Character.instance.currentNode))
+                    Character.instance.Interact();
+                obstaclesDone = true;
                 return;
             case Tool.Lightning:
                 Node.ShockNode(currentTileNodes[0]);
@@ -157,11 +160,6 @@ public class PlayerActions : MonoBehaviour
         }
     }
 
-    public static void BeginProcess(IActionWaitProcess process)
-    {
-        actionWaitProcesses.Add(process);
-    }
-
     private bool ActionsNotAllowed()
     {
         return  IsMouseOverUI() || 
@@ -209,7 +207,7 @@ public class PlayerActions : MonoBehaviour
             lilypadVisual.SetActive(false);
         currentTileOrigin = new Vector2();
         Obstacle.DehighlightObstacles(currentObstacles, currentTool);
-        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, Character.instance);
+        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility);
         currentObstacles = new List<Obstacle>();
         currentTileNodes = new List<Node>();
         Debug.Log("Change");
@@ -279,10 +277,8 @@ public class PlayerActions : MonoBehaviour
         Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos, tileWidth, tileHeight);
         if(currentTileOrigin == origin)
             return;
-        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility, Character.instance);
+        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility);
         currentTileNodes = NodeGrid.GetNodes(origin, tileWidth, tileHeight, NodeType.Terrain, isOpenOnly);
-        if(currentTileNodes.Count == 0)
-            return;
         HiglightObstacles(origin);
         currentTileOrigin = origin;
         Node.RevealNodes(currentTileNodes, color);
@@ -291,6 +287,8 @@ public class PlayerActions : MonoBehaviour
     private void HiglightObstacles(Vector2 origin)
     {
         List<Obstacle> interactables = Node.GetNodesInteractable(currentTileNodes);
+        if(interactables.Count == 0)
+            interactables = Node.GetNodesInteractable(currentTileNodes, true);
         if(interactables == currentObstacles)
             return;
         if(origin != currentTileOrigin)

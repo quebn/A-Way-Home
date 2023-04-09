@@ -70,22 +70,17 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
  
     protected override void OnHighlight(Tool tool)
     {
-        base.OnHighlight(tool);
+        if(tool != Tool.Lightning && tool != Tool.Tremor && tool != Tool.Inspect && tool != Tool.Command )
+            return;
         if(tool == Tool.Command && !hasShell)
-        {
             Node.ToggleNodes(path, Color.magenta, NodeGrid.nodesVisibility);
-            spriteRenderer.color = Color.red;
-        }
+        outline.SetActive(true);
     }
 
     protected override void OnDehighlight(Tool tool)
     {
         base.OnDehighlight(tool);
-        if(tool == Tool.Command)
-        {
-            Node.ToggleNodes(path, NodeGrid.nodesVisibility);
-            spriteRenderer.color = Color.white;
-        }
+        Node.ToggleNodes(path, NodeGrid.nodesVisibility);
     }
 
     public void OnTrapTrigger(Character character)
@@ -111,6 +106,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
 
     public override void Remove()
     {
+        ForceDehighlight();
         ClearNodes();
         hitpoints = 0;
         StartCoroutine(DeathAnimation());
@@ -125,6 +121,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
 
     private void MoveLocation()
     {
+        ForceDehighlight();
         isWalking = true;
         ClearNodes();
     }

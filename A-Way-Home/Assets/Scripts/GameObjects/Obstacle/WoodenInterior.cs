@@ -25,6 +25,13 @@ public class WoodenInterior : Obstacle, ILightning
         Damage(1);
     }
 
+    protected override void OnHighlight(Tool tool)
+    {
+        if(tool != Tool.Lightning)
+            return;
+        base.OnHighlight(tool);
+    }
+
     public override void Damage(int value)
     {
         if(hitpoints > 0)

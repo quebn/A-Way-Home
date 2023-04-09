@@ -282,22 +282,27 @@ public class Node
             node.HideNode();
     }
 
-    public static void ToggleNodes(List<Node> nodeList, bool active)
+    public static void ToggleNodes(List<Node> nodeList, Color color,bool toggle)
     {
         if (nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
-            node.ToggleNode(active);
+            if(Character.instance.NodeInPath(node))
+                node.ToggleNode(Node.colorGreen, toggle);
+            else
+                node.ToggleNode(toggle);
     }
 
-    public static void ToggleNodes(List<Node> nodeList, Color color,bool active)
+    public static void ToggleNodes(List<Node> nodeList, bool toggle)
     {
-        if (nodeList == null ||nodeList.Count == 0)
+        if(nodeList == null ||nodeList.Count == 0)
             return;
         foreach(Node node in nodeList)
-            node.ToggleNode(color, active);
+            if(Character.instance.NodeInPath(node))
+                node.ToggleNode(Node.colorGreen, toggle);
+            else
+                node.ToggleNode(toggle);
     }
-
 
     public static void SetNodesObstacle(List<Node> nodeList, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false)
     {
@@ -325,17 +330,6 @@ public class Node
             return;
         foreach (Node node in nodeList)
             node.TremorObstacle();
-    }
-    
-    public static void ToggleNodes(List<Node> nodeList, bool toggle, Character character)
-    {
-        if(nodeList == null ||nodeList.Count == 0)
-            return;
-        foreach(Node node in nodeList)
-            if(character.NodeInPath(node))
-                node.ToggleNode(Node.colorGreen, toggle);
-            else
-                node.ToggleNode(toggle);
     }
 
     public static void SetNodesType(List<Node> nodeList, NodeType type)
