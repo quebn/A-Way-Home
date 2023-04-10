@@ -2775,6 +2775,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToolManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6746524459292340636, guid: 0d2d85a4f7e181d4aa50537f8b5463bb, type: 3}
+      propertyPath: m_Size.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6746524459292340636, guid: 0d2d85a4f7e181d4aa50537f8b5463bb, type: 3}
+      propertyPath: m_Size.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6746524459292340636, guid: 0d2d85a4f7e181d4aa50537f8b5463bb, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6746524459292340638, guid: 0d2d85a4f7e181d4aa50537f8b5463bb, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -2817,6 +2829,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6746524459292340638, guid: 0d2d85a4f7e181d4aa50537f8b5463bb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6746524459866674856, guid: 0d2d85a4f7e181d4aa50537f8b5463bb, type: 3}
+      propertyPath: m_WasSpriteAssigned
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -16385,11 +16401,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3854084987183245516, guid: 7654fe4f8a8791f458e4405dbef80202, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.5
+      value: -9.5
       objectReference: {fileID: 0}
     - target: {fileID: 3854084987183245516, guid: 7654fe4f8a8791f458e4405dbef80202, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -9.5
+      value: -8.5
       objectReference: {fileID: 0}
     - target: {fileID: 3854084987183245516, guid: 7654fe4f8a8791f458e4405dbef80202, type: 3}
       propertyPath: m_LocalPosition.z
@@ -19948,6 +19964,14 @@ PrefabInstance:
     - target: {fileID: 3698979768122658300, guid: d2566b7d3e031274c88166f88d2aabad, type: 3}
       propertyPath: m_LocalScale.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6702977010012867026, guid: d2566b7d3e031274c88166f88d2aabad, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -9.51
+      objectReference: {fileID: 0}
+    - target: {fileID: 6702977010012867026, guid: d2566b7d3e031274c88166f88d2aabad, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -8.52
       objectReference: {fileID: 0}
     - target: {fileID: 9032281269650864299, guid: d2566b7d3e031274c88166f88d2aabad, type: 3}
       propertyPath: m_RootOrder

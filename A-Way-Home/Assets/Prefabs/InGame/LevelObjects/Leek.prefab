@@ -136,9 +136,10 @@ MonoBehaviour:
   tileSize: {x: 1, y: 1}
   spriteRenderer: {fileID: 6525268360055368778}
   id: 
+  outline: {fileID: 2479321084084124042}
+  isNotHoverable: 0
   animator: {fileID: 6525268360055368779}
   initialStage: 1
-  outline: {fileID: 2479321084084124042}
   heal: 3
 --- !u!212 &6525268360055368778
 SpriteRenderer:
@@ -253,9 +254,9 @@ MonoBehaviour:
   m_ComponentVersion: 1
   m_LightType: 3
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.5
+  m_FalloffIntensity: 0.8
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.5
+  m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 00000000359a38e7b3b403bb37ebbe7d

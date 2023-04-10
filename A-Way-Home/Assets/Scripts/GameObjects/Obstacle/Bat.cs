@@ -10,13 +10,15 @@ public class Bat : Obstacle, ITrap, ILightning
     // - killed by directly hit by lightning.
     [SerializeField] private Animator animator;
     [SerializeField] private int damage;
-
+    [SerializeField] private GameObject poisonMiasma;
+    
     private bool isMoving = false;
     private Dictionary<Vector2Int, Node> nodeGridRange;
     private Vector3 targetPosition;
-    // private List<Node> path;
-    // private Node currentTargetNode;
-    // private int targetIndex;
+
+    public override bool isBurnable => true;
+    public override bool isFragile => true;
+    public override bool isMeltable => true;
 
     private bool destinationReached => targetPosition == (Vector3)worldPos;
 
@@ -34,24 +36,37 @@ public class Bat : Obstacle, ITrap, ILightning
 
     public void OnLightningHit()
     {
-        TriggerDeath();
+        ForceDehighlight();
+        Damage(1);
+        if(hitpoints > 0)
+            Move();
     }
 
     public void OnAftershock()
     {
+        ForceDehighlight();
+        Vector3 pos = nodes[0].worldPosition;
         Move();
+        GameObject.Instantiate(poisonMiasma, pos, Quaternion.identity);
+    }
+
+    protected override void OnHighlight(Tool tool)
+    {
+        if(tool != Tool.Lightning && tool != Tool.Command)
+            return;
+        base.OnHighlight(tool);
     }
 
     protected override void Initialize()
     {
         base.Initialize();
         SetNodeGridRange();
-        SetRandomPosition();
     }
 
     public void Move()
     {
         // Debug.Assert(path.Count > 0, "ERROE: Bat has no Path!");
+        SetRandomPosition();
         isMoving = true;
         ClearNodes();
         // currentTargetNode = path[0];
@@ -68,16 +83,6 @@ public class Bat : Obstacle, ITrap, ILightning
 
     private void Step()
     {
-        // if(this.transform.position == currentTargetNode.worldPosition)
-        // {
-            // targetIndex++;
-            // if(destinationReached)
-            // {
-                // OnStop();
-                // return;
-            // }
-            // currentTargetNode = path[targetIndex];
-        // }
         if(destinationReached)
         {
             OnStop();
@@ -91,7 +96,6 @@ public class Bat : Obstacle, ITrap, ILightning
         isMoving = false;
         SetNodes(this.worldPos, NodeType.Walkable, this);
         SetNodeGridRange();
-        SetRandomPosition();
     }
 
     private void SetRandomPosition()
@@ -112,7 +116,8 @@ public class Bat : Obstacle, ITrap, ILightning
 
     public void OnTrapTrigger(Character character)
     {
-        character.IncrementEnergy(damage);
+        character.IncrementEnergy(-damage);
+        character.DamageAnimation();
         Move();
     }
 

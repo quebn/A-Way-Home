@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public enum EndGameType { None, GameOver, LevelClear, TryAgain}
+public enum EndGameType { None, GameOver, LevelClear, TryAgain, Restart}
 
 public class GameEndUI : MonoBehaviour
 {
@@ -63,6 +63,16 @@ public class GameEndUI : MonoBehaviour
                     greenButtonText: "try again"
                 );
                 break;
+            case EndGameType.Restart:
+                InitializeContentsUI(
+                    color: Color.white, 
+                    title: "restart?",
+                    message: $"{GameData.levelData.characterName} didnt die yet. are you sure you want to restart?",
+                    redButtonText: "no",
+                    greenButtonText: "yes",
+                    lifeIncrement:0
+                );
+                break;
         }
     }
     private void InitializeContentsUI(Color color, string title, string message, string redButtonText, string greenButtonText, int lifeIncrement = -1)
@@ -82,6 +92,10 @@ public class GameEndUI : MonoBehaviour
             case EndGameType.GameOver:
                 OptionsUI.Instance.MainMenu();
                 break;
+            case EndGameType.Restart:
+                InGameUI.Instance.endGameType = EndGameType.None;
+                InGameUI.Instance.getGameEndWindow.SetActive(false);
+                break;
             default:
                 EndRun();
                 break;
@@ -100,6 +114,7 @@ public class GameEndUI : MonoBehaviour
                 NextLevel();
                 break;
             case EndGameType.TryAgain:
+            case EndGameType.Restart:
                 TryAgain();
                 break;
         }

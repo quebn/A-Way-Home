@@ -22,6 +22,7 @@ public class PlantPoison : Plant
     {
         base.OnTrapTrigger(character);
         character.IncrementEnergy(-damage);
+        character.DamageAnimation();
         Damage(1);
     }
 

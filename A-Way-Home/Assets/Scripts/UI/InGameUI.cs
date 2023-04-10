@@ -117,19 +117,13 @@ public class InGameUI : MonoBehaviour
         // Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
     }
 
-    // public void UndoAction()
-    // {
-    //     Debug.Log("Pressed Undo Button!");
-    //     PlayerActions.Instance.Undo();
-    // }
+    public void ReloadAction()
+    {
+        GameEvent.SetEndWindowActive(EndGameType.Restart);
+    }
 
-    // public void ReloadAction()
-    // {
-    //     GameEvent.RestartGame();
-    // }
-
-    // public void PlayAction()
-    // {
-
-    // }
+    public void PlayAction()
+    {
+        Character.instance.GoHome();
+    }
 }

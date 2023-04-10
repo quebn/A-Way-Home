@@ -73,6 +73,12 @@ public class Character : MonoBehaviour, ISaveable
         trap.OnTrapTrigger(this);
     }
 
+    public void DamageAnimation()
+    {
+        Debug.Log("Character Damaged");
+        animator.Play("Damage");
+    }
+
     public void Initialize(LevelData levelData)
     {
         // this.requiredEssence = levelData.characterRequiredEssence;

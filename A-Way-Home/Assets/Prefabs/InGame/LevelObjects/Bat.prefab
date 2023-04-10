@@ -70,9 +70,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1157385037
+  m_SortingLayer: 2
+  m_SortingOrder: 4
   m_Sprite: {fileID: -1117400037, guid: d6ea58d4cf41685489caf3c8855ea4e6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -139,6 +139,7 @@ MonoBehaviour:
   isNotHoverable: 0
   animator: {fileID: 5545026643998478287}
   damage: 5
+  poisonMiasma: {fileID: 8745363850703227746, guid: 371b5b5e167558b4eb34d05f91f5511b, type: 3}
 --- !u!212 &8764478453688538269
 SpriteRenderer:
   m_ObjectHideFlags: 0
