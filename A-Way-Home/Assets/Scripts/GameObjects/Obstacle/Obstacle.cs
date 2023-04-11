@@ -44,7 +44,7 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     protected virtual void Initialize()
     {
-
+        Debug.Assert(id != "", $"ERROR: {this.GetType().Name} ID is empty!");
     }
 
     protected void SetNodes(Vector3 worldPos, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false)

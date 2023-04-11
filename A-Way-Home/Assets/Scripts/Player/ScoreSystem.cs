@@ -25,7 +25,6 @@ public static class ScoreSystem
     
     public static void InitScoreData()
     {
-        PlayerLevelData playerLevelData = PlayerLevelData.Instance;
         characterSprite = Character.instance.image;
         characterName = new string(GameData.levelData.characterName);
         scoreLevelData = GameData.levelData;

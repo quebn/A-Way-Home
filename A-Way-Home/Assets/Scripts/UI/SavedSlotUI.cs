@@ -97,9 +97,10 @@ public class SavedSlotUI : MonoBehaviour
     
     private void SetValues(SaveFileData data)
     {
+        Sprite sprite = Resources.Load<Sprite>($"Characters/Images/{data.levelData.characterName}");
         this.fileName.text = data.fileName;
         this.characterName.text = data.levelData.characterName;
-        // this.characterImage.sprite = GameData.characterSprites[data.levelData.characterName];
+        this.characterImage.sprite = sprite;
         this.energy.text = data.levelData.characterEnergy.ToString();
         this.essence.text = data.levelData.characterRequiredEssence.ToString();
         this.moves.text = data.levelData.moves.ToString();

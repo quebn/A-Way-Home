@@ -7,7 +7,6 @@ public class SaveFileData
     public LevelData levelData;
     public string date;
     public string time;
-
     public SaveFileData(string fileName, LevelData leveldata)
     {
         DateTime dateTime = DateTime.Now;

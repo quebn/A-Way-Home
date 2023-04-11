@@ -18,8 +18,8 @@ public class GameEndUI : MonoBehaviour
 
     private void Start()
     {
-        InitGameEndUI();
         GameData.levelData.score = ScoreSystem.CalculateScore();
+        InitGameEndUI();
     }
 
     private void OnDisable()
@@ -48,7 +48,7 @@ public class GameEndUI : MonoBehaviour
                 InitializeContentsUI(
                     color: new Color32(0, 219, 43, 255),
                     title: "level complete",
-                    message: "your character reached its target safetly!",
+                    message: $"your character reached its target safetly! \n Score: {GameData.levelData.score}",
                     redButtonText: "end run",
                     greenButtonText: "proceed",
                     lifeIncrement: 0

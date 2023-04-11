@@ -121,6 +121,8 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
 
     private void MoveLocation()
     {
+        if(path == null || path.Count == 0)
+            return;
         ForceDehighlight();
         isWalking = true;
         ClearNodes();
@@ -170,8 +172,10 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
             TryGetCrabPath(NodeType.Walkable, typeof(Plant));
         if(!hasPath)
             SetRandomPath();
-        Debug.Assert(path.Count > 0, $"ERROR: Crab path is empty | Path count:{path.Count}");
+        // Debug.Assert(path.Count > 0, $"ERROR: Crab path is empty | Path count:{path.Count}");
         targetIndex = 0;
+        if(path.Count == 0)
+            return;
         currentTargetNode = path[0];
     }
 
@@ -219,6 +223,8 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
 
     private void SetRandomPath()
     {
+        if(!NodeGrid.IfNeigbhorsWalkable(nodes[0], travelRangeGrid))
+            return;
         targetPositions = new List<Vector3>();
         targetPositions = Node.GetRandomWorldPos(travelRangeGrid, 1);
         path = Pathfinding.FindPath(this.worldPos, targetPositions, travelRangeGrid);

@@ -282,4 +282,20 @@ public class NodeGrid : MonoBehaviour
                 worldPositions.Add(pair.Value.worldPosition);
         return worldPositions;
     }
+
+    public static bool IfNeigbhorsWalkable(Node node, Dictionary<Vector2Int, Node> grid)
+    {
+        for (int x = -1; x <= 1; x++){
+            for (int y = -1; y <= 1; y++){
+                // Prevent middle node and diagonal nodes from being included in neighbors of the node.
+                // Grid coords that are excluded: (0, 0), (1, 1), (-1, -1), (-1 , 1), (1, -1)
+                if (x == y || x + y == 0)
+                    continue;
+                Vector2Int gridPos = new Vector2Int(x, y);
+                if(grid.ContainsKey(gridPos) && grid[gridPos].IsWalkable())
+                    return true;
+            }
+        }
+        return false;
+    }
 }

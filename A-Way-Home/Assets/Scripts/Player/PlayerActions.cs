@@ -221,7 +221,7 @@ public class PlayerActions : MonoBehaviour
         switch(currentTool)
         {
             case Tool.Inspect:
-                HighlightTile(1, 1, Node.colorClear);
+                InspectTile(1, 1);
                 break;
             case Tool.Lightning:
                 HighlightTile(1, 1, Node.colorCyan, true);
@@ -282,6 +282,18 @@ public class PlayerActions : MonoBehaviour
         HiglightObstacles(origin);
         currentTileOrigin = origin;
         Node.RevealNodes(currentTileNodes, color);
+    }
+
+    private void InspectTile(int tileWidth, int tileHeight)
+    {
+        Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos, tileWidth, tileHeight);
+        if(currentTileOrigin == origin)
+            return;
+        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility);
+        currentTileNodes = NodeGrid.GetNodes(origin, tileWidth, tileHeight, NodeType.Terrain);
+        HiglightObstacles(origin);
+        currentTileOrigin = origin;
+        Node.ToggleNodes(currentTileNodes, NodeGrid.Instance.isActiveAndEnabled);
     }
 
     private void HiglightObstacles(Vector2 origin)

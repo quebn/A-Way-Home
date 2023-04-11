@@ -187,6 +187,7 @@ public class Character : MonoBehaviour, ISaveable
 
     public bool Consume(Essence essence)
     {
+        path = new List<Node>();
         animator.SetBool("isWalk", false);
         essence.OnConsume(this);
         this.isGoingHome = false;
@@ -256,7 +257,7 @@ public class Character : MonoBehaviour, ISaveable
 
     public bool NodeInPath(Node node)
     {
-        return path.Contains(node);
+        return path != null ? path.Contains(node) : false;
     }
 
     public void SaveData(LevelData levelData)
@@ -270,7 +271,5 @@ public class Character : MonoBehaviour, ISaveable
     public void LoadData(LevelData levelData)
     {
         this.transform.position = levelData.characterPosition;
-        // this.requiredEssence = levelData.characterRequiredEssence;
-        // this.energy = levelData.characterEnergy;
     }
 }
