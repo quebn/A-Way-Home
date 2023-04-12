@@ -48,7 +48,6 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
         SetGrid();
         if(!hasShell)
             Invoke("SetPath", .5f);
-            // SetPath();
     }
 
     public override void OnLightningHit()
@@ -92,7 +91,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
     public void OnPlayerAction()
     {
         SetPath();
-        PlayerActions.OnPlayerActionFinish(this);
+        PlayerActions.FinishProcess(this);
     }
 
     public override void Damage(int value = 1)
@@ -164,12 +163,12 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
         Debug.Log($"Looking for Path");
         if(!hasShell)
         {
-            bool success = TryGetCrabPath(NodeType.Obstacle, typeof(Rock));
+            bool success = TryGetPath(NodeType.Obstacle, typeof(Rock));
             if(!success)
                 Debug.LogWarning($"Looking for Rock.... Failed");
         } 
         if(!hasPath) 
-            TryGetCrabPath(NodeType.Walkable, typeof(Plant));
+            TryGetPath(NodeType.Walkable, typeof(Plant));
         if(!hasPath)
             SetRandomPath();
         // Debug.Assert(path.Count > 0, $"ERROR: Crab path is empty | Path count:{path.Count}");
@@ -179,7 +178,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
         currentTargetNode = path[0];
     }
 
-    private bool TryGetCrabPath(NodeType nodeType, Type type)
+    private bool TryGetPath(NodeType nodeType, Type type)
     {
         // Debug.Log($"Trying to get path with target node of {type.ToString()}");
         targetPositions = new List<Vector3>();

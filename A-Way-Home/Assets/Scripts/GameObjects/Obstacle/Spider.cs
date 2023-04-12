@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,12 +22,6 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
         set => animator.SetInteger("hitpoints", value); 
     }
 
-    private void Update()
-    {
-        // if(isMoving)
-        //     Step();
-    }
-
     protected override void Initialize()
     {
         base.Initialize();
@@ -38,8 +33,9 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
 
     protected override void OnHighlight(Tool tool)
     {
-        if(tool == Tool.Lightning || tool == Tool.Command)
-            spriteRenderer.color = Color.red;
+        if(tool != Tool.Inspect && tool != Tool.Lightning && tool != Tool.Command)
+            return;
+        base.OnHighlight(tool);
     }
 
     public void OnLightningHit()
@@ -55,13 +51,12 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
 
     public void OnPlayerAction()
     {
-        if(canWeb)
-            Move();
+        if(TryGetPath())
+            StartCoroutine(FollowPath());
     }
 
     public IEnumerator FollowPath()
     {
-        Move();
         while(isMoving)
         {
             if(this.transform.position == currentTargetNode.worldPosition)
@@ -74,54 +69,54 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
         }
     }
 
-    private void Move()
+    private bool TryGetPath()
     {
-        if(walkableNodes == null || walkableNodes.Count == 0 || hitpoints <= 0)
-            return;
+        if(walkableNodes == null || walkableNodes.Count == 0 || hitpoints <= 0 || !NodeGrid.IfNeigbhorsWalkable(nodes[0]))
+        {
+            PlayerActions.FinishProcess(this);
+            return false;
+        }
         SetCurrentTargetNode();
-        if(currentTargetNode == null)
-            return;
         Debug.LogWarning($"Targetnode pos => {currentTargetNode.worldPosition}");
         lastNode = nodes[0];
         ClearNodes();
         SpawnWeb();
         isMoving = true;
+        return true;
     }
 
     private void SetCurrentTargetNode()
     {
-        if(walkableNodes.Count == 0)
-            return;
+        currentTargetNode = null;
         int randomIndex = UnityEngine.Random.Range(0, walkableNodes.Count);
-        if(!walkableNodes[randomIndex].IsType(NodeType.Walkable) || walkableNodes[randomIndex].hasObstacle){
-            walkableNodes.RemoveAt(randomIndex);
-            currentTargetNode = null;
-            SetCurrentTargetNode();
-        }else
+        if(walkableNodes[randomIndex].IsWalkable())
             currentTargetNode = walkableNodes[randomIndex];
-    }
-
-    private void Step()
-    {
-        if(this.transform.position == currentTargetNode.worldPosition)
-        {
-            Stop();
-            return;
-        }
-        this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
+        else
+            SetCurrentTargetNode();
     }
 
     private void Stop()
     {
         isMoving = false;
+        PlayerActions.FinishProcess(this);
+        if(currentTargetNode.hasObstacle)
+            OnWalkableObtacles();
         currentTargetNode = null;
         SetNodes(this.worldPos, NodeType.Obstacle, this);
         walkableNodes = NodeGrid.GetPathNeighborNodes(nodes[0], NodeGrid.Instance.grid);
     }
 
+    private void OnWalkableObtacles()
+    {
+        if(currentTargetNode.IsObstacle(typeof(Plant)))
+            Destroy(currentTargetNode.GetObstacle());
+        else
+            currentTargetNode.GetObstacle().Destroy(this);
+    }
+
     private void SpawnWeb()
     {
-        Web web = GameObject.Instantiate(webPrefab, lastNode.worldPosition, Quaternion.identity).GetComponent<Web>();
+        GameObject.Instantiate(webPrefab, lastNode.worldPosition, Quaternion.identity);
     }
 
 }

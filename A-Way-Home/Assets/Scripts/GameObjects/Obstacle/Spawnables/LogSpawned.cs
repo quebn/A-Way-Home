@@ -29,5 +29,4 @@ public class LogSpawned : Spawnable, ILightning
     {
         Remove();
     }
-
 }

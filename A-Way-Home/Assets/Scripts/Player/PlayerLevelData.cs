@@ -182,6 +182,7 @@ public class PlayerLevelData : MonoBehaviour
         GameObject logPlatform = Resources.Load<GameObject>("Spawnables/LogPlatform");
         GameObject logSpawnable = Resources.Load<GameObject>("Spawnables/LogSpawnable");
         GameObject poisonMiasma = Resources.Load<GameObject>("Spawnables/PoisonMiasma");
+        GameObject web = Resources.Load<GameObject>("Spawnables/Web");
         Debug.Assert(fireField != null);
         Debug.Assert(lilyPad != null);
         Debug.Assert(logPlatform != null);
@@ -212,6 +213,9 @@ public class PlayerLevelData : MonoBehaviour
                     break;
                 case "PoisonMiasma":
                     prefab = poisonMiasma;
+                    break;
+                case "Web":
+                    prefab = web;
                     break;
                 default:
                     Debug.LogWarning($"TYPENAME: {obstacleData.typeName} not identified!!!!");

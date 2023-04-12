@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Spawnable : Obstacle
 {
-    [SerializeField] private Animator animator;
     private bool finished = false;
 
     protected override void Initialize()

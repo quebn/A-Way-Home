@@ -291,11 +291,17 @@ public class NodeGrid : MonoBehaviour
                 // Grid coords that are excluded: (0, 0), (1, 1), (-1, -1), (-1 , 1), (1, -1)
                 if (x == y || x + y == 0)
                     continue;
-                Vector2Int gridPos = new Vector2Int(x, y);
-                if(grid.ContainsKey(gridPos) && grid[gridPos].IsWalkable())
+                Vector2Int gridPos = new Vector2Int(node.gridPos.x + x, node.gridPos.y + y);
+                if(grid.ContainsKey(gridPos) && grid[gridPos].IsWalkable()){
                     return true;
+                }
             }
         }
         return false;
+    }
+
+    public static bool IfNeigbhorsWalkable(Node node)
+    {
+        return IfNeigbhorsWalkable(node, Instance.grid);
     }
 }

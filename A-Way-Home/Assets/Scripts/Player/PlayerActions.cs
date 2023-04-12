@@ -37,7 +37,7 @@ public class PlayerActions : MonoBehaviour
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
     // public static List<IOnPlayerAction> onPlayerActions;
     private static HashSet<IActionWaitProcess> actionWaitProcesses;
-    private static HashSet<IActionWaitProcess> finishedProcesses;
+    private static int finishedProcessedCount;
 
     private void Start()
     {
@@ -110,14 +110,15 @@ public class PlayerActions : MonoBehaviour
         // Pause Timer
         while(!obstaclesDone)
         {
-            if(actionWaitProcesses.Count == 0)
+            if(actionWaitProcesses.Count == finishedProcessedCount)
             {
+                actionWaitProcesses.Clear();
                 obstaclesDone = true;
                 Character.instance.GetPath();
                 // Resume Timer
                 yield break;
             }
-            Debug.LogWarning($"Waiting to process: {actionWaitProcesses.Count}");
+            Debug.LogWarning($"Waiting to process: {actionWaitProcesses.Count - finishedProcessedCount}");
             yield return null;
         }
     }
@@ -130,7 +131,7 @@ public class PlayerActions : MonoBehaviour
 
     private void ProcessObstaclesAction()
     {
-        finishedProcesses = new HashSet<IActionWaitProcess>();
+        finishedProcessedCount = 0;
         actionWaitProcesses = FetchAllProcess();
         // List<IOnPlayerAction> onPlayerActions = new List<IOnPlayerAction>(FindObjectsOfType<MonoBehaviour>(true).OfType<IOnPlayerAction>());
         if(actionWaitProcesses == null||actionWaitProcesses.Count == 0)
@@ -138,26 +139,17 @@ public class PlayerActions : MonoBehaviour
             obstaclesDone = true;
             return;
         }
-        foreach(IActionWaitProcess obstacle in actionWaitProcesses)
-            obstacle.OnPlayerAction();
-        foreach(IActionWaitProcess process in finishedProcesses)
-            FinishProcess(process);
-        finishedProcesses.Clear();
-    }
-
-    public static void OnPlayerActionFinish(IActionWaitProcess process)
-    {
-        if(!finishedProcesses.Contains(process))
-            finishedProcesses.Add(process);
+        foreach(IActionWaitProcess process in actionWaitProcesses)
+            process.OnPlayerAction();
     }
 
     public static void FinishProcess(IActionWaitProcess process)
     {
-        if(actionWaitProcesses != null && actionWaitProcesses.Contains(process))
-        {
-            Debug.LogWarning($"Process Finished {(process as Obstacle).gameObject.name}");
-            actionWaitProcesses.Remove(process);
-        }
+        if(actionWaitProcesses == null || !actionWaitProcesses.Contains(process))
+            return;
+        Debug.LogWarning($"Process Finished {(process as Obstacle).gameObject.name}");
+        finishedProcessedCount++;
+        Debug.Assert(finishedProcessedCount <= actionWaitProcesses.Count, "ERROR: more process detected than expected");
     }
 
     private bool ActionsNotAllowed()

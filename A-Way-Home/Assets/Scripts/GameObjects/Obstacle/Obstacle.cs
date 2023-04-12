@@ -37,8 +37,6 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     private void OnDisable()
     {
-        if(this is IActionWaitProcess)
-            PlayerActions.FinishProcess(this as IActionWaitProcess);
         ClearNodes();
     }
 
@@ -163,13 +161,6 @@ public class Obstacle : MonoBehaviour, ISaveable
     }
 
 
-    protected void DestroyWalkableObstacle(Node node)
-    {
-        if(node.IsObstacle(typeof(Plant)))
-            this.Destroy(node.GetObstacle());
-        else if( node.IsObstacle(typeof(PoisonMiasma)) || node.IsObstacle(typeof(FireField)))
-            node.GetObstacle().Destroy(this);
-    }
 
     [ContextMenu("Generate Obstacle ID")]
     private void GenerateID() 

@@ -2,19 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Web : Obstacle
+public class Web : Spawnable, ILightning
 {
 
-    protected override void Initialize()
+    public override bool isBurnable => true;
+    public override bool isMeltable => true;
+    public override bool isFragile => true;
+
+    protected override void OnSpawn()
     {
-        base.Initialize();
+        base.OnSpawn();
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
-    public void Clear()
+    protected override void OnHighlight(Tool tool)
     {
-        ClearNodes();
-        Debug.Log("Poison Miasma Cleared");
-        GameObject.Destroy(this.gameObject);
+        if(tool != Tool.Inspect && tool != Tool.Lightning)
+            return;
+        base.OnHighlight(tool);
+    }
+
+    public void OnLightningHit()
+    {
+        Remove();
     }
 }
