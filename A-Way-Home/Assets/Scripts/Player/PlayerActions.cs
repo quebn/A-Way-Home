@@ -35,9 +35,8 @@ public class PlayerActions : MonoBehaviour
 
     public static bool finishedProcessing => Instance.obstaclesDone;
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
-    // public static List<IOnPlayerAction> onPlayerActions;
     private static HashSet<IActionWaitProcess> actionWaitProcesses;
-    private static int finishedProcessedCount;
+    private static Queue<IActionWaitProcess> finishedProcesses;
 
     private void Start()
     {
@@ -110,7 +109,7 @@ public class PlayerActions : MonoBehaviour
         // Pause Timer
         while(!obstaclesDone)
         {
-            if(actionWaitProcesses.Count == finishedProcessedCount)
+            if(actionWaitProcesses.Count == 0)
             {
                 actionWaitProcesses.Clear();
                 obstaclesDone = true;
@@ -118,7 +117,10 @@ public class PlayerActions : MonoBehaviour
                 // Resume Timer
                 yield break;
             }
-            Debug.LogWarning($"Waiting to process: {actionWaitProcesses.Count - finishedProcessedCount}");
+            Debug.LogWarning($"Unfinished processes: {actionWaitProcesses.Count}");
+            Debug.LogWarning($"Waiting to be finished: {finishedProcesses.Count}");
+            if(finishedProcesses.Count > 0)
+                actionWaitProcesses.Remove(finishedProcesses.Dequeue());
             yield return null;
         }
     }
@@ -131,9 +133,8 @@ public class PlayerActions : MonoBehaviour
 
     private void ProcessObstaclesAction()
     {
-        finishedProcessedCount = 0;
+        finishedProcesses = new Queue<IActionWaitProcess>();
         actionWaitProcesses = FetchAllProcess();
-        // List<IOnPlayerAction> onPlayerActions = new List<IOnPlayerAction>(FindObjectsOfType<MonoBehaviour>(true).OfType<IOnPlayerAction>());
         if(actionWaitProcesses == null||actionWaitProcesses.Count == 0)
         {
             obstaclesDone = true;
@@ -147,9 +148,8 @@ public class PlayerActions : MonoBehaviour
     {
         if(actionWaitProcesses == null || !actionWaitProcesses.Contains(process))
             return;
-        Debug.LogWarning($"Process Finished {(process as Obstacle).gameObject.name}");
-        finishedProcessedCount++;
-        Debug.Assert(finishedProcessedCount <= actionWaitProcesses.Count, "ERROR: more process detected than expected");
+        finishedProcesses.Enqueue(process);
+        Debug.LogWarning($"Queueing process as finished: {(process as Obstacle).gameObject.name}");
     }
 
     private bool ActionsNotAllowed()

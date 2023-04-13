@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 333d1393e9acf684e97f5e677a33e67c
+guid: ec131d742dab4bb4398d7a9c00d65307
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,22 +105,64 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TreeMushroomUpper_0
+      name: MushroomPlantOutlines_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 48
-        height: 68
+        x: 1
+        y: 1
+        width: 15
+        height: 17
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 668bed8d38f4fd7428b437cdc1814a29
-      internalID: -994200365
+      spriteID: c82c678201e20984d8d63d74f9e37057
+      internalID: -392759614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MushroomPlantOutlines_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 1
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbffde2d5c5fc2a47beb19402b74b921
+      internalID: 2064322600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MushroomPlantOutlines_2
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 1
+        width: 18
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 541478f303210b9498cd03f7593db24e
+      internalID: 1699472241
       vertices: []
       indices: 
       edges: []
@@ -136,7 +178,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      TreeMushroomUpper_0: -994200365
+      MushroomPlantOutlines_1: 2064322600
+      MushroomPlantOutlines_0: -392759614
+      MushroomPlantOutlines_2: 1699472241
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

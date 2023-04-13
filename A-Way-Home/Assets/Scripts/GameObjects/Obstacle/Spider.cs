@@ -113,7 +113,6 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
         else
             currentTargetNode.GetObstacle().Destroy(this);
     }
-
     private void SpawnWeb()
     {
         GameObject.Instantiate(webPrefab, lastNode.worldPosition, Quaternion.identity);
