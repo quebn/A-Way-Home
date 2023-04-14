@@ -138,24 +138,12 @@ public class Node
         UpdateColor();
     }
 
-
-    private void HighlightWalkable()
-    {
-        if(NodeGrid.tilemap == null)
-            return;
-        if(obstacle != null)
-            obstacle.OnRevealNodeColor();
-        else
-            SetColor(colorWhite);
-    }
-
-
     public void RevealNode()
     {
         switch(currentNodeType)
         {
             case NodeType.Walkable:
-                HighlightWalkable();
+                SetColor(colorWhite);
                 break;
             case NodeType.Terrain:
                 HideNode();
@@ -272,6 +260,15 @@ public class Node
             return;
         foreach(Node node in nodeList)
             node.RevealNode(color);
+    }
+
+    public static void RevealNodes(List<Node> nodeList, Color color, NodeType excludedType)
+    {
+        if (nodeList == null ||nodeList.Count == 0)
+            return;
+        foreach(Node node in nodeList)
+            if(!node.IsType(excludedType))
+                node.RevealNode(color);
     }
 
     public static void HideNodes(List<Node> nodeList)

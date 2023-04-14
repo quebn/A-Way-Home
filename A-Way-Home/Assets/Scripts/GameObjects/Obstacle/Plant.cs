@@ -5,7 +5,6 @@ using UnityEngine;
 public class Plant : Obstacle , ITrap, ILightning, IGrow
 {
     [SerializeField] protected Animator animator;
-    [SerializeField] private int initialStage = 1;
 
     public override bool isBurnable => true;
     public override bool isCorrosive => true;
@@ -17,11 +16,6 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
     protected const string middle       = "Plant_Middle";
     protected const string fullGrown    = "Plant_FullGrown";
     protected const string destroy      = "Plant_Destroy";
-
-    protected override int hitpoints {
-        get => initialStage;
-        set => initialStage = value;
-    } 
 
     private bool isAdult {
         get => hitpoints > 1;

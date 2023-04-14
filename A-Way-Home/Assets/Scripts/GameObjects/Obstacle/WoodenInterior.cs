@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class WoodenInterior : Obstacle, ILightning
 {
-    [SerializeField] private int health = 4;
-
     public override bool isBurnable => true;
     public override bool isMeltable => true;
-
-    protected override int hitpoints { 
-        get => this.health; 
-        set => this.health = value; 
-    }
 
     protected override void Initialize()
     {

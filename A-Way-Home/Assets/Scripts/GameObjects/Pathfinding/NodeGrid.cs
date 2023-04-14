@@ -129,9 +129,9 @@ public class NodeGrid : MonoBehaviour
     {
         List<Node> nodes = GetNodes(nodeTileCenter, width, height);
         foreach(Node node in nodes)
-            if(node.IsType(NodeType.Terrain))
-                return false;
-        return true;
+            if(!node.IsType(NodeType.Terrain))
+                return true;
+        return false;
     }
 
 

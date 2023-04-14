@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
-  m_SortingOrder: 4
+  m_SortingOrder: 3
   m_Sprite: {fileID: 1969800683, guid: 0c91082f02a25ba4586826ddad65f518, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -177,7 +177,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4804792485662574346}
-  - component: {fileID: 2577153117812211383}
+  - component: {fileID: 4408054011359585190}
   - component: {fileID: 5142473099469508756}
   - component: {fileID: 5874931336424725976}
   m_Layer: 0
@@ -204,7 +204,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2577153117812211383
+--- !u!114 &4408054011359585190
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -213,21 +213,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 2577153117812211381}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a47ae0f948fd0c41a2281a4a99f477c, type: 3}
+  m_Script: {fileID: 11500000, guid: 6d4433c89ec536841ad723aa1a560a50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
-  spriteRenderer: {fileID: 5142473099469508756}
   id: 
   outline: {fileID: 1331307753993952003}
   isNotHoverable: 0
-  upperRenderer: {fileID: 2577153118406074730}
+  hitpoints: 2
   animator: {fileID: 5874931336424725976}
-  upper: {fileID: 3527504911418851210}
+  outlineUpper: {fileID: 1696305076419808781}
   logs:
   - {fileID: 4250390148095652541, guid: aebe6570a06a8354e87c8d7c74305e50, type: 3}
   - {fileID: 7010660713218782330, guid: 84e835fd2ea2411448c9ce41edf74ef6, type: 3}
-  UpperHighlight: {fileID: 1696305076419808781}
 --- !u!212 &5142473099469508756
 SpriteRenderer:
   m_ObjectHideFlags: 0

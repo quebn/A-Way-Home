@@ -25,7 +25,6 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
     private bool canMove => currentTargetIndex < travelSpeed;
     private bool isMoving {get => animator.GetBool("isMoving"); set => animator.SetBool("isMoving", value); }
     private bool isImmobile => hitpoints <= 0;
-    protected override int hitpoints {get => animator.GetInteger("hitpoints"); set => animator.SetInteger("hitpoints", value); }
 
 
     protected override void Initialize()

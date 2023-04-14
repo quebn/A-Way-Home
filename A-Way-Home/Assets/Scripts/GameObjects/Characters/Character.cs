@@ -45,6 +45,7 @@ public class Character : MonoBehaviour, ISaveable
 
     private void Update()
     {
+        // Replace with Coroutine
         if (!isGoingHome && PlayerActions.finishedProcessing)
             InGameUI.Instance.TimeCountdown();
         if(isGoingHome)

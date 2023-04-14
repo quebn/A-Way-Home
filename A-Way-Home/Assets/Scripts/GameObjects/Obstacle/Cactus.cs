@@ -23,12 +23,12 @@ public class Cactus : Plant
             Remove();
     }
 
-    protected override void OnHighlight(Tool tool)
-    {
-        if(tool != Tool.Lightning && tool != Tool.Grow && hitpoints >= 3)
-            return;
-        spriteRenderer.color = Color.green;
-    }
+    // protected override void OnHighlight(Tool tool)
+    // {
+    //     if(tool != Tool.Lightning && tool != Tool.Grow && hitpoints >= 3)
+    //         return;
+    //     spriteRenderer.color = Color.green;
+    // }
 
     public override void OnGrow()
     {

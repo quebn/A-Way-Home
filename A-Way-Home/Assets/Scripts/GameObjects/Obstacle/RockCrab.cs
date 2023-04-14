@@ -25,10 +25,6 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
     public bool hasShell => hitpoints == 2;
     private bool hasPath => path.Count > 0;
 
-    protected override int hitpoints {
-        get => animator.GetInteger("hitpoints");
-        set => animator.SetInteger("hitpoints", value);
-    }
 
     private bool isWalking {
         get => animator.GetBool("isWalking");
@@ -46,6 +42,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
     {
         base.Initialize();
         SetGrid();
+        animator.SetBool("hasShell", hasShell);
         if(!hasShell)
             Invoke("SetPath", .5f);
     }
@@ -97,6 +94,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
     public override void Damage(int value = 1)
     {
         hitpoints -= value;
+        animator.SetBool("hasShell", hasShell);
         if(!hasShell)
             SetPath();
         if(hitpoints == 0)
@@ -113,7 +111,7 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
 
     private IEnumerator DeathAnimation()
     {
-
+        animator.Play("Death");
         yield return new WaitForSeconds(this.animator.GetCurrentAnimatorClipInfo(0).Length);
         this.gameObject.SetActive(false);
     }

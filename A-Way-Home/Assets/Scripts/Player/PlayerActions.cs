@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
+using System;
 
 public class PlayerActions : MonoBehaviour
 {
@@ -117,8 +118,8 @@ public class PlayerActions : MonoBehaviour
                 // Resume Timer
                 yield break;
             }
-            Debug.LogWarning($"Unfinished processes: {actionWaitProcesses.Count}");
-            Debug.LogWarning($"Waiting to be finished: {finishedProcesses.Count}");
+            Debug.Log($"Unfinished processes: {actionWaitProcesses.Count}");
+            Debug.Log($"Waiting to be finished: {finishedProcesses.Count}");
             if(finishedProcesses.Count > 0)
                 actionWaitProcesses.Remove(finishedProcesses.Dequeue());
             yield return null;
@@ -149,7 +150,7 @@ public class PlayerActions : MonoBehaviour
         if(actionWaitProcesses == null || !actionWaitProcesses.Contains(process))
             return;
         finishedProcesses.Enqueue(process);
-        Debug.LogWarning($"Queueing process as finished: {(process as Obstacle).gameObject.name}");
+        Debug.Log($"Queueing process as finished: {(process as Obstacle).gameObject.name}");
     }
 
     private bool ActionsNotAllowed()
@@ -209,7 +210,7 @@ public class PlayerActions : MonoBehaviour
     {
         if(ActionsNotAllowed())
             return;
-        OnHoverObstacle();
+        OnHoverUpper();
         switch(currentTool)
         {
             case Tool.Inspect:
@@ -229,7 +230,16 @@ public class PlayerActions : MonoBehaviour
                 HighlightTile(2, 2, Node.colorYellow);
                 break;
         }
+        HighlightObtacleOthers();
         Character.instance.CanHighlight(currentTileNodes.Contains(Character.instance.currentNode));
+    }
+
+    private void HighlightObtacleOthers()
+    {
+        if(currentObstacles == null || currentObstacles.Count == 0)
+            return;
+        for(int i = 0; i < currentObstacles.Count; i++)
+            currentObstacles[i].WhileHighlight(currentTool);
     }
 
     private void OnWaterHover()
@@ -244,7 +254,7 @@ public class PlayerActions : MonoBehaviour
 
     }
 
-    private void OnHoverObstacle()
+    private void OnHoverUpper()
     {
         Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
         RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);

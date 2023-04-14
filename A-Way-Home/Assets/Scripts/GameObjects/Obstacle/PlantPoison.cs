@@ -26,11 +26,6 @@ public class PlantPoison : Plant
         Damage(1);
     }
 
-    public override void OnRevealNodeColor()
-    {
-        Node.RevealNodes(nodes, Node.colorPurple);
-    }
-
     public override void OnLightningHit()
     {
         base.OnLightningHit();

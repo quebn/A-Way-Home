@@ -5,12 +5,6 @@ using UnityEngine;
 public class Bush : Obstacle
 {
 
-    private int hp = 2;
-
-    protected override int hitpoints { 
-        get => hp; 
-        set => hp = value; 
-    }
 
     protected override void Initialize()
     {
@@ -19,10 +13,10 @@ public class Bush : Obstacle
     }
 
 
-    public void OnDehighlight()
-    {
-        spriteRenderer.color = Color.white;
-    }
+    // public void OnDehighlight()
+    // {
+    //     spriteRenderer.color = Color.white;
+    // }
 
 
     public void OnInteract()

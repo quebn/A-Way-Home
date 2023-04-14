@@ -9,21 +9,17 @@ public enum Tool { Inspect, Lightning, Grow, Command, Tremor}//, PlaceMode }
 public class Obstacle : MonoBehaviour, ISaveable
 {
     [SerializeField] private Vector2Int tileSize;
-    [SerializeField] protected SpriteRenderer spriteRenderer;
     [SerializeField] protected string id;
     [SerializeField] protected GameObject outline;
     [SerializeField] protected bool isNotHoverable;
 
-    private int HP = 1;
-    // private bool isHiglighted = false;
+    [SerializeField] protected int hitpoints = 1;
+    
     protected List<Node> nodes;
 
     protected Vector2 worldPos => this.transform.position; 
     protected int nodeCount => tileSize.x * tileSize.y; 
-    protected virtual int hitpoints {
-        get => HP;
-        set => HP = value;
-    }
+
     public virtual bool isBurnable => false;
     public virtual bool isCorrosive => false;
     public virtual bool isMeltable => false;
@@ -95,6 +91,16 @@ public class Obstacle : MonoBehaviour, ISaveable
         OnDehighlight(tool);
     }
 
+    public void WhileHighlight(Tool tool)
+    {
+        OnWhileHighlight(tool);
+    }
+
+    protected virtual void OnWhileHighlight(Tool tool)
+    {
+        Debug.Log("Hovering......");
+    }
+
     protected void ForceDehighlight()
     {
         if(outline == null  || !outline.activeSelf)
@@ -139,11 +145,6 @@ public class Obstacle : MonoBehaviour, ISaveable
         if(hitpoints == 0)
             gameObject.SetActive(false);
         Debug.Assert(this.hitpoints == levelData.obstacles[id].GetValue("hp"), "ERROR: values doesnt match");
-    }
-
-    public virtual void OnRevealNodeColor()
-    {
-        Node.RevealNodes(nodes, Node.colorWhite);
     }
 
     public virtual void Damage(int value)

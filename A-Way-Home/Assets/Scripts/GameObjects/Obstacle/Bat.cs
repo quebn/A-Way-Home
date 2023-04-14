@@ -3,11 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bat : Obstacle, ITrap, ILightning
+public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess
 {
-    // Bat should 
-    // - fly to random node when hit near a lightning
-    // - killed by directly hit by lightning.
     [SerializeField] private Animator animator;
     [SerializeField] private int damage;
     [SerializeField] private GameObject poisonMiasma;
@@ -21,11 +18,6 @@ public class Bat : Obstacle, ITrap, ILightning
     public override bool isMeltable => true;
 
     private bool destinationReached => targetPosition == (Vector3)worldPos;
-
-    protected override int hitpoints { 
-        get => animator.GetInteger("hitpoints"); 
-        set => animator.SetInteger("hitpoints", value); 
-    }
 
 
     private void Update()
@@ -48,6 +40,12 @@ public class Bat : Obstacle, ITrap, ILightning
         Vector3 pos = nodes[0].worldPosition;
         Move();
         GameObject.Instantiate(poisonMiasma, pos, Quaternion.identity);
+    }
+
+    public void OnPlayerAction()
+    {
+        if(!isMoving)
+            PlayerActions.FinishProcess(this);
     }
 
     protected override void OnHighlight(Tool tool)
@@ -94,6 +92,7 @@ public class Bat : Obstacle, ITrap, ILightning
     private void OnStop()
     {
         isMoving = false;
+        PlayerActions.FinishProcess(this);
         SetNodes(this.worldPos, NodeType.Walkable, this);
         SetNodeGridRange();
     }
@@ -121,16 +120,5 @@ public class Bat : Obstacle, ITrap, ILightning
         Move();
     }
 
-    // public void OnPlayerAction()
-    // {
-    //     StartCoroutine(WaitForBatMove());
-    // }
 
-    // private IEnumerator WaitForBatMove()
-    // {
-    //     while(isMoving)
-    //         yield return null;
-    //     Debug.Assert(!isMoving);
-    //     PlayerActions.FinishProcess(this);
-    // }
 }

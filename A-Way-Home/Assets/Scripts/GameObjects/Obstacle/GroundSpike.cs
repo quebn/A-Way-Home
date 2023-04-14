@@ -10,10 +10,6 @@ public class GroundSpike : Obstacle, ITrap, ILightning
     public override bool isCorrosive => true;
     public override bool isMeltable => true;
 
-    protected override int hitpoints {
-        get => animator.GetInteger("hitpoints");
-        set => animator.SetInteger("hitpoints", value);
-    }
 
     private bool isTriggered {
         get => animator.GetBool("isTriggered");
@@ -28,7 +24,8 @@ public class GroundSpike : Obstacle, ITrap, ILightning
 
     public void OnLightningHit()
     {
-        Remove();
+        if(isTriggered)
+            Remove();
     }
 
     protected override void OnHighlight(Tool tool)

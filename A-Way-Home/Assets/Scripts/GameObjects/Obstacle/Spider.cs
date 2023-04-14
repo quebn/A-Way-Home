@@ -17,10 +17,6 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
         get => animator.GetBool("isMoving"); 
         set => animator.SetBool("isMoving", value); 
     }
-    protected override int hitpoints { 
-        get => animator.GetInteger("hitpoints"); 
-        set => animator.SetInteger("hitpoints", value); 
-    }
 
     protected override void Initialize()
     {

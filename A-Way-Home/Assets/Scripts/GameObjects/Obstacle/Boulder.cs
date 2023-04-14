@@ -8,10 +8,6 @@ public class Boulder : Obstacle, ILightning, ITremor
 
     [SerializeField] private Animator animator;
 
-    protected override int hitpoints{
-        get => animator.GetInteger("hitpoints");
-        set => animator.SetInteger("hitpoints", value);
-    } 
 
     protected override void Initialize()
     {
