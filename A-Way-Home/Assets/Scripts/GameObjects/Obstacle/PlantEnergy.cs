@@ -5,14 +5,33 @@ using UnityEngine;
 public class PlantEnergy : Plant
 {
     [SerializeField] private int damage;
-    [SerializeField] private GameObject lightRange;
-
+    [SerializeField] private List<Sprite> sprites;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     private List<Node> lightNodes;
+
+    private void OnValidate()
+    {
+        switch(hitpoints)
+        {
+            case 4:
+                spriteRenderer.sprite = sprites[2];
+                break;
+            case 2:
+                spriteRenderer.sprite = sprites[1];
+                break;
+            case 1:
+                spriteRenderer.sprite = sprites[0];
+                break;
+            default:
+                break;
+        }
+    }
 
     protected override void Initialize()
     {
         base.Initialize();
         lightNodes = NodeGrid.GetNeighborNodeList(nodes[0], 1);
+        SetLightField();
     }
 
     public override void OnTrapTrigger(Character character)
@@ -37,9 +56,8 @@ public class PlantEnergy : Plant
 
     private void SetLightField()
     {
-        if(lightRange.activeSelf)
+        if(hitpoints < 4)
             return;
-        lightRange.SetActive(true);
         foreach(Node node in lightNodes)
             node.isConductive = true;
         nodes[0].isConductive = true;
@@ -47,9 +65,6 @@ public class PlantEnergy : Plant
 
     private void ClearLightField()
     {
-        if(!lightRange.activeSelf)
-            return;
-        lightRange.SetActive(false);
         foreach(Node node in lightNodes)
             node.isConductive = false;
         nodes[0].isConductive = false;

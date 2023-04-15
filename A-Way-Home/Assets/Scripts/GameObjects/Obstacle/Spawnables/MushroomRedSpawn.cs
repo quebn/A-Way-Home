@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MushroomRedSpawn : Spawnable
+public class MushroomRedSpawn : Spawnable, ITrap, ILightning
 {
     [SerializeField] protected Animator animator;
 
@@ -12,10 +12,17 @@ public class MushroomRedSpawn : Spawnable
     public override bool isTrampleable => true;
     public override bool isMeltable => true;
 
-
-    protected override void Initialize()
+    protected override void OnSpawn()
     {
+        DestroyNodeObstacle();
+        base.OnSpawn();
         SetNodes(this.worldPos, NodeType.Walkable, this);
+    }
+
+    public void OnTrapTrigger(Character character)
+    {
+        Remove();
+        character.TriggerDeath();
     }
 
     protected override void OnHighlight(Tool tool)
@@ -45,4 +52,5 @@ public class MushroomRedSpawn : Spawnable
         ClearNodes();
         StartCoroutine(RemoveAnimation());
     }
+
 }

@@ -132,7 +132,7 @@ MonoBehaviour:
   m_LightType: 1
   m_BlendStyleIndex: 2
   m_FalloffIntensity: 1
-  m_Color: {r: 1, g: 1, b: 0, a: 1}
+  m_Color: {r: 0, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
@@ -351,14 +351,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
-  spriteRenderer: {fileID: 4179054717873968456}
   id: 
   outline: {fileID: 939780006703699497}
   isNotHoverable: 0
+  hitpoints: 1
   animator: {fileID: 4179054717873968457}
-  initialStage: 1
   damage: 0
-  lightRange: {fileID: 3799237316990867790}
+  sprites:
+  - {fileID: 294986397, guid: 42297c431902a954188c94071da7b7ac, type: 3}
+  - {fileID: -797115577, guid: 092bc843d88cf2345be35ccfaed720a2, type: 3}
+  - {fileID: -1497317288, guid: 3edc98850dea0c4478a66f30101c03ca, type: 3}
+  spriteRenderer: {fileID: 4179054717873968456}
 --- !u!61 &4179054717873968471
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -504,12 +507,12 @@ MonoBehaviour:
   m_ComponentVersion: 1
   m_LightType: 3
   m_BlendStyleIndex: 2
-  m_FalloffIntensity: 0.9
-  m_Color: {r: 1, g: 1, b: 0, a: 1}
+  m_FalloffIntensity: 0.8
+  m_Color: {r: 0, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000359a38e7b3b403bb37ebbe7d
+  m_ApplyToSortingLayers: 00000000359a38e737ebbe7db3b403bb
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: -1
@@ -556,7 +559,7 @@ MonoBehaviour:
     m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0.1
+  m_PointLightInnerRadius: 0
   m_PointLightOuterRadius: 1
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0

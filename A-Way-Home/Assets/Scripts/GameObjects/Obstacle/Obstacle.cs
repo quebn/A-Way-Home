@@ -3,9 +3,6 @@ using System.Collections;
 using System;
 using UnityEngine;
 
-[System.Serializable]
-public enum Tool { Inspect, Lightning, Grow, Command, Tremor}//, PlaceMode }
-
 public class Obstacle : MonoBehaviour, ISaveable
 {
     [SerializeField] private Vector2Int tileSize;

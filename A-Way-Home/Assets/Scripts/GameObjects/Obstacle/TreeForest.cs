@@ -2,13 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TreeForest : TreeObstacle, ILightning
+public class TreeForest : TreeObstacle, ILightning, IActionWaitProcess
 {
     [SerializeField] private List<GameObject> logs;
+    private bool isFalling = false;
 
     public void OnLightningHit()
     {
         Damage(1);
+        isFalling = (hitpoints == 1);
+    }
+
+    public void OnPlayerAction()
+    {
+        if(!isFalling)
+            PlayerActions.FinishProcess(this);
     }
 
     protected override void OnCutDown()
@@ -24,5 +32,7 @@ public class TreeForest : TreeObstacle, ILightning
                 Quaternion.identity
             );
         }
+        isFalling = false;
+        PlayerActions.FinishProcess(this);
     }
 }

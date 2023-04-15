@@ -15,7 +15,6 @@ public class TreeObstacle : Obstacle
     public override bool isMeltable => true;
     public override bool isBurnable => isCutDown;
 
-    protected bool isFullyDestroyed => hitpoints == 0;
     protected bool isCutDown => hitpoints == 1;
 
     protected override void Initialize()

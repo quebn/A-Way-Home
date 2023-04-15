@@ -59,8 +59,8 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
 
     public void OnCommand()
     {
-        if(!hasShell)
-            MoveLocation();
+        Debug.LogWarning("SELECTED CRAB");
+        Node.RevealNodes(travelRangeGrid.Values.ToList<Node>());
     }
     
  

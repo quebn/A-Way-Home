@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering.Universal;
 using System;
+
+[System.Serializable]
+public enum Tool { Inspect, Lightning, Grow, Command, Tremor, Select}//, PlaceMode }
 
 public class PlayerActions : MonoBehaviour
 {
@@ -23,13 +25,13 @@ public class PlayerActions : MonoBehaviour
     private PlayerInput playerInput;
     private InputAction performAction; 
     private InputAction revealPath;
-    private InputAction undoAction;
     private List<InputAction> tools;
     private InputAction start;
     private InputAction reset;
     private Vector2 currentTileOrigin;
     private List<Node> currentTileNodes;
     private List<Obstacle> currentObstacles;
+    private Obstacle selectedObstacle;
     private IHoverable hoverable;
     private bool obstaclesDone = true;
     private GameObject lilypad;
@@ -57,10 +59,6 @@ public class PlayerActions : MonoBehaviour
         UnsubscribeFunctions();
     }
 
-    public void Undo()
-    {
-        Debug.Assert(false, "ERROR: Should not be called!");
-    }
 
     public void PerformAction(InputAction.CallbackContext context)
     {
@@ -86,14 +84,22 @@ public class PlayerActions : MonoBehaviour
                 Grow();
                 break;
             case Tool.Command:
-                currentTileNodes[0].CommandObstacle();
-                break;
+                Command();
+                return;
         }
         GameData.IncrementPlayerMoves(-1);
         ProcessObstaclesAction();
         StartCoroutine(WaitForObstaclesAction());
         if(GameData.levelData.moves == 0)
             Dehighlight();
+    }
+
+    private void Command()
+    {
+        bool hasCommand = currentTileNodes[0].CommandObstacle();
+        Debug.Assert(currentObstacles.Count == 1);
+        selectedObstacle = currentObstacles[0];
+        obstaclesDone = true;
     }
 
     private void Grow()
@@ -120,7 +126,7 @@ public class PlayerActions : MonoBehaviour
             }
             Debug.Log($"Unfinished processes: {actionWaitProcesses.Count}");
             Debug.Log($"Waiting to be finished: {finishedProcesses.Count}");
-            if(finishedProcesses.Count > 0)
+            while(finishedProcesses.Count > 0)
                 actionWaitProcesses.Remove(finishedProcesses.Dequeue());
             yield return null;
         }
@@ -203,7 +209,6 @@ public class PlayerActions : MonoBehaviour
         Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility);
         currentObstacles = new List<Obstacle>();
         currentTileNodes = new List<Node>();
-        Debug.Log("Change");
     }
 
     private void Hover()
@@ -276,6 +281,8 @@ public class PlayerActions : MonoBehaviour
 
     private void HighlightTile(int tileWidth, int tileHeight, Color color, bool isOpenOnly = false)
     {
+        if(selectedObstacle != null)
+            return;
         Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos, tileWidth, tileHeight);
         if(currentTileOrigin == origin)
             return;
@@ -318,13 +325,6 @@ public class PlayerActions : MonoBehaviour
         Character.instance.GoHome();
     }
 
-    private void UndoAction(InputAction.CallbackContext context)
-    {
-        if (GameEvent.isPaused)
-            return;
-        Undo();
-    }
-
     private void RestartLevel(InputAction.CallbackContext context)
     {
         if (context.started && !GameEvent.isPaused)
@@ -355,7 +355,6 @@ public class PlayerActions : MonoBehaviour
         Debug.Assert(playerInput != null, "playerInput GetComponent failed!");
         performAction  = playerInput.actions["PerformAction"];
         revealPath      = playerInput.actions["RevealPath"];
-        undoAction      = playerInput.actions["Undo"];
         for(int i = 1; i <= toolCount; i++)
             tools.Add(playerInput.actions[$"Tool{i}"]);
         start           = playerInput.actions["Start"];
@@ -372,7 +371,6 @@ public class PlayerActions : MonoBehaviour
         // Debug.LogWarning("Subscribing Functions");
         performAction.started  += PerformAction;
         revealPath.started      += RevealPath;
-        undoAction.started      += UndoAction;
         foreach(InputAction tool in tools)
             tool.started += SetCurrentTool;
         start.started           += StartCharacter;
@@ -384,7 +382,6 @@ public class PlayerActions : MonoBehaviour
         // Debug.LogWarning("Unsubscribing Functions");
         performAction.started  -= PerformAction;
         revealPath.started      -= RevealPath;
-        undoAction.started      -= UndoAction;
         foreach(InputAction tool in tools)
             tool.started -= SetCurrentTool;
         start.started           -= StartCharacter;

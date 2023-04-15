@@ -111,8 +111,8 @@ public class Character : MonoBehaviour, ISaveable
 
     public List<Node> GetPath()
     {
-        if(path != null)
-            Node.ToggleNodes(path, NodeGrid.nodesVisibility);
+        List<Node> oldPath = path; 
+        path = new List<Node>();
         if(requiredEssence != 0)
         {
             List<Vector3> destinations = Essence.GetCurrentDestinations();
@@ -124,6 +124,7 @@ public class Character : MonoBehaviour, ISaveable
             List<Vector3> homes = new List<Vector3>(){Home.instance.transform.position};
             path = Pathfinding.FindPath(currentPosition, homes);
         }
+        Node.ToggleNodes(oldPath, NodeGrid.nodesVisibility);
         if(path.Count <= 0)
         {
             Debug.LogWarning("No Path Found for Character");
@@ -180,15 +181,18 @@ public class Character : MonoBehaviour, ISaveable
     protected bool EndConditions()
     {
         if (destinationReached)
+        {
+            Debug.LogWarning("Return True");
             return currentPosition == Home.instance.transform.position ? TriggerLevelComplete() : Consume(currentEssence);
+        }
         if (energy == 0)
             return TriggerDeath();
+        Debug.LogWarning("Return false");
         return false;
     }
 
     public bool Consume(Essence essence)
     {
-        path = new List<Node>();
         animator.SetBool("isWalk", false);
         essence.OnConsume(this);
         this.isGoingHome = false;
