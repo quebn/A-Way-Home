@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using System;
 
 [System.Serializable]
-public enum Tool { Inspect, Lightning, Grow, Command, Tremor, Select}//, PlaceMode }
+public enum Tool { Inspect, Lightning, Grow, Command, Tremor}//, PlaceMode }
 
 public class PlayerActions : MonoBehaviour
 {
@@ -24,18 +24,21 @@ public class PlayerActions : MonoBehaviour
     private Camera mainCamera;
     private PlayerInput playerInput;
     private InputAction performAction; 
+    private InputAction cancelAction;
     private InputAction revealPath;
     private List<InputAction> tools;
     private InputAction start;
     private InputAction reset;
-    private Vector2 currentTileOrigin;
-    private List<Node> currentTileNodes;
-    private List<Obstacle> currentObstacles;
-    private Obstacle selectedObstacle;
+    // 
+    // 
+    private List<Node> hoveredNodes;
+    private List<Obstacle> selectedObstacles;
+
     private IHoverable hoverable;
     private bool obstaclesDone = true;
     private GameObject lilypad;
 
+    public bool hasSelectedObs => selectedObstacles.Count > 0;
     public static bool finishedProcessing => Instance.obstaclesDone;
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
     private static HashSet<IActionWaitProcess> actionWaitProcesses;
@@ -49,7 +52,7 @@ public class PlayerActions : MonoBehaviour
             Instance = this;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         Hover();
     }
@@ -62,53 +65,62 @@ public class PlayerActions : MonoBehaviour
 
     public void PerformAction(InputAction.CallbackContext context)
     {
-        if (ActionsNotAllowed() || currentTileNodes.Count == 0)
+        if (ActionsNotAllowed() || hoveredNodes.Count == 0)
             return;
         obstaclesDone = false;
-        switch(currentTool)
-        {
-            case Tool.Inspect:
-                currentTileNodes[0].InspectObstacle();
-                if(currentTileNodes.Contains(Character.instance.currentNode))
-                    Character.instance.Interact();
-                obstaclesDone = true;
-                return;
-            case Tool.Lightning:
-                Node.ShockNode(currentTileNodes[0]);
-                LightningAnimation(this.currentTileOrigin);
-                break;
-            case Tool.Tremor:
-                Node.TremorNodes(currentTileNodes);
-                break;
-            case Tool.Grow:
-                Grow();
-                break;
-            case Tool.Command:
-                Command();
-                return;
-        }
+        // switch(currentTool)
+        // {
+        //     case Tool.Inspect:
+        //         Inspect();
+        //         return;
+        //     case Tool.Lightning:
+        //         Node.ShockNode(currentTileNodes[0]);
+        //         LightningAnimation(this.currentTileOrigin);
+        //         break;
+        //     case Tool.Tremor:
+        //         Node.TremorNodes(currentTileNodes);
+        //         break;
+        //     case Tool.Grow:
+        //         Grow();
+        //         break;
+        //     case Tool.Command:
+        //         Command();
+        //         return;
+        // }
         GameData.IncrementPlayerMoves(-1);
         ProcessObstaclesAction();
         StartCoroutine(WaitForObstaclesAction());
         if(GameData.levelData.moves == 0)
-            Dehighlight();
+            NodeGrid.DehighlightNodes(hoveredNodes);
+    }
+
+    public void CancelAction(InputAction.CallbackContext context)
+    {
+        Debug.Log("Canceled!");
+        // if(selectedObstacle != null)
+        //     selectedObstacle = null;
+    }    
+
+    private void Inspect()
+    {
+        hoveredNodes[0].InspectObstacle();
+        if(hoveredNodes.Contains(Character.instance.currentNode))
+            Character.instance.Interact();
+        obstaclesDone = true;
     }
 
     private void Command()
     {
-        bool hasCommand = currentTileNodes[0].CommandObstacle();
-        Debug.Assert(currentObstacles.Count == 1);
-        selectedObstacle = currentObstacles[0];
         obstaclesDone = true;
     }
 
     private void Grow()
     {
-        GrowAnimation(this.currentTileOrigin);
-        if(currentTileNodes[0].currentType == NodeType.Water)
-            GameObject.Instantiate(lilypad, currentTileNodes[0].worldPosition, Quaternion.identity);
+        GrowAnimation(this.hoveredNodes[0].worldPosition);
+        if(hoveredNodes[0].currentType == NodeType.Water)
+            GameObject.Instantiate(lilypad, hoveredNodes[0].worldPosition, Quaternion.identity);
         else
-            currentTileNodes[0].GrowObstacle();
+            hoveredNodes[0].GrowObstacle();
     }
 
     private IEnumerator WaitForObstaclesAction()
@@ -194,65 +206,61 @@ public class PlayerActions : MonoBehaviour
         if (index > 5 || index < 0 || index > PlayerLevelData.Instance.unlockedTools)
             return;
         Tool newTool = (Tool)index;
-        if(currentTool != newTool)
-            Dehighlight();
+        if(currentTool == newTool)
+            return;
+
+        if(lilypadVisual.activeSelf)
+            lilypadVisual.SetActive(false);
+        NodeGrid.DehighlightNodes(hoveredNodes);
+        selectedObstacles = new List<Obstacle>();
+        hoveredNodes = new List<Node>();
+
         currentTool = newTool;
         Cursor.SetCursor(mouseTextures[index], Vector2.zero, CursorMode.Auto);
     }
-
-    private void Dehighlight()
-    {
-        if(lilypadVisual.activeSelf)
-            lilypadVisual.SetActive(false);
-        currentTileOrigin = new Vector2();
-        Obstacle.DehighlightObstacles(currentObstacles, currentTool);
-        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility);
-        currentObstacles = new List<Obstacle>();
-        currentTileNodes = new List<Node>();
-    }
-
     private void Hover()
     {
         if(ActionsNotAllowed())
             return;
         OnHoverUpper();
-        switch(currentTool)
-        {
-            case Tool.Inspect:
-                InspectTile(1, 1);
-                break;
-            case Tool.Lightning:
-                HighlightTile(1, 1, Node.colorCyan, true);
-                break;
-            case Tool.Command:
-                HighlightTile(1, 1, Node.colorPurple);
-                break;
-            case Tool.Grow:
-                HighlightTile(1, 1, Node.colorGreen);
-                OnWaterHover();
-                break;
-            case Tool.Tremor:
-                HighlightTile(2, 2, Node.colorYellow);
-                break;
-        }
-        HighlightObtacleOthers();
-        Character.instance.CanHighlight(currentTileNodes.Contains(Character.instance.currentNode));
+        hoveredNodes = NodeGrid.HighlightGetNodes(mouseWorldPos, hoveredNodes, currentTool);
+        if(currentTool == Tool.Grow)
+            OnWaterHover();
+        WhileHoverObstacle();
+        Character.instance.CanHighlight(hoveredNodes.Contains(Character.instance.currentNode));
     }
 
-    private void HighlightObtacleOthers()
+    public static Color GetToolColor(Tool tool)
     {
-        if(currentObstacles == null || currentObstacles.Count == 0)
+        switch(tool)
+        {
+            case Tool.Lightning:
+                return Node.colorCyan;
+            case Tool.Command:
+                return Node.colorPurple;
+            case Tool.Grow:
+                return Node.colorGreen;
+            case Tool.Tremor:
+                return Node.colorYellow;
+            default:
+                return Node.colorClear;
+        }
+    }
+
+    private void WhileHoverObstacle()
+    {
+        if(hoveredNodes == null || hoveredNodes.Count == 0)
             return;
-        for(int i = 0; i < currentObstacles.Count; i++)
-            currentObstacles[i].WhileHighlight(currentTool);
+        // for(int i = 0; i < hoveredNodes.Count; i++)
+        //     hoveredNodes[i].WhileHighlight(currentTool);
     }
 
     private void OnWaterHover()
     {
-        if(currentTileNodes.Count != 0 &&currentTileNodes[0].currentType == NodeType.Water)
+        if(hoveredNodes.Count != 0 && hoveredNodes[0].currentType == NodeType.Water)
         {
             lilypadVisual.SetActive(true);
-            lilypadVisual.transform.position = currentTileOrigin;
+            lilypadVisual.transform.position = hoveredNodes[0].worldPosition;
             Debug.Log("Hovering On water");
         }
         else lilypadVisual.SetActive(false);
@@ -279,50 +287,13 @@ public class PlayerActions : MonoBehaviour
         hoverable.OnHover();
     }
 
-    private void HighlightTile(int tileWidth, int tileHeight, Color color, bool isOpenOnly = false)
-    {
-        if(selectedObstacle != null)
-            return;
-        Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos, tileWidth, tileHeight);
-        if(currentTileOrigin == origin)
-            return;
-        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility);
-        currentTileNodes = NodeGrid.GetNodes(origin, tileWidth, tileHeight, NodeType.Terrain, isOpenOnly);
-        HiglightObstacles(origin);
-        currentTileOrigin = origin;
-        Node.RevealNodes(currentTileNodes, color);
-    }
-
-    private void InspectTile(int tileWidth, int tileHeight)
-    {
-        Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos, tileWidth, tileHeight);
-        if(currentTileOrigin == origin)
-            return;
-        Node.ToggleNodes(currentTileNodes, NodeGrid.nodesVisibility);
-        currentTileNodes = NodeGrid.GetNodes(origin, tileWidth, tileHeight, NodeType.Terrain);
-        HiglightObstacles(origin);
-        currentTileOrigin = origin;
-        Node.ToggleNodes(currentTileNodes, NodeGrid.Instance.isActiveAndEnabled);
-    }
-
-    private void HiglightObstacles(Vector2 origin)
-    {
-        List<Obstacle> interactables = Node.GetNodesInteractable(currentTileNodes);
-        if(interactables.Count == 0)
-            interactables = Node.GetNodesInteractable(currentTileNodes, true);
-        if(interactables == currentObstacles)
-            return;
-        if(origin != currentTileOrigin)
-            Obstacle.DehighlightObstacles(currentObstacles, currentTool);
-        currentObstacles = interactables;
-        Obstacle.HighlightObstacles(currentObstacles, currentTool);
-    } 
 
     private void StartCharacter(InputAction.CallbackContext context)
     {
         if (Character.instance.isMoving || !obstaclesDone)
             return;
         Character.instance.GoHome();
+        NodeGrid.DehighlightNodes(hoveredNodes);
     }
 
     private void RestartLevel(InputAction.CallbackContext context)
@@ -354,14 +325,15 @@ public class PlayerActions : MonoBehaviour
         mainCamera = Camera.main;
         Debug.Assert(playerInput != null, "playerInput GetComponent failed!");
         performAction  = playerInput.actions["PerformAction"];
+        cancelAction  = playerInput.actions["cancelAction"];
         revealPath      = playerInput.actions["RevealPath"];
         for(int i = 1; i <= toolCount; i++)
             tools.Add(playerInput.actions[$"Tool{i}"]);
         start           = playerInput.actions["Start"];
         reset           = playerInput.actions["Reset"];
-        currentTileNodes = new List<Node>(4); 
         // actionList = new List<ActionData>();
-        currentObstacles = new List<Obstacle>();
+        hoveredNodes = new List<Node>();
+        selectedObstacles = new List<Obstacle>();
         lilypad = Resources.Load<GameObject>($"Spawnables/Lilypad");
         Debug.Assert(lilypad != null);
     }
@@ -370,6 +342,7 @@ public class PlayerActions : MonoBehaviour
     {
         // Debug.LogWarning("Subscribing Functions");
         performAction.started  += PerformAction;
+        cancelAction.started += CancelAction;
         revealPath.started      += RevealPath;
         foreach(InputAction tool in tools)
             tool.started += SetCurrentTool;
@@ -381,6 +354,7 @@ public class PlayerActions : MonoBehaviour
     {
         // Debug.LogWarning("Unsubscribing Functions");
         performAction.started  -= PerformAction;
+        cancelAction.started -= CancelAction;
         revealPath.started      -= RevealPath;
         foreach(InputAction tool in tools)
             tool.started -= SetCurrentTool;

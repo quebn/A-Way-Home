@@ -17,13 +17,6 @@ public class Rock : Obstacle, ILightning
         Remove();
     }
 
-    protected override void OnHighlight(Tool tool)
-    {
-        if(tool != Tool.Lightning && tool != Tool.Tremor && tool != Tool.Inspect)
-            return;
-        base.OnHighlight(tool);
-    }
-
     public override void LoadData(LevelData levelData)
     {
         base.LoadData(levelData);

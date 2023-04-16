@@ -38,7 +38,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
 
     protected override void OnHighlight(Tool tool)
     {
-        if(canPhase || tool != Tool.Lightning && tool != Tool.Inspect)
+        if(canPhase)
             return;
         base.OnHighlight(tool);
     }

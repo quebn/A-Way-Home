@@ -26,20 +26,12 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
         Debug.Assert(walkableNodes.Count > 0);
     }
 
-
-    protected override void OnHighlight(Tool tool)
-    {
-        if(tool != Tool.Inspect && tool != Tool.Lightning && tool != Tool.Command)
-            return;
-        base.OnHighlight(tool);
-    }
-
     public void OnLightningHit()
     {
         Remove();
     }
 
-    public void OnCommand()
+    public void OnCommand(List<Node> nodes)
     {
         hitpoints = canWeb? 1 : 2;
     }

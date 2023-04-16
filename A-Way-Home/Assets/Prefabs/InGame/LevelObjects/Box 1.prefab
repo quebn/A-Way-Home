@@ -216,11 +216,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
-  spriteRenderer: {fileID: 8124868877873513106}
   id: 
   outline: {fileID: 1496388960595970248}
   isNotHoverable: 0
-  health: 1
+  hitpoints: 1
+  toolsInteractable: 0000000001000000
 --- !u!212 &8124868877873513106
 SpriteRenderer:
   m_ObjectHideFlags: 0

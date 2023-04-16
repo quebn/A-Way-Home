@@ -11,14 +11,6 @@ public class WildFruit : Plant
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
-    protected override void OnHighlight(Tool tool)
-    {
-        if(outline == null  || outline.activeSelf)
-            return;
-        if(tool == Tool.Lightning)
-            outline.SetActive(true);
-    }
-
     public override void OnLightningHit()
     {
         Remove();

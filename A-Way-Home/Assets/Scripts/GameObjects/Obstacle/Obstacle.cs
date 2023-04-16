@@ -9,9 +9,8 @@ public class Obstacle : MonoBehaviour, ISaveable
     [SerializeField] protected string id;
     [SerializeField] protected GameObject outline;
     [SerializeField] protected bool isNotHoverable;
-
     [SerializeField] protected int hitpoints = 1;
-    
+    [SerializeField] protected List<Tool> toolsInteractable;
     protected List<Node> nodes;
 
     protected Vector2 worldPos => this.transform.position; 
@@ -59,7 +58,7 @@ public class Obstacle : MonoBehaviour, ISaveable
     }
 
 
-    protected virtual void OnDehighlight(Tool tool)
+    protected virtual void OnDehighlight()
     {
         outline.SetActive(false);
     }
@@ -76,18 +75,23 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     public void Highlight(Tool tool)
     {
-        if(isNotHoverable && (outline == null  || outline.activeSelf))
+        if((outline == null  || outline.activeSelf) || !toolsInteractable.Contains(tool))
             return;
         OnHighlight(tool);
     }
 
-    public void Dehighlight(Tool tool)
+    public void Dehighlight()
     {
         if(outline == null  || !outline.activeSelf)
             return;
-        OnDehighlight(tool);
+        OnDehighlight();
     }
 
+    public bool SelectableBy(Tool tool)
+    {
+        return toolsInteractable.Contains(tool);
+    }
+    
     public void WhileHighlight(Tool tool)
     {
         OnWhileHighlight(tool);
@@ -113,12 +117,12 @@ public class Obstacle : MonoBehaviour, ISaveable
             obstacle.Highlight(tool);
     }
 
-    public static void DehighlightObstacles(List<Obstacle> list, Tool tool)
+    public static void DehighlightObstacles(List<Obstacle> list)
     {
         if(list.Count == 0)
             return;
         foreach(Obstacle obstacle in list)
-            obstacle.Dehighlight(tool);
+            obstacle.Dehighlight();
 
     }
 
@@ -187,7 +191,7 @@ public interface IGrow
 
 public interface ICommand
 {
-    public void OnCommand();
+    public void OnCommand(List<Node> nodes);
 }
 
 public interface ITremor

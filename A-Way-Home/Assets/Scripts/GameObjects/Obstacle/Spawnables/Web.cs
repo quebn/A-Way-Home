@@ -15,13 +15,6 @@ public class Web : Spawnable, ILightning
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
-    protected override void OnHighlight(Tool tool)
-    {
-        if(tool != Tool.Inspect && tool != Tool.Lightning)
-            return;
-        base.OnHighlight(tool);
-    }
-
     public void OnLightningHit()
     {
         Remove();

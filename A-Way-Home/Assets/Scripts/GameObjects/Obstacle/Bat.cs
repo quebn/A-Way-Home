@@ -48,13 +48,6 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess
             PlayerActions.FinishProcess(this);
     }
 
-    protected override void OnHighlight(Tool tool)
-    {
-        if(tool != Tool.Lightning && tool != Tool.Command)
-            return;
-        base.OnHighlight(tool);
-    }
-
     protected override void Initialize()
     {
         base.Initialize();

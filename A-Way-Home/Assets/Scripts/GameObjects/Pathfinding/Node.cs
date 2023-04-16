@@ -180,6 +180,23 @@ public class Node
             HideNode();
     }
 
+    public void Highlight(Color color, Tool tool)
+    {
+        RevealNode(color);
+        if(!hasObstacle && !hasPlatform)
+            return;
+        Obstacle obs = hasObstacle ? obstacle : platform; 
+        obs.Highlight(tool);
+    }
+
+    public void Dehighlight()
+    {
+        ToggleNode(NodeGrid.nodesVisibility);
+        if(!hasObstacle && !hasPlatform)
+            return;
+        Obstacle obs = hasObstacle ? obstacle : platform; 
+        obs.Dehighlight();
+    }
     public void SetObstacle(Obstacle obstacle, NodeType nodeType, bool isPlatform = false)
     {
         if(isPlatform)
@@ -228,12 +245,21 @@ public class Node
         return true;
     }
 
-    public bool CommandObstacle()
+    public Obstacle SelectObstacle(Tool tool)
+    {
+        if(!hasObstacle && !hasPlatform)
+            return null;
+        if(!hasObstacle)
+            return platform.SelectableBy(tool) ? platform : null;
+        return obstacle.SelectableBy(tool) ? obstacle : null;
+
+    }
+    public bool CommandObstacle(List<Node> nodes)
     {
         if(!isCommandable)
             return false;
         ICommand interactable = ((hasObstacle) ? obstacle : platform ) as ICommand;
-        interactable.OnCommand();
+        interactable.OnCommand(nodes);
         return true;
     }
 

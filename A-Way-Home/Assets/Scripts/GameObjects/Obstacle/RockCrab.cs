@@ -57,26 +57,16 @@ public class RockCrab : Rock , ITrap, ITremor, ICommand, IActionWaitProcess
         MoveLocation();
     }
 
-    public void OnCommand()
+    public void OnCommand(List<Node> nodes)
     {
-        Debug.LogWarning("SELECTED CRAB");
-        Node.RevealNodes(travelRangeGrid.Values.ToList<Node>());
+        // Debug.LogWarning(isSelected ? "COMMANDED CRAB" : "SELECTED CRAB");
+        // Node.RevealNodes(travelRangeGrid.Values.ToList<Node>());
     }
     
  
     protected override void OnHighlight(Tool tool)
     {
-        if(tool != Tool.Lightning && tool != Tool.Tremor && tool != Tool.Inspect && tool != Tool.Command )
-            return;
-        if(tool == Tool.Command && !hasShell)
-            Node.ToggleNodes(path, Color.magenta, NodeGrid.nodesVisibility);
-        outline.SetActive(true);
-    }
-
-    protected override void OnDehighlight(Tool tool)
-    {
-        base.OnDehighlight(tool);
-        Node.ToggleNodes(path, NodeGrid.nodesVisibility);
+        base.OnHighlight(tool);
     }
 
     public void OnTrapTrigger(Character character)

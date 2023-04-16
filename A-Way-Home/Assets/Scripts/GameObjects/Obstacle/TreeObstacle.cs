@@ -74,8 +74,6 @@ public class TreeObstacle : Obstacle
 
     protected override void OnHighlight(Tool tool)
     {
-        if(tool != Tool.Lightning && tool != Tool.Inspect)
-            return;
         if(!isCutDown && !outlineUpper.activeSelf)
             outlineUpper.SetActive(true);
         base.OnHighlight(tool);
@@ -87,11 +85,11 @@ public class TreeObstacle : Obstacle
             HighlightPlaceableNodes();
     }
 
-    protected override void OnDehighlight(Tool tool)
+    protected override void OnDehighlight()
     {
         if(!isCutDown && outlineUpper.activeSelf)
             outlineUpper.SetActive(false);
-        base.OnDehighlight(tool);
+        base.OnDehighlight();
         if(currentCursorLocation != 0)
             Node.ToggleNodes(placeableNodes[currentCursorLocation], NodeGrid.nodesVisibility);
     }

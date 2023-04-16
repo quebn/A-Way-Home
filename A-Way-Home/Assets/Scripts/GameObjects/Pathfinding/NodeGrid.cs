@@ -21,6 +21,7 @@ public class NodeGrid : MonoBehaviour
     
     public Dictionary<Vector2Int, Node> grid;
 
+    private static  Vector2 currentTileOrigin;
     public static bool nodesVisibility = false; 
     public static Tilemap tilemap => Instance.tileMap;
     public int  maxSize{
@@ -303,5 +304,36 @@ public class NodeGrid : MonoBehaviour
     public static bool IfNeigbhorsWalkable(Node node)
     {
         return IfNeigbhorsWalkable(node, Instance.grid);
+    }
+
+    public static List<Node> HighlightGetNodes(Vector3 mouseCursor, List<Node> currentNodes, Tool tool)
+    {
+        int tileWidth = tool != Tool.Tremor ? 1 : 2;
+        int tileHeight = tool != Tool.Tremor ? 1 : 2;
+        Vector2 origin = GetMiddle(mouseCursor, tileWidth, tileHeight);
+        if(origin == currentTileOrigin)
+            return currentNodes;
+        DehighlightNodes(currentNodes);
+        List<Node> nodes = new List<Node>(tileWidth * tileHeight);
+        List<Vector2> vector2s = GetNodeWorldPos(mouseCursor, tileWidth, tileHeight);
+        for(int i = 0; i < vector2s.Count; i++)
+        {
+            Node node = NodeWorldPointPos(vector2s[i]);
+            if (!node.IsType(NodeType.Terrain) && (tool == Tool.Lightning ? node.canLightning : true))
+            {
+                node.Highlight(PlayerActions.GetToolColor(tool), tool);
+                nodes.Add(node);
+            }
+        }
+        currentTileOrigin = origin;
+        return nodes;
+    }
+
+    public static void DehighlightNodes(List<Node> nodes)
+    {
+        for(int i = 0; i < nodes.Count; i++)
+        {
+            nodes[i].Dehighlight();
+        }
     }
 }

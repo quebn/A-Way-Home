@@ -24,13 +24,6 @@ public class TreeLog : Obstacle, ILightning
         Remove();
     }
 
-    protected override void OnHighlight(Tool tool)
-    {
-        if(tool != Tool.Lightning && tool != Tool.Inspect)
-            return;
-        base.OnHighlight(tool);
-    }
-
     public override void Remove()
     {
         hitpoints = 0;

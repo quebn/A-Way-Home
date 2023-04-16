@@ -134,11 +134,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
-  spriteRenderer: {fileID: 3856496701694408760}
   id: 
-  animator: {fileID: 3856496701694408761}
-  initialStage: 1
   outline: {fileID: 253970091299312920}
+  isNotHoverable: 0
+  hitpoints: 1
+  toolsInteractable: 000000000100000002000000
+  animator: {fileID: 3856496701694408761}
   damage: 5
   prefabPoisonMiasma: {fileID: 8745363850703227746, guid: 371b5b5e167558b4eb34d05f91f5511b, type: 3}
 --- !u!61 &3856496701694408743

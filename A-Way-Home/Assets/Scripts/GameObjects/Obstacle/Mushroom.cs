@@ -19,13 +19,6 @@ public class Mushroom : Obstacle, ILightning
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
-    protected override void OnHighlight(Tool tool)
-    {
-        if(tool != Tool.Lightning && tool != Tool.Inspect)
-            return;
-        base.OnHighlight(tool);
-    }
-
     public void OnLightningHit()
     {
         Remove();

@@ -14,7 +14,7 @@ public class Lizard : Obstacle, ICommand
     private List<FireField> fireFields;
     private List<Node> fireNodes;
 
-    public void OnCommand()
+    public void OnCommand(List<Node> nodes)
     {
         ToggleFire();
     }

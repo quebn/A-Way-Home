@@ -35,8 +35,9 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
 
     protected override void OnHighlight(Tool tool)
     {
-        if((tool == Tool.Grow && !isAdult )|| tool == Tool.Lightning || tool == Tool.Inspect)
-            base.OnHighlight(tool);
+        if(tool == Tool.Grow && isAdult )
+            return;
+        base.OnHighlight(tool);
     }
 
     public virtual void OnLightningHit()
