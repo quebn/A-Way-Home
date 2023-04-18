@@ -112,6 +112,15 @@ public class Node
         return asPlatform ? platform : obstacle;
     }
 
+    public Obstacle GetObstacleByTool(Tool tool)
+    {
+        if(!hasObstacle && !hasPlatform)
+            return null;
+        if(hasObstacle)
+            return obstacle.SelectableBy(tool)? obstacle : null;
+        return platform.SelectableBy(tool)? platform : null;
+    }
+
     public Type GetObstacleType()
     {
         return obstacle.GetType();
@@ -225,14 +234,14 @@ public class Node
         return true;
     }
 
-    private bool ShockObstacleAfter()
+    private bool ShockObstacleAfter(Vector2 lightningOrigin)
     {
         if(!isShockable)
             return false;
         ILightning interactable = ((hasObstacle) ? obstacle : platform ) as ILightning;
         if(interactable == null)
             return false;
-        interactable.OnAftershock();
+        interactable.OnAftershock(lightningOrigin);
         return true;
     }
 
@@ -245,15 +254,13 @@ public class Node
         return true;
     }
 
-    public Obstacle SelectObstacle(Tool tool)
+    public bool CheckTool(Tool tool)
     {
         if(!hasObstacle && !hasPlatform)
-            return null;
-        if(!hasObstacle)
-            return platform.SelectableBy(tool) ? platform : null;
-        return obstacle.SelectableBy(tool) ? obstacle : null;
-
+            return false;
+        return hasObstacle ? obstacle.SelectableBy(tool) : platform.SelectableBy(tool);
     }
+
     public bool CommandObstacle(List<Node> nodes)
     {
         if(!isCommandable)
@@ -343,8 +350,9 @@ public class Node
         List<Node> nodes = NodeGrid.GetNeighborNodeList(node, NodeGrid.Instance.grid, 1);
         if(nodes.Count == 0)
             return;
-        foreach(Node n in nodes)
-            n.ShockObstacleAfter();
+        for(int i = 0; i < nodes.Count; i++)
+            nodes[i].ShockObstacleAfter(node.worldPosition);
+            
     }
 
     public static void TremorNodes(List<Node> nodeList)
@@ -373,22 +381,22 @@ public class Node
         return false;
     }
 
-    public static List<Obstacle> GetNodesInteractable(List<Node> nodeList, bool isPlatform = false)
+    public static List<Obstacle> GetNodesObstacle(List<Node> nodeList, bool isPlatform = false)
     {
         List<Obstacle> obstacles = new List<Obstacle>();
-        foreach(Node node in nodeList)
+        for(int i = 0; i < nodeList.Count; i++)
         {
             if(isPlatform)
             {
-                if(!node.hasPlatform)
+                if(!nodeList[i].hasPlatform)
                     continue;
-                obstacles.Add(node.platform);
+                obstacles.Add(nodeList[i].platform);
             }
             else
             {
-                if(!node.hasObstacle)
+                if(!nodeList[i].hasObstacle)
                     continue;
-                obstacles.Add(node.obstacle);
+                obstacles.Add(nodeList[i].obstacle);
             }
         }
         return obstacles;

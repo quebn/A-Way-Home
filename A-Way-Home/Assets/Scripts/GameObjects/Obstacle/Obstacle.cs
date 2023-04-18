@@ -51,7 +51,7 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     protected void ClearNodes(NodeType nodeType = NodeType.Walkable, bool isPlatform = false)
     {
-        if (nodes == null || nodes.Count == 0 || Node.GetNodesInteractable(nodes, isPlatform).Count == 0)
+        if (nodes == null || nodes.Count == 0 || Node.GetNodesObstacle(nodes, isPlatform).Count == 0)
             return;
         Node.SetNodesObstacle(nodes, nodeType, isPlatform: isPlatform);
         nodes = new List<Node>();
@@ -71,6 +71,11 @@ public class Obstacle : MonoBehaviour, ISaveable
     public virtual void Destroy(Obstacle obstacle)
     {
         obstacle.Remove();
+    }
+
+    public virtual void OnSelect(Tool tool)
+    {
+        Debug.Log($"Obstacle {this.GetType().ToString()} selected with {tool.ToString()} tool!");
     }
 
     public void Highlight(Tool tool)
@@ -181,7 +186,7 @@ public interface IInspect
 public interface ILightning
 {
     public void OnLightningHit();
-    public void OnAftershock(){}
+    public void OnAftershock(Vector2 lightningOrigin){}
 }
 
 public interface IGrow
@@ -191,7 +196,7 @@ public interface IGrow
 
 public interface ICommand
 {
-    public void OnCommand(List<Node> nodes);
+    public bool OnCommand(List<Node> nodes);
 }
 
 public interface ITremor

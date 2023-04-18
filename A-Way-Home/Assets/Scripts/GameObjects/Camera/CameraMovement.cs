@@ -1,21 +1,24 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
 {
     public static CameraMovement Instance {get; private set;}
-    public float zoomSpeed = 25f;
-    public float minZoom = 4.5f;
-    public float maxZoom = 8f;
+    [SerializeField] private float zoomSpeed = 25f;
+    [SerializeField] private float minZoom = 4.5f;
+    [SerializeField] private float maxZoom = 8f;
+    [SerializeField] private float panSpeed = 10f;
+    [SerializeField] private float panBorderThickness = 10f;
 
     // Privates
     private Vector3 origin;
     private Vector3 difference;
     private Vector3 resetCamera;
     private Camera mainCamera;
+    private Mouse currentMouse;
     private float zoom;
     private float mapMinX, mapMaxX, mapMinY, mapMaxY;
-    private bool drag = false;
     private Vector2 cameraBoundary => PlayerLevelData.Instance.levelBoundary;// replace bounds size.
 
     private void Update()
@@ -26,6 +29,7 @@ public class CameraMovement : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
+        currentMouse = Mouse.current;
         mainCamera.transform.position = new Vector3(
             PlayerLevelData.Instance.cameraCenterPos.x,
             PlayerLevelData.Instance.cameraCenterPos.y,
@@ -46,34 +50,25 @@ public class CameraMovement : MonoBehaviour
     
     private void LateUpdate()
     {
-        NewMoveCamera();
+        PanCamera();
+
     }
 
-    public void NewMoveCamera()
+    private void PanCamera()
     {
-        if (GameEvent.isPaused || Character.instance.isHome)
+        if (GameEvent.isPaused || Character.instance.isHome || PlayerActions.IsMouseOverUI())
             return;
-        Vector3 cameraPos = transform.position;
-        if (Mouse.current.rightButton.isPressed)
-        {
-            difference = (mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue())) - mainCamera.transform.position;
-            if (!drag)
-            {
-                drag = true;
-                origin = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            }
-        }
-        else    
-            drag = false;
-
-        if (drag)
-            cameraPos = origin - difference;
-            transform.position = ClampCamera(cameraPos);
-            
-        if(Keyboard.current.lKey.wasPressedThisFrame)
-        {
-            mainCamera.transform.position = resetCamera;    
-        }
+        Vector3 pos = transform.position;
+        Vector3 mousePos = currentMouse.position.ReadValue(); 
+        if(mousePos.y >= Screen.height - panBorderThickness)
+            pos.y += panSpeed * Time.deltaTime;
+        if(mousePos.y <= panBorderThickness)
+            pos.y -= panSpeed * Time.deltaTime;
+        if(mousePos.x >= Screen.width - panBorderThickness)
+            pos.x += panSpeed * Time.deltaTime;
+        if(mousePos.x <= panBorderThickness)
+            pos.x -= panSpeed * Time.deltaTime;
+        transform.position = ClampCamera(pos);
     }
 
     private void ZoomCamera()

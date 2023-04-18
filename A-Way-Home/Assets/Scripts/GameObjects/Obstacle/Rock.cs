@@ -12,7 +12,7 @@ public class Rock : Obstacle, ILightning
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
-    public virtual void OnLightningHit()
+    public void OnLightningHit()
     {
         Remove();
     }
@@ -24,7 +24,6 @@ public class Rock : Obstacle, ILightning
             return;
         ClearNodes();
         this.gameObject.SetActive(false);
-
     }
 
 }

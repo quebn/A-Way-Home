@@ -34,7 +34,7 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess
             Move();
     }
 
-    public void OnAftershock()
+    public void OnAftershock(Vector2 lightningOrigin)
     {
         ForceDehighlight();
         Vector3 pos = nodes[0].worldPosition;

@@ -32,13 +32,13 @@ public class PlayerActions : MonoBehaviour
     // 
     // 
     private List<Node> hoveredNodes;
-    private List<Obstacle> selectedObstacles;
+    private Obstacle selectedObstacle;
 
     private IHoverable hoverable;
     private bool obstaclesDone = true;
     private GameObject lilypad;
 
-    public bool hasSelectedObs => selectedObstacles.Count > 0;
+    public bool hasSelectedObs => selectedObstacle != null;
     public static bool finishedProcessing => Instance.obstaclesDone;
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
     private static HashSet<IActionWaitProcess> actionWaitProcesses;
@@ -67,26 +67,27 @@ public class PlayerActions : MonoBehaviour
     {
         if (ActionsNotAllowed() || hoveredNodes.Count == 0)
             return;
+        // selectedObstacle = Node.GetObstaclesByTool(hoveredNodes, currentTool);
+        switch(currentTool)
+        {
+            case Tool.Inspect:
+                Inspect();
+                return;
+            case Tool.Lightning:
+                Lightning();
+                break;
+            case Tool.Tremor:
+                Node.TremorNodes(hoveredNodes);
+                break;
+            case Tool.Grow:
+                Grow();
+                break;
+            case Tool.Command:
+                if (Command())
+                    break;
+                return;
+        }
         obstaclesDone = false;
-        // switch(currentTool)
-        // {
-        //     case Tool.Inspect:
-        //         Inspect();
-        //         return;
-        //     case Tool.Lightning:
-        //         Node.ShockNode(currentTileNodes[0]);
-        //         LightningAnimation(this.currentTileOrigin);
-        //         break;
-        //     case Tool.Tremor:
-        //         Node.TremorNodes(currentTileNodes);
-        //         break;
-        //     case Tool.Grow:
-        //         Grow();
-        //         break;
-        //     case Tool.Command:
-        //         Command();
-        //         return;
-        // }
         GameData.IncrementPlayerMoves(-1);
         ProcessObstaclesAction();
         StartCoroutine(WaitForObstaclesAction());
@@ -94,8 +95,34 @@ public class PlayerActions : MonoBehaviour
             NodeGrid.DehighlightNodes(hoveredNodes);
     }
 
+
+    private bool Command()
+    {
+        if(hasSelectedObs)
+        {
+            ICommand obstacle = selectedObstacle as ICommand;
+            bool success = obstacle.OnCommand(hoveredNodes);
+            if(success)
+                selectedObstacle = null;
+            return success;
+        }
+        Debug.Assert(currentTool == Tool.Command, $"ERROR: Unexpected tool selected :{currentTool.ToString()} -> expected: Tool.Command");
+        selectedObstacle = hoveredNodes[0].GetObstacleByTool(currentTool);
+        if(hasSelectedObs)
+            selectedObstacle.OnSelect(currentTool);
+        return false;
+    }
+
+    private void Lightning()
+    {
+        Node.ShockNode(hoveredNodes[0]);
+        LightningAnimation(hoveredNodes[0].worldPosition);
+    }
+
     public void CancelAction(InputAction.CallbackContext context)
     {
+        selectedObstacle = null;
+        SetCurrentTool(0);
         Debug.Log("Canceled!");
         // if(selectedObstacle != null)
         //     selectedObstacle = null;
@@ -106,13 +133,8 @@ public class PlayerActions : MonoBehaviour
         hoveredNodes[0].InspectObstacle();
         if(hoveredNodes.Contains(Character.instance.currentNode))
             Character.instance.Interact();
-        obstaclesDone = true;
     }
 
-    private void Command()
-    {
-        obstaclesDone = true;
-    }
 
     private void Grow()
     {
@@ -208,20 +230,22 @@ public class PlayerActions : MonoBehaviour
         Tool newTool = (Tool)index;
         if(currentTool == newTool)
             return;
-
         if(lilypadVisual.activeSelf)
             lilypadVisual.SetActive(false);
         NodeGrid.DehighlightNodes(hoveredNodes);
-        selectedObstacles = new List<Obstacle>();
-        hoveredNodes = new List<Node>();
-
+        // hoveredNodes = new List<Node>();
+        if(hasSelectedObs)
+            selectedObstacle = null;
         currentTool = newTool;
+        hoveredNodes = NodeGrid.HighlightGetNodes(mouseWorldPos, hoveredNodes, currentTool);
         Cursor.SetCursor(mouseTextures[index], Vector2.zero, CursorMode.Auto);
     }
+
     private void Hover()
     {
         if(ActionsNotAllowed())
             return;
+        // Debug.LogWarning("Returned");
         OnHoverUpper();
         hoveredNodes = NodeGrid.HighlightGetNodes(mouseWorldPos, hoveredNodes, currentTool);
         if(currentTool == Tool.Grow)
@@ -310,7 +334,7 @@ public class PlayerActions : MonoBehaviour
         // Character.instance.DisplayPath();
     }
 
-    private static bool IsMouseOverUI(){
+    public static bool IsMouseOverUI(){
         // IsPointerOverGameobject is having a warning when used in new input system 
         return EventSystem.current.IsPointerOverGameObject();
     }
@@ -333,7 +357,6 @@ public class PlayerActions : MonoBehaviour
         reset           = playerInput.actions["Reset"];
         // actionList = new List<ActionData>();
         hoveredNodes = new List<Node>();
-        selectedObstacles = new List<Obstacle>();
         lilypad = Resources.Load<GameObject>($"Spawnables/Lilypad");
         Debug.Assert(lilypad != null);
     }

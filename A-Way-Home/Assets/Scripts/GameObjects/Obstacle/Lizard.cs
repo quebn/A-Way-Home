@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lizard : Obstacle, ICommand
+public class Lizard : Obstacle
 {
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject fireField;
@@ -13,11 +13,6 @@ public class Lizard : Obstacle, ICommand
     
     private List<FireField> fireFields;
     private List<Node> fireNodes;
-
-    public void OnCommand(List<Node> nodes)
-    {
-        ToggleFire();
-    }
 
     protected override void Initialize()
     {

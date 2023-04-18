@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
+public class Spider : Obstacle, IActionWaitProcess, ILightning
 {
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject webPrefab;
@@ -31,10 +31,10 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ICommand
         Remove();
     }
 
-    public void OnCommand(List<Node> nodes)
-    {
-        hitpoints = canWeb? 1 : 2;
-    }
+    // public bool OnCommand(List<Node> nodes)
+    // {
+    //     hitpoints = canWeb? 1 : 2;
+    // }
 
 
     public void OnPlayerAction()
