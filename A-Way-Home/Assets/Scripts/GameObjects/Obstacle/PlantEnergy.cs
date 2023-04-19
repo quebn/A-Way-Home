@@ -49,9 +49,14 @@ public class PlantEnergy : Plant
 
     public override void Damage(int damage = 0)
     {
-        base.Damage(damage);
+        Debug.Log($"Plant Damage: {damage}");
+        hitpoints -= (damage == 0) ? hitpoints : damage;
+        animator.Play(CurrentAnimationName());
+        SetNodes(this.worldPos, isAdult? NodeType.Obstacle: NodeType.Walkable, this);
         if(hitpoints <= 2)
             ClearLightField();
+        if(hitpoints <= 0)
+            Remove();
     }
 
     private void SetLightField()

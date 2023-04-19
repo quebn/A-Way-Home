@@ -79,7 +79,7 @@ public class TreeObstacle : Obstacle
         base.OnHighlight(tool);
     }
 
-    protected override void OnWhileHighlight(Tool tool)
+    protected override void OnWhileHovered(Tool tool)
     {
         if(tool == Tool.Lightning && !isCutDown)
             HighlightPlaceableNodes();

@@ -139,12 +139,7 @@ public class NodeGrid : MonoBehaviour
     public static void ToggleGridTiles(bool active)
     {
         foreach(KeyValuePair<Vector2Int, Node> pair in Instance.grid)
-        {
-            if(Character.instance.NodeInPath(pair.Value))
-                pair.Value.ToggleNode(Node.colorGreen, active);
-            else
                 pair.Value.ToggleNode(active);
-        }
     }
 
 

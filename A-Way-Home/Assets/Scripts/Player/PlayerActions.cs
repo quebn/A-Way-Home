@@ -32,7 +32,7 @@ public class PlayerActions : MonoBehaviour
     // 
     // 
     private List<Node> hoveredNodes;
-    private Obstacle selectedObstacle;
+    private ISelectable selectedObstacle;
 
     private IHoverable hoverable;
     private bool obstaclesDone = true;
@@ -107,7 +107,7 @@ public class PlayerActions : MonoBehaviour
             return success;
         }
         Debug.Assert(currentTool == Tool.Command, $"ERROR: Unexpected tool selected :{currentTool.ToString()} -> expected: Tool.Command");
-        selectedObstacle = hoveredNodes[0].GetObstacleByTool(currentTool);
+        selectedObstacle = hoveredNodes[0].GetObstacleByTool(currentTool) as ISelectable;
         if(hasSelectedObs)
             selectedObstacle.OnSelect(currentTool);
         return false;
@@ -245,14 +245,21 @@ public class PlayerActions : MonoBehaviour
     {
         if(ActionsNotAllowed())
             return;
-        // Debug.LogWarning("Returned");
         OnHoverUpper();
-        hoveredNodes = NodeGrid.HighlightGetNodes(mouseWorldPos, hoveredNodes, currentTool);
+        hoveredNodes = hasSelectedObs? selectedObstacle.OnSelectedHover(mouseWorldPos, hoveredNodes) : HoverNodes(mouseWorldPos);;
+ 
+    }
+
+    public List<Node> HoverNodes(Vector3 mousePos)
+    {
+        List<Node> nodes = NodeGrid.HighlightGetNodes(mousePos, hoveredNodes, currentTool);
         if(currentTool == Tool.Grow)
             OnWaterHover();
         WhileHoverObstacle();
-        Character.instance.CanHighlight(hoveredNodes.Contains(Character.instance.currentNode));
+        Character.instance.CanHighlight(nodes.Contains(Character.instance.currentNode));
+        return nodes;
     }
+
 
     public static Color GetToolColor(Tool tool)
     {
@@ -275,8 +282,9 @@ public class PlayerActions : MonoBehaviour
     {
         if(hoveredNodes == null || hoveredNodes.Count == 0)
             return;
-        // for(int i = 0; i < hoveredNodes.Count; i++)
-        //     hoveredNodes[i].WhileHighlight(currentTool);
+        for(int i = 0; i < hoveredNodes.Count; i++)
+            if(hoveredNodes[i].hasObstacle)
+                hoveredNodes[i].GetObstacle().WhileHovered(currentTool);
     }
 
     private void OnWaterHover()
@@ -345,6 +353,7 @@ public class PlayerActions : MonoBehaviour
         tools = new List<InputAction>(toolCount);
         playerInput = GetComponent<PlayerInput>();
         currentTool = Tool.Inspect;
+        Cursor.SetCursor(mouseTextures[0], Vector2.zero, CursorMode.Auto);
         mouse = Mouse.current;
         mainCamera = Camera.main;
         Debug.Assert(playerInput != null, "playerInput GetComponent failed!");

@@ -17,7 +17,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
     protected const string fullGrown    = "Plant_FullGrown";
     protected const string destroy      = "Plant_Destroy";
 
-    private bool isAdult {
+    protected bool isAdult {
         get => hitpoints > 1;
     }
 

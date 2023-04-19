@@ -152,7 +152,7 @@ public class Node
         switch(currentNodeType)
         {
             case NodeType.Walkable:
-                SetColor(colorWhite);
+                SetColor(Character.instance.NodeInPath(this) ? colorGreen : colorWhite);
                 break;
             case NodeType.Terrain:
                 HideNode();
@@ -191,11 +191,22 @@ public class Node
 
     public void Highlight(Color color, Tool tool)
     {
-        RevealNode(color);
+        if(tool == Tool.Inspect)
+            ToggleNode(NodeGrid.nodesVisibility);
+        else
+            RevealNode(color);
         if(!hasObstacle && !hasPlatform)
             return;
         Obstacle obs = hasObstacle ? obstacle : platform; 
         obs.Highlight(tool);
+    }
+
+    public void HighlightObstacle(Color color, Tool tool)
+    {
+        RevealNode(color);
+        if(!hasObstacle)
+            return;
+        obstacle.Highlight(tool);
     }
 
     public void Dehighlight()

@@ -43,7 +43,21 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning
             StartCoroutine(FollowPath());
     }
 
-    public IEnumerator FollowPath()
+    public override void Remove()
+    {
+        hitpoints = 0;
+        ClearNodes();
+        StartCoroutine(DeathAnimation());
+    }
+
+    private IEnumerator DeathAnimation()
+    {
+        animator.Play("Death");
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
+        this.gameObject.SetActive(false);
+    }
+
+    private IEnumerator FollowPath()
     {
         while(isMoving)
         {
@@ -105,5 +119,7 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning
     {
         GameObject.Instantiate(webPrefab, lastNode.worldPosition, Quaternion.identity);
     }
+
+
 
 }

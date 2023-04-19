@@ -73,11 +73,6 @@ public class Obstacle : MonoBehaviour, ISaveable
         obstacle.Remove();
     }
 
-    public virtual void OnSelect(Tool tool)
-    {
-        Debug.Log($"Obstacle {this.GetType().ToString()} selected with {tool.ToString()} tool!");
-    }
-
     public void Highlight(Tool tool)
     {
         if((outline == null  || outline.activeSelf) || !toolsInteractable.Contains(tool))
@@ -97,12 +92,14 @@ public class Obstacle : MonoBehaviour, ISaveable
         return toolsInteractable.Contains(tool);
     }
     
-    public void WhileHighlight(Tool tool)
+    public void WhileHovered(Tool tool)
     {
-        OnWhileHighlight(tool);
+        if(!toolsInteractable.Contains(tool))
+            return;
+        OnWhileHovered(tool);
     }
 
-    protected virtual void OnWhileHighlight(Tool tool)
+    protected virtual void OnWhileHovered(Tool tool)
     {
         Debug.Log("Hovering......");
     }
@@ -175,7 +172,13 @@ public class Obstacle : MonoBehaviour, ISaveable
         this.id = System.Guid.NewGuid().ToString();
     }
 
+}
 
+public interface ISelectable
+{
+    public void OnSelect(Tool tool);
+    public List<Node> OnSelectedHover(Vector3 mouseWorldPos, List<Node> nodeList);
+    public void OnDeselect();
 }
 
 public interface IInspect

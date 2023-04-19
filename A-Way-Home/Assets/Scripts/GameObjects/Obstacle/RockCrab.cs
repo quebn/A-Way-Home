@@ -4,7 +4,7 @@ using System.Collections;
 using System.Linq;
 using System;
 
-public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, ILightning
+public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, ILightning, ISelectable
 {
     // Should maybe eat Juvenile Plants
     [SerializeField] private Animator animator;
@@ -45,11 +45,16 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
 
     public void OnAftershock(Vector2 lightningOrigin)
     {
-        // Move one ode away from origin
+        if(!hasShell)
+        {
+            GoToNearestRock();
+            if(isWalking && hasPath)
+                return;
+        }   
+        // Move one node away from origin
         Vector2 currentPos = this.worldPos;
         Vector2 targetPos = currentPos + (currentPos - lightningOrigin);
         Node targetNode;
-        // if(targe)
         targetNode = NodeGrid.NodeWorldPointPos(targetPos);
         if(targetNode.worldPosition == this.transform.position || !targetNode.IsWalkable())
             return;
@@ -85,6 +90,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         if(nodes.Count == 0)
             return false;
+        Debug.Log("Commanded");
         return GoToNode(nodes[0]);
     }
 
@@ -99,6 +105,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         TryGetPath(targetNode.currentType, targetNode.hasObstacle ? targetNode.GetObstacleType() : null);
         if(hasPath)
             MoveLocation();
+        // Debug.LogWarning(hasPath ? "Crab has Path": "Crab has no Path");
         return hasPath;
     }
 
@@ -107,18 +114,40 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         if(node.IsType(NodeType.Obstacle))
             if(node.IsObstacle(typeof(Plant)) || (node.IsObstacle(typeof(Rock)) && !hasShell))
                 return node;
-        else if(node.IsType(NodeType.Walkable))
+        if(node.IsType(NodeType.Walkable))
             return node;
+        Debug.LogWarning($"RETURNING NULL node is {node.currentType.ToString()}");
         return null;
     }
 
-    public override void OnSelect(Tool tool)
+    public void OnSelect(Tool tool)
     {
         if(tool != Tool.Command)
             return;
+        // Node.RevealNodes(travelRangeGrid.Values.ToList<Node>(), Node.colorGreen, NodeType.Terrain);
 
     }
     
+    public List<Node> OnSelectedHover(Vector3 mouseWorldPos, List<Node> currentNodes)
+    {
+        Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos);
+        Node node = NodeGrid.NodeWorldPointPos(origin);
+        Debug.Assert(node != null);
+        if(node == currentNodes[0])
+            return currentNodes;
+        List<Node> nodeList = new List<Node>();
+        NodeGrid.DehighlightNodes(currentNodes);
+        if(node.IsWalkable() && travelRangeGrid.ContainsValue(node))
+            node.HighlightObstacle(hasShell ? Node.colorRed : Node.colorPurple, Tool.Inspect);
+        nodeList.Add(node);
+        return nodeList;
+    }
+
+    public void OnDeselect()
+    {
+        throw new NotImplementedException();
+    }
+
     protected override void OnHighlight(Tool tool)
     {
         base.OnHighlight(tool);
@@ -157,6 +186,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         hitpoints -= value;
         animator.SetBool("hasShell", hasShell);
+        nodes[0].currentType = hasShell ? NodeType.Obstacle : NodeType.Walkable;
         if(hitpoints == 0)
             Remove();
     }
@@ -251,16 +281,4 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         animator.SetBool("hasShell", hasShell);
         Destroy(rock);
     }
-
-    private void SetRandomPath()
-    {
-        if(!NodeGrid.IfNeigbhorsWalkable(nodes[0], travelRangeGrid))
-            return;
-        targetPositions.Clear();
-        targetPositions = Node.GetRandomWorldPos(travelRangeGrid, 1);
-        path = Pathfinding.FindPath(this.worldPos, targetPositions, travelRangeGrid);
-        if(!hasPath)
-            SetRandomPath();
-    }
-
 }
