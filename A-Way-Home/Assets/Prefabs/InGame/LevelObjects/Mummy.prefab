@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5404155738753760589}
-  - component: {fileID: 5404155738753760577}
+  - component: {fileID: 992544573273126181}
   - component: {fileID: 5404155738753760590}
   - component: {fileID: 5404155738753760576}
   - component: {fileID: 5404155738753760607}
@@ -35,7 +35,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5404155738753760577
+--- !u!114 &992544573273126181
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -48,16 +48,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
-  spriteRenderer: {fileID: 5404155738753760590}
   id: 
   outline: {fileID: 0}
   isNotHoverable: 0
-  hitpoints: 3
-  animator: {fileID: 5404155738753760607}
-  travelSpeed: 4
+  hitpoints: 1
+  toolsInteractable: 
+  animator: {fileID: 0}
+  travelSpeed: 0
   canPhase: 0
-  canRevive: 1
-  deathTimer: 2
+  canRevive: 0
+  deathTimer: 0
 --- !u!212 &5404155738753760590
 SpriteRenderer:
   m_ObjectHideFlags: 0

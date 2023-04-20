@@ -101,7 +101,7 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     protected virtual void OnWhileHovered(Tool tool)
     {
-        Debug.Log("Hovering......");
+        // Debug.Log("Hovering......");
     }
 
     protected void ForceDehighlight()
@@ -177,8 +177,9 @@ public class Obstacle : MonoBehaviour, ISaveable
 public interface ISelectable
 {
     public void OnSelect(Tool tool);
-    public List<Node> OnSelectedHover(Vector3 mouseWorldPos, List<Node> nodeList);
+    public List<Node> OnSelectedHover(Vector3 mouseWorldPos, List<Node> currentNodes);
     public void OnDeselect();
+    public List<Node> IgnoredToggledNodes();
 }
 
 public interface IInspect

@@ -138,8 +138,15 @@ public class NodeGrid : MonoBehaviour
 
     public static void ToggleGridTiles(bool active)
     {
-        foreach(KeyValuePair<Vector2Int, Node> pair in Instance.grid)
+        List<Node> ignoredNodes = PlayerActions.Instance.IgnoredToggleNodes();
+        if(ignoredNodes == null){
+            foreach(KeyValuePair<Vector2Int, Node> pair in Instance.grid)
                 pair.Value.ToggleNode(active);
+        }else{
+            foreach(KeyValuePair<Vector2Int, Node> pair in Instance.grid)
+                if(!ignoredNodes.Contains(pair.Value))
+                pair.Value.ToggleNode(active);
+        }
     }
 
 
@@ -307,7 +314,11 @@ public class NodeGrid : MonoBehaviour
         int tileHeight = tool != Tool.Tremor ? 1 : 2;
         Vector2 origin = GetMiddle(mouseCursor, tileWidth, tileHeight);
         if(origin == currentTileOrigin)
+        {
+            if (currentNodes.Count > 0 && !currentNodes[0].IsType(NodeType.Terrain) && (tool == Tool.Lightning ? currentNodes[0].canLightning : true))
+                currentNodes[0].Highlight(PlayerActions.GetToolColor(tool), tool);
             return currentNodes;
+        }
         DehighlightNodes(currentNodes);
         List<Node> nodes = new List<Node>(tileWidth * tileHeight);
         List<Vector2> vector2s = GetNodeWorldPos(mouseCursor, tileWidth, tileHeight);
@@ -330,5 +341,14 @@ public class NodeGrid : MonoBehaviour
         {
             nodes[i].Dehighlight();
         }
+    }
+
+    public static List<Node> GetWalkableNodes()
+    {
+        List<Node> nodes = new List<Node>();
+        foreach(KeyValuePair<Vector2Int, Node> pair in Instance.grid)
+            if(pair.Value.IsWalkable())
+                nodes.Add(pair.Value);
+        return nodes;
     }
 }

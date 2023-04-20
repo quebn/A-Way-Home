@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
+public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectable, ICommand
 {
     [SerializeField] private Animator animator;
     [SerializeField] private int travelSpeed; 
@@ -14,6 +14,9 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
     private List<Node> path;
     private Node currentTargetNode;
     private int currentTargetIndex;
+    private Node targetNode;
+    private bool wasInteracted = false;
+
 
     public override bool isBurnable => true;
     public override bool isFragile => !canPhase;
@@ -25,7 +28,9 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
     private bool canMove => currentTargetIndex < travelSpeed;
     private bool isMoving {get => animator.GetBool("isMoving"); set => animator.SetBool("isMoving", value); }
     private bool isImmobile => hitpoints <= 0;
+    private bool hasPath => path.Count > 0;
 
+    private static List<Node> gridNodes;
 
     protected override void Initialize()
     {
@@ -57,20 +62,10 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
 
     public void OnPlayerAction()
     {
-        SetPath();
-        StartCoroutine(FollowPath());
-    }
-
-    private bool TryGetPath()
-    {
-        List<Vector3> targetPositions = new List<Vector3>();
-        targetPositions.Add(Character.instance.currentPosition);
-        path = !canPhase ? Pathfinding.FindPath(this.worldPos, targetPositions) : Pathfinding.FindPathPhased(this.worldPos, targetPositions, NodeGrid.Instance.grid);
-        return path.Count > 0;
-    }
-
-    private void SetPath()
-    {
+        if(isMoving){
+            Debug.LogWarning("ISMOVING SKELETON");
+            return;
+        }
         if(isImmobile && canRevive)
         {
             if(deathTimer <= 0)
@@ -87,11 +82,104 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
             isMoving = true;
             currentTargetIndex = 0;
             currentTargetNode = path[0];
-            Node endNode = path[travelSpeed - 1];
+            StartCoroutine(FollowPath());
             return;
         }
         PlayerActions.FinishProcess(this);
-    } 
+    }
+
+    public bool OnCommand(List<Node> nodes)
+    {
+        if(nodes.Count == 0)
+            return false;
+        return GoToNode(nodes[0]);
+    }
+
+    public void OnSelect(Tool tool)
+    {
+        if(tool != Tool.Command)
+            return;
+        gridNodes = NodeGrid.GetWalkableNodes();
+        for(int i = 0 ; i < gridNodes.Count; i++)
+            gridNodes[i].RevealNode();
+    }
+
+    public List<Node> OnSelectedHover(Vector3 mouseWorldPos, List<Node> currentNodes)
+    {
+        Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos);
+        Node node = NodeGrid.NodeWorldPointPos(origin);
+        Debug.Assert(!gridNodes.Contains(nodes[0]));
+        if(node == currentNodes[0])
+            return currentNodes;
+        List<Node> nodeList = new List<Node>();
+        DehighlightNode(currentNodes[0]);
+        if(gridNodes.Contains(node))
+            node.HighlightObstacle(Node.colorRed, Tool.Inspect);
+        nodeList.Add(node);
+        return nodeList;
+    }
+
+    public void OnDeselect()
+    {
+        Node.ToggleNodes(gridNodes, NodeGrid.nodesVisibility);
+        if(nodes.Count > 0)
+            nodes[0].Dehighlight();
+    }
+
+    public List<Node> IgnoredToggledNodes()
+    {
+        List<Node> list = new List<Node>(gridNodes);
+        list.Add(nodes[0]);
+        return list;
+    }
+
+    private void DehighlightNode(Node node)
+    {
+        if(!gridNodes.Contains(node))
+            return;
+        node.RevealNode();
+        if(!node.hasObstacle)
+            return;
+        node.GetObstacle().Dehighlight();
+    }
+
+
+    private bool GoToNode(Node node)
+    {
+        List<Vector3> targetPositions = new List<Vector3>();
+        if(!node.IsWalkable() || !NodeGrid.Instance.grid.ContainsValue(node))
+            return false;
+        targetPositions.Add(node.worldPosition);
+        Debug.Assert(targetPositions.Count == 1, "ERROR: Crab target positions more than 1.");
+        TryGetPath(targetPositions);
+        if(hasPath)
+        {
+            ForceDehighlight();
+            isMoving = true;
+            currentTargetIndex = 0;
+            currentTargetNode = path[0];
+            targetNode = node;
+            ClearNodes();
+            StartCoroutine(FollowPathCommand());
+        }
+        return hasPath;
+    }
+
+    private bool TryGetPath(List<Vector3> targetPositions)
+    {
+        path = !canPhase ? Pathfinding.FindPath(this.worldPos, targetPositions) : Pathfinding.FindPathPhased(this.worldPos, targetPositions, NodeGrid.Instance.grid);
+        return hasPath;
+    }
+
+
+    private bool TryGetPath()
+    {
+        List<Vector3> targetPositions = new List<Vector3>();
+        targetPositions.Add(Character.instance.currentPosition);
+        path = !canPhase ? Pathfinding.FindPath(this.worldPos, targetPositions) : Pathfinding.FindPathPhased(this.worldPos, targetPositions, NodeGrid.Instance.grid);
+        return hasPath;
+    }
+
 
     private IEnumerator FollowPath()
     {
@@ -132,6 +220,44 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
         }
     }
 
+    private IEnumerator FollowPathCommand()
+    {
+        while(isMoving)
+        {
+            if(this.transform.position == currentTargetNode.worldPosition)
+            {
+                currentTargetIndex ++;
+                if(!canPhase)
+                {
+                    if(currentTargetNode.hasObstacle && currentTargetNode.GetObstacle().isTrampleable)
+                        Destroy(currentTargetNode.GetObstacle());
+                    else if(currentTargetNode.IsObstacle(typeof(GroundSpike)) || currentTargetNode.IsObstacle(typeof(PoisonMiasma)) || currentTargetNode.IsObstacle(typeof(FireField)))
+                    {
+                        isMoving = false;
+                        currentTargetNode.GetObstacle().Destroy(this);
+                        yield break;
+                    }
+                }
+                if(this.transform.position == targetNode.worldPosition)
+                {
+                    isMoving = false;
+                    if(canPhase && currentTargetNode.IsType(NodeType.Obstacle) && currentTargetNode.hasObstacle)
+                    {
+                        PlayerActions.FinishProcess(this);
+                        yield break;
+                    }
+                    OnStop();
+                    PlayerActions.FinishProcess(this);
+                    yield break;
+                }
+                Debug.Assert(path.Count > currentTargetIndex, $"ERROR: Tried to access index {currentTargetIndex} with path of size {path.Count}");
+                currentTargetNode = path[currentTargetIndex];
+            }
+            UpdateAnimation();
+            this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
+            yield return null;
+        }
+    }
 
     private void OnStop()
     {
@@ -216,7 +342,4 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
         this.gameObject.SetActive(false);
     }
-
-
-
 }

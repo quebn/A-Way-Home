@@ -294,8 +294,8 @@ public class Node
     {
         if (nodeList == null ||nodeList.Count == 0)
             return;
-        foreach(Node node in nodeList)
-            node.RevealNode();
+        for(int i = 0; i < nodeList.Count ; i++)
+            nodeList[i].RevealNode();
     }
 
     public static void RevealNodes(List<Node> nodeList, Color color)
@@ -338,11 +338,11 @@ public class Node
     {
         if(nodeList == null ||nodeList.Count == 0)
             return;
-        foreach(Node node in nodeList)
-            if(Character.instance.NodeInPath(node))
-                node.ToggleNode(Node.colorGreen, toggle);
+        for(int i = 0; i < nodeList.Count; i++)
+            if(Character.instance.NodeInPath(nodeList[i]))
+                nodeList[i].ToggleNode(Node.colorGreen, toggle);
             else
-                node.ToggleNode(toggle);
+                nodeList[i].ToggleNode(toggle);
     }
 
     public static void SetNodesObstacle(List<Node> nodeList, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false)

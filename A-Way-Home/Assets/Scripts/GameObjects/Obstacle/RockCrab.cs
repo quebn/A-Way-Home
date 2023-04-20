@@ -15,7 +15,8 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     private List<Vector3> targetPositions = new List<Vector3>();
     private Node currentTargetNode;
     private int targetIndex;
-    private bool wasInteracted = false; 
+    private bool wasInteracted = false;
+    private List<Node> gridNodes;
 
     public override bool isBurnable => true;
     public override bool isTrampleable => !hasShell;
@@ -68,7 +69,6 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         while(isWalking)
         {
-
             if(this.transform.position == targetNode.worldPosition)
             {
                 Stop();
@@ -90,7 +90,6 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         if(nodes.Count == 0)
             return false;
-        Debug.Log("Commanded");
         return GoToNode(nodes[0]);
     }
 
@@ -124,20 +123,20 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         if(tool != Tool.Command)
             return;
-        // Node.RevealNodes(travelRangeGrid.Values.ToList<Node>(), Node.colorGreen, NodeType.Terrain);
-
+        for(int i = 0 ; i < gridNodes.Count; i++)
+            gridNodes[i].RevealNode();
     }
     
     public List<Node> OnSelectedHover(Vector3 mouseWorldPos, List<Node> currentNodes)
     {
         Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos);
         Node node = NodeGrid.NodeWorldPointPos(origin);
-        Debug.Assert(node != null);
+        Debug.Assert(!gridNodes.Contains(nodes[0]));
         if(node == currentNodes[0])
             return currentNodes;
         List<Node> nodeList = new List<Node>();
-        NodeGrid.DehighlightNodes(currentNodes);
-        if(node.IsWalkable() && travelRangeGrid.ContainsValue(node))
+        DehighlightNode(currentNodes[0]);
+        if(gridNodes.Contains(node))
             node.HighlightObstacle(hasShell ? Node.colorRed : Node.colorPurple, Tool.Inspect);
         nodeList.Add(node);
         return nodeList;
@@ -145,8 +144,29 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
 
     public void OnDeselect()
     {
-        throw new NotImplementedException();
+        Node.ToggleNodes(gridNodes, NodeGrid.nodesVisibility);
+        if(nodes.Count > 0)
+            nodes[0].Dehighlight();
+
     }
+
+    public List<Node> IgnoredToggledNodes()
+    {
+        List<Node> list = new List<Node>(gridNodes);
+        list.Add(nodes[0]);
+        return list;
+    }
+
+    private void DehighlightNode(Node node)
+    {
+        if(!gridNodes.Contains(node))
+            return;
+        node.RevealNode();
+        if(!node.hasObstacle)
+            return;
+        node.GetObstacle().Dehighlight();
+    }
+
 
     protected override void OnHighlight(Tool tool)
     {
@@ -272,6 +292,10 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         SetNodes(this.worldPos, hasShell ? NodeType.Obstacle : NodeType.Walkable, this);
         travelRangeGrid = NodeGrid.GetNeighborNodes(nodes[0], NodeGrid.Instance.grid, tileRange);
+        gridNodes = new List<Node>();
+        foreach(KeyValuePair<Vector2Int, Node> pair in travelRangeGrid)
+            if(pair.Value.IsWalkable())
+                gridNodes.Add(pair.Value);
     }
 
     private void RegenerateShell(Rock rock)
@@ -281,4 +305,5 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         animator.SetBool("hasShell", hasShell);
         Destroy(rock);
     }
+
 }

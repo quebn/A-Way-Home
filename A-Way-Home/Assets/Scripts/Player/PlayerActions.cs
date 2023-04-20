@@ -101,9 +101,13 @@ public class PlayerActions : MonoBehaviour
         if(hasSelectedObs)
         {
             ICommand obstacle = selectedObstacle as ICommand;
+            Debug.Assert(obstacle != null);
             bool success = obstacle.OnCommand(hoveredNodes);
             if(success)
+            {
+                selectedObstacle.OnDeselect();
                 selectedObstacle = null;
+            }
             return success;
         }
         Debug.Assert(currentTool == Tool.Command, $"ERROR: Unexpected tool selected :{currentTool.ToString()} -> expected: Tool.Command");
@@ -121,12 +125,21 @@ public class PlayerActions : MonoBehaviour
 
     public void CancelAction(InputAction.CallbackContext context)
     {
-        selectedObstacle = null;
-        SetCurrentTool(0);
+        if(hasSelectedObs)
+        {
+            selectedObstacle.OnDeselect();
+            selectedObstacle = null;
+        }
+        // SetCurrentTool(0);
         Debug.Log("Canceled!");
         // if(selectedObstacle != null)
         //     selectedObstacle = null;
     }    
+
+    public List<Node> IgnoredToggleNodes()
+    {
+        return hasSelectedObs ? selectedObstacle.IgnoredToggledNodes() : null;
+    }
 
     private void Inspect()
     {
@@ -235,7 +248,10 @@ public class PlayerActions : MonoBehaviour
         NodeGrid.DehighlightNodes(hoveredNodes);
         // hoveredNodes = new List<Node>();
         if(hasSelectedObs)
+        {
+            selectedObstacle.OnDeselect();
             selectedObstacle = null;
+        }
         currentTool = newTool;
         hoveredNodes = NodeGrid.HighlightGetNodes(mouseWorldPos, hoveredNodes, currentTool);
         Cursor.SetCursor(mouseTextures[index], Vector2.zero, CursorMode.Auto);

@@ -114,7 +114,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3195152741513218581}
-  - component: {fileID: 3790513943582645526}
   - component: {fileID: 3790513943582645524}
   m_Layer: 0
   m_Name: Ghost
@@ -139,26 +138,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3790513943582645526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3790513943582645739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 429105a1d6a4570489280d4f45f6556c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileSize: {x: 1, y: 1}
-  spriteRenderer: {fileID: 2414416098469298622}
-  id: 
-  animator: {fileID: 3976963355251233089}
-  travelSpeed: 2
-  canPhase: 1
-  canRevive: 0
-  deathTimer: 0
 --- !u!61 &3790513943582645524
 BoxCollider2D:
   m_ObjectHideFlags: 0
