@@ -48,11 +48,11 @@ public class PlantPoison : Plant
 
     private void GeneratePoisonTiles()
     {
-        foreach(KeyValuePair<Vector2Int, Node> pair in tilesPoisoned)
+        foreach(Node node in tilesPoisoned.Values)
         {
-            if(!IsCorrosive(pair.Value))
+            if(!IsCorrosive(node))
                 continue;
-            miasmas.Add(GameObject.Instantiate(prefabPoisonMiasma, pair.Value.worldPosition, Quaternion.identity).GetComponent<PoisonMiasma>());
+            miasmas.Add(GameObject.Instantiate(prefabPoisonMiasma, node.worldPosition, Quaternion.identity).GetComponent<PoisonMiasma>());
         } 
     }
 

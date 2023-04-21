@@ -104,7 +104,7 @@ public class Node
 
     public bool IsObstacle(Type type)
     {
-        return obstacle != null && type.IsAssignableFrom(obstacle.GetType());
+        return hasObstacle && type.IsAssignableFrom(obstacle.GetType());
     }
 
     public Obstacle GetObstacle(bool asPlatform = false)

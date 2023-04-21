@@ -46,7 +46,7 @@ public class Character : MonoBehaviour, ISaveable
     private void Update()
     {
         // Replace with Coroutine
-        if (!isGoingHome && PlayerActions.finishedProcessing)
+        if (!isGoingHome && PlayerActions.finishedProcessing && PlayerActions.finishedCommand)
             InGameUI.Instance.TimeCountdown();
         if(isGoingHome)
             Step();

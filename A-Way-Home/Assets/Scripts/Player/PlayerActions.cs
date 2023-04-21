@@ -36,10 +36,12 @@ public class PlayerActions : MonoBehaviour
 
     private IHoverable hoverable;
     private bool obstaclesDone = true;
+    private bool commanding = false;
     private GameObject lilypad;
 
     public bool hasSelectedObs => selectedObstacle != null;
     public static bool finishedProcessing => Instance.obstaclesDone;
+    public static bool finishedCommand => !Instance.commanding;
     public Vector3 mouseWorldPos => mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
     private static HashSet<IActionWaitProcess> actionWaitProcesses;
     private static Queue<IActionWaitProcess> finishedProcesses;
@@ -67,6 +69,7 @@ public class PlayerActions : MonoBehaviour
     {
         if (ActionsNotAllowed() || hoveredNodes.Count == 0)
             return;
+        commanding = false;
         // selectedObstacle = Node.GetObstaclesByTool(hoveredNodes, currentTool);
         switch(currentTool)
         {
@@ -87,6 +90,19 @@ public class PlayerActions : MonoBehaviour
                     break;
                 return;
         }
+        StartCoroutine(WaitForCommand());
+        // WaitForCommand();
+        // obstaclesDone = false;
+        // GameData.IncrementPlayerMoves(-1);
+        // ProcessObstaclesAction();
+        // StartCoroutine(WaitForObstaclesAction());
+        // if(GameData.levelData.moves == 0)
+        //     NodeGrid.DehighlightNodes(hoveredNodes);
+    }
+
+    private IEnumerator WaitForCommand()
+    {
+        yield return new WaitUntil(() => !commanding);
         obstaclesDone = false;
         GameData.IncrementPlayerMoves(-1);
         ProcessObstaclesAction();
@@ -95,6 +111,10 @@ public class PlayerActions : MonoBehaviour
             NodeGrid.DehighlightNodes(hoveredNodes);
     }
 
+    public static void FinishCommand()
+    {
+        Instance.commanding = false;
+    }
 
     private bool Command()
     {
@@ -107,6 +127,7 @@ public class PlayerActions : MonoBehaviour
             {
                 selectedObstacle.OnDeselect();
                 selectedObstacle = null;
+                commanding = true;
             }
             return success;
         }
@@ -211,7 +232,7 @@ public class PlayerActions : MonoBehaviour
         return  IsMouseOverUI() || 
         GameData.levelData.moves == 0 ||
         Character.instance.isMoving || 
-        !obstaclesDone;
+        !obstaclesDone || commanding;
     }
 
     private float LightningAnimation(Vector2 location)

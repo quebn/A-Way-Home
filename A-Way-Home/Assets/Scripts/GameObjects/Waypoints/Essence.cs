@@ -40,8 +40,8 @@ public class Essence : MonoBehaviour, ISaveable
     {
         List<Vector3> destinations = new List<Vector3>();
         Debug.Assert(list.Count > 0, "ERROR: No Essences found");
-        foreach(KeyValuePair<Vector2, Essence> pair in list)
-            destinations.Add(pair.Key);
+        foreach(Vector2 pos in list.Keys)
+            destinations.Add(pos);
         return destinations;
     }
 

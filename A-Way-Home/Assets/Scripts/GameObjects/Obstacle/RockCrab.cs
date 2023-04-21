@@ -10,7 +10,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     [SerializeField] private Animator animator;
     [SerializeField] private int tileRange;
 
-    private Dictionary<Vector2Int, Node> travelRangeGrid;
+    private Dictionary<Vector2Int, Node> walkableGrid;
     private List<Node> path;
     private List<Vector3> targetPositions = new List<Vector3>();
     private Node currentTargetNode;
@@ -18,7 +18,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     private bool wasInteracted = false;
     private List<Node> gridNodes;
 
-    public override bool isBurnable => true;
+    public override bool isBurnable => !hasShell;
     public override bool isTrampleable => !hasShell;
     public override bool isFragile => !hasShell;
     public override bool isCorrosive => true;
@@ -34,7 +34,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     protected override void Initialize()
     {
         base.Initialize();
-        SetNodesAndGrid();
+        SetGridNodes();
         animator.SetBool("hasShell", hasShell);
     }
 
@@ -103,7 +103,10 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         Debug.Assert(targetPositions.Count == 1, "ERROR: Crab target positions more than 1.");
         TryGetPath(targetNode.currentType, targetNode.hasObstacle ? targetNode.GetObstacleType() : null);
         if(hasPath)
+        {
             MoveLocation();
+            StartCoroutine(FollowPath());
+        }
         // Debug.LogWarning(hasPath ? "Crab has Path": "Crab has no Path");
         return hasPath;
     }
@@ -123,6 +126,10 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         if(tool != Tool.Command)
             return;
+        gridNodes = new List<Node>();
+        foreach(Node node in walkableGrid.Values)
+            if(node.IsWalkable())//&& !node.IsObstacle(typeof(Spider)))
+                gridNodes.Add(node);
         for(int i = 0 ; i < gridNodes.Count; i++)
             gridNodes[i].RevealNode();
     }
@@ -176,7 +183,11 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     public void OnTrapTrigger(Character character)
     {
         if(isWalking || !hasShell)
-            character.TriggerDeath();
+        {
+            character.IncrementEnergy(-7);
+            character.DamageAnimation();
+            Remove();
+        }
     }
 
     public void OnPlayerAction()
@@ -193,13 +204,14 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     private void GoToNearestRock()
     {
         targetPositions.Clear();
-        targetPositions = NodeGrid.GetNodesPositions(typeof(Rock), travelRangeGrid);
+        targetPositions = NodeGrid.GetNodesPositions(typeof(Rock), walkableGrid);
         if(targetPositions.Count == 0)
             return;
         TryGetPath(NodeType.Obstacle, typeof(Rock));
         if(path.Count == 0)
             return;
         MoveLocation();
+        StartCoroutine(FollowPathRock());
     }
 
     public override void Damage(int value = 1)
@@ -234,7 +246,6 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         targetIndex = 0;
         currentTargetNode = path[targetIndex];
         ClearNodes();
-        StartCoroutine(FollowPath());
     }
 
     private IEnumerator FollowPath()
@@ -244,15 +255,52 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             if(this.transform.position == currentTargetNode.worldPosition)
             {
                 targetIndex++;
-                if(currentTargetNode.hasObstacle && !currentTargetNode.IsObstacle(typeof(GroundSpike)) && !currentTargetNode.IsObstacle(typeof(Rock)))
-                    Destroy(currentTargetNode.GetObstacle());
-                else if(currentTargetNode.IsObstacle(typeof(PoisonMiasma)) || currentTargetNode.IsObstacle(typeof(FireField)) || (currentTargetNode.IsObstacle(typeof(GroundSpike)) && !hasShell))
+                if(currentTargetNode.hasObstacle)
                 {
-                    isWalking = false;
-                    PlayerActions.FinishProcess(this);
-                    currentTargetNode.GetObstacle().Destroy(this);
+                    if(currentTargetNode.GetObstacle().isFragile && hasShell)
+                        Destroy(currentTargetNode.GetObstacle());
+                    else
+                    {
+                        isWalking = false;
+                        PlayerActions.FinishCommand();
+                        currentTargetNode.GetObstacle().Destroy(this);
+                        yield break;
+                    }
+                }
+                // 
+                if (targetPositions.Contains(this.transform.position))
+                {
+                    Stop();
+                    PlayerActions.FinishCommand();
                     yield break;
                 }
+                currentTargetNode = path[targetIndex];
+            }
+            this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
+            yield return null;
+        }
+    }
+
+    private IEnumerator FollowPathRock()
+    {
+        while(isWalking)
+        {
+            if(this.transform.position == currentTargetNode.worldPosition)
+            {
+                targetIndex++;
+                if(currentTargetNode.hasObstacle)
+                {
+                    if(currentTargetNode.GetObstacle().isFragile && hasShell)
+                        Destroy(currentTargetNode.GetObstacle());
+                    else
+                    {
+                        isWalking = false;
+                        PlayerActions.FinishProcess(this);
+                        currentTargetNode.GetObstacle().Destroy(this);
+                        yield break;
+                    }
+                }
+                // 
                 if (targetPositions.Contains(this.transform.position))
                 {
                     Stop();
@@ -272,8 +320,8 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             return false;
         Debug.Assert(targetPositions.Count > 0, "ERROR: No Target!");
         path = type == null 
-            ? Pathfinding.FindPath(this.worldPos, targetPositions, travelRangeGrid, nodeType)  
-            : Pathfinding.FindPath(this.worldPos, targetPositions, travelRangeGrid,nodeType, type: type);
+            ? Pathfinding.FindPath(this.worldPos, targetPositions, walkableGrid, nodeType)  
+            : Pathfinding.FindPath(this.worldPos, targetPositions, walkableGrid,nodeType, type: type);
         return hasPath;
     }
 
@@ -285,17 +333,13 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             RegenerateShell((Rock)node.GetObstacle());
         else if(node.IsObstacle(typeof(Plant)) || node.IsObstacle(typeof(GroundSpike)))
             Destroy(node.GetObstacle());
-        SetNodesAndGrid();
+        SetGridNodes();
     }
 
-    private void SetNodesAndGrid()
+    private void SetGridNodes()
     {
         SetNodes(this.worldPos, hasShell ? NodeType.Obstacle : NodeType.Walkable, this);
-        travelRangeGrid = NodeGrid.GetNeighborNodes(nodes[0], NodeGrid.Instance.grid, tileRange);
-        gridNodes = new List<Node>();
-        foreach(KeyValuePair<Vector2Int, Node> pair in travelRangeGrid)
-            if(pair.Value.IsWalkable())
-                gridNodes.Add(pair.Value);
+        walkableGrid = NodeGrid.GetNeighborNodes(nodes[0], NodeGrid.Instance.grid, tileRange);
     }
 
     private void RegenerateShell(Rock rock)

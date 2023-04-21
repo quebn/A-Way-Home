@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess
+public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable, ICommand
 {
     [SerializeField] private Animator animator;
     [SerializeField] private int damage;
@@ -12,19 +12,13 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess
     private bool isMoving = false;
     private Dictionary<Vector2Int, Node> nodeGridRange;
     private Vector3 targetPosition;
+    private List<Node> gridNodes;
 
     public override bool isBurnable => true;
     public override bool isFragile => true;
     public override bool isMeltable => true;
 
     private bool destinationReached => targetPosition == (Vector3)worldPos;
-
-
-    private void Update()
-    {
-        if(isMoving)
-            Step();
-    }
 
     public void OnLightningHit()
     {
@@ -48,6 +42,65 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess
             PlayerActions.FinishProcess(this);
     }
 
+    public void OnSelect(Tool tool)
+    {
+        if(tool != Tool.Command)
+            return;
+        gridNodes = new List<Node>();
+        foreach(Node node in nodeGridRange.Values)
+            if(node.IsWalkable() && !node.hasObstacle)
+                gridNodes.Add(node);
+        for(int i = 0 ; i < gridNodes.Count; i++)
+            gridNodes[i].RevealNode();
+    }
+
+    public List<Node> OnSelectedHover(Vector3 mouseWorldPos, List<Node> currentNodes)
+    {
+        Vector2 origin = NodeGrid.GetMiddle(mouseWorldPos);
+        Node node = NodeGrid.NodeWorldPointPos(origin);
+        Debug.Assert(!gridNodes.Contains(nodes[0]));
+        if(node == currentNodes[0])
+            return currentNodes;
+        List<Node> nodeList = new List<Node>();
+        DehighlightNode(currentNodes[0]);
+        if(gridNodes.Contains(node))
+            node.HighlightObstacle(Node.colorPurple, Tool.Inspect);
+        nodeList.Add(node);
+        return nodeList;
+    }
+
+    public void OnDeselect()
+    {
+        Node.ToggleNodes(gridNodes, NodeGrid.nodesVisibility);
+        if(nodes.Count > 0)
+            nodes[0].Dehighlight();
+    }
+
+    public List<Node> IgnoredToggledNodes()
+    {
+        List<Node> list = new List<Node>(gridNodes);
+        list.Add(nodes[0]);
+        return list;
+    }
+
+    public bool OnCommand(List<Node> nodes)
+    {
+        if(nodes.Count == 0)
+            return false;
+        return GoToTargetNode(nodes[0]);
+    }
+
+    private bool GoToTargetNode(Node node)
+    {
+        if(!gridNodes.Contains(node))
+            return false;
+        targetPosition = node.worldPosition;
+        isMoving = true;
+        ClearNodes();
+        StartCoroutine(GoToTargetCommand());
+        return true;
+    }
+
     protected override void Initialize()
     {
         base.Initialize();
@@ -60,17 +113,55 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess
         SetRandomPosition();
         isMoving = true;
         ClearNodes();
-        // currentTargetNode = path[0];
-        // targetIndex = 0;
+        StartCoroutine(GoToTarget());
+    }
+
+    private void DehighlightNode(Node node)
+    {
+        if(!gridNodes.Contains(node))
+            return;
+        node.RevealNode();
+        if(!node.hasObstacle)
+            return;
+        node.GetObstacle().Dehighlight();
     }
 
     private void SetNodeGridRange()
     {
-        // if(nodes != null || nodes.Count > 0 )
-        //     ClearNodes();
         SetNodes(this.worldPos, NodeType.Walkable, this);
         nodeGridRange = NodeGrid.GetNeighborNodes(nodes[0], NodeGrid.Instance.grid, 5);
     }
+
+    private IEnumerator GoToTarget()
+    {
+        while(isMoving)
+        {
+            if(destinationReached)
+            {
+                OnStop();
+                PlayerActions.FinishProcess(this);
+                yield break;
+            }
+            this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, 5f * Time.deltaTime);
+            yield return null; 
+        }
+    }
+
+    private IEnumerator GoToTargetCommand()
+    {
+        while(isMoving)
+        {
+            if(destinationReached)
+            {
+                OnStop();
+                PlayerActions.FinishCommand();
+                yield break;
+            }
+            this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, 5f * Time.deltaTime);
+            yield return null; 
+        }
+    }
+
 
     private void Step()
     {
@@ -85,7 +176,6 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess
     private void OnStop()
     {
         isMoving = false;
-        PlayerActions.FinishProcess(this);
         SetNodes(this.worldPos, NodeType.Walkable, this);
         SetNodeGridRange();
     }
@@ -112,6 +202,4 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess
         character.DamageAnimation();
         Move();
     }
-
-
 }

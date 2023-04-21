@@ -140,12 +140,12 @@ public class NodeGrid : MonoBehaviour
     {
         List<Node> ignoredNodes = PlayerActions.Instance.IgnoredToggleNodes();
         if(ignoredNodes == null){
-            foreach(KeyValuePair<Vector2Int, Node> pair in Instance.grid)
-                pair.Value.ToggleNode(active);
+            foreach(Node node in Instance.grid.Values)
+                node.ToggleNode(active);
         }else{
-            foreach(KeyValuePair<Vector2Int, Node> pair in Instance.grid)
-                if(!ignoredNodes.Contains(pair.Value))
-                pair.Value.ToggleNode(active);
+            foreach(Node node in Instance.grid.Values)
+                if(!ignoredNodes.Contains(node))
+                node.ToggleNode(active);
         }
     }
 
@@ -280,9 +280,9 @@ public class NodeGrid : MonoBehaviour
     public static List<Vector3> GetNodesPositions(Type obstacleType, Dictionary<Vector2Int, Node> grid)
     {
         List<Vector3> worldPositions = new List<Vector3>();
-        foreach (KeyValuePair<Vector2Int, Node> pair in grid)
-            if(pair.Value.IsObstacle(obstacleType))
-                worldPositions.Add(pair.Value.worldPosition);
+        foreach (Node node in grid.Values)
+            if(node.IsObstacle(obstacleType))
+                worldPositions.Add(node.worldPosition);
         return worldPositions;
     }
 
@@ -343,12 +343,8 @@ public class NodeGrid : MonoBehaviour
         }
     }
 
-    public static List<Node> GetWalkableNodes()
+    internal static Dictionary<Vector2Int, Node> GetNeighborNodes(Node node, Dictionary<Vector2Int, Node> grid, object tileRange)
     {
-        List<Node> nodes = new List<Node>();
-        foreach(KeyValuePair<Vector2Int, Node> pair in Instance.grid)
-            if(pair.Value.IsWalkable())
-                nodes.Add(pair.Value);
-        return nodes;
+        throw new NotImplementedException();
     }
 }

@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,8 +15,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
     private Node currentTargetNode;
     private int currentTargetIndex;
     private Node targetNode;
-    private bool wasInteracted = false;
-
+    private bool isCommanded = false;
 
     public override bool isBurnable => true;
     public override bool isFragile => !canPhase;
@@ -62,10 +61,6 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
 
     public void OnPlayerAction()
     {
-        if(isMoving){
-            Debug.LogWarning("ISMOVING SKELETON");
-            return;
-        }
         if(isImmobile && canRevive)
         {
             if(deathTimer <= 0)
@@ -75,16 +70,18 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
             PlayerActions.FinishProcess(this);
             return;
         }
-        if(TryGetPath() && !isImmobile)
+        if(TryGetPath() && !isImmobile && !isCommanded)
         {
             ForceDehighlight();
-            ClearNodes();
             isMoving = true;
             currentTargetIndex = 0;
             currentTargetNode = path[0];
+            ClearNodes();
             StartCoroutine(FollowPath());
             return;
         }
+        if(isCommanded)
+            isCommanded = false;
         PlayerActions.FinishProcess(this);
     }
 
@@ -99,7 +96,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
     {
         if(tool != Tool.Command)
             return;
-        gridNodes = NodeGrid.GetWalkableNodes();
+        gridNodes = GetWalkableNodes();
         for(int i = 0 ; i < gridNodes.Count; i++)
             gridNodes[i].RevealNode();
     }
@@ -143,6 +140,14 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         node.GetObstacle().Dehighlight();
     }
 
+    private static List<Node> GetWalkableNodes()
+    {
+        List<Node> nodes = new List<Node>();
+        foreach(Node node in NodeGrid.Instance.grid.Values)
+            if(node.IsWalkable())
+                nodes.Add(node);
+        return nodes;
+    }
 
     private bool GoToNode(Node node)
     {
@@ -151,8 +156,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
             return false;
         targetPositions.Add(node.worldPosition);
         Debug.Assert(targetPositions.Count == 1, "ERROR: Crab target positions more than 1.");
-        TryGetPath(targetPositions);
-        if(hasPath)
+        if(TryGetPath(targetPositions))
         {
             ForceDehighlight();
             isMoving = true;
@@ -161,6 +165,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
             targetNode = node;
             ClearNodes();
             StartCoroutine(FollowPathCommand());
+            isCommanded = true;
         }
         return hasPath;
     }
@@ -188,14 +193,14 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
             if(this.transform.position == currentTargetNode.worldPosition)
             {
                 currentTargetIndex ++;
-                if(!canPhase)
+                if(!canPhase && currentTargetNode.hasObstacle)
                 {
-                    if(currentTargetNode.hasObstacle && currentTargetNode.GetObstacle().isTrampleable)
+                    if(currentTargetNode.GetObstacle().isTrampleable)
                         Destroy(currentTargetNode.GetObstacle());
-                    else if(currentTargetNode.IsObstacle(typeof(GroundSpike)) || currentTargetNode.IsObstacle(typeof(PoisonMiasma)) || currentTargetNode.IsObstacle(typeof(FireField)))
-                    {
+                    else{
                         isMoving = false;
                         currentTargetNode.GetObstacle().Destroy(this);
+                        PlayerActions.FinishProcess(this);
                         yield break;
                     }
                 }
@@ -227,14 +232,14 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
             if(this.transform.position == currentTargetNode.worldPosition)
             {
                 currentTargetIndex ++;
-                if(!canPhase)
+                if(!canPhase && currentTargetNode.hasObstacle)
                 {
-                    if(currentTargetNode.hasObstacle && currentTargetNode.GetObstacle().isTrampleable)
+                    if(currentTargetNode.GetObstacle().isTrampleable)
                         Destroy(currentTargetNode.GetObstacle());
-                    else if(currentTargetNode.IsObstacle(typeof(GroundSpike)) || currentTargetNode.IsObstacle(typeof(PoisonMiasma)) || currentTargetNode.IsObstacle(typeof(FireField)))
-                    {
+                    else{
                         isMoving = false;
                         currentTargetNode.GetObstacle().Destroy(this);
+                        PlayerActions.FinishCommand();
                         yield break;
                     }
                 }
@@ -243,11 +248,11 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
                     isMoving = false;
                     if(canPhase && currentTargetNode.IsType(NodeType.Obstacle) && currentTargetNode.hasObstacle)
                     {
-                        PlayerActions.FinishProcess(this);
+                        PlayerActions.FinishCommand();
                         yield break;
                     }
                     OnStop();
-                    PlayerActions.FinishProcess(this);
+                    PlayerActions.FinishCommand();
                     yield break;
                 }
                 Debug.Assert(path.Count > currentTargetIndex, $"ERROR: Tried to access index {currentTargetIndex} with path of size {path.Count}");
@@ -261,17 +266,11 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
 
     private void OnStop()
     {
-        if(currentTargetNode.hasObstacle)
-        {
-            if(currentTargetNode.IsObstacle(typeof(Bat)))
-            {
-                Bat bat = currentTargetNode.GetObstacle() as Bat;
-                bat.Move();
-            }
-            if(canPhase) return;
-        }
+        if(currentTargetNode.hasObstacle && canPhase)
+            return;
         Debug.Assert(!currentTargetNode.hasObstacle || !canPhase, "ERROR: Node still has an obstacle");
         SetNodes(currentTargetNode.worldPosition, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
+
     }
 
     private void UpdateAnimation()
