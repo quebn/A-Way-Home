@@ -48,7 +48,7 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
             return;
         gridNodes = new List<Node>();
         foreach(Node node in nodeGridRange.Values)
-            if(node.IsWalkable() && !node.hasObstacle)
+            if(node.IsWalkable() || (node.hasObstacle && node.GetObstacle().isCorrosive))
                 gridNodes.Add(node);
         for(int i = 0 ; i < gridNodes.Count; i++)
             gridNodes[i].RevealNode();
@@ -176,6 +176,9 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
     private void OnStop()
     {
         isMoving = false;
+        Node node = NodeGrid.NodeWorldPointPos(targetPosition);
+        if(node.GetObstacle().isCorrosive)
+            Destroy(node.GetObstacle());
         SetNodes(this.worldPos, NodeType.Walkable, this);
         SetNodeGridRange();
     }
