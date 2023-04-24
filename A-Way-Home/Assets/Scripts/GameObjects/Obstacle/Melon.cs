@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Melon : Plant
+public class Melon : Plant, ITrap
 {
     [SerializeField] private int heal;
 
@@ -17,7 +17,7 @@ public class Melon : Plant
         Damage(hitpoints);
     }
 
-    public override void OnTrapTrigger(Character character)
+    public void OnTrapTrigger(Character character)
     {
         switch(hitpoints)
         {

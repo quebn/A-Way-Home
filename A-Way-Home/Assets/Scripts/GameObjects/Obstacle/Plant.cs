@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plant : Obstacle , ITrap, ILightning, IGrow
+public class Plant : Obstacle , ILightning, IGrow
 {
     [SerializeField] protected Animator animator;
 
@@ -17,9 +17,7 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
     protected const string fullGrown    = "Plant_FullGrown";
     protected const string destroy      = "Plant_Destroy";
 
-    protected bool isAdult {
-        get => hitpoints > 1;
-    }
+    protected bool isAdult => hitpoints > 1;
 
     protected override void Initialize()
     {
@@ -52,11 +50,6 @@ public class Plant : Obstacle , ITrap, ILightning, IGrow
         animator.Play(CurrentAnimationName());
         Debug.Assert(isAdult, "ERROR: isnt adult and hitpoints not equal to 1!");
         SetNodes(this.worldPos, NodeType.Obstacle, this);
-    }
-
-    public virtual void OnTrapTrigger(Character character)
-    {
-        Debug.Assert(!isAdult, "ERROR: consumed plant is adult");
     }
 
     public override void SaveData(LevelData levelData)

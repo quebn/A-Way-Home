@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 // TODO: Make other instance of plants porter o dissapear when one is eaten.
-public class PlantPorter : Plant
+public class PlantPorter : Plant, ITrap
 {
     [SerializeField] private int damage;
     private static bool isTeleported = false;
@@ -20,7 +20,7 @@ public class PlantPorter : Plant
             porters.Add(this);
     }
 
-    public override void OnTrapTrigger(Character character)
+    public void OnTrapTrigger(Character character)
     {
         if(isTeleported)
         {

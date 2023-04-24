@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cactus : Plant
+public class Cactus : Plant, ITrap
 {
     [SerializeField] private int heal;
     
@@ -41,9 +41,8 @@ public class Cactus : Plant
             SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
-    public override void OnTrapTrigger(Character character)
+    public void OnTrapTrigger(Character character)
     {
-        base.OnTrapTrigger(character);
         character.IncrementEnergy(heal);
         Damage(1);
     }

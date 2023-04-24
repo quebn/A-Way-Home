@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8ffff0da9bb048c429cee5c335625438
+guid: 8efefd3a487cacb4db9c53355722a26c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,43 +105,85 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BushOutlines_0
+      name: PlantBush_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 6
-        width: 15
-        height: 17
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        y: 4
+        width: 16
+        height: 28
+      alignment: 9
+      pivot: {x: 0.47, y: 0.28}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8407abaeebe03c640a4b1f988eaec31b
-      internalID: -1158209714
+      spriteID: 430b03bb217c4c54a99ee4434f338ea6
+      internalID: -1400645216
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BushOutlines_1
+      name: PlantBush_1
       rect:
         serializedVersion: 2
-        x: 15
-        y: 6
-        width: 17
-        height: 19
+        x: 16
+        y: 4
+        width: 16
+        height: 28
       alignment: 9
-      pivot: {x: 0.5, y: 0.4125}
+      pivot: {x: 0.47, y: 0.28}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b5aab89ca8fc12b4783db3fa3f15c32e
-      internalID: 716127597
+      spriteID: 98771285366e5af47a3ff6c274a50c73
+      internalID: -158279518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlantBush_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 4
+        width: 16
+        height: 28
+      alignment: 9
+      pivot: {x: 0.47, y: 0.28}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c9c124a0ff9e3b49afadb8e5683c0f9
+      internalID: -1960167955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlantBush_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 4
+        width: 16
+        height: 28
+      alignment: 9
+      pivot: {x: 0.47, y: 0.28}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4fbdc3693a0f9a46ae0f593b86712e8
+      internalID: -33426763
       vertices: []
       indices: 
       edges: []
@@ -157,8 +199,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      BushOutlines_1: 716127597
-      BushOutlines_0: -1158209714
+      PlantBush_1: -158279518
+      PlantBush_0: -1400645216
+      PlantBush_3: -33426763
+      PlantBush_2: -1960167955
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

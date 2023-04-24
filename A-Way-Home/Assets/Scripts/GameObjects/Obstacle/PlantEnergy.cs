@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlantEnergy : Plant
+public class PlantEnergy : Plant, ITrap
 {
-    [SerializeField] private int damage;
+[SerializeField] private int damage;
     [SerializeField] private List<Sprite> sprites;
     [SerializeField] private SpriteRenderer spriteRenderer;
     private List<Node> lightNodes;
@@ -27,6 +27,11 @@ public class PlantEnergy : Plant
         }
     }
 
+    public override void OnLightningHit()
+    {
+        Damage(isAdult ? 0 : 1);
+    }
+
     protected override void Initialize()
     {
         base.Initialize();
@@ -34,9 +39,8 @@ public class PlantEnergy : Plant
         SetLightField();
     }
 
-    public override void OnTrapTrigger(Character character)
+    public void OnTrapTrigger(Character character)
     {
-        base.OnTrapTrigger(character);
         character.IncrementEnergy(-damage);
         Damage(1);
     }

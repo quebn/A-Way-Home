@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WildFruit : Plant
+public class WildFruit : Plant, ITrap
 {
     [SerializeField] private int heal = 1;
 
@@ -21,7 +21,7 @@ public class WildFruit : Plant
         return;
     }
 
-    public override void OnTrapTrigger(Character character)
+    public void OnTrapTrigger(Character character)
     {
         Debug.Log("Triggered!");
         character.IncrementEnergy(heal);

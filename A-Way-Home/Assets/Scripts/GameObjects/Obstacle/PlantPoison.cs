@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlantPoison : Plant
+public class PlantPoison : Plant, ITrap
 {
     [SerializeField] private int damage; 
     [SerializeField] private GameObject prefabPoisonMiasma; 
@@ -18,9 +18,8 @@ public class PlantPoison : Plant
         miasmas = new HashSet<PoisonMiasma>();
     }
 
-    public override void OnTrapTrigger(Character character)
+    public void OnTrapTrigger(Character character)
     {
-        base.OnTrapTrigger(character);
         character.IncrementEnergy(-damage);
         character.DamageAnimation();
         Damage(1);

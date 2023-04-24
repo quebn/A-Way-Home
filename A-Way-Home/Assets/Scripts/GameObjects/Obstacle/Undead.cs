@@ -35,8 +35,8 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
     {
         base.Initialize();
         maxHitpoints = hitpoints;
-        SetNodes(this.worldPos, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
-        // currentNodePos = this.nodes[0].worldPosition;
+        if(!canPhase)
+            SetNodes(this.worldPos,NodeType.Obstacle, this);
         TryGetPath();
     }
 
@@ -155,7 +155,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         if(!node.IsWalkable() || !NodeGrid.Instance.grid.ContainsValue(node))
             return false;
         targetPositions.Add(node.worldPosition);
-        Debug.Assert(targetPositions.Count == 1, "ERROR: Crab target positions more than 1.");
+        Debug.Assert(targetPositions.Count == 1, "ERROR: UNDEAD target positions more than 1.");
         if(TryGetPath(targetPositions))
         {
             ForceDehighlight();
@@ -182,6 +182,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         List<Vector3> targetPositions = new List<Vector3>();
         targetPositions.Add(Character.instance.currentPosition);
         path = !canPhase ? Pathfinding.FindPath(this.worldPos, targetPositions) : Pathfinding.FindPathPhased(this.worldPos, targetPositions, NodeGrid.Instance.grid);
+        // Debug.LogWarning($"Undead has Path:{hasPath} -> Path Couth:{path.Count}");
         return hasPath;
     }
 
@@ -266,10 +267,10 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
 
     private void OnStop()
     {
-        if(currentTargetNode.hasObstacle && canPhase)
+        if(canPhase)
             return;
         Debug.Assert(!currentTargetNode.hasObstacle || !canPhase, "ERROR: Node still has an obstacle");
-        SetNodes(currentTargetNode.worldPosition, canPhase ? NodeType.Walkable : NodeType.Obstacle, this);
+        SetNodes(currentTargetNode.worldPosition, NodeType.Obstacle, this);
 
     }
 

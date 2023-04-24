@@ -2,25 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bush : Obstacle
+public class Bush : Plant, ITrap
 {
 
-
-    protected override void Initialize()
+    protected override void OnInitialize()
     {
-        base.Initialize();
-        SetNodes(this.worldPos, NodeType.Obstacle, this);
+        base.OnInitialize();
     }
 
-
-    // public void OnDehighlight()
-    // {
-    //     spriteRenderer.color = Color.white;
-    // }
-
-
-    public void OnInteract()
+    public override void OnLightningHit()
     {
-        throw new System.NotImplementedException();
+        Damage(1);
+    }
+
+    public override void OnGrow()
+    {
+        if(hitpoints < 2)
+            hitpoints += 1;
+        animator.Play(CurrentAnimationName());
+        Debug.Assert(isAdult, "ERROR: isnt adult and hitpoints not equal to 1!");
+        SetNodes(this.worldPos, NodeType.Obstacle, this);
+    }
+    public void OnTrapTrigger(Character character)
+    {
+        Damage(1);
+    }
+
+    protected override string CurrentAnimationName()
+    {
+        switch(hitpoints)
+        {
+            case 1:
+                return youngling;
+            case 2:
+                return fullGrown;
+            default:
+                Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");
+                return destroy;
+        }
     }
 }
