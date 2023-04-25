@@ -18,8 +18,8 @@ public class Lilypad : Spawnable, ILightning
     }
 
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Remove();
+        Damage(damage);
     }
 }

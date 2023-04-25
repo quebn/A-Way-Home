@@ -20,24 +20,16 @@ public class Boulder : Obstacle, ILightning, ITremor
     //     hitpoints = 4;
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Damage(1);
+        Damage(damage);
+        // Debug.LogWarning($"{this.gameObject.name} damage->{damage} >>>> hp->{hitpoints}");
     }
 
     public void OnTremor()
     {
         Damage(1);
     }
-
-    public override void Damage(int value)
-    {
-        if(hitpoints > 0)
-            hitpoints -= value;
-        if(hitpoints > 0)
-            return;
-        Remove();
-    } 
 
     public override void LoadData(LevelData levelData)
     {

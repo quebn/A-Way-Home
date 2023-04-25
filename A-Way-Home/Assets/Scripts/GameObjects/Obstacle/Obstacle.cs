@@ -152,7 +152,7 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     public virtual void Damage(int value)
     {
-        hitpoints -= value;
+        hitpoints -= value > hitpoints ? hitpoints : value;
         if(hitpoints <= 0)
             Remove();
     }
@@ -189,7 +189,7 @@ public interface IInspect
 
 public interface ILightning
 {
-    public void OnLightningHit();
+    public void OnLightningHit(int damage);
     public void OnAftershock(Vector2 lightningOrigin){}
 }
 

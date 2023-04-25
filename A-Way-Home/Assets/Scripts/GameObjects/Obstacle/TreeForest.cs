@@ -7,9 +7,9 @@ public class TreeForest : TreeObstacle, ILightning, IActionWaitProcess
     [SerializeField] private List<GameObject> logs;
     private bool isFalling = false;
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Damage(1);
+        Damage(damage);
         isFalling = (hitpoints == 1);
     }
 

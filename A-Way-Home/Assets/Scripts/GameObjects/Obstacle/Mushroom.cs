@@ -19,7 +19,7 @@ public class Mushroom : Obstacle, ILightning
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
         Remove();
     }

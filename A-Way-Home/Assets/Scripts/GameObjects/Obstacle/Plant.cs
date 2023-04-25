@@ -38,9 +38,9 @@ public class Plant : Obstacle , ILightning, IGrow
         base.OnHighlight(tool);
     }
 
-    public virtual void OnLightningHit()
+    public virtual void OnLightningHit(int damage)
     {
-        Damage(isAdult ? 2 : 1);
+        Damage(isAdult ? 2 * damage : damage);
     }
 
     public virtual void OnGrow()

@@ -40,9 +40,9 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand,
         Debug.Assert(walkableNodes.Count > 0);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Remove();
+        Damage(damage);
     }
 
     public void OnPlayerAction()

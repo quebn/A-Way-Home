@@ -18,8 +18,8 @@ public class LilypadNS : Obstacle, ILightning
         base.Remove();
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Remove();
+        Damage(damage);
     }
 }

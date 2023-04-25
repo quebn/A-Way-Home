@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f667527f6f07e8e4e8c2b5673f2aac8e
+guid: b0cc84fcf5a655b488631133679223fd
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 60
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -105,55 +105,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Mines_Structures_0
+      name: MinesOutlines_0
       rect:
         serializedVersion: 2
-        x: 71
-        y: 49
-        width: 60
-        height: 148
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 79bbba62e37623042a19aefe0b154fff
-      internalID: 828226471
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Mines_Structures_1
-      rect:
-        serializedVersion: 2
-        x: 11
-        y: 117
-        width: 52
-        height: 144
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 74bdce03fa885cc4ebc87ed4822591a0
-      internalID: 155050234
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Mines_Structures_2
-      rect:
-        serializedVersion: 2
-        x: 7
+        x: 23
         y: 9
-        width: 60
-        height: 60
+        width: 18
+        height: 17
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -161,71 +119,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2a034bd200eb190468a873e67f493c16
-      internalID: -305215725
+      spriteID: ca90d5e913647a147869d2e7d418deef
+      internalID: -1702601445
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Mines_Structures_3
+      name: MinesOutlines_1
       rect:
         serializedVersion: 2
-        x: 264
-        y: 117
-        width: 52
-        height: 144
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e5d17ad4f4987e84ead41da4ca13cf80
-      internalID: -1423564749
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Mines_Structures_4
-      rect:
-        serializedVersion: 2
-        x: 328
-        y: 49
-        width: 52
-        height: 148
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5c46eb40c0c90a445bbf735e91847a11
-      internalID: -1553123467
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Mines_Structures_5
-      rect:
-        serializedVersion: 2
-        x: 260
+        x: 5
         y: 9
-        width: 60
-        height: 60
+        width: 17
+        height: 16
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f756536b2f2b0af4d9ac0462ae0ee81a
-      internalID: -733583814
+      spriteID: a47b2a0604573194eb6a186e7899a441
+      internalID: 1396128595
       vertices: []
       indices: 
       edges: []
@@ -241,12 +157,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Mines_Structures_1: 155050234
-      Mines_Structures_0: 828226471
-      Mines_Structures_3: -1423564749
-      Mines_Structures_2: -305215725
-      Mines_Structures_5: -733583814
-      Mines_Structures_4: -1553123467
+      MinesOutlines_1: 1396128595
+      MinesOutlines_0: -1702601445
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

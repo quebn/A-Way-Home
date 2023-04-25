@@ -22,8 +22,8 @@ public class SpiderWeb : Obstacle, ILightning
         base.OnHighlight(tool);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Remove();
+        Damage(damage);
     }
 }

@@ -25,9 +25,9 @@ public class PlantPoison : Plant, ITrap
         Damage(1);
     }
 
-    public override void OnLightningHit()
+    public override void OnLightningHit(int damage)
     {
-        base.OnLightningHit();
+        base.OnLightningHit(damage);
         if(hitpoints < 4 && miasmas.Count != 0)
             RemoveMiasma();
     }

@@ -47,11 +47,11 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         base.OnHighlight(tool);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
         if(canPhase || isImmobile)
             return;
-        Damage(1);
+        Damage(damage);
     }
 
     public void OnTrapTrigger(Character character)

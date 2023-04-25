@@ -13,9 +13,9 @@ public class WoodenInterior : Obstacle, ILightning
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Damage(1);
+        Damage(damage);
     }
 
     protected override void OnHighlight(Tool tool)

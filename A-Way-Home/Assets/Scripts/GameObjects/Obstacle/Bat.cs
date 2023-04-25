@@ -20,10 +20,10 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
 
     private bool destinationReached => targetPosition == (Vector3)worldPos;
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
         ForceDehighlight();
-        Damage(1);
+        Damage(damage);
         if(hitpoints > 0)
             Move();
     }

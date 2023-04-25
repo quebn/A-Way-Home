@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f667527f6f07e8e4e8c2b5673f2aac8e
+guid: 60c0782609da7894684c198e8f0e1d62
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 60
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -105,127 +105,148 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Mines_Structures_0
+      name: Explosion9x9_0
       rect:
         serializedVersion: 2
-        x: 71
-        y: 49
-        width: 60
-        height: 148
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 79bbba62e37623042a19aefe0b154fff
-      internalID: 828226471
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Mines_Structures_1
-      rect:
-        serializedVersion: 2
-        x: 11
-        y: 117
-        width: 52
-        height: 144
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 74bdce03fa885cc4ebc87ed4822591a0
-      internalID: 155050234
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Mines_Structures_2
-      rect:
-        serializedVersion: 2
-        x: 7
-        y: 9
-        width: 60
-        height: 60
+        x: 0
+        y: 96
+        width: 48
+        height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2a034bd200eb190468a873e67f493c16
-      internalID: -305215725
+      spriteID: b5a0181449fad8240996a701e2e9c4fb
+      internalID: -768366531
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Mines_Structures_3
+      name: Explosion9x9_1
       rect:
         serializedVersion: 2
-        x: 264
-        y: 117
-        width: 52
-        height: 144
+        x: 48
+        y: 96
+        width: 48
+        height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e5d17ad4f4987e84ead41da4ca13cf80
-      internalID: -1423564749
+      spriteID: d752ed404d61d384ca06fa13ef862ca9
+      internalID: -1499484481
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Mines_Structures_4
+      name: Explosion9x9_2
       rect:
         serializedVersion: 2
-        x: 328
-        y: 49
-        width: 52
-        height: 148
+        x: 96
+        y: 96
+        width: 48
+        height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5c46eb40c0c90a445bbf735e91847a11
-      internalID: -1553123467
+      spriteID: 1d27cdbba81923a44aa06d9ddd9ecc81
+      internalID: 467042590
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Mines_Structures_5
+      name: Explosion9x9_3
       rect:
         serializedVersion: 2
-        x: 260
-        y: 9
-        width: 60
-        height: 60
+        x: 0
+        y: 48
+        width: 48
+        height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f756536b2f2b0af4d9ac0462ae0ee81a
-      internalID: -733583814
+      spriteID: 89a236084f5b1364da0c82f11aeb7102
+      internalID: -493197668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Explosion9x9_4
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 48
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49f11028933b65a41bdd48e35e59562c
+      internalID: -1568502675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Explosion9x9_5
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 48
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d963d6a3fff28f64d97798e23afb7527
+      internalID: -853998316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Explosion9x9_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 680dc6c2eaa25a74381f16ae7e4892c1
+      internalID: -362383008
       vertices: []
       indices: 
       edges: []
@@ -241,12 +262,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Mines_Structures_1: 155050234
-      Mines_Structures_0: 828226471
-      Mines_Structures_3: -1423564749
-      Mines_Structures_2: -305215725
-      Mines_Structures_5: -733583814
-      Mines_Structures_4: -1553123467
+      Explosion9x9_1: -1499484481
+      Explosion9x9_5: -853998316
+      Explosion9x9_6: -362383008
+      Explosion9x9_2: 467042590
+      Explosion9x9_0: -768366531
+      Explosion9x9_4: -1568502675
+      Explosion9x9_3: -493197668
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

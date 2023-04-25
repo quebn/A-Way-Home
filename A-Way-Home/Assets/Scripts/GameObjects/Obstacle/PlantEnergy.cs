@@ -27,9 +27,9 @@ public class PlantEnergy : Plant, ITrap
         }
     }
 
-    public override void OnLightningHit()
+    public override void OnLightningHit(int damage)
     {
-        Damage(isAdult ? 0 : 1);
+        Damage(isAdult ? 0 : damage);
     }
 
     protected override void Initialize()

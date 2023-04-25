@@ -11,7 +11,7 @@ public class Cactus : Plant, ITrap
         base.Initialize();
     }
 
-    public override void OnLightningHit()
+    public override void OnLightningHit(int damage)
     {
         if(hitpoints >= 3)
         {

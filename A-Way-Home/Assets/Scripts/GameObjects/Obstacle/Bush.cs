@@ -10,9 +10,9 @@ public class Bush : Plant, ITrap
         base.OnInitialize();
     }
 
-    public override void OnLightningHit()
+    public override void OnLightningHit(int damage)
     {
-        Damage(1);
+        Damage(damage);
     }
 
     public override void OnGrow()

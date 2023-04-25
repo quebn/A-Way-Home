@@ -22,7 +22,7 @@ public class MushroomRedSpawn : Spawnable, ITrap, ILightning
     public void OnTrapTrigger(Character character)
     {
         Remove();
-        character.TriggerDeath();
+        character.IncrementEnergy(-10);
     }
 
     protected override void OnHighlight(Tool tool)
@@ -32,9 +32,9 @@ public class MushroomRedSpawn : Spawnable, ITrap, ILightning
         base.OnHighlight(tool);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Remove();
+        Damage(damage);
     }
 
     private IEnumerator RemoveAnimation()

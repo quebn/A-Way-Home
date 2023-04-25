@@ -12,7 +12,7 @@ public class Melon : Plant, ITrap
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
-    public override void OnLightningHit()
+    public override void OnLightningHit(int damage)
     {
         Damage(hitpoints);
     }

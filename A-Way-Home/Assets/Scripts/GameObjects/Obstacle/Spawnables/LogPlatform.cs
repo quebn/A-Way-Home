@@ -16,8 +16,8 @@ public class LogPlatform : Spawnable, ILightning
         base.Remove();
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Remove();
+        Damage(damage);
     }
 }

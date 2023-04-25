@@ -38,9 +38,9 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         animator.SetBool("hasShell", hasShell);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Damage(1);
+        Damage(damage);
         wasInteracted = true;
     }
 

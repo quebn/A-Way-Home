@@ -18,8 +18,8 @@ public class LogSpawned : Spawnable, ILightning
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Remove();
+        Damage(damage);
     }
 }

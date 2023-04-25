@@ -8,6 +8,6 @@ public class MushroomRed : Mushroom, ITrap
     public void OnTrapTrigger(Character character)
     {
         Remove();
-        character.TriggerDeath();
+        character.IncrementEnergy(-10);
     }
 }

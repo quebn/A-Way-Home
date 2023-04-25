@@ -19,9 +19,9 @@ public class TreeLog : Obstacle, ILightning
         SetNodes(this.transform.position, NodeType.Obstacle, this);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Remove();
+        Damage(damage);
     }
 
     public override void Remove()

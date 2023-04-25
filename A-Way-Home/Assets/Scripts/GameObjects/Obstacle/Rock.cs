@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class Rock : Obstacle, ILightning
+public class Rock : Obstacle, ILightning, ITremor
 {
 
     public override bool isMeltable => true;
@@ -12,18 +12,13 @@ public class Rock : Obstacle, ILightning
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
-        Remove();
+        Damage(damage);
     }
 
-    public override void LoadData(LevelData levelData)
+    public void OnTremor()
     {
-        base.LoadData(levelData);
-        if(hitpoints != 0)
-            return;
-        ClearNodes();
-        this.gameObject.SetActive(false);
+        Damage(1);
     }
-
 }

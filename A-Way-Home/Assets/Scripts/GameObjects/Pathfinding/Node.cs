@@ -236,12 +236,12 @@ public class Node
         return true;
     }
     
-    private bool ShockObstacle()
+    public bool ShockObstacle(int damage)
     {
         if(!isShockable)
             return false;
         ILightning interactable = ((hasObstacle) ? obstacle : platform ) as ILightning;
-        interactable.OnLightningHit();
+        interactable.OnLightningHit(damage);
         return true;
     }
 
@@ -357,7 +357,7 @@ public class Node
     {
         if(node == null)
             return;
-        node.ShockObstacle();
+        node.ShockObstacle((node.isOpen && node.isConductive) ? 2 : 1);
         List<Node> nodes = NodeGrid.GetNeighborNodeList(node, NodeGrid.Instance.grid, 1);
         if(nodes.Count == 0)
             return;

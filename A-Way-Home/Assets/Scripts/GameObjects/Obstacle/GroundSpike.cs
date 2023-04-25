@@ -22,10 +22,10 @@ public class GroundSpike : Obstacle, ITrap, ILightning
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 
-    public void OnLightningHit()
+    public void OnLightningHit(int damage)
     {
         if(isTriggered)
-            Remove();
+            Damage(damage);
     }
 
     protected override void OnHighlight(Tool tool)
