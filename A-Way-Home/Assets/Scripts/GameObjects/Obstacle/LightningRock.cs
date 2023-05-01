@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class LightningRock : Obstacle, ILightning, ITremor
 {
     [SerializeField] private Animator animator;
+    [SerializeField] Light2D light2d;
+
     private List<Node> lightNodes;
 
     protected override void Initialize()
@@ -18,7 +21,8 @@ public class LightningRock : Obstacle, ILightning, ITremor
 
     private void SetLightningField()
     {
-        if(hitpoints < 1)
+        light2d.enabled = hitpoints == 2;
+        if(hitpoints < 2)
             return;
         for(int i = 0; i < lightNodes.Count; i++)
             lightNodes[i].isConductive = true;
@@ -27,6 +31,7 @@ public class LightningRock : Obstacle, ILightning, ITremor
 
     private void ClearLightningField()
     {
+        light2d.enabled = hitpoints < 2;
         for(int i = 0; i < lightNodes.Count; i++)
             lightNodes[i].isConductive = false;
         nodes[0].isConductive = false;
@@ -34,12 +39,18 @@ public class LightningRock : Obstacle, ILightning, ITremor
 
     public void OnLightningHit(int damage)
     {
-        Damage(damage);
+        if(hitpoints == 2){
+            Detonate();
+            Damage(1);
+        }else{
+            hitpoints++;
+            SetLightningField();
+        }
     }
 
     public void OnTremor()
     {
-        Detonate();
+        Damage(2);
     }
 
     public IEnumerator Explode()
@@ -56,10 +67,18 @@ public class LightningRock : Obstacle, ILightning, ITremor
         StartCoroutine(Explode());
     }
 
+    public override void Damage(int value)
+    {
+        hitpoints -= value > hitpoints ? hitpoints : value;
+        if(hitpoints <= 0)
+            Remove();
+    }
+
     public void Detonate()
     {
         for(int i = 0; i < lightNodes.Count; i++)
             lightNodes[i].ShockObstacle(1);
+        ClearLightningField();
         animator.Play("Explosion");
     }
 }

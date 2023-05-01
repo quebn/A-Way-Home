@@ -49,7 +49,7 @@ public class Node
         this.currentType = nodeType;
         this.hCosts = new List<int>();
         this.isOpen = isOpen;
-        this.isConductive = isOpen;
+        this.isConductive = false;
     }
 
     private int MinHCost()

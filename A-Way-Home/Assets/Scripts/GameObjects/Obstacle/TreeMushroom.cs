@@ -9,6 +9,7 @@ public class TreeMushroom : TreeObstacle, ILightning, IActionWaitProcess
     
     public void OnLightningHit(int damage)
     {
+        Debug.LogWarning(nodes[0].isConductive);
         Damage(damage);
         isFalling = (hitpoints == 1);
     }

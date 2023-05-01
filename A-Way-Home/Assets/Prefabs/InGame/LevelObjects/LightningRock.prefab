@@ -137,9 +137,10 @@ MonoBehaviour:
   id: 
   outline: {fileID: 5768734281935680067}
   isNotHoverable: 0
-  hitpoints: 1
+  hitpoints: 2
   toolsInteractable: 000000000100000004000000
   animator: {fileID: 7790496707543124786}
+  light2d: {fileID: 5768734280811315128}
 --- !u!212 &5768734280811315127
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -212,7 +213,7 @@ MonoBehaviour:
   m_Intensity: 1.5
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 359a38e7b3b403bb00000000
+  m_ApplyToSortingLayers: 359a38e7b3b403bb000000003b6ad9d2
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0

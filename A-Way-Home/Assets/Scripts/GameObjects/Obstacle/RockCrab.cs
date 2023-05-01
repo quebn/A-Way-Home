@@ -288,7 +288,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             if(this.transform.position == currentTargetNode.worldPosition)
             {
                 targetIndex++;
-                if(currentTargetNode.hasObstacle)
+                if(currentTargetNode.hasObstacle && !currentTargetNode.IsObstacle(typeof(Rock)))
                 {
                     if(currentTargetNode.GetObstacle().isFragile && hasShell)
                         Destroy(currentTargetNode.GetObstacle());
