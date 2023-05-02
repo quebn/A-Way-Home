@@ -55,6 +55,18 @@ public class PlantPoison : Plant, ITrap
         } 
     }
 
+    public override void Damage(int damage)
+    {
+        Debug.Log($"Plant Damage: {damage}");
+        hitpoints -= damage;
+        if(hitpoints == 2)
+            hitpoints = 1;
+        animator.Play(CurrentAnimationName());
+        SetNodes(this.worldPos, isAdult? NodeType.Obstacle: NodeType.Walkable, this);
+        if(hitpoints <= 0)
+            Remove();
+    }
+
     private bool IsCorrosive(Node node)
     {
         if(node.hasPlatform) 

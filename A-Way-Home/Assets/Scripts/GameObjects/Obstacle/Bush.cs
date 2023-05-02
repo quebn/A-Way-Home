@@ -26,6 +26,7 @@ public class Bush : Plant, ITrap
     public void OnTrapTrigger(Character character)
     {
         Damage(1);
+        character.IncrementEnergy(1);
     }
 
     protected override string CurrentAnimationName()

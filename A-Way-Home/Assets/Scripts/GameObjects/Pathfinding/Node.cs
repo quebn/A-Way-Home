@@ -11,8 +11,8 @@ public class Node
     public Node parent;
     public int gCost;
     public List<int> hCosts;
-    public bool isConductive;
 
+    private bool hasElectricity;
     private bool isOpen;
     private NodeType currentNodeType;
     private Obstacle obstacle; 
@@ -23,6 +23,7 @@ public class Node
     private bool isGrowable => obstacle is IGrow || platform is IGrow;
     private bool isCommandable => obstacle is ICommand || platform is ICommand;
     private bool isTremorable => obstacle is ITremor || platform is ITremor;
+    public bool isConductive => hasElectricity;
     public bool hasObstacle => obstacle != null;
     public bool hasPlatform => platform != null;
     public bool canLightning => isOpen || isConductive;
@@ -49,7 +50,7 @@ public class Node
         this.currentType = nodeType;
         this.hCosts = new List<int>();
         this.isOpen = isOpen;
-        this.isConductive = false;
+        SetConduction(false);
     }
 
     private int MinHCost()
@@ -69,6 +70,19 @@ public class Node
         if(NodeGrid.tilemap == null)
             return;
         NodeGrid.tilemap.SetColor((Vector3Int)this.gridPos ,color);
+    }
+
+    private void UpdateElectric()
+    {
+        if(NodeGrid.tilemapElectric == null)
+            return;
+        NodeGrid.tilemapElectric.SetColor((Vector3Int)this.gridPos , isConductive ? colorCyan : colorClear);
+    }
+
+    public void SetConduction(bool isConductive)
+    {
+        this.hasElectricity = isConductive;
+        UpdateElectric();
     }
 
     public bool IsWalkable()

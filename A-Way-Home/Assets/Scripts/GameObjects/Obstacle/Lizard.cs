@@ -5,13 +5,12 @@ using UnityEngine;
 public class Lizard : Obstacle
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private GameObject fireField;
+    [SerializeField] private List<GameObject> fires;
     [SerializeField] private int fireRange;
     [SerializeField] private Vector2 fireStartPosDiff;
     [SerializeField] private Vector2Int fireDirectionDiff;
     [SerializeField] private bool isBreathing; 
     
-    private List<FireField> fireFields;
     private List<Node> fireNodes;
 
     protected override void Initialize()
@@ -51,25 +50,24 @@ public class Lizard : Obstacle
         if(fireNodes == null || fireNodes.Count <= 0)
             return;
         Debug.Log("Breathing Fire....");
-        foreach(Node node in fireNodes)
-        {
-            if(!IfBurnable(node))
-                return;
-            fireFields.Add(GameObject.Instantiate(fireField, node.worldPosition, Quaternion.identity, this.transform).GetComponent<FireField>());
-        }
+        // foreach(Node node in fireNodes)
+        // {
+        //     if(!IfBurnable(node))
+        //         return;
+        //     fireFields.Add(GameObject.Instantiate(fireField, node.worldPosition, Quaternion.identity, this.transform).GetComponent<FireField>());
+        // }
     }
 
     private void DestroyFire()
     {
-        foreach(FireField fire in fireFields)
-            fire.Remove();
-        fireFields = new List<FireField>();
+        // foreach(FireField fire in fireFields)
+        //     fire.Remove();
+        // fireFields = new List<FireField>();
     }
 
     private void InitFireNodes()
     {
         fireNodes = new List<Node>();
-        fireFields = new List<FireField>();
         Node fireStartNode = NodeGrid.NodeWorldPointPos(this.worldPos + fireStartPosDiff);
         Vector2Int gridPosIncrement = new Vector2Int(fireStartNode.gridPos.x, fireStartNode.gridPos.y);
         for(int i = 0; i < fireRange; i++)

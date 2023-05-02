@@ -51,10 +51,12 @@ public class PlantEnergy : Plant, ITrap
         SetLightField();
     }
 
-    public override void Damage(int damage = 0)
+    public override void Damage(int damage)
     {
         Debug.Log($"Plant Damage: {damage}");
-        hitpoints -= (damage == 0) ? hitpoints : damage;
+        hitpoints -= damage;
+        if(hitpoints == 2)
+            hitpoints = 1;
         animator.Play(CurrentAnimationName());
         SetNodes(this.worldPos, isAdult? NodeType.Obstacle: NodeType.Walkable, this);
         if(hitpoints <= 2)
@@ -68,15 +70,15 @@ public class PlantEnergy : Plant, ITrap
         if(hitpoints < 4)
             return;
         foreach(Node node in lightNodes)
-            node.isConductive = true;
-        nodes[0].isConductive = true;
+            node.SetConduction(true);
+        nodes[0].SetConduction(true);
     }
 
     private void ClearLightField()
     {
         foreach(Node node in lightNodes)
-            node.isConductive = false;
-        nodes[0].isConductive = false;
+            node.SetConduction(false);
+        nodes[0].SetConduction(false);
     }
 
 }

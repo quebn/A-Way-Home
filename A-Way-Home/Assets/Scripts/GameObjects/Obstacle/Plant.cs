@@ -76,10 +76,10 @@ public class Plant : Obstacle , ILightning, IGrow
         StartCoroutine(RemoveAnimation());
     }
 
-    public override void Damage(int damage = 0)
+    public override void Damage(int damage)
     {
         Debug.Log($"Plant Damage: {damage}");
-        hitpoints -= (damage == 0) ? hitpoints : damage;
+        hitpoints -= damage;
         animator.Play(CurrentAnimationName());
         SetNodes(this.worldPos, isAdult? NodeType.Obstacle: NodeType.Walkable, this);
         if(hitpoints <= 0)

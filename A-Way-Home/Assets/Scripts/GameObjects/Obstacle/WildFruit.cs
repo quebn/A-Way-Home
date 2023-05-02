@@ -28,7 +28,7 @@ public class WildFruit : Plant, ITrap
         Remove();
     }
 
-    public override void Damage(int damage = 0)
+    public override void Damage(int damage)
     {
         Remove();
     }

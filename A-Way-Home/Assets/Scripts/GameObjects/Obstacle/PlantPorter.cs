@@ -27,7 +27,7 @@ public class PlantPorter : Plant, ITrap
             isTeleported = false;
             return;
         }
-        Damage();
+        Damage(hitpoints);
         character.TriggerDeath();
     }
 
@@ -36,7 +36,7 @@ public class PlantPorter : Plant, ITrap
         isTeleported = true;
         Vector2 location = nodes[0].worldPosition;
         TeleportCharacter(location);
-        Damage();
+        Damage(hitpoints);
         RemoveOtherPorter(this.id);
     }
 

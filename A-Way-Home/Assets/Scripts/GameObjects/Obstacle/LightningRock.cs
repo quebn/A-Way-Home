@@ -8,6 +8,7 @@ public class LightningRock : Obstacle, ILightning, ITremor
 {
     [SerializeField] private Animator animator;
     [SerializeField] Light2D light2d;
+    [SerializeField] GameObject gemLights;
 
     private List<Node> lightNodes;
 
@@ -21,20 +22,26 @@ public class LightningRock : Obstacle, ILightning, ITremor
 
     private void SetLightningField()
     {
-        light2d.enabled = hitpoints == 2;
+        UpdateLigths(hitpoints == 2);
         if(hitpoints < 2)
             return;
         for(int i = 0; i < lightNodes.Count; i++)
-            lightNodes[i].isConductive = true;
-        nodes[0].isConductive = true;
+            lightNodes[i].SetConduction(true);
+        nodes[0].SetConduction(true);
     }
 
     private void ClearLightningField()
     {
-        light2d.enabled = hitpoints < 2;
+        UpdateLigths(hitpoints < 2);
         for(int i = 0; i < lightNodes.Count; i++)
-            lightNodes[i].isConductive = false;
-        nodes[0].isConductive = false;
+            lightNodes[i].SetConduction(false);
+        nodes[0].SetConduction(false);
+    }
+
+    private void UpdateLigths(bool isActive)
+    {
+        light2d.enabled = isActive;
+        gemLights.SetActive(isActive);
     }
 
     public void OnLightningHit(int damage)

@@ -477,6 +477,126 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!1 &1311063703439202942
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8684494674986758567}
+  - component: {fileID: 6979956463853586979}
+  - component: {fileID: 8309494905690968083}
+  m_Layer: 0
+  m_Name: ElectricTiles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8684494674986758567
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311063703439202942}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6406095588703908680}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1839735485 &6979956463853586979
+Tilemap:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311063703439202942}
+  m_Enabled: 1
+  m_Tiles: {}
+  m_AnimatedTiles: {}
+  m_TileAssetArray: []
+  m_TileSpriteArray: []
+  m_TileMatrixArray: []
+  m_TileColorArray: []
+  m_TileObjectToInstantiateArray: []
+  m_AnimationFrameRate: 1
+  m_Color: {r: 0, g: 1, b: 1, a: 1}
+  m_Origin: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0, y: 0, z: 1}
+  m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
+  m_TileOrientation: 0
+  m_TileOrientationMatrix:
+    e00: 1
+    e01: 0
+    e02: 0
+    e03: 0
+    e10: 0
+    e11: 1
+    e12: 0
+    e13: 0
+    e20: 0
+    e21: 0
+    e22: 1
+    e23: 0
+    e30: 0
+    e31: 0
+    e32: 0
+    e33: 1
+--- !u!483693784 &8309494905690968083
+TilemapRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311063703439202942}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -1157385037
+  m_SortingLayer: 2
+  m_SortingOrder: 1
+  m_ChunkSize: {x: 32, y: 32, z: 32}
+  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
+  m_MaxChunkCount: 16
+  m_MaxFrameAge: 16
+  m_SortOrder: 0
+  m_Mode: 1
+  m_DetectChunkCullingBounds: 0
+  m_MaskInteraction: 0
 --- !u!1 &2441429490934414881
 GameObject:
   m_ObjectHideFlags: 0
@@ -562,7 +682,9 @@ MonoBehaviour:
   gridSize: {x: 30, y: 20}
   nodeRadius: 0.5
   tileMap: {fileID: 6406095589066597566}
+  tileMapElectric: {fileID: 6979956463853586979}
   tile: {fileID: 11400000, guid: 624cd456949571040a96b2a923a00d85, type: 2}
+  tileElectric: {fileID: 11400000, guid: f451b89b29c5d8c45a79f42f0ef10b6a, type: 2}
   canBeCovered: 1
   obsCollider2D: {fileID: 6234222518581590876}
   enableValues: 0
@@ -19981,6 +20103,7 @@ Transform:
   - {fileID: 2878710019468301971}
   - {fileID: 8398335347112741404}
   - {fileID: 6708723465578134387}
+  - {fileID: 8684494674986758567}
   m_Father: {fileID: 2441429490934414886}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -22764,7 +22887,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10.000001
+      m_AnimationSpeed: 10
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 5, y: -10, z: 0}
@@ -22956,7 +23079,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10.000001
+      m_AnimationSpeed: 10
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -3, y: -8, z: 0}
@@ -23052,7 +23175,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10
+      m_AnimationSpeed: 10.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 3, y: -8, z: 0}
@@ -23116,7 +23239,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10.000001
+      m_AnimationSpeed: 10
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -3, y: -7, z: 0}
@@ -23756,7 +23879,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10.000001
+      m_AnimationSpeed: 10
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -14, y: -4, z: 0}
@@ -24108,7 +24231,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10
+      m_AnimationSpeed: 10.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -8, y: -1, z: 0}
@@ -24540,7 +24663,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10
+      m_AnimationSpeed: 10.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -6, y: 0, z: 0}
@@ -24572,7 +24695,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10
+      m_AnimationSpeed: 10.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 7, y: 0, z: 0}
@@ -25196,7 +25319,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10
+      m_AnimationSpeed: 10.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 6, y: 2, z: 0}
@@ -25372,7 +25495,7 @@ Tilemap:
       - {fileID: -249170478, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -700185569, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
       - {fileID: -1851760615, guid: ddd0c2778d247d3418da6f22efe668a2, type: 3}
-      m_AnimationSpeed: 10
+      m_AnimationSpeed: 10.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 4, y: 3, z: 0}

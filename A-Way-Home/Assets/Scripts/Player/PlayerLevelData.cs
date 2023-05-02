@@ -185,6 +185,7 @@ public class PlayerLevelData : MonoBehaviour
         GameObject web = Resources.Load<GameObject>("Spawnables/Web");
         GameObject mushroomPlatform = Resources.Load<GameObject>("Spawnables/MushroomPlatform");
         GameObject mushroomRed = Resources.Load<GameObject>("Spawnables/MushroomRedSpawn");
+        GameObject mushroomPurple = Resources.Load<GameObject>("Spawnables/MushroomPurpleSpawn");
         Debug.Assert(fireField != null);
         Debug.Assert(lilyPad != null);
         Debug.Assert(logPlatform != null);
@@ -228,6 +229,9 @@ public class PlayerLevelData : MonoBehaviour
                     break;
                 case "MushroomRedSpawn":
                     prefab = mushroomRed;
+                    break;
+                case "MushroomPurpleSpawn":
+                    prefab = mushroomPurple;
                     break;
                 default:
                     Debug.LogWarning($"TYPENAME: {obstacleData.typeName} not identified!!!!");
