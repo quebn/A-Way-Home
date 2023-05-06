@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lizard : Obstacle
+public class Lizard : Obstacle, ITremor
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private List<GameObject> fires;
-    [SerializeField] private int fireRange;
     [SerializeField] private Vector2 fireStartPosDiff;
     [SerializeField] private Vector2Int fireDirectionDiff;
-    [SerializeField] private bool isBreathing; 
+    [SerializeField] private List<GameObject> fireFields;
     
+    private bool isBreathing => hitpoints > 1; 
     private List<Node> fireNodes;
 
     protected override void Initialize()
@@ -23,9 +22,14 @@ public class Lizard : Obstacle
         animator.SetBool("isBreathing", isBreathing);
     }
 
+    public void OnTremor()
+    {
+        Remove();
+    }
+
     private void ToggleFire()
     {
-        isBreathing = !isBreathing;
+        hitpoints = isBreathing ? 2 : 1;
         animator.SetBool("isBreathing", isBreathing);
         if(isBreathing)
             BreathFire();
@@ -35,13 +39,11 @@ public class Lizard : Obstacle
 
     private bool IfBurnable(Node node)
     {
-        if(node.hasPlatform) 
-            return node.GetObstacle(true).isBurnable; 
-        if(node.IsWalkable() && !node.hasObstacle)
-            return true;
-        if(node.IsType(NodeType.Terrain) || node.IsType(NodeType.Water))
+        if(node.IsType(NodeType.Terrain))
             return false;
-        Debug.Log(node.GetObstacle().isBurnable);
+        if(!node.hasObstacle)
+            return true;
+        Debug.Assert(node.hasObstacle);
         return node.GetObstacle().isBurnable;
     }
 
@@ -50,34 +52,35 @@ public class Lizard : Obstacle
         if(fireNodes == null || fireNodes.Count <= 0)
             return;
         Debug.Log("Breathing Fire....");
-        // foreach(Node node in fireNodes)
-        // {
-        //     if(!IfBurnable(node))
-        //         return;
-        //     fireFields.Add(GameObject.Instantiate(fireField, node.worldPosition, Quaternion.identity, this.transform).GetComponent<FireField>());
-        // }
+        for(int i = 0; i < fireNodes.Count; i++)
+        {
+            if(!IfBurnable(fireNodes[i]))
+                return;
+            fireFields[i].SetActive(true);
+            fireNodes[i].isBurning = true;
+        }
     }
 
     private void DestroyFire()
     {
-        // foreach(FireField fire in fireFields)
-        //     fire.Remove();
-        // fireFields = new List<FireField>();
+        for(int i = 0; i < fireNodes.Count; i++)
+        {
+            fireFields[i].SetActive(false);
+            fireNodes[i].isBurning = false;
+        }
     }
 
     private void InitFireNodes()
     {
         fireNodes = new List<Node>();
-        Node fireStartNode = NodeGrid.NodeWorldPointPos(this.worldPos + fireStartPosDiff);
-        Vector2Int gridPosIncrement = new Vector2Int(fireStartNode.gridPos.x, fireStartNode.gridPos.y);
-        for(int i = 0; i < fireRange; i++)
+        for(int i = 0; i < fireFields.Count; i++)
         {
-            if(!NodeGrid.Instance.grid.ContainsKey(gridPosIncrement))
+            Node node = NodeGrid.NodeWorldPointPos(fireFields[i].transform.position);
+            if(!NodeGrid.Instance.grid.ContainsValue(node))
                 return;
-            Node node = NodeGrid.Instance.grid[gridPosIncrement];
             fireNodes.Add(node);
-            gridPosIncrement += fireDirectionDiff;
         }
     }
+
 
 }

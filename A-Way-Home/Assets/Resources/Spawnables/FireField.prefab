@@ -46,12 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9944d876284d63c4fb868b41c1861bad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileSize: {x: 1, y: 1}
-  spriteRenderer: {fileID: 2241307744499981374}
-  id: 
-  outline: {fileID: 0}
-  isNotHoverable: 1
-  animator: {fileID: 0}
 --- !u!212 &2241307744499981374
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -92,7 +86,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
-  m_SortingOrder: -1
+  m_SortingOrder: 0
   m_Sprite: {fileID: -1858379516, guid: c0a62564fb296d6468db6e84c1c496ac, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

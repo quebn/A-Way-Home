@@ -5,9 +5,9 @@ using UnityEngine;
 public class PlantPoison : Plant, ITrap
 {
     [SerializeField] private int damage; 
-    [SerializeField] private GameObject prefabPoisonMiasma; 
+    [SerializeField] private GameObject prefabPoisonMiasmaSpawn; 
     private Dictionary<Vector2Int, Node> tilesPoisoned;
-    private HashSet<PoisonMiasma> miasmas;
+    private HashSet<PoisonMiasmaSpawn> miasmas;
 
     public override bool isCorrosive => false;
 
@@ -15,7 +15,7 @@ public class PlantPoison : Plant, ITrap
     {
         base.Initialize();
         tilesPoisoned = NodeGrid.GetNeighborNodes(this.nodes[0], NodeGrid.Instance.grid, 1);
-        miasmas = new HashSet<PoisonMiasma>();
+        miasmas = new HashSet<PoisonMiasmaSpawn>();
     }
 
     public void OnTrapTrigger(Character character)
@@ -51,7 +51,7 @@ public class PlantPoison : Plant, ITrap
         {
             if(!IsCorrosive(node))
                 continue;
-            miasmas.Add(GameObject.Instantiate(prefabPoisonMiasma, node.worldPosition, Quaternion.identity).GetComponent<PoisonMiasma>());
+            miasmas.Add(GameObject.Instantiate(prefabPoisonMiasmaSpawn, node.worldPosition, Quaternion.identity).GetComponent<PoisonMiasmaSpawn>());
         } 
     }
 
@@ -59,8 +59,8 @@ public class PlantPoison : Plant, ITrap
     {
         Debug.Log($"Plant Damage: {damage}");
         hitpoints -= damage;
-        if(hitpoints == 2)
-            hitpoints = 1;
+        if(hitpoints < 2)
+            hitpoints = 0;
         animator.Play(CurrentAnimationName());
         SetNodes(this.worldPos, isAdult? NodeType.Obstacle: NodeType.Walkable, this);
         if(hitpoints <= 0)
@@ -80,7 +80,7 @@ public class PlantPoison : Plant, ITrap
 
     private void RemoveMiasma()
     {
-        foreach(PoisonMiasma miasma in miasmas)
+        foreach(PoisonMiasmaSpawn miasma in miasmas)
             Destroy(miasma);
         miasmas.Clear();
         Debug.Log("Poison Plant Cleared");

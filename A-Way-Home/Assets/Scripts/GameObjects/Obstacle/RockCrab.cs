@@ -105,6 +105,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         if(hasPath)
         {
             MoveLocation();
+            wasInteracted = true;
             StartCoroutine(FollowPath());
         }
         // Debug.LogWarning(hasPath ? "Crab has Path": "Crab has no Path");
@@ -184,8 +185,12 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         if(isWalking || !hasShell)
         {
-            character.IncrementEnergy(-7);
-            character.DamageAnimation();
+            if(isWalking)
+            {
+                isWalking = false;
+                PlayerActions.FinishProcess(this);
+            }
+            character.TriggerDeath();
             Remove();
         }
     }
@@ -257,12 +262,13 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
                 targetIndex++;
                 if(currentTargetNode.hasObstacle)
                 {
-                    if(currentTargetNode.GetObstacle().isFragile && hasShell)
+                    if(currentTargetNode.GetObstacle().isTrampleable||(currentTargetNode.GetObstacle().isFragile && hasShell)){
                         Destroy(currentTargetNode.GetObstacle());
+                    }
                     else
                     {
                         isWalking = false;
-                        PlayerActions.FinishCommand();
+                        PlayerActions.FinishProcess(this);
                         currentTargetNode.GetObstacle().Destroy(this);
                         yield break;
                     }
@@ -290,8 +296,9 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
                 targetIndex++;
                 if(currentTargetNode.hasObstacle && !currentTargetNode.IsObstacle(typeof(Rock)))
                 {
-                    if(currentTargetNode.GetObstacle().isFragile && hasShell)
+                    if(currentTargetNode.GetObstacle().isTrampleable||(currentTargetNode.GetObstacle().isFragile && hasShell)){
                         Destroy(currentTargetNode.GetObstacle());
+                    }
                     else
                     {
                         isWalking = false;
@@ -329,10 +336,11 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         isWalking = false;
         Node node  = NodeGrid.NodeWorldPointPos(this.worldPos);
+        // Debug.LogWarning("ASDBEWRECRWXEWE");
         if(node.IsObstacle(typeof(Rock)))
             RegenerateShell((Rock)node.GetObstacle());
-        else if(node.IsObstacle(typeof(Plant)) || node.IsObstacle(typeof(GroundSpike)))
-            Destroy(node.GetObstacle());
+        // else if(node.IsObstacle(typeof(Plant)) || node.IsObstacle(typeof(GroundSpike)))
+        //     Destroy(node.GetObstacle());
         SetGridNodes();
     }
 

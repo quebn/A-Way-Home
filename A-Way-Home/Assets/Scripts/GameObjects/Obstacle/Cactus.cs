@@ -2,49 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cactus : Plant, ITrap
+public class Cactus : Plant
 {
-    [SerializeField] private int heal;
+    [SerializeField] private GameObject fruit;
+
+    public override bool isFragile => false;
+    public override bool isTrampleable => false;
     
-    protected override void Initialize()
+    protected override void OnInitialize()
     {
-        base.Initialize();
+        animator.Play(CurrentAnimationName());
+        SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
     public override void OnLightningHit(int damage)
     {
-        if(hitpoints >= 3)
-        {
-            hitpoints = 1;
-            animator.Play(CurrentAnimationName());
-            SetNodes(this.worldPos, NodeType.Walkable, this);
-        }
-        else
-            Remove();
+        int hp = hitpoints;
+        Remove();
+        if(hp == 2)
+            GameObject.Instantiate(fruit, this.worldPos, Quaternion.identity);
     }
 
-    // protected override void OnHighlight(Tool tool)
-    // {
-    //     if(tool != Tool.Lightning && tool != Tool.Grow && hitpoints >= 3)
-    //         return;
-    //     spriteRenderer.color = Color.green;
-    // }
+    protected override void OnHighlight(Tool tool)
+    {
+        if(tool != Tool.Grow && isAdult)
+            return;
+        base.OnHighlight(tool);
+    }
 
     public override void OnGrow()
     {
-        if(hitpoints >= 3)
+        if(isAdult)
             return;
         hitpoints++;
-        Debug.LogWarning($"Animation clip: {CurrentAnimationName()} -> hp:{hitpoints}");
         animator.Play(CurrentAnimationName());
-        if(hitpoints > 1)
-            SetNodes(this.worldPos, NodeType.Obstacle, this);
-    }
-
-    public void OnTrapTrigger(Character character)
-    {
-        character.IncrementEnergy(heal);
-        Damage(1);
     }
 
     protected override string CurrentAnimationName()
@@ -52,10 +43,8 @@ public class Cactus : Plant, ITrap
         switch(hitpoints)
         {
             case 1:
-                return youngling;
-            case 2:
                 return middle;
-            case 3:
+            case 2:
                 return fullGrown;
             default:
                 Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");

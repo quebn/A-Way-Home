@@ -19,11 +19,10 @@ public class PlayerLevelData : MonoBehaviour
     [SerializeField] private Vector2 startCameraPos;
     [HideInInspector] public List<Vector3> currentDestinations;// should be in GameData
 
+    public uint stage => currentStage;
     public string currentStageLevel => $"Stage{currentStage}Level{currentLevel}";
     public Vector2 levelBoundary => this.cameraBoundary;
     public Vector3 cameraCenterPos => startCameraPos;
-    public GameObject logPrefab;
-    public GameObject miasmaPrefab;
 
 
     private void Awake()
@@ -177,24 +176,6 @@ public class PlayerLevelData : MonoBehaviour
 
     public void LoadSpawnedObstacles()
     {
-        GameObject fireField = Resources.Load<GameObject>("Spawnables/FireField");
-        GameObject lilyPad = Resources.Load<GameObject>("Spawnables/Lilypad");
-        GameObject logPlatform = Resources.Load<GameObject>("Spawnables/LogPlatform");
-        GameObject logSpawnable = Resources.Load<GameObject>("Spawnables/LogSpawnable");
-        GameObject poisonMiasma = Resources.Load<GameObject>("Spawnables/PoisonMiasma");
-        GameObject web = Resources.Load<GameObject>("Spawnables/Web");
-        GameObject mushroomPlatform = Resources.Load<GameObject>("Spawnables/MushroomPlatform");
-        GameObject mushroomRed = Resources.Load<GameObject>("Spawnables/MushroomRedSpawn");
-        GameObject mushroomPurple = Resources.Load<GameObject>("Spawnables/MushroomPurpleSpawn");
-        Debug.Assert(fireField != null);
-        Debug.Assert(lilyPad != null);
-        Debug.Assert(logPlatform != null);
-        Debug.Assert(logSpawnable != null);
-        Debug.Assert(poisonMiasma != null);
-        Debug.Assert(web != null);
-        Debug.Assert(web != null);
-        Debug.Assert(mushroomPlatform != null);
-        Debug.Assert(mushroomRed != null);
         uint count = GameData.levelData.spawnCount;
         GameData.levelData.spawnCount = 0;
         for (uint i = 1; i <= count; i++)
@@ -203,40 +184,8 @@ public class PlayerLevelData : MonoBehaviour
             if(!GameData.levelData.obstacles.ContainsKey(ID))
                 continue;
             ObstacleData obstacleData = GameData.levelData.obstacles[ID];
-            GameObject prefab;
-            switch(obstacleData.typeName)
-            {
-                case "FireField":
-                    prefab = fireField;
-                    break;
-                case "LilyPad":
-                    prefab = lilyPad;
-                    break;
-                case "LogPlatform":
-                    prefab = logPlatform;
-                    break;
-                case "LogSpawned":
-                    prefab = logSpawnable;
-                    break;
-                case "PoisonMiasma":
-                    prefab = poisonMiasma;
-                    break;
-                case "Web":
-                    prefab = web;
-                    break;
-                case "MushroomPlatform":
-                    prefab = mushroomPlatform;
-                    break;
-                case "MushroomRedSpawn":
-                    prefab = mushroomRed;
-                    break;
-                case "MushroomPurpleSpawn":
-                    prefab = mushroomPurple;
-                    break;
-                default:
-                    Debug.LogWarning($"TYPENAME: {obstacleData.typeName} not identified!!!!");
-                    continue;
-            }
+            GameObject prefab = Resources.Load<GameObject>($"Spawnables/{obstacleData.typeName}");
+            Debug.Assert(prefab != null, $"ERROR: prefab of {obstacleData.typeName} can't be found!");
             ISaveable saveable = GameObject.Instantiate(prefab, obstacleData.position, Quaternion.identity).GetComponent<Spawnable>();
             saveable.LoadData(GameData.levelData);
             Debug.Log($"Type name:{obstacleData.typeName} \n hitpoints: {obstacleData.GetValue("hp")} \n position: {obstacleData.position.ToString()}");

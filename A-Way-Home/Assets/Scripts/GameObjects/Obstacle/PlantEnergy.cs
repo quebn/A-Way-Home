@@ -9,6 +9,13 @@ public class PlantEnergy : Plant, ITrap
     [SerializeField] private SpriteRenderer spriteRenderer;
     private List<Node> lightNodes;
 
+    protected override void OnHighlight(Tool tool)
+    {
+        if(isAdult)
+            return;
+        base.OnHighlight(tool);
+    }
+
     private void OnValidate()
     {
         switch(hitpoints)
@@ -55,8 +62,8 @@ public class PlantEnergy : Plant, ITrap
     {
         Debug.Log($"Plant Damage: {damage}");
         hitpoints -= damage;
-        if(hitpoints == 2)
-            hitpoints = 1;
+        if(hitpoints < 2)
+            hitpoints = 0;
         animator.Play(CurrentAnimationName());
         SetNodes(this.worldPos, isAdult? NodeType.Obstacle: NodeType.Walkable, this);
         if(hitpoints <= 2)
@@ -67,17 +74,17 @@ public class PlantEnergy : Plant, ITrap
 
     private void SetLightField()
     {
-        if(hitpoints < 4)
+        if(hitpoints < 3)
             return;
-        foreach(Node node in lightNodes)
-            node.SetConduction(true);
+        for(int i = 0; i < lightNodes.Count; i++)
+            lightNodes[i].SetConduction(true);
         nodes[0].SetConduction(true);
     }
 
     private void ClearLightField()
     {
-        foreach(Node node in lightNodes)
-            node.SetConduction(false);
+        for(int i = 0; i < lightNodes.Count; i++)
+            lightNodes[i].SetConduction(false);
         nodes[0].SetConduction(false);
     }
 

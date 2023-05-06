@@ -18,6 +18,7 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] private int toolCount;
     [SerializeField] private List<Texture2D> mouseTextures;
     [SerializeField] private GameObject lilypadVisual;
+    [SerializeField] private GameObject cactusVisual;
 
     private Tool currentTool;
     private Mouse mouse;
@@ -38,6 +39,7 @@ public class PlayerActions : MonoBehaviour
     private bool obstaclesDone = true;
     private bool commanding = false;
     private GameObject lilypad;
+    private GameObject cactus;
 
     public bool hasSelectedObs => selectedObstacle != null;
     public static bool finishedProcessing => Instance.obstaclesDone;
@@ -91,13 +93,6 @@ public class PlayerActions : MonoBehaviour
                 return;
         }
         StartCoroutine(WaitForCommand());
-        // WaitForCommand();
-        // obstaclesDone = false;
-        // GameData.IncrementPlayerMoves(-1);
-        // ProcessObstaclesAction();
-        // StartCoroutine(WaitForObstaclesAction());
-        // if(GameData.levelData.moves == 0)
-        //     NodeGrid.DehighlightNodes(hoveredNodes);
     }
 
     private IEnumerator WaitForCommand()
@@ -173,8 +168,10 @@ public class PlayerActions : MonoBehaviour
     private void Grow()
     {
         GrowAnimation(this.hoveredNodes[0].worldPosition);
-        if(hoveredNodes[0].currentType == NodeType.Water)
+        if(hoveredNodes[0].currentType == NodeType.Water && !hoveredNodes[0].hasPlatform)
             GameObject.Instantiate(lilypad, hoveredNodes[0].worldPosition, Quaternion.identity);
+        else if(PlayerLevelData.Instance.stage == 3 && hoveredNodes[0].currentType == NodeType.Walkable && !hoveredNodes[0].hasObstacle )
+            GameObject.Instantiate(cactus, hoveredNodes[0].worldPosition, Quaternion.identity);
         else
             hoveredNodes[0].GrowObstacle();
     }
@@ -266,6 +263,8 @@ public class PlayerActions : MonoBehaviour
             return;
         if(lilypadVisual.activeSelf)
             lilypadVisual.SetActive(false);
+        if(cactusVisual.activeSelf)
+            cactusVisual.SetActive(false);
         NodeGrid.DehighlightNodes(hoveredNodes);
         // hoveredNodes = new List<Node>();
         if(hasSelectedObs)
@@ -291,7 +290,7 @@ public class PlayerActions : MonoBehaviour
     {
         List<Node> nodes = NodeGrid.HighlightGetNodes(mousePos, hoveredNodes, currentTool);
         if(currentTool == Tool.Grow)
-            OnWaterHover();
+            OnGrowHover();
         WhileHoverObstacle();
         Character.instance.CanHighlight(nodes.Contains(Character.instance.currentNode));
         return nodes;
@@ -324,16 +323,38 @@ public class PlayerActions : MonoBehaviour
                 hoveredNodes[i].GetObstacle().WhileHovered(currentTool);
     }
 
-    private void OnWaterHover()
+    private void OnGrowHover()
     {
-        if(hoveredNodes.Count != 0 && hoveredNodes[0].currentType == NodeType.Water)
+        if(hoveredNodes.Count == 0)
+            return;
+        switch(hoveredNodes[0].currentType)
         {
-            lilypadVisual.SetActive(true);
-            lilypadVisual.transform.position = hoveredNodes[0].worldPosition;
-            Debug.Log("Hovering On water");
+            case NodeType.Water:
+                if(cactusVisual.activeSelf)
+                    cactusVisual.SetActive(false);
+                if(hoveredNodes[0].hasPlatform){
+                    lilypadVisual.SetActive(false);
+                    return;
+                }
+                lilypadVisual.SetActive(true);
+                lilypadVisual.transform.position = hoveredNodes[0].worldPosition;
+                Debug.Log("Hovering On water");
+                break;
+            case NodeType.Walkable:
+                if(lilypadVisual.activeSelf)
+                    lilypadVisual.SetActive(false);
+                if(PlayerLevelData.Instance.stage != 3 || hoveredNodes[0].hasObstacle){
+                    cactusVisual.SetActive(false);
+                    return;
+                }
+                cactusVisual.SetActive(true);
+                cactusVisual.transform.position = hoveredNodes[0].worldPosition;
+                break;
+            default:
+                lilypadVisual.SetActive(false);
+                cactusVisual.SetActive(false);
+                break;
         }
-        else lilypadVisual.SetActive(false);
-
     }
 
     private void OnHoverUpper()
@@ -403,7 +424,8 @@ public class PlayerActions : MonoBehaviour
         reset           = playerInput.actions["Reset"];
         // actionList = new List<ActionData>();
         hoveredNodes = new List<Node>();
-        lilypad = Resources.Load<GameObject>($"Spawnables/Lilypad");
+        lilypad = Resources.Load<GameObject>($"Spawnables/LilypadSpawn");
+        cactus = Resources.Load<GameObject>($"Spawnables/CactusSpawn");
         Debug.Assert(lilypad != null);
     }
 

@@ -11,6 +11,7 @@ public class Node
     public Node parent;
     public int gCost;
     public List<int> hCosts;
+    public bool isBurning;
 
     private bool hasElectricity;
     private bool isOpen;
@@ -51,6 +52,7 @@ public class Node
         this.hCosts = new List<int>();
         this.isOpen = isOpen;
         SetConduction(false);
+        this.isBurning = false;
     }
 
     private int MinHCost()
@@ -74,9 +76,11 @@ public class Node
 
     private void UpdateElectric()
     {
-        if(NodeGrid.tilemapElectric == null)
+        if(NodeGrid.tilemapElectric == null){
+            Debug.Assert(false);
             return;
-        NodeGrid.tilemapElectric.SetColor((Vector3Int)this.gridPos , isConductive ? colorCyan : colorClear);
+        }
+        NodeGrid.tilemapElectric.SetColor((Vector3Int)this.gridPos , hasElectricity ? colorCyan : colorClear);
     }
 
     public void SetConduction(bool isConductive)
@@ -427,11 +431,6 @@ public class Node
         return obstacles;
     }
 
-    public static Vector3 GetRandomWorldPos(Dictionary<Vector2Int, Node> grid)
-    {
-        return grid.Values.ToList()[UnityEngine.Random.Range(0, grid.Count)].worldPosition;
-    }
-
     public static Vector3 GetRandomWorldPos(Dictionary<Vector2Int, Node> grid, NodeType nodeTypeGet, bool containsObs)
     {
         List<Node> nodes = grid.Values.ToList();
@@ -440,25 +439,4 @@ public class Node
             node = nodes[UnityEngine.Random.Range(0, grid.Count)];
         return node.worldPosition;
     }
-
-    public static List<Vector3> GetRandomWorldPos(Dictionary<Vector2Int, Node> grid, int count)
-    {
-        Debug.Assert(count > 0, "ERROR: Count should be greater than 0!");
-        Debug.Assert(grid.Count > 0, "ERROR: GridCount should be greater than 0!");
-        List<Vector3> positions = new List<Vector3>(count);
-        for (int i = 0; i < count ; i++)
-            positions.Add(GetRandomWorldPos(grid));
-        return positions;
-    }
-
-    public static List<Vector3> GetRandomWorldPos(Dictionary<Vector2Int, Node> grid, int count, NodeType nodeTypeGet, bool containsObs)
-    {
-        Debug.Assert(count > 0, "ERROR: Count should be greater than 0!");
-        Debug.Assert(grid.Count > 0, "ERROR: GridCount should be greater than 0!");
-        List<Vector3> positions = new List<Vector3>(count);
-        for (int i = 0; i < count ; i++)
-            positions.Add(GetRandomWorldPos(grid, nodeTypeGet, containsObs));
-        return positions;
-    }
-
 }

@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -65,11 +65,20 @@ public class TreeObstacle : Obstacle
 
     protected float CutDownTreeAnimation()
     {
+        CutDownTreeDefault();
         if (currentCursorLocation > this.worldPos.x)
             animator.Play("TreeFall_Right");
         else if (currentCursorLocation < this.worldPos.x)
             animator.Play("TreeFall_Left");
         return animator.GetCurrentAnimatorStateInfo(0).length;
+    }
+
+    protected void CutDownTreeDefault()
+    {
+        if(currentCursorLocation != 0)
+            return;
+        int index = UnityEngine.Random.Range(0, 1);
+        currentCursorLocation = placeableNodes.ElementAt(index).Key;
     }
 
     protected override void OnHighlight(Tool tool)

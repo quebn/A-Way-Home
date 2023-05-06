@@ -40,13 +40,13 @@ public class Plant : Obstacle , ILightning, IGrow
 
     public virtual void OnLightningHit(int damage)
     {
-        Damage(isAdult ? 2 * damage : damage);
+        Damage(damage);
     }
 
     public virtual void OnGrow()
     {
-        if(hitpoints != 4)
-            hitpoints = 4;
+        if(hitpoints != 3)
+            hitpoints = 3;
         animator.Play(CurrentAnimationName());
         Debug.Assert(isAdult, "ERROR: isnt adult and hitpoints not equal to 1!");
         SetNodes(this.worldPos, NodeType.Obstacle, this);
@@ -100,7 +100,7 @@ public class Plant : Obstacle , ILightning, IGrow
                 return youngling;
             case 2:
                 return middle;
-            case 4:
+            case 3:
                 return fullGrown;
             default:
                 Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");
