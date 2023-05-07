@@ -120,9 +120,9 @@ public class PlayerActions : MonoBehaviour
             bool success = obstacle.OnCommand(hoveredNodes);
             if(success)
             {
+                commanding = true;
                 selectedObstacle.OnDeselect();
                 selectedObstacle = null;
-                commanding = true;
             }
             return success;
         }
@@ -259,7 +259,7 @@ public class PlayerActions : MonoBehaviour
         if (index > 5 || index < 0 || index > PlayerLevelData.Instance.unlockedTools)
             return;
         Tool newTool = (Tool)index;
-        if(currentTool == newTool)
+        if(currentTool == newTool || GameData.levelData.moves == 0)
             return;
         if(lilypadVisual.activeSelf)
             lilypadVisual.SetActive(false);

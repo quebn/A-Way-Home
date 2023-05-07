@@ -25,7 +25,8 @@ public class TreeMushroom : TreeObstacle, ILightning, IActionWaitProcess
         for(int i = 0 ; i < placeableNodes[currentCursorLocation].Count; i++)
         {
             Node node = placeableNodes[currentCursorLocation][i]; 
-            if(node.IsType(NodeType.Terrain) || (node.hasObstacle && !node.GetObstacle().isFragile) || node.hasPlatform || node == Character.instance.currentNode)
+            // if(node.IsType(NodeType.Terrain) || (node.hasObstacle && !node.GetObstacle().isFragile) || node.hasPlatform || node == Character.instance.currentNode)
+            if(LogNotPlaceable(node) || node.hasPlatform)
                 continue;
             GameObject.Instantiate(
                 node.currentType == NodeType.Water ? logs[1] : logs[0],

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,7 +25,7 @@ public class TreeForest : TreeObstacle, ILightning, IActionWaitProcess
         for(int i = 0 ; i < placeableNodes[currentCursorLocation].Count; i++)
         {
             Node node = placeableNodes[currentCursorLocation][i]; 
-            if(node.IsType(NodeType.Terrain) || (node.hasObstacle && !node.GetObstacle().isFragile)|| node == Character.instance.currentNode)
+            if(LogNotPlaceable(node))
                 continue;
             GameObject.Instantiate(
                 node.currentType == NodeType.Water ? logs[1] : logs[0],

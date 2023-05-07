@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectable, ICommand
+public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectable, ICommand, ITremor
 {
     [SerializeField] private Animator animator;
     [SerializeField] private int travelSpeed; 
@@ -90,6 +90,13 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         if(nodes.Count == 0)
             return false;
         return GoToNode(nodes[0]);
+    }
+
+    public void OnTremor()
+    {
+        if(canPhase || isImmobile)
+            return;
+        Damage(1);
     }
 
     public void OnSelect(Tool tool)

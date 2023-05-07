@@ -20,6 +20,7 @@ public class TreeObstacle : Obstacle
     protected override void Initialize()
     {
         base.Initialize();
+        Debug.Log("Tree");
         SetNodes(this.worldPos, NodeType.Obstacle, this);
         if(isCutDown)
             animator.Play("Tree_AfterCut");
@@ -111,5 +112,10 @@ public class TreeObstacle : Obstacle
             Node.ToggleNodes(placeableNodes[currentCursorLocation], NodeGrid.nodesVisibility);
         currentCursorLocation = xLocationCursor;
         Node.RevealNodes(placeableNodes[currentCursorLocation], Node.colorRed, NodeType.Terrain);
+    }
+
+    protected virtual bool LogNotPlaceable(Node node)
+    {
+        return node.IsType(NodeType.Terrain) || (node.hasObstacle && !node.GetObstacle().isFragile)|| node == Character.instance.currentNode || node.isBurning;
     }
 }

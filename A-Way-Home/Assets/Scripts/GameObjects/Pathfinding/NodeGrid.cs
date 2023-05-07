@@ -343,6 +343,8 @@ public class NodeGrid : MonoBehaviour
 
     public static void DehighlightNodes(List<Node> nodes)
     {
+        if(nodes.Count == 0 || nodes == null)
+            return;
         for(int i = 0; i < nodes.Count; i++)
         {
             nodes[i].Dehighlight();

@@ -164,7 +164,10 @@ public class Obstacle : MonoBehaviour, ISaveable
         this.gameObject.SetActive(false);
     }
 
-
+    public bool WaitforFinishInit()
+    {
+        throw new NotImplementedException();
+    }
 
     [ContextMenu("Generate Obstacle ID")]
     private void GenerateID() 
