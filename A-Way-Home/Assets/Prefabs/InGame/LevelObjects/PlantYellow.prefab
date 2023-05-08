@@ -136,17 +136,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
   id: 
-  outline: {fileID: 939780006703699497}
+  outlines:
+  - {fileID: 939780006703699497}
   isNotHoverable: 0
   hitpoints: 1
   toolsInteractable: 000000000100000002000000
+  spriteRenderers:
+  - {fileID: 4179054717873968456}
   animator: {fileID: 4179054717873968457}
   damage: 0
   sprites:
   - {fileID: 294986397, guid: 42297c431902a954188c94071da7b7ac, type: 3}
   - {fileID: -797115577, guid: 092bc843d88cf2345be35ccfaed720a2, type: 3}
   - {fileID: -1497317288, guid: 3edc98850dea0c4478a66f30101c03ca, type: 3}
-  spriteRenderer: {fileID: 4179054717873968456}
 --- !u!61 &4179054717873968471
 BoxCollider2D:
   m_ObjectHideFlags: 0

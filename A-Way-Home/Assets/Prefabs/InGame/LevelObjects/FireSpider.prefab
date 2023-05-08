@@ -51,10 +51,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
   id: 
-  outline: {fileID: 6366553727344907232}
+  outlines:
+  - {fileID: 6366553727344907232}
   isNotHoverable: 0
   hitpoints: 2
   toolsInteractable: 000000000100000003000000
+  spriteRenderers:
+  - {fileID: 5219851540385757064}
   animator: {fileID: 0}
   webPrefab: {fileID: 1667303046171096463, guid: 0be686f170210254e834025f0eaa1ea6, type: 3}
   tileRange: 4

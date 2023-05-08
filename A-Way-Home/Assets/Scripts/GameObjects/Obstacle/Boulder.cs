@@ -31,13 +31,6 @@ public class Boulder : Obstacle, ILightning, ITremor
         Damage(1);
     }
 
-    public override void LoadData(LevelData levelData)
-    {
-        base.LoadData(levelData);
-        if(hitpoints == 0)
-            this.gameObject.SetActive(false);
-    }
-
     public override void Remove()
     {
         ForceDehighlight();

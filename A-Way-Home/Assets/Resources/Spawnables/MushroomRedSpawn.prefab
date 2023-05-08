@@ -51,10 +51,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
   id: 
-  outline: {fileID: 707646803205053326}
+  outlines:
+  - {fileID: 707646803205053326}
   isNotHoverable: 0
   hitpoints: 1
   toolsInteractable: 0000000001000000
+  spriteRenderers:
+  - {fileID: 707646803171850544}
   animator: {fileID: 707646803171850545}
 --- !u!212 &707646803171850544
 SpriteRenderer:
@@ -411,7 +414,7 @@ GameObject:
   - component: {fileID: 707646803205053325}
   - component: {fileID: 707646803205053324}
   m_Layer: 0
-  m_Name: LowerOutline
+  m_Name: Outline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

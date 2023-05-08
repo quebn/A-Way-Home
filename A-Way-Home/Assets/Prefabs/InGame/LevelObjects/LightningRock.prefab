@@ -392,10 +392,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
   id: 
-  outline: {fileID: 5768734281935680067}
+  outlines:
+  - {fileID: 5768734281935680067}
   isNotHoverable: 0
   hitpoints: 2
   toolsInteractable: 000000000100000004000000
+  spriteRenderers:
+  - {fileID: 5768734280811315127}
   animator: {fileID: 7790496707543124786}
   light2d: {fileID: 5768734280811315128}
   gemLights: {fileID: 3081324396349699218}

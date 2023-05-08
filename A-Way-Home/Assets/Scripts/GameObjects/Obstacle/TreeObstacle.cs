@@ -6,7 +6,6 @@ using UnityEngine;
 public class TreeObstacle : Obstacle
 {
     [SerializeField] protected Animator animator;
-    [SerializeField] protected GameObject outlineUpper;
 
     protected float currentCursorLocation = 0;
     protected Dictionary<float, List<Node>> placeableNodes;
@@ -38,8 +37,8 @@ public class TreeObstacle : Obstacle
     protected IEnumerator CutDown()
     {
         Debug.LogWarning("Cutting Down");
-        if(outlineUpper.activeSelf)
-            outlineUpper.SetActive(false);
+        if(outlines[1].activeSelf)
+            outlines[1].SetActive(false);
         yield return new WaitForSeconds(CutDownTreeAnimation());
         OnCutDown();
     }
@@ -84,8 +83,8 @@ public class TreeObstacle : Obstacle
 
     protected override void OnHighlight(Tool tool)
     {
-        if(!isCutDown && !outlineUpper.activeSelf)
-            outlineUpper.SetActive(true);
+        if(!isCutDown && !outlines[1].activeSelf)
+            outlines[1].SetActive(true);
         base.OnHighlight(tool);
     }
 
@@ -97,8 +96,8 @@ public class TreeObstacle : Obstacle
 
     protected override void OnDehighlight()
     {
-        if(!isCutDown && outlineUpper.activeSelf)
-            outlineUpper.SetActive(false);
+        if(!isCutDown && outlines[1].activeSelf)
+            outlines[1].SetActive(false);
         base.OnDehighlight();
         if(currentCursorLocation != 0)
             Node.ToggleNodes(placeableNodes[currentCursorLocation], NodeGrid.nodesVisibility);

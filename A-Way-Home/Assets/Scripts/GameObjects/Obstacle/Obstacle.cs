@@ -7,14 +7,18 @@ public class Obstacle : MonoBehaviour, ISaveable
 {
     [SerializeField] private Vector2Int tileSize;
     [SerializeField] protected string id;
-    [SerializeField] protected GameObject outline;
+    [SerializeField] protected List<GameObject> outlines;
     [SerializeField] protected bool isNotHoverable;
     [SerializeField] protected int hitpoints = 1;
     [SerializeField] protected List<Tool> toolsInteractable;
+    [SerializeField] protected List<SpriteRenderer> spriteRenderers;
+    
     protected List<Node> nodes;
-
+    
+    protected SpriteRenderer mainSpriteRenderer => spriteRenderers[0];
     protected Vector2 worldPos => this.transform.position; 
     protected int nodeCount => tileSize.x * tileSize.y; 
+
 
     public virtual bool isBurnable => false;
     public virtual bool isCorrosive => false;
@@ -34,6 +38,7 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     protected virtual void Initialize()
     {
+        Debug.Assert(spriteRenderers != null || spriteRenderers.Count != 0, "ERROR: No sprite renderers found!");
         Debug.Assert(id != "", $"ERROR: {this.GetType().Name} ID is empty!");
     }
 
@@ -60,12 +65,12 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     protected virtual void OnDehighlight()
     {
-        outline.SetActive(false);
+        outlines[0].SetActive(false);
     }
 
     protected virtual void OnHighlight(Tool tool)
     {
-        outline.SetActive(true);
+        outlines[0].SetActive(true);
     } 
 
     public virtual void Destroy(Obstacle obstacle)
@@ -75,14 +80,14 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     public void Highlight(Tool tool)
     {
-        if((outline == null  || outline.activeSelf) || !toolsInteractable.Contains(tool))
+        if((outlines == null ||outlines.Count == 0  || outlines[0].activeSelf) || !toolsInteractable.Contains(tool) || isNotHoverable)
             return;
         OnHighlight(tool);
     }
 
     public void Dehighlight()
     {
-        if(outline == null  || !outline.activeSelf)
+        if(outlines == null ||outlines.Count == 0  || !outlines[0].activeSelf || isNotHoverable)
             return;
         OnDehighlight();
     }
@@ -106,9 +111,9 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     protected void ForceDehighlight()
     {
-        if(outline == null  || !outline.activeSelf)
+        if(outlines[0] == null  || !outlines[0].activeSelf)
             return;
-        outline.SetActive(false);
+        outlines[0].SetActive(false);
     }
 
     public static void HighlightObstacles(List<Obstacle> list, Tool tool)
@@ -155,6 +160,11 @@ public class Obstacle : MonoBehaviour, ISaveable
         hitpoints -= value > hitpoints ? hitpoints : value;
         if(hitpoints <= 0)
             Remove();
+    }
+
+    protected void Damage()
+    {
+
     }
 
     public virtual void Remove() //Trigger death but for all

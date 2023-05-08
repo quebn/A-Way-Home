@@ -134,10 +134,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
   id: 
-  outline: {fileID: 131012871155514716}
+  outlines:
+  - {fileID: 131012871155514716}
   isNotHoverable: 0
   hitpoints: 2
   toolsInteractable: 000000000100000003000000
+  spriteRenderers:
+  - {fileID: 8764478453688538269}
   animator: {fileID: 5545026643998478287}
   damage: 5
   poisonMiasma: {fileID: 8745363850703227746, guid: 371b5b5e167558b4eb34d05f91f5511b, type: 3}

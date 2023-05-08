@@ -136,10 +136,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 2}
   id: 
-  outline: {fileID: 4517415912925374924}
+  outlines:
+  - {fileID: 4517415912925374924}
   isNotHoverable: 0
   hitpoints: 2
   toolsInteractable: 000000000300000004000000
+  spriteRenderers:
+  - {fileID: 5827269251583143069}
   animator: {fileID: 5827269251583143070}
   fireStartPosDiff: {x: 0, y: -1.5}
   fireDirectionDiff: {x: 0, y: -1}

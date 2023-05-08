@@ -6,7 +6,7 @@ public class PlantEnergy : Plant, ITrap
 {
 [SerializeField] private int damage;
     [SerializeField] private List<Sprite> sprites;
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    // [SerializeField] private SpriteRenderer spriteRendererer;
     private List<Node> lightNodes;
 
     protected override void OnHighlight(Tool tool)
@@ -21,13 +21,16 @@ public class PlantEnergy : Plant, ITrap
         switch(hitpoints)
         {
             case 4:
-                spriteRenderer.sprite = sprites[2];
+                // spriteRendererer.sprite = sprites[2];
+                mainSpriteRenderer.sprite = sprites[2];
                 break;
             case 2:
-                spriteRenderer.sprite = sprites[1];
+                // spriteRendererer.sprite = sprites[1];
+                mainSpriteRenderer.sprite = sprites[1];
                 break;
             case 1:
-                spriteRenderer.sprite = sprites[0];
+                // spriteRendererer.sprite = sprites[0];
+                mainSpriteRenderer.sprite = sprites[0];
                 break;
             default:
                 break;

@@ -133,10 +133,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
   id: 
-  outline: {fileID: 2634084693658438819}
+  outlines:
+  - {fileID: 2634084693658438819}
   isNotHoverable: 0
   hitpoints: 1
   toolsInteractable: 000000000100000002000000
+  spriteRenderers:
+  - {fileID: 5616606881311676286}
   animator: {fileID: 5616606881311676281}
   fruit: {fileID: 8105333495146311992, guid: 3892d28f84155bf43be34f939b28b16b, type: 3}
 --- !u!212 &5616606881311676286

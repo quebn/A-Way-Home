@@ -218,10 +218,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: {x: 1, y: 1}
   id: 
-  outline: {fileID: 1331307753993952003}
+  outlines:
+  - {fileID: 1331307753993952003}
+  - {fileID: 1696305076419808781}
   isNotHoverable: 0
   hitpoints: 2
   toolsInteractable: 0000000001000000
+  spriteRenderers:
+  - {fileID: 5142473099469508756}
+  - {fileID: 2577153118406074730}
   animator: {fileID: 5874931336424725976}
   outlineUpper: {fileID: 1696305076419808781}
   logs:
