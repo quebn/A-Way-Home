@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c96968b6b44043c4b98f1110f56dfd56
+guid: 97e282f7bc3afa14985beab56d683740
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: 4
     textureCompression: 1
@@ -105,148 +105,211 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Fungus_0
+      name: BoneBreakAnim2x2_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
+        width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d49904e99f460b94ca80816270a8b8f2
-      internalID: 325112779
+      spriteID: 633e553b2f34f5b46b3fe3596ec52163
+      internalID: -95615612
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Fungus_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0a7f65bdb200ee1459286344bbf02f7f
-      internalID: 1330048873
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fungus_2
+      name: BoneBreakAnim2x2_1
       rect:
         serializedVersion: 2
         x: 32
         y: 0
-        width: 16
+        width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8e6d67042c1577746864d8f61fe0fba4
-      internalID: 1045354949
+      spriteID: 5b58135f8c753714584e77e64c0278ff
+      internalID: 1284137572
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Fungus_3
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7e08df2437e10f94c87cd0a55864b3b5
-      internalID: -475090607
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fungus_4
+      name: BoneBreakAnim2x2_2
       rect:
         serializedVersion: 2
         x: 64
         y: 0
-        width: 16
+        width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 232ddc01c8917334da03b635c8ce2135
-      internalID: 680636299
+      spriteID: 64cfbf50cd0afb3459709937f1d8cf8b
+      internalID: -1957751508
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Fungus_5
-      rect:
-        serializedVersion: 2
-        x: 80
-        y: 0
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7b7978ab76d4767489973a88b1b7b873
-      internalID: 722103503
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fungus_6
+      name: BoneBreakAnim2x2_3
       rect:
         serializedVersion: 2
         x: 96
         y: 0
-        width: 16
+        width: 32
         height: 32
-      alignment: 9
-      pivot: {x: 0.5, y: 0.25}
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 75358bedeff29ac41bafd39510134c5e
-      internalID: -906669919
+      spriteID: ccfe8bd9c25364840bb7c51fc06d5cc0
+      internalID: 1005040140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoneBreakAnim2x2_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 06ffb1f6993f6c945aa34535dd78b3ed
+      internalID: 11724509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoneBreakAnim2x2_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 60ed7e54051ed064ea1225a2059424fb
+      internalID: 629528152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoneBreakAnim2x2_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f41bebf443e9d04ca53a48639880aed
+      internalID: 2010905740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoneBreakAnim2x2_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b95fbbc026d1c8041af22a933e779c45
+      internalID: -659464133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoneBreakAnim2x2_8
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae130b987e32441489636412afd2cdbe
+      internalID: -2050760961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoneBreakAnim2x2_9
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 247449768011f38478a110eccc23b63b
+      internalID: -764711035
       vertices: []
       indices: 
       edges: []
@@ -262,13 +325,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Fungus_4: 680636299
-      Fungus_5: 722103503
-      Fungus_2: 1045354949
-      Fungus_6: -906669919
-      Fungus_3: -475090607
-      Fungus_0: 325112779
-      Fungus_1: 1330048873
+      BoneBreakAnim2x2_5: 629528152
+      BoneBreakAnim2x2_1: 1284137572
+      BoneBreakAnim2x2_4: 11724509
+      BoneBreakAnim2x2_3: 1005040140
+      BoneBreakAnim2x2_7: -659464133
+      BoneBreakAnim2x2_2: -1957751508
+      BoneBreakAnim2x2_0: -95615612
+      BoneBreakAnim2x2_6: 2010905740
+      BoneBreakAnim2x2_9: -764711035
+      BoneBreakAnim2x2_8: -2050760961
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

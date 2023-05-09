@@ -168,9 +168,9 @@ public class PlayerActions : MonoBehaviour
     private void Grow()
     {
         GrowAnimation(this.hoveredNodes[0].worldPosition);
-        if(hoveredNodes[0].currentType == NodeType.Water && !hoveredNodes[0].hasPlatform)
+        if(hoveredNodes[0].currentType == NodeType.Water && !hoveredNodes[0].hasPlatform && !hoveredNodes[0].isBurning)
             GameObject.Instantiate(lilypad, hoveredNodes[0].worldPosition, Quaternion.identity);
-        else if(PlayerLevelData.Instance.stage == 3 && hoveredNodes[0].currentType == NodeType.Walkable && !hoveredNodes[0].hasObstacle )
+        else if(PlayerLevelData.Instance.stage == 3 && hoveredNodes[0].currentType == NodeType.Walkable && !hoveredNodes[0].hasObstacle && !hoveredNodes[0].isBurning)
             GameObject.Instantiate(cactus, hoveredNodes[0].worldPosition, Quaternion.identity);
         else
             hoveredNodes[0].GrowObstacle();
@@ -325,8 +325,12 @@ public class PlayerActions : MonoBehaviour
 
     private void OnGrowHover()
     {
-        if(hoveredNodes.Count == 0)
+        if(hoveredNodes.Count == 0 || hoveredNodes[0].isBurning)
+        {
+            lilypadVisual.SetActive(false);
+            cactusVisual.SetActive(false);
             return;
+        }
         switch(hoveredNodes[0].currentType)
         {
             case NodeType.Water:
