@@ -12,9 +12,10 @@ public class NodeGrid : MonoBehaviour
     [SerializeField] private Vector2 gridSize;
     [SerializeField] private float nodeRadius;
     [SerializeField] private Tilemap tileMap; 
-    [SerializeField] private Tilemap tileMapElectric; 
+    [SerializeField] private Tilemap tileMapStatus; 
     [SerializeField] private Tile tile; 
     [SerializeField] private AnimatedTile tileElectric; 
+    [SerializeField] private AnimatedTile tileFire; 
     [SerializeField] private bool canBeCovered  = false;
     [SerializeField] PolygonCollider2D obsCollider2D;
     
@@ -26,7 +27,7 @@ public class NodeGrid : MonoBehaviour
     private static  Vector2 currentTileOrigin;
     public static bool nodesVisibility = false; 
     public static Tilemap tilemap => Instance.tileMap;
-    public static Tilemap tilemapElectric => Instance.tileMapElectric;
+    public static Tilemap tilemapStatus => Instance.tileMapStatus;
     public int  maxSize{
         get {return gridSizeInt.x * gridSizeInt.y ; }
     }
@@ -47,7 +48,7 @@ public class NodeGrid : MonoBehaviour
         Debug.Log("Creating new Grid");
         Vector3 worldBottomLeft = transform.position - Vector3.right * gridSize.x / 2 - Vector3.up * gridSize.y / 2;
         this.tileMap.transform.position = worldBottomLeft;
-        this.tileMapElectric.transform.position = worldBottomLeft;
+        this.tileMapStatus.transform.position = worldBottomLeft;
         for (int x = 0; x < gridSizeInt.x; x++){
             for (int y = 0; y < gridSizeInt.y; y++){
                 CreateNode(new Vector2Int(x, y), worldBottomLeft);
@@ -60,8 +61,8 @@ public class NodeGrid : MonoBehaviour
     {
         this.tileMap.SetTile((Vector3Int)gridPosition, tile);
         this.tileMap.SetTileFlags((Vector3Int)gridPosition, TileFlags.None);
-        this.tileMapElectric.SetTile((Vector3Int)gridPosition, tileElectric);
-        this.tileMapElectric.SetTileFlags((Vector3Int)gridPosition, TileFlags.None);
+        this.tileMapStatus.SetTile((Vector3Int)gridPosition, null);
+        this.tileMapStatus.SetTileFlags((Vector3Int)gridPosition, TileFlags.None);
         NodeType nodeType = NodeType.Walkable;
         Vector3 worldPoint = worldBottomLeft + Vector3.right * (gridPosition.x * nodeDiameter + nodeRadius) + Vector3.up * (gridPosition.y * nodeDiameter + nodeRadius);
         Collider2D unwalkableCollider2D = Physics2D.OverlapCircle(worldPoint, nodeRadius, unwalkableMask);
@@ -130,6 +131,23 @@ public class NodeGrid : MonoBehaviour
             }
         }
         return nodes;
+    }
+
+
+    public static void UpdateStatusTiles(Vector2Int gridPosition, NodeStatus nodeStatus)
+    {
+        switch(nodeStatus)
+        {
+            case NodeStatus.None:
+                NodeGrid.tilemapStatus.SetTile((Vector3Int)gridPosition, null);
+                break;
+            case NodeStatus.Conductive:
+                NodeGrid.tilemapStatus.SetTile((Vector3Int)gridPosition, Instance.tileElectric);
+                break;
+            case NodeStatus.Burning:
+                NodeGrid.tilemapStatus.SetTile((Vector3Int)gridPosition, Instance.tileFire);
+                break;
+        }
     }
 
     public static bool CheckTileIsTerrain(Vector2 nodeTileCenter, int width, int height)

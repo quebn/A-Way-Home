@@ -19,7 +19,6 @@ public class TreeObstacle : Obstacle
     protected override void Initialize()
     {
         base.Initialize();
-        Debug.Log("Tree");
         SetNodes(this.worldPos, NodeType.Obstacle, this);
         if(isCutDown)
             animator.Play("Tree_AfterCut");

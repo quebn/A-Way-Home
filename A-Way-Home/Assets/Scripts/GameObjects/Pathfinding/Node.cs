@@ -4,6 +4,9 @@ using System;
 using UnityEngine;
 
 public enum NodeType{ Walkable, Water, Terrain, Obstacle, Poisoned}
+
+public enum NodeStatus{ None, Conductive, Burning}
+
 public class Node
 {
     public Vector3 worldPosition;
@@ -11,9 +14,10 @@ public class Node
     public Node parent;
     public int gCost;
     public List<int> hCosts;
-    public bool isBurning;
 
-    private bool hasElectricity;
+    private NodeStatus status;
+    // public bool isBurning;
+    // private bool hasElectricity;
     private bool isOpen;
     private NodeType currentNodeType;
     private Obstacle obstacle; 
@@ -24,7 +28,8 @@ public class Node
     private bool isGrowable => obstacle is IGrow || platform is IGrow;
     private bool isCommandable => obstacle is ICommand || platform is ICommand;
     private bool isTremorable => obstacle is ITremor || platform is ITremor;
-    public bool isConductive => hasElectricity;
+    public bool isConductive => status == NodeStatus.Conductive;
+    public bool isBurning => status == NodeStatus.Burning;
     public bool hasObstacle => obstacle != null;
     public bool hasPlatform => platform != null;
     public bool canLightning => isOpen || isConductive;
@@ -51,8 +56,7 @@ public class Node
         this.currentType = nodeType;
         this.hCosts = new List<int>();
         this.isOpen = isOpen;
-        SetConduction(false);
-        this.isBurning = false;
+        this.status = NodeStatus.None;
     }
 
     private int MinHCost()
@@ -74,19 +78,19 @@ public class Node
         NodeGrid.tilemap.SetColor((Vector3Int)this.gridPos ,color);
     }
 
-    private void UpdateElectric()
+
+    public void SetFire(bool isOnFire)
     {
-        if(NodeGrid.tilemapElectric == null){
-            Debug.Assert(false);
-            return;
-        }
-        NodeGrid.tilemapElectric.SetColor((Vector3Int)this.gridPos , hasElectricity ? colorCyan : colorClear);
+        this.status = isOnFire ? NodeStatus.Burning : NodeStatus.None;
+        NodeGrid.UpdateStatusTiles(this.gridPos, this.status);
+
     }
 
     public void SetConduction(bool isConductive)
     {
-        this.hasElectricity = isConductive;
-        UpdateElectric();
+        this.status = isConductive ? NodeStatus.Conductive : NodeStatus.None;
+        NodeGrid.UpdateStatusTiles(this.gridPos, this.status);
+
     }
 
     public bool IsWalkable()
@@ -439,4 +443,5 @@ public class Node
             node = nodes[UnityEngine.Random.Range(0, grid.Count)];
         return node.worldPosition;
     }
+
 }

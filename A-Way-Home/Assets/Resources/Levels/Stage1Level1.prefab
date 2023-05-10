@@ -96,8 +96,6 @@ MonoBehaviour:
   characterLocation: {fileID: 9066808435449886136}
   startCameraPos: {x: -1.5, y: -6}
   currentDestinations: []
-  logPrefab: {fileID: 5422225815226669122, guid: 4e3dd637919e4e347b4471a7abc9f6e6, type: 3}
-  miasmaPrefab: {fileID: 8745363850703227746, guid: 371b5b5e167558b4eb34d05f91f5511b, type: 3}
   enableBoundaryGizmo: 1
 --- !u!114 &2076240776596746829
 MonoBehaviour:
@@ -120,9 +118,10 @@ MonoBehaviour:
   gridSize: {x: 22, y: 20}
   nodeRadius: 0.5
   tileMap: {fileID: 7295994057943259383}
-  tileMapElectric: {fileID: 3259623895109192829}
+  tileMapStatus: {fileID: 3259623895109192829}
   tile: {fileID: 11400000, guid: 624cd456949571040a96b2a923a00d85, type: 2}
   tileElectric: {fileID: 11400000, guid: f451b89b29c5d8c45a79f42f0ef10b6a, type: 2}
+  tileFire: {fileID: 11400000, guid: 3ee1eedd3644de542adf06e5445ea5c6, type: 2}
   canBeCovered: 0
   obsCollider2D: {fileID: 7720293833616426773}
   enableValues: 0
@@ -21812,7 +21811,7 @@ GameObject:
   - component: {fileID: 3259623895109192829}
   - component: {fileID: 4420202635975616202}
   m_Layer: 0
-  m_Name: ElectricTiles
+  m_Name: StatusTiles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21849,7 +21848,7 @@ Tilemap:
   m_TileColorArray: []
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 0, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: 0, y: 0, z: 0}
   m_Size: {x: 0, y: 0, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}

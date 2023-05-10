@@ -25670,9 +25670,10 @@ MonoBehaviour:
   gridSize: {x: 40, y: 28}
   nodeRadius: 0.5
   tileMap: {fileID: 9113453663569127793}
-  tileMapElectric: {fileID: 520468438574391369}
+  tileMapStatus: {fileID: 520468438574391369}
   tile: {fileID: 11400000, guid: 624cd456949571040a96b2a923a00d85, type: 2}
   tileElectric: {fileID: 11400000, guid: f451b89b29c5d8c45a79f42f0ef10b6a, type: 2}
+  tileFire: {fileID: 11400000, guid: 3ee1eedd3644de542adf06e5445ea5c6, type: 2}
   canBeCovered: 0
   obsCollider2D: {fileID: 8077786974314575507}
   enableValues: 0
@@ -26289,7 +26290,7 @@ GameObject:
   - component: {fileID: 520468438574391369}
   - component: {fileID: 5875788472045386510}
   m_Layer: 0
-  m_Name: ElectricTiles
+  m_Name: StatusTiles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26326,7 +26327,7 @@ Tilemap:
   m_TileColorArray: []
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 0, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: 0, y: 0, z: 0}
   m_Size: {x: 0, y: 0, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}

@@ -7,7 +7,6 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
     [SerializeField] private Animator animator;
     [SerializeField] private Vector2 fireStartPosDiff;
     [SerializeField] private Vector2Int fireDirectionDiff;
-    [SerializeField] private List<GameObject> fireFields;
     
     private bool isBreathing => hitpoints == 1; 
     private List<Node> fireNodes;
@@ -15,7 +14,6 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
     protected override void Initialize()
     {
         base.Initialize();
-        Debug.Log("Lizard");
         SetNodes(this.worldPos, NodeType.Obstacle, this);
         InitFireNodes();
         Invoke("OnStartBreath", .5f);
@@ -92,8 +90,7 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
         {
             if(!IfBurnable(fireNodes[i]))
                 return;
-            fireFields[i].SetActive(true);
-            fireNodes[i].isBurning = true;
+            fireNodes[i].SetFire(true);
         }
     }
 
@@ -101,20 +98,22 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
     {
         for(int i = 0; i < fireNodes.Count; i++)
         {
-            fireFields[i].SetActive(false);
-            fireNodes[i].isBurning = false;
+            fireNodes[i].SetFire(false);
         }
     }
 
     private void InitFireNodes()
     {
         fireNodes = new List<Node>();
-        for(int i = 0; i < fireFields.Count; i++)
+        Node fireStartNode = NodeGrid.NodeWorldPointPos(this.worldPos + fireStartPosDiff);
+        Vector2Int gridPosIncrement = new Vector2Int(fireStartNode.gridPos.x, fireStartNode.gridPos.y);
+        for(int i = 0; i < 3; i++)
         {
-            Node node = NodeGrid.NodeWorldPointPos(fireFields[i].transform.position);
-            if(!NodeGrid.Instance.grid.ContainsValue(node))
+            if(!NodeGrid.Instance.grid.ContainsKey(gridPosIncrement))
                 return;
+            Node node = NodeGrid.Instance.grid[gridPosIncrement];
             fireNodes.Add(node);
+            gridPosIncrement += fireDirectionDiff;
         }
     }
 
