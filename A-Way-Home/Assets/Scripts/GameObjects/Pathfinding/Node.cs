@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum NodeType{ Walkable, Water, Terrain, Obstacle, Poisoned}
 
-public enum NodeStatus{ None, Conductive, Burning}
+public enum NodeStatus{ None, Conductive, Burning, Corrosive}
 
 public class Node
 {
