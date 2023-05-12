@@ -16,8 +16,6 @@ public class Node
     public List<int> hCosts;
 
     private NodeStatus status;
-    // public bool isBurning;
-    // private bool hasElectricity;
     private bool isOpen;
     private NodeType currentNodeType;
     private Obstacle obstacle; 
@@ -45,7 +43,7 @@ public class Node
     public static Color colorRed    => new Color32(255, 0, 0, 150);
     public static Color colorGreen  => new Color32(0, 255, 0, 150);
     public static Color colorBlue   => new Color32(0, 0, 255, 150);
-    public static Color colorYellow   => new Color32(255, 255, 0, 150);
+    public static Color colorYellow => new Color32(255, 255, 0, 150);
     public static Color colorPurple => new Color32(166, 0, 255, 150);
     public static Color colorClear  => Color.clear; 
     
