@@ -185,6 +185,12 @@ public class Obstacle : MonoBehaviour, ISaveable
         this.id = System.Guid.NewGuid().ToString();
     }
 
+    [ContextMenu("Set Position Middle")]
+    private void SetPosMid() 
+    {
+        this.transform.position = NodeGrid.GetMiddle(this.worldPos, tileSize.x, tileSize.y);
+    }
+
 }
 
 public interface ISelectable
