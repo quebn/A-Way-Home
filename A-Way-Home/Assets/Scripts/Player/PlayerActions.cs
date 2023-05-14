@@ -30,8 +30,7 @@ public class PlayerActions : MonoBehaviour
     private List<InputAction> tools;
     private InputAction start;
     private InputAction reset;
-    // 
-    // 
+
     private List<Node> hoveredNodes;
     private ISelectable selectedObstacle;
 
@@ -288,10 +287,10 @@ public class PlayerActions : MonoBehaviour
 
     public List<Node> HoverNodes(Vector3 mousePos)
     {
+        WhileHoverObstacle();
         List<Node> nodes = NodeGrid.HighlightGetNodes(mousePos, hoveredNodes, currentTool);
         if(currentTool == Tool.Grow)
             OnGrowHover();
-        WhileHoverObstacle();
         Character.instance.CanHighlight(nodes.Contains(Character.instance.currentNode));
         return nodes;
     }

@@ -24,13 +24,14 @@ public class Character : MonoBehaviour, ISaveable
     public Sprite image => spriteRenderer.sprite;
     public Essence currentEssence => Essence.list[currentPosition];
     public Vector3 currentPosition => transform.position;
-    public bool isHome => requiredEssence == 0 && currentPosition == Home.instance.transform.position;
+    public bool isHome => noEssenceRequired && currentPosition == Home.instance.transform.position;
     public bool destinationReached => Essence.GetCurrentDestinations().Contains(currentPosition) || currentPosition == Home.instance.transform.position;
     public bool isMoving => isGoingHome;
     public bool hasPath => path.Count > 0;
     public bool isDead => !isAilve;
     protected Vector3 currentTargetPos => currentTargetNode.worldPosition;
-    
+    public bool noEssenceRequired => requiredEssence == 0;
+
     protected int xPosDiff => (int)(currentTargetPos.x - currentPosition.x); 
     protected bool isFlipped {
         get => this.spriteRenderer.flipX; 

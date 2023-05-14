@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ public class Essence : MonoBehaviour, ISaveable
 {
     [SerializeField] private string ID;
     [SerializeField] private int energyRestored;
+    [SerializeField] private Animator animator;
     private HomePortal homePortal;
 
 
@@ -30,10 +32,12 @@ public class Essence : MonoBehaviour, ISaveable
 
     public void OnConsume(Character character)
     {
-        this.gameObject.SetActive(false);
         list.Remove(this.worldPosition);
         character.IncrementEnergy(energyRestored);
         character.IncrementEssence(-1);
+        if(character.noEssenceRequired)
+            RemoveOtherEssence();
+        StartCoroutine(Despawn());
     }
 
     public static List<Vector3> GetCurrentDestinations()
@@ -45,9 +49,18 @@ public class Essence : MonoBehaviour, ISaveable
         return destinations;
     }
 
-    public static void InitializeAll()
+    private void RemoveOtherEssence()
     {
+        foreach(Essence essence in list.Values)
+            if(essence.ID != this.ID)
+                StartCoroutine(essence.Despawn());
+    }
 
+    private IEnumerator Despawn()
+    {
+        animator.Play("Despawn");
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        this.gameObject.SetActive(false);
     }
 
     [ContextMenu("Generate Essence ID")]
