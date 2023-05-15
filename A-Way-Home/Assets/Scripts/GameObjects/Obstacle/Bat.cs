@@ -90,6 +90,18 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
         return GoToTargetNode(nodes[0]);
     }
 
+    public override void Remove()
+    {
+        ForceDehighlight();
+        if(isMoving)
+            isMoving = false;
+        hitpoints = 0;
+        ClearNodes();
+        PlayerActions.FinishCommand(this);
+        PlayerActions.FinishProcess(this);
+        this.gameObject.SetActive(false);
+    }
+
     private bool GoToTargetNode(Node node)
     {
         if(!gridNodes.Contains(node))
@@ -138,8 +150,7 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
         {
             if(destinationReached)
             {
-                OnStop();
-                PlayerActions.FinishProcess(this);
+                Stop();
                 yield break;
             }
             this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, 5f * Time.deltaTime);
@@ -153,8 +164,7 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
         {
             if(destinationReached)
             {
-                OnStop();
-                PlayerActions.FinishCommand();
+                Stop();
                 yield break;
             }
             this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, 5f * Time.deltaTime);
@@ -167,20 +177,25 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
     {
         if(destinationReached)
         {
-            OnStop();
+            Stop();
             return;
         }
         this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, 5f * Time.deltaTime);
     }
 
-    private void OnStop()
+    private void Stop()
     {
         isMoving = false;
         Node node = NodeGrid.NodeWorldPointPos(targetPosition);
+        OnStatusInteract(node);
+        if(!gameObject.activeSelf)
+            return;
         if(node.GetObstacle().isCorrosive)
             Destroy(node.GetObstacle());
         SetNodes(this.worldPos, NodeType.Walkable, this);
         SetNodeGridRange();
+        PlayerActions.FinishProcess(this);
+        PlayerActions.FinishCommand(this);
     }
 
     private void SetRandomPosition()

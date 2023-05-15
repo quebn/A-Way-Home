@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
 using System;
 
 [System.Serializable]
@@ -19,7 +20,6 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] private List<Texture2D> mouseTextures;
     [SerializeField] private GameObject lilypadVisual;
     [SerializeField] private GameObject cactusVisual;
-
     private Tool currentTool;
     private Mouse mouse;
     private Camera mainCamera;
@@ -97,6 +97,11 @@ public class PlayerActions : MonoBehaviour
     private IEnumerator WaitForCommand()
     {
         yield return new WaitUntil(() => !commanding);
+        if(selectedObstacle != null)
+        {
+            selectedObstacle.OnDeselect();
+            selectedObstacle = null;
+        }
         obstaclesDone = false;
         GameData.IncrementPlayerMoves(-1);
         ProcessObstaclesAction();
@@ -105,8 +110,10 @@ public class PlayerActions : MonoBehaviour
             NodeGrid.DehighlightNodes(hoveredNodes);
     }
 
-    public static void FinishCommand()
+    public static void FinishCommand(ISelectable selectableObstacle)
     {
+        if(selectableObstacle != Instance.selectedObstacle)
+            return;
         Instance.commanding = false;
     }
 
@@ -117,12 +124,9 @@ public class PlayerActions : MonoBehaviour
             ICommand obstacle = selectedObstacle as ICommand;
             Debug.Assert(obstacle != null);
             bool success = obstacle.OnCommand(hoveredNodes);
+            commanding = success;
             if(success)
-            {
-                commanding = true;
                 selectedObstacle.OnDeselect();
-                selectedObstacle = null;
-            }
             return success;
         }
         Debug.Assert(currentTool == Tool.Command, $"ERROR: Unexpected tool selected :{currentTool.ToString()} -> expected: Tool.Command");
@@ -167,9 +171,9 @@ public class PlayerActions : MonoBehaviour
     private void Grow()
     {
         GrowAnimation(this.hoveredNodes[0].worldPosition);
-        if(hoveredNodes[0].currentType == NodeType.Water && !hoveredNodes[0].hasPlatform && !hoveredNodes[0].isBurning)
+        if(hoveredNodes[0].currentType == NodeType.Water && !hoveredNodes[0].hasPlatform && !hoveredNodes[0].IsStatus(NodeStatus.Burning))
             GameObject.Instantiate(lilypad, hoveredNodes[0].worldPosition, Quaternion.identity);
-        else if(PlayerLevelData.Instance.stage == 3 && hoveredNodes[0].currentType == NodeType.Walkable && !hoveredNodes[0].hasObstacle && !hoveredNodes[0].isBurning)
+        else if(PlayerLevelData.Instance.stage == 3 && hoveredNodes[0].currentType == NodeType.Walkable && !hoveredNodes[0].hasObstacle && !hoveredNodes[0].IsStatus(NodeStatus.Burning))
             GameObject.Instantiate(cactus, hoveredNodes[0].worldPosition, Quaternion.identity);
         else
             hoveredNodes[0].GrowObstacle();
@@ -282,7 +286,6 @@ public class PlayerActions : MonoBehaviour
             return;
         OnHoverUpper();
         hoveredNodes = hasSelectedObs? selectedObstacle.OnSelectedHover(mouseWorldPos, hoveredNodes) : HoverNodes(mouseWorldPos);;
- 
     }
 
     public List<Node> HoverNodes(Vector3 mousePos)
@@ -324,7 +327,7 @@ public class PlayerActions : MonoBehaviour
 
     private void OnGrowHover()
     {
-        if(hoveredNodes.Count == 0 || hoveredNodes[0].isBurning)
+        if(hoveredNodes.Count == 0 || hoveredNodes[0].IsStatus(NodeStatus.Burning))
         {
             lilypadVisual.SetActive(false);
             cactusVisual.SetActive(false);

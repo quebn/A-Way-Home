@@ -73,9 +73,42 @@ public class Obstacle : MonoBehaviour, ISaveable
         outlines[0].SetActive(true);
     } 
 
+    protected bool AffectedByStatus(Node node)
+    {
+        switch(node.currentStatus)
+        {
+            case NodeStatus.Burning:
+                return this.isBurnable;
+            case NodeStatus.Corrosive:
+                return this.isCorrosive;
+            default:
+                return false;
+        }
+    }
+
+    protected void OnStatusInteract(Node node, Action<Node> action)
+    {
+        if(this.AffectedByStatus(node))
+            this.Remove();
+        else
+            action(node);
+    }
+
+    protected void OnStatusInteract(Node node)
+    {
+        if(this.AffectedByStatus(node))
+            this.Remove();
+    }
+
     public virtual void Destroy(Obstacle obstacle)
     {
         obstacle.Remove();
+    }
+
+    public virtual void Destroy(Node node)
+    {
+        if(node.hasObstacle)
+            Destroy(node.GetObstacle());
     }
 
     public void Highlight(Tool tool)
@@ -162,16 +195,18 @@ public class Obstacle : MonoBehaviour, ISaveable
             Remove();
     }
 
-    protected void Damage()
-    {
-
-    }
-
     public virtual void Remove() //Trigger death but for all
     {
         ForceDehighlight();
         hitpoints = 0;
+        List<Node> prevNodes = new List<Node>();
+        for(int i = 0; i < nodes.Count; i++)
+            prevNodes.Add(nodes[i]);
+        ClearNodes();
+        for(int i = 0; i < prevNodes.Count; i++)
+            FireNode.StartFire(prevNodes[i]);
         this.gameObject.SetActive(false);
+        
     }
 
     public bool WaitforFinishInit()

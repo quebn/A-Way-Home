@@ -80,15 +80,15 @@ public class PlantEnergy : Plant, ITrap
         if(hitpoints < 3)
             return;
         for(int i = 0; i < lightNodes.Count; i++)
-            lightNodes[i].SetConduction(true);
-        nodes[0].SetConduction(true);
+            lightNodes[i].SetStatus(NodeStatus.Conductive);
+        nodes[0].SetStatus(NodeStatus.Conductive);
     }
 
     private void ClearLightField()
     {
         for(int i = 0; i < lightNodes.Count; i++)
-            lightNodes[i].SetConduction(false);
-        nodes[0].SetConduction(false);
+            lightNodes[i].SetStatus(NodeStatus.None);
+        nodes[0].SetStatus(NodeStatus.None);
     }
 
 }

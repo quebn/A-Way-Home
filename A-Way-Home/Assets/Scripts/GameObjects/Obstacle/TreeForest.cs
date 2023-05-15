@@ -6,7 +6,9 @@ using UnityEngine;
 public class TreeForest : TreeObstacle, ILightning, IActionWaitProcess
 {
     [SerializeField] private List<GameObject> logs;
+    // [SerializeField] private bool
     private bool isFalling = false;
+    private bool hasFruit => logs.Count == 3;
 
     public void OnLightningHit(int damage)
     {
@@ -28,7 +30,11 @@ public class TreeForest : TreeObstacle, ILightning, IActionWaitProcess
             if(LogNotPlaceable(node))
                 continue;
             GameObject.Instantiate(
-                node.currentType == NodeType.Water ? logs[1] : logs[0],
+                hasFruit && isFruitplaceable(node) 
+                    ? logs[2]
+                    : node.currentType == NodeType.Water 
+                        ? logs[1] 
+                        : logs[0],
                 node.worldPosition,
                 Quaternion.identity
             );

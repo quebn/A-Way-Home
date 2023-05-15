@@ -58,8 +58,13 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand,
 
     public override void Remove()
     {
+        ForceDehighlight();
+        if(isMoving)
+            isMoving = false;
         hitpoints = 0;
         ClearNodes();
+        PlayerActions.FinishProcess(this);
+        PlayerActions.FinishCommand(this);
         StartCoroutine(DeathAnimation());
     }
 
@@ -147,6 +152,7 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand,
             if(this.transform.position == currentTargetNode.worldPosition)
             {
                 currentTargetIndex++;
+                OnStatusInteract(currentTargetNode);
                 SpawnWeb();
                 if(currentTargetNode.hasObstacle)
                 {
@@ -154,18 +160,14 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand,
                     if(obs.isTrampleable)
                         Destroy(obs);
                     else{
-                        isMoving = false;
                         obs.Destroy(this);
-                        PlayerActions.FinishCommand();
                         yield break;
                     }
                 }
                 lastNode = currentTargetNode;
                 if(this.transform.position == targetNode.worldPosition)
                 {
-                    isMoving = false;
                     Stop();
-                    PlayerActions.FinishCommand();
                     yield break;
                 }
                 Debug.Assert(path.Count > currentTargetIndex, $"ERROR: Tried to access index {currentTargetIndex} with path of size {path.Count}");
@@ -199,6 +201,16 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand,
         {
             if(this.transform.position == currentTargetNode.worldPosition)
             {
+                if(currentTargetNode.hasObstacle)
+                {
+                    Obstacle obs = currentTargetNode.GetObstacle(); 
+                    if(obs.isTrampleable)
+                        Destroy(obs);
+                    else{
+                        obs.Destroy(this);
+                        yield break;
+                    }
+                }
                 Stop();
                 yield break;
             }
@@ -236,11 +248,11 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand,
     private void Stop()
     {
         isMoving = false;
-        PlayerActions.FinishProcess(this);
-        if(currentTargetNode.hasObstacle)
-            Destroy(currentTargetNode.GetObstacle());
+        OnStatusInteract(currentTargetNode);
         currentTargetNode = null;
         SetNodesGrids();
+        PlayerActions.FinishCommand(this);
+        PlayerActions.FinishProcess(this);
 
     }
 

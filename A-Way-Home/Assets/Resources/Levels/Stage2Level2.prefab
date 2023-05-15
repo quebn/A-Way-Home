@@ -39773,8 +39773,6 @@ MonoBehaviour:
   tileMap: {fileID: 6913589479272446257}
   tileMapStatus: {fileID: 1381231665539267068}
   tile: {fileID: 11400000, guid: 624cd456949571040a96b2a923a00d85, type: 2}
-  tileElectric: {fileID: 11400000, guid: f451b89b29c5d8c45a79f42f0ef10b6a, type: 2}
-  tileFire: {fileID: 11400000, guid: 3ee1eedd3644de542adf06e5445ea5c6, type: 2}
   canBeCovered: 1
   obsCollider2D: {fileID: 5877598451258123987}
   enableValues: 0
@@ -40052,7 +40050,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16

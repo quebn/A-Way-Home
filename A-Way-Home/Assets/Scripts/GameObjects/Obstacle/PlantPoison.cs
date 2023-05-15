@@ -5,17 +5,14 @@ using UnityEngine;
 public class PlantPoison : Plant, ITrap
 {
     [SerializeField] private int damage; 
-    [SerializeField] private GameObject prefabPoisonMiasmaSpawn; 
-    private Dictionary<Vector2Int, Node> tilesPoisoned;
-    private HashSet<PoisonMiasmaSpawn> miasmas;
+    private List<Node> tilesPoisoned;
 
     public override bool isCorrosive => false;
 
     protected override void Initialize()
     {
         base.Initialize();
-        tilesPoisoned = NodeGrid.GetNeighborNodes(this.nodes[0], NodeGrid.Instance.grid, 1);
-        miasmas = new HashSet<PoisonMiasmaSpawn>();
+        tilesPoisoned = NodeGrid.GetNeighborNodeList(this.nodes[0], NodeGrid.Instance.grid, 1);
     }
 
     public void OnTrapTrigger(Character character)
@@ -28,7 +25,7 @@ public class PlantPoison : Plant, ITrap
     public override void OnLightningHit(int damage)
     {
         base.OnLightningHit(damage);
-        if(hitpoints < 4 && miasmas.Count != 0)
+        if(hitpoints < 4)
             RemoveMiasma();
     }
 
@@ -41,18 +38,18 @@ public class PlantPoison : Plant, ITrap
     public override void Remove()
     {
         base.Remove();
-        if(miasmas.Count != 0)
-            RemoveMiasma();
+        RemoveMiasma();
     }
 
     private void GeneratePoisonTiles()
     {
-        foreach(Node node in tilesPoisoned.Values)
+        for(int i = 0; i < tilesPoisoned.Count; i++)
         {
-            if(!IsCorrosive(node))
+            if(!IsCorrosive(tilesPoisoned[i]))
                 continue;
-            miasmas.Add(GameObject.Instantiate(prefabPoisonMiasmaSpawn, node.worldPosition, Quaternion.identity).GetComponent<PoisonMiasmaSpawn>());
-        } 
+            tilesPoisoned[i].SetStatus(NodeStatus.Corrosive);
+            Destroy(tilesPoisoned[i]);
+        }
     }
 
     public override void Damage(int damage)
@@ -80,10 +77,9 @@ public class PlantPoison : Plant, ITrap
 
     private void RemoveMiasma()
     {
-        foreach(PoisonMiasmaSpawn miasma in miasmas)
-            Destroy(miasma);
-        miasmas.Clear();
-        Debug.Log("Poison Plant Cleared");
+        for(int i = 0; i < tilesPoisoned.Count; i++)
+            if(tilesPoisoned[i].IsStatus(NodeStatus.Corrosive))
+                tilesPoisoned[i].SetStatus(NodeStatus.None);
     }
 
 }

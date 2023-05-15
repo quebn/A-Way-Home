@@ -26,16 +26,16 @@ public class LightningRock : Obstacle, ILightning, ITremor
         if(hitpoints < 2)
             return;
         for(int i = 0; i < lightNodes.Count; i++)
-            lightNodes[i].SetConduction(true);
-        nodes[0].SetConduction(true);
+            lightNodes[i].SetStatus(NodeStatus.Conductive);
+        nodes[0].SetStatus(NodeStatus.Conductive);
     }
 
     private void ClearLightningField()
     {
         UpdateLigths(hitpoints < 2);
         for(int i = 0; i < lightNodes.Count; i++)
-            lightNodes[i].SetConduction(false);
-        nodes[0].SetConduction(false);
+            lightNodes[i].SetStatus(NodeStatus.None);
+        nodes[0].SetStatus(NodeStatus.None);
     }
 
     private void UpdateLigths(bool isActive)

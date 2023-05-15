@@ -12,6 +12,9 @@ public class Node
     public Vector3 worldPosition;
     public Vector2Int gridPos;
     public Node parent;
+    public FireNode fireNode;
+    // public List<Node> childs;
+    // public Node child;
     public int gCost;
     public List<int> hCosts;
 
@@ -26,11 +29,11 @@ public class Node
     private bool isGrowable => obstacle is IGrow || platform is IGrow;
     private bool isCommandable => obstacle is ICommand || platform is ICommand;
     private bool isTremorable => obstacle is ITremor || platform is ITremor;
-    public bool isConductive => status == NodeStatus.Conductive;
-    public bool isBurning => status == NodeStatus.Burning;
+    
+    public NodeStatus currentStatus => status;
     public bool hasObstacle => obstacle != null;
     public bool hasPlatform => platform != null;
-    public bool canLightning => isOpen || isConductive;
+    public bool canLightning => isOpen || IsStatus(NodeStatus.Conductive);
     public int hCost => MinHCost(); 
     public int fCost => gCost + hCost;
     public NodeType currentType {  
@@ -55,13 +58,14 @@ public class Node
         this.hCosts = new List<int>();
         this.isOpen = isOpen;
         this.status = NodeStatus.None;
+        this.fireNode = new FireNode();
+
     }
 
     private int MinHCost()
     {
         if (!hCosts.Any<int>())
             Debug.LogWarning($"Node[{gridPos.x}, {gridPos.y}] has no Contents");
-
             // return 0;
         return hCosts.Min<int>();
         // int hcost = hCosts.Min<int>();
@@ -76,19 +80,15 @@ public class Node
         NodeGrid.tilemap.SetColor((Vector3Int)this.gridPos ,color);
     }
 
-
-    public void SetFire(bool isOnFire)
+    public void SetStatus(NodeStatus status = NodeStatus.None)
     {
-        this.status = isOnFire ? NodeStatus.Burning : NodeStatus.None;
+        this.status = status;
         NodeGrid.UpdateStatusTiles(this.gridPos, this.status);
-
     }
 
-    public void SetConduction(bool isConductive)
+    public bool IsStatus(NodeStatus status)
     {
-        this.status = isConductive ? NodeStatus.Conductive : NodeStatus.None;
-        NodeGrid.UpdateStatusTiles(this.gridPos, this.status);
-
+        return this.status == status;
     }
 
     public bool IsWalkable()
@@ -377,7 +377,7 @@ public class Node
     {
         if(node == null)
             return;
-        node.ShockObstacle((node.isOpen && node.isConductive) ? 2 : 1);
+        node.ShockObstacle((node.isOpen && node.IsStatus(NodeStatus.Conductive)) ? 2 : 1);
         List<Node> nodes = NodeGrid.GetNeighborNodeList(node, NodeGrid.Instance.grid, 1);
         if(nodes.Count == 0)
             return;

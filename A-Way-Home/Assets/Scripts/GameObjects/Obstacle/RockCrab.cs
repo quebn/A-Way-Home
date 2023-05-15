@@ -61,7 +61,9 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             return;
         ForceDehighlight();
         isWalking = true;
+        Node prevNode = nodes[0];
         ClearNodes();
+        FireNode.StartFire(prevNode);
         StartCoroutine(StepToNode(targetNode));
     }
 
@@ -231,13 +233,19 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     public override void Remove()
     {
         ForceDehighlight();
-        ClearNodes();
         hitpoints = 0;
+        if(isWalking)
+            isWalking = false;
+        ForceDehighlight();
+        ClearNodes();
+        PlayerActions.FinishProcess(this);
+        PlayerActions.FinishCommand(this);
         StartCoroutine(DeathAnimation());
     } 
 
     private IEnumerator DeathAnimation()
     {
+
         animator.Play("Death");
         yield return new WaitForSeconds(this.animator.GetCurrentAnimatorClipInfo(0).Length);
         this.gameObject.SetActive(false);
@@ -250,7 +258,9 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         isWalking = true;
         targetIndex = 0;
         currentTargetNode = path[targetIndex];
+        Node prevNode = nodes[0];
         ClearNodes();
+        FireNode.StartFire(prevNode);
     }
 
     private IEnumerator FollowPath()
@@ -260,6 +270,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             if(this.transform.position == currentTargetNode.worldPosition)
             {
                 targetIndex++;
+                OnStatusInteract(currentTargetNode, IfFireImmune);
                 if(currentTargetNode.hasObstacle)
                 {
                     if(currentTargetNode.GetObstacle().isTrampleable||(currentTargetNode.GetObstacle().isFragile && hasShell)){
@@ -267,8 +278,6 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
                     }
                     else
                     {
-                        isWalking = false;
-                        PlayerActions.FinishProcess(this);
                         currentTargetNode.GetObstacle().Destroy(this);
                         yield break;
                     }
@@ -277,7 +286,6 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
                 if (targetPositions.Contains(this.transform.position))
                 {
                     Stop();
-                    PlayerActions.FinishCommand();
                     yield break;
                 }
                 currentTargetNode = path[targetIndex];
@@ -294,6 +302,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             if(this.transform.position == currentTargetNode.worldPosition)
             {
                 targetIndex++;
+                OnStatusInteract(currentTargetNode, IfFireImmune);
                 if(currentTargetNode.hasObstacle && !currentTargetNode.IsObstacle(typeof(Rock)))
                 {
                     if(currentTargetNode.GetObstacle().isTrampleable||(currentTargetNode.GetObstacle().isFragile && hasShell)){
@@ -301,8 +310,6 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
                     }
                     else
                     {
-                        isWalking = false;
-                        PlayerActions.FinishProcess(this);
                         currentTargetNode.GetObstacle().Destroy(this);
                         yield break;
                     }
@@ -311,13 +318,20 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
                 if (targetPositions.Contains(this.transform.position))
                 {
                     Stop();
-                    PlayerActions.FinishProcess(this);
                     yield break;
                 }
                 currentTargetNode = path[targetIndex];
             }
             this.transform.position = Vector3.MoveTowards(this.transform.position, currentTargetNode.worldPosition, 5f * Time.deltaTime);
             yield return null;
+        }
+    }
+
+    private void IfFireImmune(Node node)
+    {
+        if(node.IsStatus(NodeStatus.Burning))
+        {
+            FireNode.StopFire(node);
         }
     }
 
@@ -336,12 +350,11 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         isWalking = false;
         Node node  = NodeGrid.NodeWorldPointPos(this.worldPos);
-        // Debug.LogWarning("ASDBEWRECRWXEWE");
         if(node.IsObstacle(typeof(Rock)))
             RegenerateShell((Rock)node.GetObstacle());
-        // else if(node.IsObstacle(typeof(Plant)) || node.IsObstacle(typeof(GroundSpike)))
-        //     Destroy(node.GetObstacle());
         SetGridNodes();
+        PlayerActions.FinishProcess(this);
+        PlayerActions.FinishCommand(this);
     }
 
     private void SetGridNodes()

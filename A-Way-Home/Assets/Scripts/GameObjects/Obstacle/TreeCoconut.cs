@@ -40,10 +40,4 @@ public class TreeCoconut : TreeObstacle, ILightning, IActionWaitProcess
         isFalling = false;
         PlayerActions.FinishProcess(this);
     }
-
-    private bool isFruitplaceable(Node node)
-    {
-        return node.worldPosition.x == NodeGrid.GetMiddle(this.worldPos.x + 2f) || node.worldPosition.x == NodeGrid.GetMiddle(this.worldPos.x + -2f); 
-    } 
-
 }

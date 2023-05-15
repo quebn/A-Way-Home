@@ -200,28 +200,20 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         {
             if(this.transform.position == currentTargetNode.worldPosition)
             {
-                currentTargetIndex ++;
+                currentTargetIndex++;
+                OnStatusInteract(currentTargetNode);
                 if(!canPhase && currentTargetNode.hasObstacle)
                 {
                     if(currentTargetNode.GetObstacle().isTrampleable)
                         Destroy(currentTargetNode.GetObstacle());
                     else{
-                        isMoving = false;
                         currentTargetNode.GetObstacle().Destroy(this);
-                        PlayerActions.FinishProcess(this);
                         yield break;
                     }
                 }
                 if(Character.instance.isDead || !canMove)
                 {
-                    isMoving = false;
-                    if(canPhase && currentTargetNode.IsType(NodeType.Obstacle) && currentTargetNode.hasObstacle)
-                    {
-                        PlayerActions.FinishProcess(this);
-                        yield break;
-                    }
-                    OnStop();
-                    PlayerActions.FinishProcess(this);
+                    Stop();
                     yield break;
                 }
                 Debug.Assert(path.Count > currentTargetIndex, $"ERROR: Tried to access index {currentTargetIndex} with path of size {path.Count}");
@@ -239,28 +231,20 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         {
             if(this.transform.position == currentTargetNode.worldPosition)
             {
-                currentTargetIndex ++;
+                currentTargetIndex++;
+                OnStatusInteract(currentTargetNode);
                 if(!canPhase && currentTargetNode.hasObstacle)
                 {
                     if(currentTargetNode.GetObstacle().isTrampleable)
                         Destroy(currentTargetNode.GetObstacle());
                     else{
-                        isMoving = false;
                         currentTargetNode.GetObstacle().Destroy(this);
-                        PlayerActions.FinishCommand();
                         yield break;
                     }
                 }
                 if(this.transform.position == targetNode.worldPosition)
                 {
-                    isMoving = false;
-                    if(canPhase && currentTargetNode.IsType(NodeType.Obstacle) && currentTargetNode.hasObstacle)
-                    {
-                        PlayerActions.FinishCommand();
-                        yield break;
-                    }
-                    OnStop();
-                    PlayerActions.FinishCommand();
+                    Stop();
                     yield break;
                 }
                 Debug.Assert(path.Count > currentTargetIndex, $"ERROR: Tried to access index {currentTargetIndex} with path of size {path.Count}");
@@ -272,12 +256,15 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         }
     }
 
-    private void OnStop()
+    private void Stop()
     {
+        isMoving = false;
         if(canPhase)
             return;
         Debug.Assert(!currentTargetNode.hasObstacle || !canPhase, "ERROR: Node still has an obstacle");
         SetNodes(currentTargetNode.worldPosition, NodeType.Obstacle, this);
+        PlayerActions.FinishProcess(this);
+        PlayerActions.FinishCommand(this);
 
     }
 
@@ -306,7 +293,13 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
 
     public override void Remove()
     {
+        ForceDehighlight();
+        if(isMoving)
+            isMoving = false;
         TriggerDeath(true);
+        PlayerActions.FinishProcess(this);
+        PlayerActions.FinishCommand(this);
+
     }
 
     public void Remove(bool forceClear = true, bool killPhasers = false)
@@ -316,7 +309,6 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
 
     private void TriggerDeath(bool forceClear = false, bool killPhasers = false)
     {
-        // Debug.Assert(false, "ERROR: UNIMPLEMENTED");
         if(!killPhasers && canPhase)
             return;
         if(canRevive)
@@ -328,18 +320,20 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
     private void Mobilized()
     {
         hitpoints = maxHitpoints;
-        // animator.Play("Revive");
+        if(canRevive)
+            animator.Play("Revive");
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
     private void Immobilized(bool forceClear)
     {
         hitpoints = 0;
-        animator.Play("Death");
         if(forceClear)
-            Remove();
-        else
-            SetNodes(this.worldPos, NodeType.Walkable, this);
+            StartCoroutine(PlayDeathAnimation());
+        else{
+            animator.Play("Death");
+            SetNodes(this.worldPos, NodeType.Obstacle, this);
+        }
     }
 
     private IEnumerator PlayDeathAnimation()

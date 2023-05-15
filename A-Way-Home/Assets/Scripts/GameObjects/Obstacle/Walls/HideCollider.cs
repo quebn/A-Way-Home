@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HideWaterCollider : MonoBehaviour
+public class HideCollider : MonoBehaviour
 {
     private PolygonCollider2D waterCollider;
 

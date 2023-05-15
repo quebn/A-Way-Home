@@ -29,7 +29,7 @@ public class MushroomYellow : Plant
     {
         for(int i = 0; i < growthNodes.Count; i++)
         {
-            if(growthNodes[i].hasObstacle || growthNodes[i].IsType(NodeType.Terrain)|| growthNodes[i].isBurning)
+            if(growthNodes[i].hasObstacle || growthNodes[i].IsType(NodeType.Terrain)|| growthNodes[i].IsStatus(NodeStatus.Burning))
                 continue;
             GameObject.Instantiate(growthNodes[i].IsType(NodeType.Walkable) ? cactus : lilypad,  growthNodes[i].worldPosition, Quaternion.identity);
         }

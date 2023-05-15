@@ -7,9 +7,10 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
     [SerializeField] private Animator animator;
     [SerializeField] private Vector2 fireStartPosDiff;
     [SerializeField] private Vector2Int fireDirectionDiff;
-    
-    private bool isBreathing => hitpoints == 1; 
+    // [SerializeField] private Vector2 mouthPosDiff;
     private List<Node> fireNodes;
+    private Node fireNodeOrigin;
+    private bool isBreathing => hitpoints == 1; 
 
     protected override void Initialize()
     {
@@ -35,7 +36,7 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
     {
         for(int i = 0; i < fireNodes.Count; i ++)
             fireNodes[i].Dehighlight();
-        PlayerActions.FinishCommand();
+        PlayerActions.FinishCommand(this);
     }
 
     public List<Node> IgnoredToggledNodes()
@@ -71,51 +72,38 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
             DestroyFire();
     }
 
-    private bool IfBurnable(Node node)
-    {
-        if(node.IsType(NodeType.Terrain))
-            return false;
-        if(!node.hasObstacle)
-            return true;
-        Debug.Assert(node.hasObstacle);
-        return node.GetObstacle().isBurnable;
-    }
-
     private void BreathFire()
     {
         if(fireNodes == null || fireNodes.Count <= 0)
             return;
-        Debug.Log("Breathing Fire....");
+        Debug.Log($"Breathing Fire.... Node Count: {fireNodes.Count}");
         for(int i = 0; i < fireNodes.Count; i++)
-        {
-            if(!IfBurnable(fireNodes[i]))
-                return;
-            fireNodes[i].SetFire(true);
-        }
+            fireNodes[i].fireNode.shouldBurn = true;
+        FireNode.StartFire(fireNodeOrigin);
     }
 
     private void DestroyFire()
     {
+        FireNode.StopFire(fireNodeOrigin);
         for(int i = 0; i < fireNodes.Count; i++)
-        {
-            fireNodes[i].SetFire(false);
-        }
+            fireNodes[i].fireNode.shouldBurn = false;
     }
 
     private void InitFireNodes()
     {
         fireNodes = new List<Node>();
-        Node fireStartNode = NodeGrid.NodeWorldPointPos(this.worldPos + fireStartPosDiff);
-        Vector2Int gridPosIncrement = new Vector2Int(fireStartNode.gridPos.x, fireStartNode.gridPos.y);
+        
+        fireNodeOrigin = NodeGrid.NodeWorldPointPos(this.worldPos + fireStartPosDiff);
+        Node currentFireNode = fireNodeOrigin;
+        Vector2Int gridPosIncrement = new Vector2Int(currentFireNode.gridPos.x, currentFireNode.gridPos.y);
         for(int i = 0; i < 3; i++)
         {
-            if(!NodeGrid.Instance.grid.ContainsKey(gridPosIncrement))
-                return;
-            Node node = NodeGrid.Instance.grid[gridPosIncrement];
-            fireNodes.Add(node);
             gridPosIncrement += fireDirectionDiff;
+            fireNodes.Add(currentFireNode);
+            if(!NodeGrid.Instance.grid.ContainsKey(gridPosIncrement))
+                continue;
+            currentFireNode.fireNode.childNode = NodeGrid.Instance.grid[gridPosIncrement];
+            currentFireNode = currentFireNode.fireNode.childNode;
         }
     }
-
-
 }

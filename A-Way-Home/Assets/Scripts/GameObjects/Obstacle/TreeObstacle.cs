@@ -114,6 +114,12 @@ public class TreeObstacle : Obstacle
 
     protected virtual bool LogNotPlaceable(Node node)
     {
-        return node.IsType(NodeType.Terrain) || (node.hasObstacle && !node.GetObstacle().isFragile)|| node == Character.instance.currentNode || node.isBurning;
+        return node.IsType(NodeType.Terrain) || (node.hasObstacle && !node.GetObstacle().isFragile)|| node == Character.instance.currentNode || node.IsStatus(NodeStatus.Burning);
     }
+
+    protected bool isFruitplaceable(Node node)
+    {
+        return node.worldPosition.x == NodeGrid.GetMiddle(this.worldPos.x + 2f) || node.worldPosition.x == NodeGrid.GetMiddle(this.worldPos.x + -2f); 
+    } 
+
 }

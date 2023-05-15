@@ -23,22 +23,4 @@ public class TreeLog : Obstacle, ILightning
     {
         Damage(damage);
     }
-
-    public override void Remove()
-    {
-        hitpoints = 0;
-        ClearNodes();
-        this.gameObject.SetActive(false);
-    }
-
-    public override void LoadData(LevelData levelData)
-    {
-        base.LoadData(levelData);
-        // Debug.LogWarning($"loaded hp: {hitpoints}"/);
-        if(hitpoints != 0)
-            return;
-        ClearNodes();
-        Debug.Assert(hitpoints == 0, "ERROR: Hitpoints should be 0!");
-        this.gameObject.SetActive(false);
-    }
 }

@@ -14,11 +14,12 @@ public class NodeGrid : MonoBehaviour
     [SerializeField] private Tilemap tileMap; 
     [SerializeField] private Tilemap tileMapStatus; 
     [SerializeField] private Tile tile; 
-    [SerializeField] private AnimatedTile tileElectric; 
-    [SerializeField] private AnimatedTile tileFire; 
     [SerializeField] private bool canBeCovered  = false;
     [SerializeField] PolygonCollider2D obsCollider2D;
     
+    private AnimatedTile tileElectric;// => PlayerActions.statusTiles[0]; 
+    private AnimatedTile tileFire;// => PlayerActions.statusTiles[1]; 
+    private AnimatedTile tilePoison;
     private Vector2Int gridSizeInt;
     private float nodeDiameter;
     
@@ -36,10 +37,18 @@ public class NodeGrid : MonoBehaviour
     {
         if (Instance == null)   
             Instance = this;
+        LoadTiles();
         nodeDiameter = nodeRadius * 2;
         gridSizeInt.x = Mathf.RoundToInt(gridSize.x / nodeDiameter);
         gridSizeInt.y = Mathf.RoundToInt(gridSize.y / nodeDiameter);
         CreateGrid();
+    }
+
+    private void LoadTiles()
+    {
+        tileElectric = Resources.Load<AnimatedTile>("StatusTiles/Electric");
+        tileFire = Resources.Load<AnimatedTile>("StatusTiles/Fire");
+        tilePoison = Resources.Load<AnimatedTile>("StatusTiles/Poison");
     }
 
     private void CreateGrid()
@@ -133,7 +142,6 @@ public class NodeGrid : MonoBehaviour
         return nodes;
     }
 
-
     public static void UpdateStatusTiles(Vector2Int gridPosition, NodeStatus nodeStatus)
     {
         switch(nodeStatus)
@@ -146,6 +154,9 @@ public class NodeGrid : MonoBehaviour
                 break;
             case NodeStatus.Burning:
                 NodeGrid.tilemapStatus.SetTile((Vector3Int)gridPosition, Instance.tileFire);
+                break;
+            case NodeStatus.Corrosive:
+                NodeGrid.tilemapStatus.SetTile((Vector3Int)gridPosition, Instance.tilePoison);
                 break;
         }
     }
@@ -367,10 +378,5 @@ public class NodeGrid : MonoBehaviour
         {
             nodes[i].Dehighlight();
         }
-    }
-
-    internal static Dictionary<Vector2Int, Node> GetNeighborNodes(Node node, Dictionary<Vector2Int, Node> grid, object tileRange)
-    {
-        throw new NotImplementedException();
     }
 }
