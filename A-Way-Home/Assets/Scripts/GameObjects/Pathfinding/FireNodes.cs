@@ -15,22 +15,41 @@ public class FireNode
     }
 
     //TODO: Add Block Fire and Continue Fire functions.
-
-    public static void StopFire(Node node)
-    {
-        node.SetStatus(NodeStatus.None);
-        if(node.fireNode.hasChild)
-            StopFire(node.fireNode.childNode);
-        else return;
-    }
-
-    public static void StartFire(Node node)
+    public static void StartFire(Node node, Vector2Int direction, int count)
     {
         if(!node.fireNode.shouldBurn || !IfBurnable(node))
             return;
         node.SetStatus(NodeStatus.Burning);
         if(node.fireNode.hasChild)
-            StartFire(node.fireNode.childNode);
+            StartFire(node.fireNode.childNode, direction, count - 1);
+        else return;
+    }
+
+    public static void StopFire(Node node, Vector2Int direction, int count)
+    {
+        node.SetStatus(NodeStatus.None);
+        if(node.fireNode.hasChild)
+            StopFire(node.fireNode.childNode, direction, count - 1);
+        else return;
+    }
+
+    public static void ContinueFire(Node node)
+    {
+        if(!node.fireNode.shouldBurn || !IfBurnable(node))
+            return;
+        node.SetStatus(NodeStatus.Burning);
+        if(node.fireNode.hasChild)
+            ContinueFire(node.fireNode.childNode);
+        else return;
+    }
+
+    public static void PauseFire(Node node)
+    {
+        if(!node.fireNode.shouldBurn || !node.IsStatus(NodeStatus.Burning))
+            return;
+        node.SetStatus(NodeStatus.None);
+        if(node.fireNode.hasChild)
+            PauseFire(node.fireNode.childNode);
         else return;
     }
 

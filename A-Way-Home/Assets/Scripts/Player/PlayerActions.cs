@@ -71,7 +71,6 @@ public class PlayerActions : MonoBehaviour
         if (ActionsNotAllowed() || hoveredNodes.Count == 0)
             return;
         commanding = false;
-        // selectedObstacle = Node.GetObstaclesByTool(hoveredNodes, currentTool);
         switch(currentTool)
         {
             case Tool.Inspect:
@@ -81,7 +80,7 @@ public class PlayerActions : MonoBehaviour
                 Lightning();
                 break;
             case Tool.Tremor:
-                Node.TremorNodes(hoveredNodes);
+                Tremor();
                 break;
             case Tool.Grow:
                 Grow();
@@ -92,6 +91,13 @@ public class PlayerActions : MonoBehaviour
                 return;
         }
         StartCoroutine(WaitForCommand());
+    }
+
+    private void Tremor()
+    {
+        animatorTool.transform.position = NodeGrid.GetMiddle(mouseWorldPos, 2, 2);
+        animatorExplosion.Play("Tremor_Explosion");
+        Node.TremorNodes(hoveredNodes);
     }
 
     private IEnumerator WaitForCommand()

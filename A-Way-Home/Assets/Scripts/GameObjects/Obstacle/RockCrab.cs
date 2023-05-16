@@ -63,7 +63,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         isWalking = true;
         Node prevNode = nodes[0];
         ClearNodes();
-        FireNode.StartFire(prevNode);
+        FireNode.ContinueFire(prevNode);
         StartCoroutine(StepToNode(targetNode));
     }
 
@@ -260,7 +260,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         currentTargetNode = path[targetIndex];
         Node prevNode = nodes[0];
         ClearNodes();
-        FireNode.StartFire(prevNode);
+        FireNode.ContinueFire(prevNode);
     }
 
     private IEnumerator FollowPath()
@@ -331,7 +331,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         if(node.IsStatus(NodeStatus.Burning))
         {
-            FireNode.StopFire(node);
+            FireNode.PauseFire(node);
         }
     }
 

@@ -204,7 +204,7 @@ public class Obstacle : MonoBehaviour, ISaveable
             prevNodes.Add(nodes[i]);
         ClearNodes();
         for(int i = 0; i < prevNodes.Count; i++)
-            FireNode.StartFire(prevNodes[i]);
+            FireNode.ContinueFire(prevNodes[i]);
         this.gameObject.SetActive(false);
         
     }

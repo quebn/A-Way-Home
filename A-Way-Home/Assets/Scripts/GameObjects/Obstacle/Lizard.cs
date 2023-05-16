@@ -76,17 +76,18 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
     {
         if(fireNodes == null || fireNodes.Count <= 0)
             return;
-        Debug.Log($"Breathing Fire.... Node Count: {fireNodes.Count}");
         for(int i = 0; i < fireNodes.Count; i++)
             fireNodes[i].fireNode.shouldBurn = true;
-        FireNode.StartFire(fireNodeOrigin);
+        FireNode.ContinueFire(fireNodeOrigin);
+        // FireNode.StartFire(fireNodeOrigin, fireDirectionDiff, 3);
     }
 
     private void DestroyFire()
     {
-        FireNode.StopFire(fireNodeOrigin);
+        FireNode.PauseFire(fireNodeOrigin);
         for(int i = 0; i < fireNodes.Count; i++)
             fireNodes[i].fireNode.shouldBurn = false;
+        // FireNode.StopFire(fireNodeOrigin, fireDirectionDiff, 3);
     }
 
     private void InitFireNodes()
