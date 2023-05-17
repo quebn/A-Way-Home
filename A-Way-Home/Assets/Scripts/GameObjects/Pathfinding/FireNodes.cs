@@ -15,22 +15,27 @@ public class FireNode
     }
 
     //TODO: Add Block Fire and Continue Fire functions.
-    public static void StartFire(Node node, Vector2Int direction, int count)
+    public static void StartFire(Node node, Vector2Int direction, int count, bool burn = true)
     {
-        if(!node.fireNode.shouldBurn || !IfBurnable(node))
+        if(count <= 0)
             return;
-        node.SetStatus(NodeStatus.Burning);
-        if(node.fireNode.hasChild)
-            StartFire(node.fireNode.childNode, direction, count - 1);
-        else return;
+        node.fireNode.shouldBurn = true;
+        bool keepBurning = IfBurnable(node) && burn;
+        if(keepBurning)
+            node.SetStatus(NodeStatus.Burning);
+        node.fireNode.childNode = NodeGrid.Instance.grid[node.gridPos + direction];
+        StartFire(node.fireNode.childNode, direction, count - 1, keepBurning);
     }
 
-    public static void StopFire(Node node, Vector2Int direction, int count)
+    public static void StopFire(Node node)
     {
-        node.SetStatus(NodeStatus.None);
-        if(node.fireNode.hasChild)
-            StopFire(node.fireNode.childNode, direction, count - 1);
-        else return;
+        node.fireNode.shouldBurn = false;
+        if(node.IsStatus(NodeStatus.Burning))
+            node.SetStatus(NodeStatus.None);
+        if(!node.fireNode.hasChild)
+            return;
+        StopFire(node.fireNode.childNode);
+        node.fireNode.childNode = null;
     }
 
     public static void ContinueFire(Node node)
@@ -45,7 +50,7 @@ public class FireNode
 
     public static void PauseFire(Node node)
     {
-        if(!node.fireNode.shouldBurn || !node.IsStatus(NodeStatus.Burning))
+        if(!node.IsStatus(NodeStatus.Burning))
             return;
         node.SetStatus(NodeStatus.None);
         if(node.fireNode.hasChild)
