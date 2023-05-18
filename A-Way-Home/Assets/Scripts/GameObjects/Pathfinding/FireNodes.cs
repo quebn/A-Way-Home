@@ -23,6 +23,8 @@ public class FireNode
         bool keepBurning = IfBurnable(node) && burn;
         if(keepBurning)
             node.SetStatus(NodeStatus.Burning);
+        if(!NodeGrid.Instance.grid.ContainsKey(node.gridPos + direction))
+            return;
         node.fireNode.childNode = NodeGrid.Instance.grid[node.gridPos + direction];
         StartFire(node.fireNode.childNode, direction, count - 1, keepBurning);
     }
@@ -60,7 +62,7 @@ public class FireNode
 
     public static bool IfBurnable(Node node)
     {
-        if(node.IsType(NodeType.Terrain))
+        if(node.IsType(NodeType.Terrain) || node.IsType(NodeType.Water))
             return false;
         if(!node.hasObstacle)
             return true;

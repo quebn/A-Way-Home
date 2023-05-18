@@ -1679,6 +1679,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3372219344806662990}
+  - component: {fileID: 527711001035817532}
   m_Layer: 0
   m_Name: NewUI
   m_TagString: Untagged
@@ -1703,6 +1704,49 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &527711001035817532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3372219344806662991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97319609fcc84874699feee7656fb8ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgms:
+  - name: Stage1Level1
+    clip: {fileID: 8300000, guid: 77364c27217962141b4df75e69e5e689, type: 3}
+    output: {fileID: -2998122498785923085, guid: 6f679b61e1fa5954d87030fe8ae74588, type: 2}
+    volume: 0.8
+    pitch: 1
+    loop: 1
+    level: []
+  - name: Stage1Level2
+    clip: {fileID: 8300000, guid: 48d14bfbc6f0c6748997717bb2cd5c98, type: 3}
+    output: {fileID: -2998122498785923085, guid: 6f679b61e1fa5954d87030fe8ae74588, type: 2}
+    volume: 0.8
+    pitch: 1
+    loop: 1
+    level: []
+  - name: Stage1Level3
+    clip: {fileID: 8300000, guid: 06a320e632c954943b13c74b744c00f2, type: 3}
+    output: {fileID: -2998122498785923085, guid: 6f679b61e1fa5954d87030fe8ae74588, type: 2}
+    volume: 0.8
+    pitch: 1
+    loop: 1
+    level: []
+  - name: Stage1Level4
+    clip: {fileID: 8300000, guid: bb80894f4423ef841a67529ea0e49adf, type: 3}
+    output: {fileID: -2998122498785923085, guid: 6f679b61e1fa5954d87030fe8ae74588, type: 2}
+    volume: 0.8
+    pitch: 1
+    loop: 1
+    level: []
+  ambiences: []
+  sfxs: []
 --- !u!1 &3372219344871061367
 GameObject:
   m_ObjectHideFlags: 0
