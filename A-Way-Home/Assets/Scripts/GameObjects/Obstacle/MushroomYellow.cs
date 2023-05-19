@@ -39,15 +39,11 @@ public class MushroomYellow : Plant
     {
         switch(hitpoints)
         {
-            case 1:
-                return youngling;
-            case 2:
-                return middle;
-            case 3:
-                return fullGrown;
-            default:
-                Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");
+            case 0:
                 return destroy;
+            default:
+                // Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");
+                return youngling;
         }
     }
 }

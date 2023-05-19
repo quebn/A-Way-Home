@@ -32,6 +32,7 @@ public class StonePillar : Obstacle, ITremor, ILightning
         ClearNodes();
         for(int i = 0; i < prevNodes.Count; i++)
             FireNode.ContinueFire(prevNodes[i]);
+        audioSources[0].Play();
         animator.Play("Destroy");
         float delay = animator.GetCurrentAnimatorStateInfo(0).length;
         Invoke("OnRemove", delay);

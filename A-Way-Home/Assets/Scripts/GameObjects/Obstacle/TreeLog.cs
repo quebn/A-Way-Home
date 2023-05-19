@@ -23,4 +23,10 @@ public class TreeLog : Obstacle, ILightning
     {
         Damage(damage);
     }
+
+    public override void Remove()
+    {
+        audioSources[0].Play();
+        base.Remove();
+    }
 }

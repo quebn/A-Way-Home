@@ -43,6 +43,7 @@ public class Boulder : Obstacle, ILightning, ITremor
         ClearNodes();
         for(int i = 0; i < prevNodes.Count; i++)
             FireNode.ContinueFire(prevNodes[i]);
+        audioSources[0].Play();
         animator.Play("BigBoulder_Destroy");
         float delay = animator.GetCurrentAnimatorStateInfo(0).length;
         Invoke("OnRemove", delay);

@@ -10,7 +10,7 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
     // [SerializeField] private Vector2 mouthPosDiff;
     private List<Node> fireNodes;
     private Node fireNodeOrigin;
-    private bool isBreathing => hitpoints == 1; 
+    private bool isBreathing => hitpoints % 2 == 0; 
 
     protected override void Initialize()
     {
@@ -52,19 +52,27 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
 
     public void OnTremor()
     {
-        Remove();
+        Damage(2);
+    }
+
+    public override void Remove()
+    {
+        if(isBreathing)
+            DestroyFire();
+        audioSources[0].Play();
+        base.Remove();
     }
 
     private void OnStartBreath()
     {
         if(isBreathing)
-            BreathFire();
+            FireNode.StartFire(fireNodeOrigin, fireDirectionDiff, 3);
         animator.SetBool("isBreathing", isBreathing);
     }
 
     private void ToggleFire()
     {
-        hitpoints = isBreathing ? 2 : 1;
+        hitpoints = isBreathing ? 5 : 4;
         animator.SetBool("isBreathing", isBreathing);
         if(isBreathing)
             BreathFire();
@@ -76,6 +84,7 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
     {
         if(fireNodes == null || fireNodes.Count <= 0)
             return;
+        audioSources[1].Play();
         FireNode.StartFire(fireNodeOrigin, fireDirectionDiff, 3);
         // for(int i = 0; i < fireNodes.Count; i++)
         //     fireNodes[i].fireNode.shouldBurn = true;

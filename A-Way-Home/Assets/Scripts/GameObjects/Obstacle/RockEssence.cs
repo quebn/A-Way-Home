@@ -32,6 +32,7 @@ public class RockEssence : Obstacle, ITremor
 
     private void OnRemove()
     {
+        audioSources[0].Play();
         this.spriteRenderers[0].enabled = false;
     }
 }

@@ -200,6 +200,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         {
             if(this.transform.position == currentTargetNode.worldPosition)
             {
+                audioSources[1].Play();
                 currentTargetIndex++;
                 OnStatusInteract(currentTargetNode);
                 if(!canPhase && currentTargetNode.hasObstacle)
@@ -231,6 +232,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         {
             if(this.transform.position == currentTargetNode.worldPosition)
             {
+                audioSources[1].Play();
                 currentTargetIndex++;
                 OnStatusInteract(currentTargetNode);
                 if(!canPhase && currentTargetNode.hasObstacle)
@@ -259,10 +261,8 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
     private void Stop()
     {
         isMoving = false;
-        if(canPhase)
-            return;
-        Debug.Assert(!currentTargetNode.hasObstacle || !canPhase, "ERROR: Node still has an obstacle");
-        SetNodes(currentTargetNode.worldPosition, NodeType.Obstacle, this);
+        if(!canPhase)
+            SetNodes(currentTargetNode.worldPosition, NodeType.Obstacle, this);
         PlayerActions.FinishProcess(this);
         PlayerActions.FinishCommand(this);
 
@@ -294,12 +294,8 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
     public override void Remove()
     {
         ForceDehighlight();
-        if(isMoving)
-            isMoving = false;
+        audioSources[0].Play();
         TriggerDeath(true);
-        PlayerActions.FinishProcess(this);
-        PlayerActions.FinishCommand(this);
-
     }
 
     public void Remove(bool forceClear = true, bool killPhasers = false)

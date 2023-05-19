@@ -36,6 +36,7 @@ public class Mushroom : Obstacle, ILightning
         if(hitpoints > 0)
             hitpoints = 0;
         animator.Play("Destroy");
+        audioSources[0].Play();
         ClearNodes();
         StartCoroutine(RemoveAnimation());
     }

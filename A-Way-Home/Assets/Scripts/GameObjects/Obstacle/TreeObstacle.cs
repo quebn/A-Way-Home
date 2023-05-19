@@ -36,9 +36,11 @@ public class TreeObstacle : Obstacle
     protected IEnumerator CutDown()
     {
         Debug.LogWarning("Cutting Down");
+        audioSources[0].Play();
         if(outlines[1].activeSelf)
             outlines[1].SetActive(false);
         yield return new WaitForSeconds(CutDownTreeAnimation());
+        audioSources[1].Stop();
         OnCutDown();
     }
 
@@ -65,6 +67,7 @@ public class TreeObstacle : Obstacle
     protected float CutDownTreeAnimation()
     {
         CutDownTreeDefault();
+        audioSources[1].Play();
         if (currentCursorLocation > this.worldPos.x)
             animator.Play("TreeFall_Right");
         else if (currentCursorLocation < this.worldPos.x)

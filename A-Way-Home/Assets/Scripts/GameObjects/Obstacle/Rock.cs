@@ -21,4 +21,10 @@ public class Rock : Obstacle, ILightning, ITremor
     {
         Damage(1);
     }
+
+    public override void Remove()
+    {
+        audioSources[0].Play();
+        base.Remove();
+    }
 }

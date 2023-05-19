@@ -9,6 +9,7 @@ public class WildFruitSpawn : SpawnablePlant, ITrap
 
     protected override void OnSpawn()
     {
+        DestroyNodeObstacle();
         base.OnSpawn();
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }

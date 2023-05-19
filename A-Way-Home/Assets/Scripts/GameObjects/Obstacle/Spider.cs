@@ -63,6 +63,7 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand,
             isMoving = false;
         hitpoints = 0;
         ClearNodes();
+        audioSources[0].Play();
         PlayerActions.FinishProcess(this);
         PlayerActions.FinishCommand(this);
         StartCoroutine(DeathAnimation());
@@ -151,6 +152,7 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand,
         {
             if(this.transform.position == currentTargetNode.worldPosition)
             {
+                audioSources[1].Play();
                 currentTargetIndex++;
                 OnStatusInteract(currentTargetNode);
                 SpawnWeb();
@@ -201,6 +203,7 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand,
         {
             if(this.transform.position == currentTargetNode.worldPosition)
             {
+                audioSources[1].Play();
                 if(currentTargetNode.hasObstacle)
                 {
                     Obstacle obs = currentTargetNode.GetObstacle(); 

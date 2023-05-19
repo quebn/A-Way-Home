@@ -96,6 +96,7 @@ public class PlayerActions : MonoBehaviour
     private void Tremor()
     {
         animatorTool.transform.position = NodeGrid.GetMiddle(mouseWorldPos, 2, 2);
+        AudioManager.instance.PlayAudio("Tremor");
         animatorExplosion.Play("Tremor_Explosion");
         Node.TremorNodes(hoveredNodes);
     }
@@ -133,6 +134,7 @@ public class PlayerActions : MonoBehaviour
             commanding = success;
             if(success)
                 selectedObstacle.OnDeselect();
+            AudioManager.instance.PlayAudio("Command");
             return success;
         }
         Debug.Assert(currentTool == Tool.Command, $"ERROR: Unexpected tool selected :{currentTool.ToString()} -> expected: Tool.Command");
@@ -246,13 +248,16 @@ public class PlayerActions : MonoBehaviour
         animatorTool.transform.position = location;
         animatorTool.Play("Lightning_Strike");
         animatorExplosion.Play("SmallExplosion_Destroy");
+        AudioManager.instance.PlayAudio("Lightning");
         return animatorTool.GetNextAnimatorStateInfo(0).length;
     }
 
     private void GrowAnimation(Vector2 location)
     {
         animatorTool.transform.position = location;
+        AudioManager.instance.PlayAudio("Grow");
         animatorTool.Play("Grow");
+
     }
 
     private void SetCurrentTool(InputAction.CallbackContext context)

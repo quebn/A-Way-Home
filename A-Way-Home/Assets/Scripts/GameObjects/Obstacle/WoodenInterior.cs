@@ -36,19 +36,8 @@ public class WoodenInterior : Obstacle, ILightning
 
     public override void Remove()
     {
-        if(hitpoints > 0)
-            hitpoints = 0;
-        ClearNodes();
-        this.gameObject.SetActive(false);
-        // StartCoroutine(OnRemove());
+        audioSources[0].Play();
+        base.Remove();
     }
 
-    // private IEnumerator OnRemove()
-    // {
-        // ClearNodes();
-        // // animator.Play("OnDestroy");
-        // // float delay = animator.GetCurrentAnimatorStateInfo(0).length;
-        // // yield return new WaitForSeconds(delay);
-        // this.gameObject.SetActive(false);
-    // }
 }

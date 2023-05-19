@@ -86,6 +86,7 @@ public class LightningRock : Obstacle, ILightning, ITremor
         for(int i = 0; i < lightNodes.Count; i++)
             lightNodes[i].ShockObstacle(1);
         ClearLightningField();
+        audioSources[0].Play(); 
         animator.Play("Explosion");
     }
 }

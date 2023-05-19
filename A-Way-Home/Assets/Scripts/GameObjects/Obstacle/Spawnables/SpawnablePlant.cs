@@ -60,6 +60,7 @@ public class SpawnablePlant : Spawnable , ILightning, IGrow
             Debug.LogWarning("Plant Cleared with hitpoints above 0");
         }
         animator.Play(CurrentAnimationName());
+        audioSources[0].Play();
         ClearNodes();
         StartCoroutine(RemoveAnimation());
     }

@@ -30,6 +30,7 @@ public class Bone : Obstacle, ILightning, ITremor
         if(hitpoints != 0)
             hitpoints = 0;
         ClearNodes();
+        audioSources[0].Play();
         animator.Play("Destroy");
         float delay = animator.GetCurrentAnimatorStateInfo(0).length;
         Invoke("OnRemove", delay);

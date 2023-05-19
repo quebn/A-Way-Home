@@ -61,6 +61,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             return;
         ForceDehighlight();
         isWalking = true;
+        audioSources[3].Play();
         Node prevNode = nodes[0];
         ClearNodes();
         FireNode.ContinueFire(prevNode);
@@ -73,8 +74,11 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         {
             if(this.transform.position == targetNode.worldPosition)
             {
+                OnStatusInteract(targetNode, IfFireImmune);
+                if(targetNode.hasObstacle)
+                    if(targetNode.GetObstacle().isTrampleable||(targetNode.GetObstacle().isFragile && hasShell))
+                        Destroy(targetNode.GetObstacle());
                 Stop();
-                PlayerActions.FinishProcess(this);
                 yield break;
             }
             this.transform.position = Vector3.MoveTowards(this.transform.position, targetNode.worldPosition, 5f * Time.deltaTime);
@@ -189,8 +193,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         {
             if(isWalking)
             {
-                isWalking = false;
-                PlayerActions.FinishProcess(this);
+                Stop();
             }
             character.TriggerDeath();
             Remove();
@@ -224,6 +227,8 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     public override void Damage(int value = 1)
     {
         hitpoints -= value;
+        if(hitpoints == 1)
+            audioSources[0].Play();
         animator.SetBool("hasShell", hasShell);
         nodes[0].currentType = hasShell ? NodeType.Obstacle : NodeType.Walkable;
         if(hitpoints == 0)
@@ -234,8 +239,10 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     {
         ForceDehighlight();
         hitpoints = 0;
-        if(isWalking)
+        if(isWalking){
             isWalking = false;
+            audioSources[3].Stop();
+        }
         ForceDehighlight();
         ClearNodes();
         PlayerActions.FinishProcess(this);
@@ -245,7 +252,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
 
     private IEnumerator DeathAnimation()
     {
-
+        audioSources[1].Play();
         animator.Play("Death");
         yield return new WaitForSeconds(this.animator.GetCurrentAnimatorClipInfo(0).Length);
         this.gameObject.SetActive(false);
@@ -256,6 +263,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         Debug.Assert(path != null && path.Count > 0);
         ForceDehighlight();
         isWalking = true;
+        audioSources[3].Play();
         targetIndex = 0;
         currentTargetNode = path[targetIndex];
         Node prevNode = nodes[0];
@@ -349,6 +357,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     private void Stop()
     {
         isWalking = false;
+        audioSources[3].Stop();
         Node node  = NodeGrid.NodeWorldPointPos(this.worldPos);
         if(node.IsObstacle(typeof(Rock)))
             RegenerateShell((Rock)node.GetObstacle());
@@ -366,6 +375,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     private void RegenerateShell(Rock rock)
     {
         hitpoints = 2;
+        audioSources[2].Play();
         Debug.Assert(hitpoints == 2, "ERROR: HP is not equals to 1");
         animator.SetBool("hasShell", hasShell);
         Destroy(rock);

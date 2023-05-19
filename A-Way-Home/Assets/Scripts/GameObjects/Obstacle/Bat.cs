@@ -7,7 +7,6 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
 {
     [SerializeField] private Animator animator;
     [SerializeField] private int damage;
-    [SerializeField] private GameObject poisonMiasma;
     
     private bool isMoving = false;
     private Dictionary<Vector2Int, Node> nodeGridRange;
@@ -24,6 +23,7 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
     {
         ForceDehighlight();
         Damage(damage);
+        audioSources[1].Play();
         if(hitpoints > 0)
             Move();
     }
@@ -33,7 +33,7 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
         ForceDehighlight();
         Vector3 pos = nodes[0].worldPosition;
         Move();
-        GameObject.Instantiate(poisonMiasma, pos, Quaternion.identity);
+        // GameObject.Instantiate(poisonMiasma, pos, Quaternion.identity);
     }
 
     public void OnPlayerAction()
@@ -93,8 +93,11 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
     public override void Remove()
     {
         ForceDehighlight();
-        if(isMoving)
+        audioSources[0].Play();
+        if(isMoving){
             isMoving = false;
+            audioSources[2].Stop();
+        }
         hitpoints = 0;
         ClearNodes();
         PlayerActions.FinishCommand(this);
@@ -108,6 +111,7 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
             return false;
         targetPosition = node.worldPosition;
         isMoving = true;
+        audioSources[2].Play();
         ClearNodes();
         StartCoroutine(GoToTargetCommand());
         return true;
@@ -124,6 +128,7 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
         // Debug.Assert(path.Count > 0, "ERROE: Bat has no Path!");
         SetRandomPosition();
         isMoving = true;
+        audioSources[2].Play();
         ClearNodes();
         StartCoroutine(GoToTarget());
     }
@@ -186,11 +191,12 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
     private void Stop()
     {
         isMoving = false;
+        audioSources[2].Stop();
         Node node = NodeGrid.NodeWorldPointPos(targetPosition);
         OnStatusInteract(node);
         if(!gameObject.activeSelf)
             return;
-        if(node.GetObstacle().isCorrosive)
+        if(node.hasObstacle && node.GetObstacle().isCorrosive)
             Destroy(node.GetObstacle());
         SetNodes(this.worldPos, NodeType.Walkable, this);
         SetNodeGridRange();

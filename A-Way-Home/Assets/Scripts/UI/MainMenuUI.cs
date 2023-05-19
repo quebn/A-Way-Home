@@ -13,9 +13,10 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject closeGameWindow;
     [SerializeField] private GameObject leaderboardsWindow;
     [SerializeField] private GameObject howtoPlayWindow;
+    [SerializeField] private GameObject characterLevelSelectionWindow;
     [SerializeField] private bool unlockedAllLevels;
 
-    private bool isActive;
+    // private bool isActive;
     public GameObject deleteConfirmWindow;
     public static bool isAllLevelUnlock;
 
@@ -28,7 +29,7 @@ public class MainMenuUI : MonoBehaviour
 
     private void Start()
     {
-        isActive = true;
+        // isActive = true;
         if (Instance == null)
             Instance = this;
         Debug.Assert(Instance != null, "Error: MainMenuUI instance is null");
@@ -91,6 +92,12 @@ public class MainMenuUI : MonoBehaviour
     {
         GameData.selectedCharacter = "NA";
         SetWindowInactive(characterSelectionWindow);
+    }
+
+    public void CloseLevelCharWindow()
+    {
+        GameData.selectedCharacter = "NA";
+        SetWindowInactive(characterLevelSelectionWindow);
     }
 
     public void StartGame()
@@ -168,16 +175,16 @@ public class MainMenuUI : MonoBehaviour
     // General window functions
     private void SetWindowInactive(GameObject window)
     {
-        Debug.Assert(!isActive, "Main Menu is Active");
+        // Debug.Assert(!isActive, "Main Menu is Active");
         Debug.Assert(window.activeSelf, window + " is not active!");
-        isActive = true;
+        // isActive = true;
         window.SetActive(false);
     }
 
     private void SetWindowActive(GameObject window)
     {
-        Debug.Assert(isActive, "Main menu is not Active");
-        isActive = false;
+        // Debug.Assert(isActive, "Main menu is not Active");
+        // isActive = false;
         window.SetActive(true);
     }
 }

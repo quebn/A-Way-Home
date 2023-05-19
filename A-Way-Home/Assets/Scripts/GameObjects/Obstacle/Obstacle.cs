@@ -12,9 +12,10 @@ public class Obstacle : MonoBehaviour, ISaveable
     [SerializeField] protected int hitpoints = 1;
     [SerializeField] protected List<Tool> toolsInteractable;
     [SerializeField] protected List<SpriteRenderer> spriteRenderers;
-    
+    [SerializeField] protected List<AudioSource> audioSources;
+
     protected List<Node> nodes;
-    
+
     protected SpriteRenderer mainSpriteRenderer => spriteRenderers[0];
     protected Vector2 worldPos => this.transform.position; 
     protected int nodeCount => tileSize.x * tileSize.y; 
