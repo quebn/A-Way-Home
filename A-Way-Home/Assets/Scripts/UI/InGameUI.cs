@@ -69,10 +69,15 @@ public class InGameUI : MonoBehaviour
     public void TimeCountdown()
     {
         if (timeCounterUI > 0)
+        {
             timeCounterUI -= Time.deltaTime;
+        }
         if (timeCounterUI <= 0 && !GameEvent.isEndWindowActive && !activatedCharacter)
         {
-            Character.instance.GoHome();
+            if(Character.instance.hasPath)
+                Character.instance.GoHome();
+            else
+                Character.instance.TriggerDeath();
             activatedCharacter = true;
         }
     }

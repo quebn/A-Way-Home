@@ -30,11 +30,6 @@ public class FruitCoconut : Obstacle
         Remove();
     }
 
-    public override void Damage(int damage)
-    {
-        Remove();
-    }
-
     public override void Remove()
     {
         ForceDehighlight();

@@ -29,6 +29,7 @@ public class Obstacle : MonoBehaviour, ISaveable
 
     private void Start()
     {
+        Debug.Assert(spriteRenderers.Count != 0);
         Initialize();
     }
 
@@ -189,8 +190,18 @@ public class Obstacle : MonoBehaviour, ISaveable
         Debug.Assert(this.hitpoints == levelData.obstacles[id].GetValue("hp"), "ERROR: values doesnt match");
     }
 
+    protected IEnumerator DamageAnim()
+    {
+        for(int i = 0; i < spriteRenderers.Count; i++)
+            spriteRenderers[i].color = Color.red;
+        yield return new WaitForSeconds(.25f);
+        for(int i = 0; i < spriteRenderers.Count; i++)
+            spriteRenderers[i].color = Color.white;
+    }
+
     public virtual void Damage(int value)
     {
+        StartCoroutine(DamageAnim());
         hitpoints -= value > hitpoints ? hitpoints : value;
         if(hitpoints <= 0)
             Remove();

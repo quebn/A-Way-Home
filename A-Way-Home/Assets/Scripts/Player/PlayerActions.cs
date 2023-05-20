@@ -113,8 +113,11 @@ public class PlayerActions : MonoBehaviour
         GameData.IncrementPlayerMoves(-1);
         ProcessObstaclesAction();
         StartCoroutine(WaitForObstaclesAction());
-        if(GameData.levelData.moves == 0)
+        if(GameData.levelData.moves == 0){
             NodeGrid.DehighlightNodes(hoveredNodes);
+            SetCurrentTool(0);
+        }
+        
     }
 
     public static void FinishCommand(ISelectable selectableObstacle)
@@ -152,15 +155,16 @@ public class PlayerActions : MonoBehaviour
 
     public void CancelAction(InputAction.CallbackContext context)
     {
+        if(currentTool == Tool.Inspect)
+            return;
+        if(!hasSelectedObs)
+            SetCurrentTool(0);
         if(hasSelectedObs)
         {
             selectedObstacle.OnDeselect();
             selectedObstacle = null;
         }
-        // SetCurrentTool(0);
-        Debug.Log("Canceled!");
-        // if(selectedObstacle != null)
-        //     selectedObstacle = null;
+        AudioManager.instance.PlayAudio("Deselect");
     }    
 
     public List<Node> IgnoredToggleNodes()

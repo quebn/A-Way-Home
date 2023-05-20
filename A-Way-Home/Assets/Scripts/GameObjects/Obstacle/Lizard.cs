@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lizard : Obstacle, ITremor, ICommand, ISelectable
+public class Lizard : Obstacle, ITremor, ICommand, ISelectable, IActionWaitProcess
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Vector2 fireStartPosDiff;
@@ -19,6 +19,13 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
         InitFireNodes();
         Invoke("OnStartBreath", .5f);
         // Invoke("OnStartBreath", WaitforFinishInit());
+    }
+
+
+    public void OnPlayerAction()
+    {
+        ToggleFire();
+        PlayerActions.FinishProcess(this);
     }
 
     public void OnSelect(Tool tool)
@@ -116,4 +123,5 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable
             currentFireNode = currentFireNode.fireNode.childNode;
         }
     }
+
 }

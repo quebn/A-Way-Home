@@ -81,6 +81,11 @@ public class Character : MonoBehaviour, ISaveable
         animator.Play("Damage");
     }
 
+    public static void UniqueSkill()
+    {
+        
+    }
+
     public void Initialize(LevelData levelData)
     {
         // this.requiredEssence = levelData.characterRequiredEssence;
@@ -139,7 +144,7 @@ public class Character : MonoBehaviour, ISaveable
     public void GoHome()
     {
         if (path.Count <=0){
-            TriggerDeath();
+            // TriggerDeath();
             return ;
         }
         currentTargetNode = path[0];
