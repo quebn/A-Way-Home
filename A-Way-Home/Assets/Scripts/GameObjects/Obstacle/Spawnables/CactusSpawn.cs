@@ -13,7 +13,7 @@ public class CactusSpawn : SpawnablePlant
     protected override void OnSpawn()
     {
         base.OnSpawn();
-        SetNodes(this.worldPos, NodeType.Obstacle, this);
+        SetNodes(this.worldPos, Character.IsName("Gaia") ? NodeType.Walkable : NodeType.Obstacle, this);
     }
 
     public override void OnGrow()

@@ -12,7 +12,9 @@ public class Cactus : Plant
     protected override void OnInitialize()
     {
         animator.Play(CurrentAnimationName());
-        SetNodes(this.worldPos, NodeType.Obstacle, this);
+        // SetNodes(this.worldPos, NodeType.Obstacle, this);
+        SetNodes(this.worldPos, Character.IsName("Gaia") ? NodeType.Walkable : NodeType.Obstacle, this);
+
     }
 
     public override void OnLightningHit(int damage)

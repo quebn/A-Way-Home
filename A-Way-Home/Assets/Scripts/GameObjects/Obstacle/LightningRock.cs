@@ -15,7 +15,8 @@ public class LightningRock : Obstacle, ILightning, ITremor
     protected override void Initialize()
     {
         base.Initialize();
-        SetNodes(this.worldPos, NodeType.Obstacle, this);
+        // SetNodes(this.worldPos, NodeType.Obstacle, this);
+        SetNodes(this.worldPos, Character.IsName("Terra") ? NodeType.Walkable : NodeType.Obstacle, this);
         lightNodes = NodeGrid.GetNeighborNodeList(nodes[0], 1);
         SetLightningField();
     }

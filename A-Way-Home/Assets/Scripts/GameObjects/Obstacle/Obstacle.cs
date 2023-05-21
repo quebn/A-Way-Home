@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour, ISaveable
 {
+    // [SerializeField] private InspectInfo info;
     [SerializeField] private Vector2Int tileSize;
     [SerializeField] protected string id;
     [SerializeField] protected List<GameObject> outlines;

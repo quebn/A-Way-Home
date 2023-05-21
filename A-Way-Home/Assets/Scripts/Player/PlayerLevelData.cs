@@ -89,6 +89,7 @@ public class PlayerLevelData : MonoBehaviour
             lives = GameData.PLAYER_STARTING_LIVES,
             moves = playerMoves,
             characterRequiredEssence = this.essenceNeeded,
+            conductivePositions = new List<SerializedVector3>(),
             score = 0,
             spawnCount = 0,
             secondsLeft = this.timeLimitInSecs,
@@ -107,6 +108,7 @@ public class PlayerLevelData : MonoBehaviour
             lives  = GameData.levelData.lives - 1,
             moves = playerMoves,
             characterRequiredEssence = this.essenceNeeded,
+            conductivePositions = new List<SerializedVector3>(),
             score = GameData.levelData.score, //<-TODO: score should be retained from previous game
             spawnCount = 0,
             secondsLeft = this.timeLimitInSecs,
@@ -126,6 +128,7 @@ public class PlayerLevelData : MonoBehaviour
             lives = GameData.levelData.lives,
             moves = playerMoves,
             characterRequiredEssence = this.essenceNeeded,
+            conductivePositions = new List<SerializedVector3>(),
             score = GameData.levelData.score, //<-TODO: score should be retained from previous game
             spawnCount = 0,
             secondsLeft = this.timeLimitInSecs,

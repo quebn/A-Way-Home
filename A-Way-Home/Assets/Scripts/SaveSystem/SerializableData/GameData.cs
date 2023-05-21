@@ -10,9 +10,11 @@ public class GameData
 
     // Settings Data
     public bool isFullscreen;
-    public bool hasAnimations;
-    public uint audio;
-    public uint gameSpeed;
+    public bool isMuted;
+    public uint master;
+    public uint bgm;
+    public uint ambience;
+    public uint sfx;
     public Dictionary<string, string> keybinds;
     // LeaderBoards Data
     public List<PlayerScoreData> leaderboards;
@@ -30,14 +32,16 @@ public class GameData
     {
         Debug.Log("Creating new Gamedata");
         // Settings
-        isFullscreen = true;
-        hasAnimations = true;
-        audio = 100;
-        gameSpeed = 5;
+        this.isFullscreen = true;
+        this.isMuted = false;
+        this.master = 100;
+        this.bgm = 100;
+        this.ambience = 100;
+        this.sfx = 100;
         // GameData 
-        currentStageLevel = "Stage1Level1";
-        unlockedLevels = new List<string>{currentStageLevel};
-        leaderboards = new List<PlayerScoreData>();
+        this.currentStageLevel = "Stage1Level1";
+        this.unlockedLevels = new List<string>{currentStageLevel};
+        this.leaderboards = new List<PlayerScoreData>();
     }
 
     public static void InitGameDataInstance()
@@ -90,6 +94,7 @@ public class LevelData
     public int characterEnergy;
     public int characterRequiredEssence;
     public SerializedVector3 characterPosition;
+    public List<SerializedVector3> conductivePositions;
     // Player Data 
     public uint stage;
     public uint level;

@@ -52,7 +52,7 @@ public class PlantEnergy : Plant, ITrap
     public void OnTrapTrigger(Character character)
     {
         character.IncrementEnergy(-damage);
-        Damage(1);
+        Damage(hitpoints);
     }
 
     public override void OnGrow()
@@ -68,7 +68,7 @@ public class PlantEnergy : Plant, ITrap
         if(hitpoints < 2)
             hitpoints = 0;
         animator.Play(CurrentAnimationName());
-        SetNodes(this.worldPos, isAdult? NodeType.Obstacle: NodeType.Walkable, this);
+        SetNodes(this.worldPos, isAdult && !Character.IsName("Gaia")? NodeType.Obstacle: NodeType.Walkable, this);
         if(hitpoints <= 2)
             ClearLightField();
         if(hitpoints <= 0)

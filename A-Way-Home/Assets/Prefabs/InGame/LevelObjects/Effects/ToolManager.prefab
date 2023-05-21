@@ -203,6 +203,7 @@ Transform:
   - {fileID: 6746524459866674857}
   - {fileID: 5818786911758100432}
   - {fileID: 7809828730036359259}
+  - {fileID: 250710904651230120}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -218,8 +219,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a84547522232a6e4badfe1c021673ada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorTool: {fileID: 6746524459292340627}
-  animatorExplosion: {fileID: 6746524459866674863}
+  animatorTools:
+  - {fileID: 6746524459292340627}
+  animatorExplosions:
+  - {fileID: 6746524459866674863}
   toolCount: 5
   mouseTextures:
   - {fileID: 2800000, guid: 4db9d67014a53fc4e9c1ab985f3c6d07, type: 3}
@@ -437,3 +440,34 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!1 &8296242796313775234
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 250710904651230120}
+  m_Layer: 0
+  m_Name: Inspect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &250710904651230120
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8296242796313775234}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6746524459292340638}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

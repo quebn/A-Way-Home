@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class NodeGrid : MonoBehaviour
+public class NodeGrid : MonoBehaviour, ISaveable
 {
     public static NodeGrid Instance {get; private set;}
     [SerializeField] private LayerMask unwalkableMask;
@@ -378,5 +378,27 @@ public class NodeGrid : MonoBehaviour
         {
             nodes[i].Dehighlight();
         }
+    }
+
+    public void SaveData(LevelData levelData)
+    {
+        if(!Character.IsName("Fulmen"))
+            return;
+        List<SerializedVector3> list = new List<SerializedVector3>();
+        foreach(KeyValuePair<Vector2Int, Node> pair in grid)
+        {
+            if(pair.Value.IsStatus(NodeStatus.Conductive))
+                list.Add(new SerializedVector3(pair.Key.x, pair.Key.y, 0));
+        }
+        levelData.conductivePositions = list;
+    }
+
+    public void LoadData(LevelData levelData)
+    {
+        if(!Character.IsName("Fulmen"))
+            return;
+        List<SerializedVector3> list = levelData.conductivePositions;
+        for(int i = 0; i < list.Count; i ++)
+            NodeWorldPointPos(list[i]).SetStatus(NodeStatus.Conductive);
     }
 }

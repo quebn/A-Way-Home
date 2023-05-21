@@ -14,8 +14,8 @@ public class PlayerActions : MonoBehaviour
 {
     public static PlayerActions Instance { get; private set; }
 
-    [SerializeField] private Animator animatorTool;
-    [SerializeField] private Animator animatorExplosion;
+    [SerializeField] private List<Animator> animatorTools;
+    [SerializeField] private List<Animator> animatorExplosions;
     [SerializeField] private int toolCount;
     [SerializeField] private List<Texture2D> mouseTextures;
     [SerializeField] private GameObject lilypadVisual;
@@ -90,14 +90,29 @@ public class PlayerActions : MonoBehaviour
                     break;
                 return;
         }
+        // Character.UniqueSkill(hoveredNodes, currentTool);
         StartCoroutine(WaitForCommand());
     }
 
+    // private void PerformUniqueSkill()
+    // {
+    //     // Node skillNode;
+    //     switch(GameData.levelData.characterName)
+    //     {
+    //         case "Gaia":
+    //             break;
+    //         case "Terra":
+    //             break;
+    //         case "Fulmen":
+    //             break;
+    //     }
+    // }
+
     private void Tremor()
     {
-        animatorTool.transform.position = NodeGrid.GetMiddle(mouseWorldPos, 2, 2);
+        animatorTools[0].transform.position = NodeGrid.GetMiddle(mouseWorldPos, 2, 2);
         AudioManager.instance.PlayAudio("Tremor");
-        animatorExplosion.Play("Tremor_Explosion");
+        animatorExplosions[0].Play("Tremor_Explosion");
         Node.TremorNodes(hoveredNodes);
     }
 
@@ -150,7 +165,7 @@ public class PlayerActions : MonoBehaviour
     private void Lightning()
     {
         Node.ShockNode(hoveredNodes[0]);
-        LightningAnimation(hoveredNodes[0].worldPosition);
+        LightningAnimation(hoveredNodes[0].worldPosition, animatorTools[0], animatorExplosions[0]);
     }
 
     public void CancelAction(InputAction.CallbackContext context)
@@ -182,7 +197,7 @@ public class PlayerActions : MonoBehaviour
 
     private void Grow()
     {
-        GrowAnimation(this.hoveredNodes[0].worldPosition);
+        GrowAnimation(this.hoveredNodes[0].worldPosition, animatorTools[0]);
         if(hoveredNodes[0].currentType == NodeType.Water && !hoveredNodes[0].hasPlatform && !hoveredNodes[0].IsStatus(NodeStatus.Burning))
             GameObject.Instantiate(lilypad, hoveredNodes[0].worldPosition, Quaternion.identity);
         else if(PlayerLevelData.Instance.stage == 3 && hoveredNodes[0].currentType == NodeType.Walkable && !hoveredNodes[0].hasObstacle && !hoveredNodes[0].IsStatus(NodeStatus.Burning))
@@ -247,7 +262,7 @@ public class PlayerActions : MonoBehaviour
         !obstaclesDone || commanding;
     }
 
-    private float LightningAnimation(Vector2 location)
+    private float LightningAnimation(Vector2 location, Animator animatorTool, Animator animatorExplosion)
     {
         animatorTool.transform.position = location;
         animatorTool.Play("Lightning_Strike");
@@ -256,7 +271,7 @@ public class PlayerActions : MonoBehaviour
         return animatorTool.GetNextAnimatorStateInfo(0).length;
     }
 
-    private void GrowAnimation(Vector2 location)
+    private void GrowAnimation(Vector2 location, Animator animatorTool)
     {
         animatorTool.transform.position = location;
         AudioManager.instance.PlayAudio("Grow");

@@ -82,6 +82,8 @@ public class Node
 
     public void SetStatus(NodeStatus status = NodeStatus.None)
     {
+        if(this.status == status)
+            return;
         this.status = status;
         NodeGrid.UpdateStatusTiles(this.gridPos, this.status);
     }
@@ -378,6 +380,9 @@ public class Node
         if(node == null)
             return;
         node.ShockObstacle((node.isOpen && node.IsStatus(NodeStatus.Conductive)) ? 2 : 1);
+        if(Character.IsName("Fulmen"))
+            node.SetStatus(NodeStatus.Conductive);
+        Debug.Log(Character.IsName("Fulmen"));
         List<Node> nodes = NodeGrid.GetNeighborNodeList(node, NodeGrid.Instance.grid, 1);
         if(nodes.Count == 0)
             return;

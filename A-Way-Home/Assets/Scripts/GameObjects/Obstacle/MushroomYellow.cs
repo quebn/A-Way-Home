@@ -15,7 +15,8 @@ public class MushroomYellow : Plant
     protected override void OnInitialize()
     {
         animator.Play(CurrentAnimationName());
-        SetNodes(this.worldPos, NodeType.Obstacle, this);
+        // SetNodes(this.worldPos, NodeType.Obstacle, this);
+        SetNodes(this.worldPos, isAdult && !Character.IsName("Gaia")? NodeType.Obstacle: NodeType.Walkable, this);
         growthNodes = NodeGrid.GetNeighborNodeList(nodes[0], 1);
     }
 

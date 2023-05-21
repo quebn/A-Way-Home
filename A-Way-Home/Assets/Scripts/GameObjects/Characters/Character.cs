@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,9 +18,9 @@ public class Character : MonoBehaviour, ISaveable
     protected bool isGoingHome = false;
     protected List<Node> path;
     protected Node currentTargetNode;
-    protected bool isAilve = true;
+    protected bool isAlive = true;
 
-    public Node currentNode;
+    public Node currentNode => NodeGrid.NodeWorldPointPos(this.currentPosition);
 
     public Sprite image => spriteRenderer.sprite;
     public Essence currentEssence => Essence.list[currentPosition];
@@ -28,7 +29,7 @@ public class Character : MonoBehaviour, ISaveable
     public bool destinationReached => Essence.GetCurrentDestinations().Contains(currentPosition) || currentPosition == Home.instance.transform.position;
     public bool isMoving => isGoingHome;
     public bool hasPath => path.Count > 0;
-    public bool isDead => !isAilve;
+    public bool isDead => !isAlive;
     protected Vector3 currentTargetPos => currentTargetNode.worldPosition;
     public bool noEssenceRequired => requiredEssence == 0;
 
@@ -81,11 +82,6 @@ public class Character : MonoBehaviour, ISaveable
         animator.Play("Damage");
     }
 
-    public static void UniqueSkill()
-    {
-        
-    }
-
     public void Initialize(LevelData levelData)
     {
         // this.requiredEssence = levelData.characterRequiredEssence;
@@ -95,14 +91,9 @@ public class Character : MonoBehaviour, ISaveable
         Debug.Assert(this.energy == levelData.characterEnergy, "ERROR: Character energy value mismatch");
         Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {levelData.characterEnergy} energy and {levelData.characterRequiredEssence} required Essence");
         Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {this.energy} energy and {this.requiredEssence} required Essence");
-        currentNode = NodeGrid.NodeWorldPointPos(this.currentPosition);
         Debug.Assert(currentNode != null);
         StartCoroutine(GetPathOnInit());
-        // if (GameEvent.isSceneSandbox)
-        //     this.speed = 5f;    
-        // else
-        //     this.speed = GameData.Instance.gameSpeed;
-        this.speed = GameEvent.isSceneSandbox ? 5f : GameData.Instance.gameSpeed;
+        this.speed = 5f;
     } 
 
     private IEnumerator GetPathOnInit()
@@ -156,7 +147,7 @@ public class Character : MonoBehaviour, ISaveable
     public void Relocate(Vector2 location)
     {
         this.transform.position = location;
-        currentNode = NodeGrid.NodeWorldPointPos(this.currentPosition); 
+        // currentNode = NodeGrid.NodeWorldPointPos(this.currentPosition); 
         GetPath();
         Debug.Log($"Relocated Character to {location}");
     }
@@ -165,9 +156,9 @@ public class Character : MonoBehaviour, ISaveable
     {
         if (currentPosition == currentTargetPos)
         {
+            NodeStatusInteract(currentTargetNode);
             currentTargetNode.UpdateNodeColor();
             targetIndex++;
-            IncrementEnergy(-1);
             if (EndConditions())
                 return;
             currentTargetNode = path[targetIndex];
@@ -175,7 +166,27 @@ public class Character : MonoBehaviour, ISaveable
         Flip();
         transform.position = Vector3.MoveTowards(currentPosition, currentTargetPos, speed * Time.deltaTime);
     }
-    
+
+    private void NodeStatusInteract(Node node)
+    {
+        switch(node.currentStatus)
+        {
+            case NodeStatus.None:
+                IncrementEnergy(-1);
+                break;
+            case NodeStatus.Conductive:
+                if(!IsName("Fulmen"))
+                    IncrementEnergy(-1);
+                break;
+            case NodeStatus.Burning:
+                TriggerDeath();
+                break;
+            case NodeStatus.Corrosive:
+                TriggerDeath();
+                break;
+        }
+    }
+
     private void Flip()
     {
         if (!isFlipped && xPosDiff < 0)
@@ -202,7 +213,7 @@ public class Character : MonoBehaviour, ISaveable
         animator.SetBool("isWalk", false);
         essence.OnConsume(this);
         this.isGoingHome = false;
-        this.currentNode = currentTargetNode;
+        // this.currentNode = currentTargetNode;
         GetPath();
         Debug.Log($"Current Essence Needed: {this.requiredEssence}");
         return true;
@@ -219,7 +230,7 @@ public class Character : MonoBehaviour, ISaveable
     public bool TriggerDeath(float animDelay = 0)
     {
         this.isGoingHome = false;
-        this.isAilve = false;
+        this.isAlive = false;
         this.animator.SetBool("isWalk", isGoingHome);
         StartCoroutine(PlayDeathAnim(animDelay));
         return true;
@@ -282,5 +293,10 @@ public class Character : MonoBehaviour, ISaveable
     public void LoadData(LevelData levelData)
     {
         this.transform.position = levelData.characterPosition;
+    }
+
+    public static bool IsName(string name)
+    {
+        return name == GameData.levelData.characterName;
     }
 }
