@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CoconutSpawn : Spawnable, ILightning, ITrap
 {
-    [SerializeField] private int heal = 5;
     [SerializeField] private Animator animator;
 
 

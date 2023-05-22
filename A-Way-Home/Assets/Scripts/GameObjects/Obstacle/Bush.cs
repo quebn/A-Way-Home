@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Bush : Plant, ITrap
 {
-
     protected override void OnInitialize()
     {
         base.OnInitialize();
@@ -26,7 +25,7 @@ public class Bush : Plant, ITrap
     public void OnTrapTrigger(Character character)
     {
         Damage(hitpoints);
-        character.IncrementEnergy(1);
+        character.IncrementEnergy(heal);
     }
 
     protected override string CurrentAnimationName()

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CactusFruitSpawn : SpawnablePlant, ITrap
 {
-    [SerializeField] private int heal = 5;
 
     protected override void OnSpawn()
     {

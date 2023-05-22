@@ -51,12 +51,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b0282b50c25ff94592e30c219d6d189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: fireberry
+    type: walkable
+    hp: 1
+    isDeadly: 0
+    heal: 3
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 4669521701364131974}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 000000000100000002000000
   spriteRenderers:
   - {fileID: 1833930495595314173}

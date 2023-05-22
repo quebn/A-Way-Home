@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class WildFruit : Plant, ITrap
 {
-    [SerializeField] private int heal = 1;
 
     protected override void OnInitialize()
     {

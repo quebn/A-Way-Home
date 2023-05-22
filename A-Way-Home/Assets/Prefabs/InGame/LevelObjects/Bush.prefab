@@ -50,18 +50,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64dfa6a19ff94d84aa4973b299c45e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: bush
+    type: walkable
+    hp: 1
+    isDeadly: 0
+    heal: 1
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 3180048694411896776}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 000000000100000002000000
   spriteRenderers:
   - {fileID: 3180048694107731746}
   audioSources:
   - {fileID: -7448757283906791073}
   animator: {fileID: 3180048694107731744}
+  heal: 1
 --- !u!212 &3180048694107731746
 SpriteRenderer:
   m_ObjectHideFlags: 0

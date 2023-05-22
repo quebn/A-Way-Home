@@ -114,3 +114,22 @@ public class CharacterInfo
     public GameObject prefab;
 
 }
+
+[System.Serializable]
+public class InspectInfo
+{
+    public string name;
+    public string type;
+    public int hp;
+    public bool isDeadly;
+    public int heal;
+
+    public InspectInfo(string name, string type, int hp, bool isDeadly, int heal)
+    {
+        this.name = name;
+        this.type = type;
+        this.hp = hp;
+        this.isDeadly = isDeadly;
+        this.heal = heal;
+    }
+}

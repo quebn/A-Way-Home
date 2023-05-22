@@ -48,12 +48,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 606277a92c89889419be73d2e4797593, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: boulder
+    type: obstacle
+    hp: 4
+    isDeadly: 0
+    heal: 0
   tileSize: {x: 2, y: 2}
   id: 
   outlines:
   - {fileID: 7629241104601960585}
   isNotHoverable: 0
-  hitpoints: 4
   toolsInteractable: 000000000100000004000000
   spriteRenderers:
   - {fileID: 2167627224974332013}

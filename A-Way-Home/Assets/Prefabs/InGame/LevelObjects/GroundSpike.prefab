@@ -48,15 +48,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eba616a35707374da9e86565d47730e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: spiker
+    type: monster
+    hp: 1
+    isDeadly: 1
+    heal: 0
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 7106530484289888728}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 
   spriteRenderers:
   - {fileID: 4085223547173731104}
+  audioSources: []
   animator: {fileID: 4085223547173731107}
 --- !u!212 &4085223547173731104
 SpriteRenderer:

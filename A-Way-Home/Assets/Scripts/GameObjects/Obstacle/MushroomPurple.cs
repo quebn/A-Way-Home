@@ -5,7 +5,6 @@ using UnityEngine;
 public class MushroomPurple : Mushroom, ITrap
 {
 
-    [SerializeField] private int heal = 7;
 
     public void OnTrapTrigger(Character character)
     {

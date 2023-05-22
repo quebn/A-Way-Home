@@ -48,12 +48,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8affe452f60f5c6448f01b633266eff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: cactus fruit
+    type: walkable
+    hp: 1
+    isDeadly: 0
+    heal: 1
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 6007281317226664716}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 0000000001000000
   spriteRenderers:
   - {fileID: 2772742549711105981}

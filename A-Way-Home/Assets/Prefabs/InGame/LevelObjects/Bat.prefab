@@ -135,12 +135,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c98a8dfadcc55894883e9b73353a0ede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: ivy bat
+    type: monster
+    hp: 2
+    isDeadly: 1
+    heal: 0
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 131012871155514716}
   isNotHoverable: 0
-  hitpoints: 2
   toolsInteractable: 000000000100000003000000
   spriteRenderers:
   - {fileID: 8764478453688538269}
@@ -150,7 +155,6 @@ MonoBehaviour:
   - {fileID: 3041511690162698337}
   animator: {fileID: 5545026643998478287}
   damage: 5
-  poisonMiasma: {fileID: 8745363850703227746, guid: 371b5b5e167558b4eb34d05f91f5511b, type: 3}
 --- !u!212 &8764478453688538269
 SpriteRenderer:
   m_ObjectHideFlags: 0

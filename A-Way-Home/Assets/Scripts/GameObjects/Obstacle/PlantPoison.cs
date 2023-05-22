@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlantPoison : Plant, ITrap
 {
-    [SerializeField] private int damage; 
     private List<Node> tilesPoisoned;
 
     public override bool isCorrosive => false;
@@ -17,7 +16,7 @@ public class PlantPoison : Plant, ITrap
 
     public void OnTrapTrigger(Character character)
     {
-        character.IncrementEnergy(-damage);
+        character.IncrementEnergy(heal);
         character.DamageAnimation();
         Damage(hitpoints);
     }

@@ -3,24 +3,31 @@ using System.Collections;
 using System;
 using UnityEngine;
 
-public class Obstacle : MonoBehaviour, ISaveable
+public class Obstacle : MonoBehaviour, ISaveable, IInspect
 {
-    // [SerializeField] private InspectInfo info;
+    [SerializeField] private InspectInfo info;
     [SerializeField] private Vector2Int tileSize;
     [SerializeField] protected string id;
     [SerializeField] protected List<GameObject> outlines;
     [SerializeField] protected bool isNotHoverable;
-    [SerializeField] protected int hitpoints = 1;
+    // [SerializeField] protected int hitpoints = 1;
     [SerializeField] protected List<Tool> toolsInteractable;
     [SerializeField] protected List<SpriteRenderer> spriteRenderers;
     [SerializeField] protected List<AudioSource> audioSources;
 
     protected List<Node> nodes;
 
+    protected int hitpoints {
+        get => info.hp; 
+        set => info.hp = value;
+    }
+    protected int heal{ 
+        get => info.heal; 
+        set => info.heal = value;
+    }
     protected SpriteRenderer mainSpriteRenderer => spriteRenderers[0];
     protected Vector2 worldPos => this.transform.position; 
     protected int nodeCount => tileSize.x * tileSize.y; 
-
 
     public virtual bool isBurnable => false;
     public virtual bool isCorrosive => false;
@@ -37,6 +44,11 @@ public class Obstacle : MonoBehaviour, ISaveable
     private void OnDisable()
     {
         ClearNodes();
+    }
+
+    public void OnInspect()
+    {
+        InspectUI.inspectInfo = this.info;
     }
 
     protected virtual void Initialize()

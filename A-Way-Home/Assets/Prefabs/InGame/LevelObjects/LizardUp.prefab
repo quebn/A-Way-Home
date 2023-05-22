@@ -49,6 +49,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2f0e0590be6d9c40acf0d5196e7959d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: pyrolizard
+    type: obstacle
+    hp: 4
+    isDeadly: 1
+    heal: 0
   tileSize: {x: 1, y: 2}
   id: 
   outlines:

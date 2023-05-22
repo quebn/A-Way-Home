@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class WildFruitSpawn : SpawnablePlant, ITrap
 {
-
-    [SerializeField] private int heal = 1;
-
     protected override void OnSpawn()
     {
         DestroyNodeObstacle();

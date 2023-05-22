@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class FruitCoconut : Obstacle
 {
-    [SerializeField] private int heal = 5;
     [SerializeField] private Animator animator;
 
     public override bool isBurnable => true;

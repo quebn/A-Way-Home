@@ -47,6 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3d829efb191f4144bb1303aa2b2875f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: lilypad
+    type: walkable
+    hp: 1
+    isDeadly: 0
+    heal: 0
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
@@ -56,6 +62,7 @@ MonoBehaviour:
   toolsInteractable: 0000000001000000
   spriteRenderers:
   - {fileID: 4785245567440579335}
+  audioSources: []
   animator: {fileID: 4785245567440579332}
 --- !u!212 &4785245567440579335
 SpriteRenderer:

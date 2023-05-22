@@ -48,6 +48,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 255eafb14ec981c468d11735b521d3ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: log
+    type: obstacle
+    hp: 1
+    isDeadly: 0
+    heal: 0
   tileSize: {x: 1, y: 1}
   id: 
   outlines:

@@ -27,7 +27,7 @@ public class Cactus : Plant
 
     protected override void OnHighlight(Tool tool)
     {
-        if(tool != Tool.Grow && isAdult)
+        if(tool == Tool.Grow && isAdult)
             return;
         base.OnHighlight(tool);
     }

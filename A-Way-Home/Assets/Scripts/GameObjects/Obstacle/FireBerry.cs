@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class FireBerry : Plant, ITrap
 {
-    [SerializeField] private int heal = 3;
     private List<Node> explosionNodes;
 
     protected override void OnInitialize()

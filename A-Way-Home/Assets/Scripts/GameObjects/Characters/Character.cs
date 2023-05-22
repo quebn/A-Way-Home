@@ -233,6 +233,7 @@ public class Character : MonoBehaviour, ISaveable
         this.isAlive = false;
         this.animator.SetBool("isWalk", isGoingHome);
         StartCoroutine(PlayDeathAnim(animDelay));
+        AudioManager.instance.PlayAudio("Death");
         return true;
     }
 

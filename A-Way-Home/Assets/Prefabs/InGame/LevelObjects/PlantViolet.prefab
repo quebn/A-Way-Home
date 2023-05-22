@@ -134,6 +134,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32e6c113c037b924abd1bfa6ee92b281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: poison ivy
+    type: walkable
+    hp: 1
+    isDeadly: 0
+    heal: -5
   tileSize: {x: 1, y: 1}
   id: 
   outlines:

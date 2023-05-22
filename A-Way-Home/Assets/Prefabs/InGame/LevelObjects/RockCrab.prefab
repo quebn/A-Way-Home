@@ -136,12 +136,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62b9df7eb05410c4b98a31e492feb905, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: rock crab
+    type: monster
+    hp: 2
+    isDeadly: 1
+    heal: 0
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 4136826905514099170}
   isNotHoverable: 0
-  hitpoints: 2
   toolsInteractable: 00000000010000000300000004000000
   spriteRenderers:
   - {fileID: 7432801485719824593}

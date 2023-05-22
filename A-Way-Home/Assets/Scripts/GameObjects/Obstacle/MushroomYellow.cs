@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MushroomYellow : Plant
+public class MushroomYellow : Plant, ITrap
 {
     [SerializeField] private GameObject lilypad;
     [SerializeField] private GameObject cactus;
@@ -46,5 +46,11 @@ public class MushroomYellow : Plant
                 // Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");
                 return youngling;
         }
+    }
+
+    public void OnTrapTrigger(Character character)
+    {
+        Remove();
+        character.IncrementEnergy(heal);
     }
 }

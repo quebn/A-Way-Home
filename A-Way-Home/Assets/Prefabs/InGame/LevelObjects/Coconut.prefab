@@ -131,15 +131,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b998715cdd86d44bb5ea054c6272449, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: coconut
+    type: walkable
+    hp: 1
+    isDeadly: 0
+    heal: 5
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 1363960580199274262}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 0000000001000000
   spriteRenderers:
   - {fileID: 1363960580878287159}
+  audioSources: []
   heal: 5
   animator: {fileID: 8152718602712021038}
 --- !u!212 &1363960580878287159

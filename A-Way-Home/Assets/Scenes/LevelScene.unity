@@ -289,6 +289,8 @@ MonoBehaviour:
   zoomSpeed: 25
   minZoom: 4.5
   maxZoom: 8
+  panSpeed: 10
+  panBorderThickness: 10
 --- !u!114 &891396990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -329,6 +331,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3190491568578578317, guid: 0d2d85a4f7e181d4aa50537f8b5463bb, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 891396987}
     - target: {fileID: 6746524459292340625, guid: 0d2d85a4f7e181d4aa50537f8b5463bb, type: 3}
       propertyPath: m_Name
       value: ToolManager

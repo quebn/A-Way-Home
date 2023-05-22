@@ -8,6 +8,7 @@ public class InGameUI : MonoBehaviour
     [HideInInspector] public EndGameType endGameType;
     [SerializeField] private GameObject optionsWindow;
     [SerializeField] private GameObject gameEndWindow;
+    [SerializeField] private GameObject howToPlayWindow;
     [SerializeField] private Image characterImage;
     [SerializeField] private Slider energySlider;
     [SerializeField] private TextMeshProUGUI characterNameTMP;
@@ -105,9 +106,18 @@ public class InGameUI : MonoBehaviour
     public void HelpButton()
     {
         Debug.Log("Pressed Help Button!");
+        GameEvent.PauseGame();
+        this.howToPlayWindow.SetActive(true);
         // Should Pause the game
     }
     
+    public void CloseHowToPlay()
+    {
+        GameEvent.UnpauseGame();
+        this.howToPlayWindow.SetActive(false);
+        // Should Pause the game
+    }
+
     public void OptionsButton()
     {
         GameEvent.PauseGame();

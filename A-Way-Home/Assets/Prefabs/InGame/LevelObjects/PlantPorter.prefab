@@ -50,6 +50,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ad62ec508899ac4c9ba299bd705f6b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: Porter
+    type: walkable
+    hp: 1
+    isDeadly: 0
+    heal: -15
   tileSize: {x: 1, y: 1}
   id: 
   outlines:

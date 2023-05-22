@@ -20,6 +20,7 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] private List<Texture2D> mouseTextures;
     [SerializeField] private GameObject lilypadVisual;
     [SerializeField] private GameObject cactusVisual;
+    [SerializeField] private InspectUI inspectUI;
     private Tool currentTool;
     private Mouse mouse;
     private Camera mainCamera;
@@ -170,6 +171,10 @@ public class PlayerActions : MonoBehaviour
 
     public void CancelAction(InputAction.CallbackContext context)
     {
+        if(ActionsNotAllowed())
+            return;
+        inspectUI.Hide();
+        AudioManager.instance.PlayAudio("Deselect");
         if(currentTool == Tool.Inspect)
             return;
         if(!hasSelectedObs)
@@ -189,9 +194,17 @@ public class PlayerActions : MonoBehaviour
 
     private void Inspect()
     {
-        hoveredNodes[0].InspectObstacle();
+        AudioManager.instance.PlayAudio("Select");
         if(hoveredNodes.Contains(Character.instance.currentNode))
+        {
             Character.instance.Interact();
+            return;
+        }
+        hoveredNodes[0].InspectObstacle();
+        if(hoveredNodes[0].hasObstacle || hoveredNodes[0].hasPlatform)
+            inspectUI.Display(hoveredNodes[0].worldPosition);
+        else
+            inspectUI.Hide();
     }
 
 
@@ -256,7 +269,7 @@ public class PlayerActions : MonoBehaviour
 
     private bool ActionsNotAllowed()
     {
-        return  IsMouseOverUI() || 
+        return  IsMouseOverUI() || GameEvent.isPaused ||
         GameData.levelData.moves == 0 ||
         Character.instance.isMoving || 
         !obstaclesDone || commanding;
@@ -284,6 +297,7 @@ public class PlayerActions : MonoBehaviour
         if (GameEvent.isPaused || Character.instance.destinationReached)
             return;
         int toolNumber = context.action.name[context.action.name.Length - 1] - '0';
+        AudioManager.instance.PlayAudio("Switch");
         SetCurrentTool(toolNumber - 1);
     }
 
@@ -294,12 +308,12 @@ public class PlayerActions : MonoBehaviour
         Tool newTool = (Tool)index;
         if(currentTool == newTool || GameData.levelData.moves == 0)
             return;
+        inspectUI.Hide();
         if(lilypadVisual.activeSelf)
             lilypadVisual.SetActive(false);
         if(cactusVisual.activeSelf)
             cactusVisual.SetActive(false);
         NodeGrid.DehighlightNodes(hoveredNodes);
-        // hoveredNodes = new List<Node>();
         if(hasSelectedObs)
         {
             selectedObstacle.OnDeselect();

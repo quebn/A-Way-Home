@@ -48,12 +48,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7a05fb2111c3de40bd51e8b2e7b1f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: big barrel
+    type: obstacle
+    hp: 3
+    isDeadly: 0
+    heal: 0
   tileSize: {x: 2, y: 1}
   id: 
   outlines:
   - {fileID: 8450833399130776181}
   isNotHoverable: 0
-  hitpoints: 3
   toolsInteractable: 0000000001000000
   spriteRenderers:
   - {fileID: 3754029945920740186}

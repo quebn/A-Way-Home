@@ -48,6 +48,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f89c1973716b96428d4e9ba1afbeed1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: lilypad
+    type: walkable
+    hp: 1
+    isDeadly: 0
+    heal: 0
   tileSize: {x: 1, y: 1}
   id: 
   outlines:

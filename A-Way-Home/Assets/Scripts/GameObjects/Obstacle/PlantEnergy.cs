@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlantEnergy : Plant, ITrap
 {
-[SerializeField] private int damage;
     [SerializeField] private List<Sprite> sprites;
     // [SerializeField] private SpriteRenderer spriteRendererer;
     private List<Node> lightNodes;
@@ -51,7 +50,7 @@ public class PlantEnergy : Plant, ITrap
 
     public void OnTrapTrigger(Character character)
     {
-        character.IncrementEnergy(-damage);
+        character.IncrementEnergy(heal);
         Damage(hitpoints);
     }
 
