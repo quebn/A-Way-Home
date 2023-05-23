@@ -90,6 +90,12 @@ public class SettingsUI : MonoBehaviour
         MainMenuUI.Instance.CloseSettingsWindow();
     }
 
+    public void ToggleFullScreen()
+    {
+        GameData.Instance.isFullscreen = !GameData.Instance.isFullscreen; 
+        Screen.fullScreen = GameData.Instance.isFullscreen;
+    }
+
     public void RevertValues()
     {
         this.fullscreenToggle.isOn = true;

@@ -42,6 +42,8 @@ public class NodeGrid : MonoBehaviour, ISaveable
         gridSizeInt.x = Mathf.RoundToInt(gridSize.x / nodeDiameter);
         gridSizeInt.y = Mathf.RoundToInt(gridSize.y / nodeDiameter);
         CreateGrid();
+        if(GameEvent.loadType == LevelLoadType.LoadGame)
+            LoadElectric();
     }
 
     private void LoadTiles()
@@ -395,10 +397,21 @@ public class NodeGrid : MonoBehaviour, ISaveable
 
     public void LoadData(LevelData levelData)
     {
+        // if(!Character.IsName("Fulmen"))
+        //     return;
+        // List<SerializedVector3> list = levelData.conductivePositions;
+        // for(int i = 0; i < list.Count; i ++)
+        //     NodeWorldPointPos(list[i]).SetStatus(NodeStatus.Conductive);
+    }
+
+    public void LoadElectric()
+    {
         if(!Character.IsName("Fulmen"))
             return;
-        List<SerializedVector3> list = levelData.conductivePositions;
-        for(int i = 0; i < list.Count; i ++)
-            NodeWorldPointPos(list[i]).SetStatus(NodeStatus.Conductive);
+        List<SerializedVector3> list = GameData.levelData.conductivePositions;
+        for(int i = 0; i < list.Count; i ++){
+            grid[new Vector2Int((int)list[i].x, (int)list[i].y)].SetStatus(NodeStatus.Conductive);
+            Debug.LogWarning(list[i].ToString());
+        }
     }
 }

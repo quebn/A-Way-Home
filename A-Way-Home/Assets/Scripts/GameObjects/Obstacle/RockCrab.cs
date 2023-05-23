@@ -41,6 +41,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     public void OnLightningHit(int damage)
     {
         Damage(damage);
+        Debug.Log($"{damage}");
         wasInteracted = true;
     }
 
@@ -226,7 +227,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
 
     public override void Damage(int value = 1)
     {
-        hitpoints -= value;
+        hitpoints -= value > hitpoints ? hitpoints : value;
         if(hitpoints == 1)
             audioSources[0].Play();
         animator.SetBool("hasShell", hasShell);

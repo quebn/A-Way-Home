@@ -32,6 +32,7 @@ public class Essence : MonoBehaviour, ISaveable
 
     public void OnConsume(Character character)
     {
+        AudioManager.instance.PlayAudio("Consume");
         list.Remove(this.worldPosition);
         character.IncrementEnergy(energyRestored);
         character.IncrementEssence(-1);

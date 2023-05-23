@@ -73,6 +73,8 @@ public class CameraMovement : MonoBehaviour
 
     private void ZoomCamera()
     {
+        if (GameEvent.isPaused || Character.instance.isHome)
+            return;
         float Scroll = 0;
 
         Vector2 ScrollAxis = Mouse.current.scroll.ReadValue();

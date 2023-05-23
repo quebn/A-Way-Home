@@ -18,7 +18,7 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI essenceNeededTMP;
     [SerializeField] private TextMeshProUGUI timeCounter;
 
-    private bool activatedCharacter = false;
+    [HideInInspector] public bool activatedCharacter = false;
     public GameObject getGameEndWindow => gameEndWindow;
 
     public int energyValueUI {
@@ -93,7 +93,6 @@ public class InGameUI : MonoBehaviour
         this.livesLeftTMP.text      = levelData.lives.ToString();
         character.SetMaxEnergy(levelData.characterEnergy);
     }
-
 
     public void ShowCurrentPath()
     {

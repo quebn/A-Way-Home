@@ -17,6 +17,8 @@ public class WildFruit : Plant, ITrap
 
     public override void OnGrow()
     {
+        // hitpoints++;
+        heal++;
         return;
     }
 

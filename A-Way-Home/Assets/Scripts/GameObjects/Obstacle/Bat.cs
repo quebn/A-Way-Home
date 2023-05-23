@@ -6,7 +6,6 @@ using UnityEngine;
 public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable, ICommand
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private int damage;
     
     private bool isMoving = false;
     private Dictionary<Vector2Int, Node> nodeGridRange;
@@ -222,8 +221,8 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
 
     public void OnTrapTrigger(Character character)
     {
-        character.IncrementEnergy(-damage);
-        character.DamageAnimation();
-        Move();
+        character.TriggerDeath();
+        // character.DamageAnimation();
+        // Move();
     }
 }

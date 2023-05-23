@@ -197,6 +197,7 @@ public class Character : MonoBehaviour, ISaveable
 
     protected bool EndConditions()
     {
+        InGameUI.Instance.activatedCharacter = false;
         if (destinationReached)
         {
             Debug.LogWarning("Return True");
@@ -221,6 +222,7 @@ public class Character : MonoBehaviour, ISaveable
 
     public bool TriggerLevelComplete()
     {
+        AudioManager.instance.PlayAudio("LevelComplete");
         this.gameObject.SetActive(false);
         GameEvent.UnlockNextStageLevel();
         GameEvent.SetEndWindowActive(EndGameType.LevelClear);
