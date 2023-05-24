@@ -119,4 +119,8 @@ public static class GameEvent
         Time.timeScale = 1f;
     }
 
+    public static void GoToEndStoryScene()
+    {
+        throw new NotImplementedException();
+    }
 }

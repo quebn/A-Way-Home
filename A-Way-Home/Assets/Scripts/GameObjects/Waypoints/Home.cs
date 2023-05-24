@@ -12,6 +12,8 @@ public class Home : MonoBehaviour
     [SerializeField] private bool isPortal = false;
     [SerializeField] private GameObject portal;
 
+    public bool portalActivated => isPortal;
+
     void Awake()
     {
         if(instance != this)

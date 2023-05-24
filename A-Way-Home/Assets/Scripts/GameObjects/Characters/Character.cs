@@ -224,6 +224,10 @@ public class Character : MonoBehaviour, ISaveable
     {
         AudioManager.instance.PlayAudio("LevelComplete");
         this.gameObject.SetActive(false);
+        if(Home.instance.portalActivated){
+            GameEvent.GoToEndStoryScene();
+            return true;
+        }
         GameEvent.UnlockNextStageLevel();
         GameEvent.SetEndWindowActive(EndGameType.LevelClear);
         return true;
