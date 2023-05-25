@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public static class ScoreSystem
 {
-    private const float RemainingMovesMult = .5f;
+    private const float RemainingMovesMult = 5f;
     private const float CharEnergyMult = 10f; 
     // public static PlayerLevelData playerLevelData;    
     public static LevelData scoreLevelData;
@@ -10,17 +10,19 @@ public static class ScoreSystem
     public static Sprite characterSprite;
 
 
-    public static int CalculateScore()
+    public static void CalculateScore()
     {
         // Debug.Assert(false, "TODO: Implement Calculate Score");
-        int playerScore = GameData.levelData.score;
-        int characterScore = Character.instance.GetScore(1);
-        int levelScore = PlayerLevelData.Instance.GetScore(1 , 1);
-        playerScore += Mathf.RoundToInt((characterScore * CharEnergyMult) * (levelScore * RemainingMovesMult + 1)); 
-        Debug.Log($"Calculated Score: {playerScore}");
-        if (playerScore < 0)
+        // int playerScore = ;
+        float characterScore = Character.instance.GetScore(CharEnergyMult);
+        Debug.LogWarning($"Char Energy: {characterScore} / {CharEnergyMult} -> {characterScore / CharEnergyMult}");
+        float levelScore = PlayerLevelData.Instance.GetScore(RemainingMovesMult , 2);
+        Debug.LogWarning($"level Score: {levelScore} <- {GameData.levelData.moves * RemainingMovesMult} + {GameData.levelData.lives * 2}");
+        Debug.LogWarning($"Prev Calculated Score: {GameData.levelData.score}");
+        GameData.levelData.score += Mathf.RoundToInt(characterScore + levelScore); 
+        Debug.LogWarning($"New Calculated Score: {GameData.levelData.score}");
+        if (GameData.levelData.score < 0)
             Debug.LogError("ERROR: Score was less than zero");
-        return playerScore;
     }
     
     public static void InitScoreData()

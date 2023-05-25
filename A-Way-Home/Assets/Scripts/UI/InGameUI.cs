@@ -91,7 +91,8 @@ public class InGameUI : MonoBehaviour
         this.characterNameTMP.text  = levelData.characterName;
         this.movesLeftTMP.text      = levelData.moves.ToString();
         this.livesLeftTMP.text      = levelData.lives.ToString();
-        character.SetMaxEnergy(levelData.characterEnergy);
+        this.energyValueUI          = levelData.characterEnergy;
+        // character.SetMaxEnergy(levelData.characterEnergy);
     }
 
     public void ShowCurrentPath()

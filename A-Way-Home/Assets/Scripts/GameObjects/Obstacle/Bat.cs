@@ -29,6 +29,7 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
 
     public void OnAftershock(Vector2 lightningOrigin)
     {
+        // Like RockCrab but 2 node dist.
         ForceDehighlight();
         Vector3 pos = nodes[0].worldPosition;
         Move();

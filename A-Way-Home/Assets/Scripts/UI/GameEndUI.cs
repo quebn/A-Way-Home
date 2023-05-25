@@ -18,7 +18,6 @@ public class GameEndUI : MonoBehaviour
 
     private void Start()
     {
-        GameData.levelData.score = ScoreSystem.CalculateScore();
         InitGameEndUI();
     }
 

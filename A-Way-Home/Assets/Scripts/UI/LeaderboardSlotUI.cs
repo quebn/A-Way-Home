@@ -14,6 +14,7 @@ public class LeaderboardSlotUI : MonoBehaviour
 
     private void Start()
     {
+        Debug.LogWarning($"Initializing Scores {slotIndexNumber}");
         InitData();
     }
 
@@ -37,9 +38,7 @@ public class LeaderboardSlotUI : MonoBehaviour
     {
         GameData.Instance.leaderboards.Sort();
         if (GameData.Instance.leaderboards[index] == null)
-        {
             return null;
-        }
         PlayerScoreData data = GameData.Instance.leaderboards[index]; 
         return data;
     }

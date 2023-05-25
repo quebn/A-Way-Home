@@ -34,8 +34,10 @@ public class PlayerLevelData : MonoBehaviour
     {
         if (Instance == null)
             Instance  = this;
-        Essence.list = new Dictionary<Vector2, Essence>();
         this.currentDestinations = new List<Vector3>();
+        Obstacle.count = 0;
+        Essence.count = 0;
+        Spawnable.spawnCount = 0;
         // this.saveables = FindAllSaveableObjects();
         // Debug.Log($"Saveable objects count: {saveables.Count}"); 
         // Debug.Assert(GameData.levelData != null , "ERROR:LevelData is null");
@@ -69,13 +71,16 @@ public class PlayerLevelData : MonoBehaviour
         }
         Destroy(characterLocation);
         if(GameEvent.loadType == LevelLoadType.LoadGame)
-            LoadObstacles();
+            LoadSaveables();
+        // GameData.levelData.obstacles = new Dictionary<string, ObstacleData>();
     }
 
     private void Start()
     {
-        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initializing Character with {GameData.levelData.characterEnergy} energy and {GameData.levelData.characterRequiredEssence} ");
+        // Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initializing Character with {GameData.levelData.characterEnergy} energy and {GameData.levelData.characterRequiredEssence} ");
+        Character.instance.SetMaxEnergy(this.characterEnergy);
         Character.instance.Initialize(GameData.levelData);
+        // Character.instance.GetPath();
     }
 
 
@@ -143,26 +148,27 @@ public class PlayerLevelData : MonoBehaviour
         Debug.Assert(GameData.levelData != null, "ERROR: No load level data found");
         Debug.Assert(this.currentLevel == GameData.levelData.level, "ERROR: Level does not match");
         GameData.selectedCharacter = GameData.levelData.characterName;
-        foreach(KeyValuePair<string, ObstacleData> pair in GameData.levelData.obstacles)
-            Debug.Log($"Loaded Leveldata Obstacles :{pair.Value.typeName} with hp: {pair.Value.valuePairs["hp"]} -> {pair.Key}");
+        // LoadSaveables();
+        // foreach(KeyValuePair<string, ObstacleData> pair in GameData.levelData.obstacles)
+            // Debug.Log($"Loaded Leveldata Obstacles :{pair.Value.typeName} with hp: {pair.Value.valuePairs["hp"]} -> {pair.Key}");
 
     }
 
     public LevelData SaveLevelData()
     {
+        GameData.levelData.obstacles = new Dictionary<string, ObstacleData>();
         List<ISaveable> saveables = GetAllSaveables();
         foreach(ISaveable saveable in saveables)
             saveable.SaveData(GameData.levelData);
         return GameData.levelData;
     }
 
-    private void LoadObstacles()
+    private void LoadSaveables()
     {
-        Debug.LogWarning("-------------------Spawning Obstacles-----------------");
         List<ISaveable> saveables = GetAllSaveables();
         Debug.LogWarning("-------------------Loading Obstacles-----------------");
-        foreach(ISaveable saveable in saveables)
-            saveable.LoadData(GameData.levelData);
+        for(int i = 0; i < saveables.Count; i++)
+            saveables[i].LoadData(GameData.levelData);
         LoadSpawnedObstacles();
     }
 
@@ -172,13 +178,14 @@ public class PlayerLevelData : MonoBehaviour
         return new List<ISaveable>(saveables);
     }
 
-    public int GetScore(int movesMultiplier, int livesMultiplier)
+    public float GetScore(float movesMultiplier, float livesMultiplier)
     {
-        return (playerMoves * movesMultiplier) + (GameData.levelData.lives * livesMultiplier);
+        return (GameData.levelData.moves * movesMultiplier) + (GameData.levelData.lives * livesMultiplier);
     }
 
     public void LoadSpawnedObstacles()
     {
+        Debug.LogWarning("-------------------Spawning Obstacles-----------------");
         uint count = GameData.levelData.spawnCount;
         GameData.levelData.spawnCount = 0;
         for (uint i = 1; i <= count; i++)

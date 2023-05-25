@@ -7,6 +7,8 @@ public class Spawnable : Obstacle
 {
     private bool finished = false;
 
+    public static int spawnCount = 0;
+
     protected override void Initialize()
     {
         // Debug.Assert(!GameData.levelData.obstacles.ContainsKey(this.id));
@@ -15,6 +17,7 @@ public class Spawnable : Obstacle
         base.Initialize();
         OnSpawn();
         finished = true;
+        spawnCount++;
     }
 
     protected virtual void OnSpawn()

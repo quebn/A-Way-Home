@@ -35,10 +35,14 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
     public virtual bool isTrampleable => false;
     public virtual bool isFragile => false;
 
+    public static int count = 0;
+
     private void Start()
     {
         Debug.Assert(spriteRenderers.Count != 0);
         Initialize();
+        count++;
+        // Debug.Log(count);
     }
 
     private void OnDisable()
@@ -192,12 +196,12 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
     {
         Debug.Assert(id != "", $"ERROR: {this.GetType().Name} id is empty string");
         Debug.Assert(levelData.obstacles.ContainsKey(id), $"ERROR: {id} not found");
-        if(levelData.obstacles.ContainsKey(id))
-        {
-            Debug.Log("Loading obstacle data");
-            this.hitpoints = levelData.obstacles[id].GetValue("hp");
-            this.gameObject.transform.position = levelData.obstacles[id].position;
-        }
+        if(!levelData.obstacles.ContainsKey(id))
+                return;
+        // Debug.Log("Loading obstacle data");
+        this.hitpoints = levelData.obstacles[id].GetValue("hp");
+        this.gameObject.transform.position = levelData.obstacles[id].position;
+        Debug.Log($"Loaded Leveldata Obstacles :{levelData.obstacles[id].typeName} with hp: {levelData.obstacles[id].valuePairs["hp"]} -> {id}");
         if(hitpoints == 0)
             gameObject.SetActive(false);
         Debug.Assert(this.hitpoints == levelData.obstacles[id].GetValue("hp"), "ERROR: values doesnt match");
