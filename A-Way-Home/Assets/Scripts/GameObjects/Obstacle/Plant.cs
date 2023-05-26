@@ -11,6 +11,8 @@ public class Plant : Obstacle , ILightning, IGrow
     public override bool isFragile => true;
     public override bool isTrampleable => true;
     public override bool isMeltable => true;
+    public override bool isWalkableByGaia => true;
+
 
     protected const string youngling    = "Plant_Youngling";
     protected const string middle       = "Plant_Middle";
@@ -28,7 +30,7 @@ public class Plant : Obstacle , ILightning, IGrow
     protected virtual void OnInitialize()
     {
         animator.Play(CurrentAnimationName());
-        SetNodes(this.worldPos, isAdult && !Character.IsName("Gaia")? NodeType.Obstacle: NodeType.Walkable, this);
+        SetNodes(this.worldPos, isAdult ? NodeType.Obstacle: NodeType.Walkable, this);
     }
 
     protected override void OnHighlight(Tool tool)
@@ -49,7 +51,7 @@ public class Plant : Obstacle , ILightning, IGrow
             hitpoints = 3;
         animator.Play(CurrentAnimationName());
         Debug.Assert(isAdult, "ERROR: isnt adult and hitpoints not equal to 1!");
-        SetNodes(this.worldPos, Character.IsName("Gaia") ? NodeType.Walkable:NodeType.Obstacle, this);
+        SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
 
     public override void SaveData(LevelData levelData)
@@ -82,7 +84,7 @@ public class Plant : Obstacle , ILightning, IGrow
         Debug.Log($"Plant Damage: {damage}");
         hitpoints -= damage;
         animator.Play(CurrentAnimationName());
-        SetNodes(this.worldPos, isAdult && !Character.IsName("Gaia")? NodeType.Obstacle: NodeType.Walkable, this);
+        SetNodes(this.worldPos, isAdult ? NodeType.Obstacle: NodeType.Walkable, this);
         if(hitpoints <= 0)
             Remove();
     }

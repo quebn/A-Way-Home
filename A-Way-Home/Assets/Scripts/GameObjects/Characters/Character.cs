@@ -118,13 +118,13 @@ public class Character : MonoBehaviour, ISaveable
         if(requiredEssence != 0)
         {
             List<Vector3> destinations = Essence.GetCurrentDestinations();
-            path = Pathfinding.FindPath(currentPosition, destinations);
+            path = Pathfinding.FindPath(currentPosition, destinations, isChar:true);
             Debug.Log($"{requiredEssence} essence required! => {destinations.Count} Essence Found!");
         }
         else{
             Home.instance.ActivateHome();
             List<Vector3> homes = new List<Vector3>(){Home.instance.transform.position};
-            path = Pathfinding.FindPath(currentPosition, homes);
+            path = Pathfinding.FindPath(currentPosition, homes, isChar:true);
         }
         Node.ToggleNodes(oldPath, NodeGrid.nodesVisibility);
         if(path.Count <= 0)
@@ -139,10 +139,8 @@ public class Character : MonoBehaviour, ISaveable
 
     public void GoHome()
     {
-        if (path.Count <=0){
-            // TriggerDeath();
+        if (path.Count <=0 || isMoving || energy <= 0)
             return;
-        }
         currentTargetNode = path[0];
         targetIndex = 0;
         isGoingHome = true;
@@ -161,6 +159,7 @@ public class Character : MonoBehaviour, ISaveable
     {
         if (currentPosition == currentTargetPos)
         {
+            AudioManager.instance.PlayAudio("Step");
             NodeStatusInteract(currentTargetNode);
             currentTargetNode.UpdateNodeColor();
             targetIndex++;

@@ -31,8 +31,8 @@ public class CameraMovement : MonoBehaviour
         mainCamera = Camera.main;
         currentMouse = Mouse.current;
         mainCamera.transform.position = new Vector3(
-            PlayerLevelData.Instance.cameraCenterPos.x,
-            PlayerLevelData.Instance.cameraCenterPos.y,
+            PlayerLevelData.Instance.hasCollectedEssence ?Character.instance.currentPosition.x : PlayerLevelData.Instance.cameraCenterPos.x,
+            PlayerLevelData.Instance.hasCollectedEssence ?Character.instance.currentPosition.y : PlayerLevelData.Instance.cameraCenterPos.y,
             -10
         );
         zoom = mainCamera.orthographicSize;
@@ -51,7 +51,6 @@ public class CameraMovement : MonoBehaviour
     private void LateUpdate()
     {
         PanCamera();
-
     }
 
     private void PanCamera()

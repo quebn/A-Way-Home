@@ -139,6 +139,11 @@ public class InGameUI : MonoBehaviour
 
     public void PlayAction()
     {
-        Character.instance.GoHome();
+        if (Character.instance.isMoving)
+            return;
+        if(GameData.levelData.moves == 0 && !Character.instance.hasPath)
+            Character.instance.TriggerDeath();
+        else
+            Character.instance.GoHome();
     }
 }

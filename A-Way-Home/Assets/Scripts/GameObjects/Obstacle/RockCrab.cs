@@ -23,6 +23,8 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     public override bool isFragile => !hasShell;
     public override bool isCorrosive => true;
     public override bool isMeltable => true;
+    public override bool isWalkableByTerra => true;
+
     public bool hasShell => hitpoints == 2;
     private bool hasPath => path.Count > 0;
 
@@ -190,15 +192,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
 
     public void OnTrapTrigger(Character character)
     {
-        if(isWalking || !hasShell)
-        {
-            if(isWalking)
-            {
-                Stop();
-            }
-            character.TriggerDeath();
-            Remove();
-        }
+        character.TriggerDeath();
     }
 
     public void OnPlayerAction()
@@ -261,6 +255,8 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
 
     private void MoveLocation()
     {
+        if(nodes.Count == 0)
+            return;
         Debug.Assert(path != null && path.Count > 0);
         ForceDehighlight();
         isWalking = true;
@@ -351,7 +347,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         Debug.Assert(targetPositions.Count > 0, "ERROR: No Target!");
         path = type == null 
             ? Pathfinding.FindPath(this.worldPos, targetPositions, walkableGrid, nodeType)  
-            : Pathfinding.FindPath(this.worldPos, targetPositions, walkableGrid,nodeType, type: type);
+            : Pathfinding.FindPath(this.worldPos, targetPositions, walkableGrid, nodeType, type: type);
         return hasPath;
     }
 

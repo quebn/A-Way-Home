@@ -2319,6 +2319,12 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     loop: 0
+  - name: Step
+    clip: {fileID: 8300000, guid: ef7ff36730744a5438a919f410da6b75, type: 3}
+    output: {fileID: 166560749831756116, guid: 6f679b61e1fa5954d87030fe8ae74588, type: 2}
+    volume: 0.8
+    pitch: 1
+    loop: 0
 --- !u!1 &3372219344871061367
 GameObject:
   m_ObjectHideFlags: 0
@@ -2491,6 +2497,7 @@ MonoBehaviour:
   livesLeftTMP: {fileID: 2298863931212639475}
   essenceNeededTMP: {fileID: 247965274350621229}
   timeCounter: {fileID: 6755054730435418028}
+  activatedCharacter: 0
 --- !u!1 &3372219345163522786
 GameObject:
   m_ObjectHideFlags: 0

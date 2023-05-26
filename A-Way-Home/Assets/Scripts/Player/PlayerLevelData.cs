@@ -23,6 +23,7 @@ public class PlayerLevelData : MonoBehaviour
     public string currentStageLevel => $"Stage{currentStage}Level{currentLevel}";
     public Vector2 levelBoundary => this.cameraBoundary;
     public Vector3 cameraCenterPos => startCameraPos;
+    public bool hasCollectedEssence => essenceNeeded != GameData.levelData.characterRequiredEssence;
 
 
     private void Awake()
@@ -38,11 +39,6 @@ public class PlayerLevelData : MonoBehaviour
         Obstacle.count = 0;
         Essence.count = 0;
         Spawnable.spawnCount = 0;
-        // this.saveables = FindAllSaveableObjects();
-        // Debug.Log($"Saveable objects count: {saveables.Count}"); 
-        // Debug.Assert(GameData.levelData != null , "ERROR:LevelData is null");
-        // if(!GameEvent.isSceneSandbox)
-        //     Debug.Assert(GameData.characters != null || GameData.characters.Count != 0, "ERROR:Characters not found!");
         switch(GameEvent.loadType)
         {
             case LevelLoadType.NewGame:
@@ -77,6 +73,8 @@ public class PlayerLevelData : MonoBehaviour
 
     private void Start()
     {
+        if(NodeGrid.nodesVisibility)
+            InGameUI.Instance.ShowCurrentPath();
         // Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initializing Character with {GameData.levelData.characterEnergy} energy and {GameData.levelData.characterRequiredEssence} ");
         Character.instance.SetMaxEnergy(this.characterEnergy);
         Character.instance.Initialize(GameData.levelData);

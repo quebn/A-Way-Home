@@ -34,6 +34,8 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
     public virtual bool isMeltable => false;
     public virtual bool isTrampleable => false;
     public virtual bool isFragile => false;
+    public virtual bool isWalkableByGaia => false;
+    public virtual bool isWalkableByTerra => false;
 
     public static int count = 0;
 

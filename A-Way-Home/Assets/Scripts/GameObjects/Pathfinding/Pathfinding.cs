@@ -5,16 +5,14 @@ using UnityEngine;
 public static class Pathfinding
 {
 
-    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, Dictionary<Vector2Int, Node> grid, NodeType walkableNodeType = NodeType.Walkable, Type type = null)
+    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, Dictionary<Vector2Int, Node> grid, NodeType walkableNodeType = NodeType.Walkable, Type type = null, bool isChar = false)
     {
         Debug.Assert(targetPos.Count > 0, "ERROR: No Target in list");
         List<Node> path = new List<Node>();
         Node startNode = NodeGrid.NodeWorldPointPos(startingPos);
         List<Node> endNodes = NodeGrid.NodeWorldPointPos(targetPos);
-        if (!startNode.IsWalkable(walkableNodeType, type) && !Node.CheckNodesType(endNodes, walkableNodeType, type))
-        {
+        if (!startNode.IsWalkable(walkableNodeType, type, isChar) && !Node.AreWalkable(endNodes, walkableNodeType, type, isChar))
             return path;
-        }
         List<Node> openSet = new List<Node>();
         HashSet<Node> closedSet = new HashSet<Node>();
         openSet.Add(startNode);
@@ -34,7 +32,7 @@ public static class Pathfinding
             }
             foreach (Node neighbor in NodeGrid.GetPathNeighborNodes(currentNode, grid))
             {
-                if (!neighbor.IsWalkable(walkableNodeType, type) || closedSet.Contains(neighbor))
+                if (!neighbor.IsWalkable(walkableNodeType, type, isChar) || closedSet.Contains(neighbor))
                     continue;
                 int newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
                 if (newMovementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
@@ -51,9 +49,9 @@ public static class Pathfinding
         return path;
     }
 
-    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, NodeType walkableNodeType = NodeType.Walkable, Type type = null)
+    public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, NodeType walkableNodeType = NodeType.Walkable, Type type = null, bool isChar = false)
     {
-        return FindPath(startingPos, targetPos, NodeGrid.Instance.grid, walkableNodeType, type);
+        return FindPath(startingPos, targetPos, NodeGrid.Instance.grid, walkableNodeType, type, isChar);
     }
 
     public static List<Node> FindPathPhased(Vector3 startingPos, List<Vector3> targetPos,Dictionary<Vector2Int, Node> grid, Type type = null)

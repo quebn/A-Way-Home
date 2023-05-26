@@ -20,7 +20,7 @@ public class Bush : Plant, ITrap
             hitpoints += 1;
         animator.Play(CurrentAnimationName());
         Debug.Assert(isAdult, "ERROR: isnt adult and hitpoints not equal to 1!");
-        SetNodes(this.worldPos, Character.IsName("Gaia") ? NodeType.Walkable : NodeType.Obstacle, this);
+        SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
     public void OnTrapTrigger(Character character)
     {

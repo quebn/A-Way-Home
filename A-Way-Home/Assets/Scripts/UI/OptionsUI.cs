@@ -58,6 +58,9 @@ public class OptionsUI : MonoBehaviour
     {
         GameEvent.UnpauseGame();
         SceneManager.LoadScene("MainMenu");
+        if(PlayerActions.Instance != null)
+            PlayerActions.Instance.SetCurrentTool(0);
+
     }
 
     public void QuitGame()

@@ -23,7 +23,8 @@ public class GameEndUI : MonoBehaviour
 
     private void OnDisable()
     {
-        GameEvent.UnpauseGame();
+        if(GameEvent.isPaused)
+            GameEvent.UnpauseGame();
     }
 
     private void InitGameEndUI()

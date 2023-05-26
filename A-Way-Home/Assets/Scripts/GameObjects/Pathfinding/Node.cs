@@ -98,12 +98,27 @@ public class Node
         return currentNodeType == NodeType.Walkable;
     }
 
-    public bool IsWalkable(NodeType nodeType, Type type)
+    public bool IsWalkable(NodeType nodeType, Type type, bool isChar = false)
     {
-        return (type == null || obstacle == null) ? 
-            currentNodeType == nodeType || IsWalkable() : 
-            IsObstacle(type) || IsWalkable();
+        return isChar 
+            ? CharacterCondition()
+            : (type == null || obstacle == null) 
+                ? currentNodeType == nodeType || IsWalkable() 
+                : IsObstacle(type) || IsWalkable();
     }
+
+    private bool CharacterCondition()
+    {
+        if(hasObstacle)
+        {
+            if(Character.IsName("Gaia") )
+                return obstacle.isWalkableByGaia || IsWalkable();
+            if(Character.IsName("Terra"))
+                return obstacle.isWalkableByTerra || IsWalkable();
+        }
+        return IsWalkable();
+    }
+
 
     public bool Is(NodeType nodeType, Type obstacleType)
     {
@@ -407,12 +422,12 @@ public class Node
             node.currentNodeType = type;
     }
 
-    public static bool CheckNodesType(List<Node> nodeList, NodeType nodeType, Type type)
+    public static bool AreWalkable(List<Node> nodeList, NodeType nodeType, Type type, bool isChar)
     {
         if(nodeList == null ||nodeList.Count == 0)
             return false;
-        foreach (Node node in nodeList)
-            if(node.IsWalkable(nodeType, type))
+        for(int i = 0; i < nodeList.Count; i++)
+            if(nodeList[i].IsWalkable(nodeType, type))
                 return true;
         return false;
     }

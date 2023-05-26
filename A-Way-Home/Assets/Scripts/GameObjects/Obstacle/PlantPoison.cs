@@ -58,7 +58,7 @@ public class PlantPoison : Plant, ITrap
         if(hitpoints < 2)
             hitpoints = 0;
         animator.Play(CurrentAnimationName());
-        SetNodes(this.worldPos, isAdult && !Character.IsName("Gaia")? NodeType.Obstacle: NodeType.Walkable, this);
+        SetNodes(this.worldPos, isAdult ? NodeType.Obstacle: NodeType.Walkable, this);
         if(hitpoints <= 0)
             Remove();
     }

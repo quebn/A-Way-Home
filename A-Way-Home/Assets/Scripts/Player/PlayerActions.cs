@@ -91,23 +91,8 @@ public class PlayerActions : MonoBehaviour
                     break;
                 return;
         }
-        // Character.UniqueSkill(hoveredNodes, currentTool);
         StartCoroutine(WaitForCommand());
     }
-
-    // private void PerformUniqueSkill()
-    // {
-    //     // Node skillNode;
-    //     switch(GameData.levelData.characterName)
-    //     {
-    //         case "Gaia":
-    //             break;
-    //         case "Terra":
-    //             break;
-    //         case "Fulmen":
-    //             break;
-    //     }
-    // }
 
     private void Tremor()
     {
@@ -432,8 +417,11 @@ public class PlayerActions : MonoBehaviour
     {
         if (Character.instance.isMoving || !obstaclesDone)
             return;
-        Character.instance.GoHome();
         NodeGrid.DehighlightNodes(hoveredNodes);
+        if(GameData.levelData.moves == 0 && !Character.instance.hasPath)
+            Character.instance.TriggerDeath();
+        else
+            Character.instance.GoHome();
     }
 
     private void RestartLevel(InputAction.CallbackContext context)

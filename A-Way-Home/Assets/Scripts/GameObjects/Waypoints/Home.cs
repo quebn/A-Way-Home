@@ -18,6 +18,7 @@ public class Home : MonoBehaviour
     {
         if(instance != this)
             instance = this;
+        this.transform.position = NodeGrid.GetMiddle(this.transform.position);
     }
 
     public void ActivateHome()

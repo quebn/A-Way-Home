@@ -122,7 +122,7 @@ public class TreeObstacle : Obstacle
 
     protected bool isFruitplaceable(Node node)
     {
-        return node.worldPosition.x == NodeGrid.GetMiddle(this.worldPos.x + 2f) || node.worldPosition.x == NodeGrid.GetMiddle(this.worldPos.x + -2f); 
+        return (node.worldPosition.x == NodeGrid.GetMiddle(this.worldPos.x + 2f) || node.worldPosition.x == NodeGrid.GetMiddle(this.worldPos.x + -2f)) && node.IsWalkable(); 
     } 
 
 }
