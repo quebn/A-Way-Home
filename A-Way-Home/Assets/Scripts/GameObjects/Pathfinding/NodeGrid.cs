@@ -29,6 +29,7 @@ public class NodeGrid : MonoBehaviour, ISaveable
     public static bool nodesVisibility = false; 
     public static Tilemap tilemap => Instance.tileMap;
     public static Tilemap tilemapStatus => Instance.tileMapStatus;
+    public static bool isCovered => Instance.canBeCovered;
     public int  maxSize{
         get {return gridSizeInt.x * gridSizeInt.y ; }
     }

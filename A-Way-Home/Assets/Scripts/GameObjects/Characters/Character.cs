@@ -279,7 +279,7 @@ public class Character : MonoBehaviour, ISaveable
 
     public void IncrementEnergy(int increment)
     {
-        this.energy += increment;
+        this.energy += (increment + this.energy) < 0 ? -this.energy : increment;
         InGameUI.Instance.energyValueUI = this.energy;
     }
 

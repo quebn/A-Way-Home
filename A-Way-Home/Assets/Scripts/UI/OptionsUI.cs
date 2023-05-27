@@ -12,7 +12,7 @@ public class OptionsUI : MonoBehaviour
     [SerializeField] private GameObject loadGameWindow;
     [SerializeField] private GameObject quitGameWindow;
     [SerializeField] private TMP_InputField fileNameInput;
-    [SerializeField] private TMP_InputField overwriteNameInput;
+    [SerializeField] public TMP_InputField overwriteNameInput;
 
     // Confirm delete windows
     public GameObject deleteConfirmSaveWindow;

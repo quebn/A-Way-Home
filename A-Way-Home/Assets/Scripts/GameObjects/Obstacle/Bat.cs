@@ -11,6 +11,8 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
     private Dictionary<Vector2Int, Node> nodeGridRange;
     private Vector3 targetPosition;
     private List<Node> gridNodes;
+    private bool wasInteracted = false;
+    private Vector2 direction = Vector2.left;
 
     public override bool isBurnable => true;
     public override bool isFragile => true;
@@ -23,23 +25,41 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
         ForceDehighlight();
         Damage(damage);
         audioSources[1].Play();
-        if(hitpoints > 0)
-            Move();
     }
 
     public void OnAftershock(Vector2 lightningOrigin)
     {
         // Like RockCrab but 2 node dist.
         ForceDehighlight();
-        Vector3 pos = nodes[0].worldPosition;
+        Node node = NodeGrid.NodeWorldPointPos(this.worldPos + (this.worldPos - lightningOrigin));
+        if(node.worldPosition == this.transform.position || node.IsType(NodeType.Terrain) || node.hasObstacle)
+            return;
+        targetPosition = node.worldPosition; 
         Move();
-        // GameObject.Instantiate(poisonMiasma, pos, Quaternion.identity);
     }
 
     public void OnPlayerAction()
     {
-        if(!isMoving)
-            PlayerActions.FinishProcess(this);
+
+        if(isMoving)
+           return;
+        if(!wasInteracted)
+            MoveHorizontal();
+        PlayerActions.FinishProcess(this);
+    }
+
+    private void MoveHorizontal()
+    {
+        Node node = NodeGrid.NodeWorldPointPos(this.worldPos + direction);
+        if(node.worldPosition == this.transform.position || node.IsType(NodeType.Terrain) || node.hasObstacle)
+        {
+            direction = direction == Vector2.left ? Vector3.right : Vector3.left;
+            node = NodeGrid.NodeWorldPointPos(this.worldPos + direction);
+            if(node.worldPosition == this.transform.position || node.IsType(NodeType.Terrain) || node.hasObstacle)
+                return;
+        }
+        targetPosition = node.worldPosition; 
+        Move();
     }
 
     public void OnSelect(Tool tool)
@@ -126,7 +146,6 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
     public void Move()
     {
         // Debug.Assert(path.Count > 0, "ERROE: Bat has no Path!");
-        SetRandomPosition();
         isMoving = true;
         audioSources[2].Play();
         ClearNodes();

@@ -56,10 +56,8 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
                 return;
         }   
         // Move one node away from origin
-        Vector2 currentPos = this.worldPos;
-        Vector2 targetPos = currentPos + (currentPos - lightningOrigin);
-        Node targetNode;
-        targetNode = NodeGrid.NodeWorldPointPos(targetPos);
+        Vector2 targetPos = this.worldPos + (this.worldPos - lightningOrigin);
+        Node targetNode = NodeGrid.NodeWorldPointPos(targetPos);
         if(targetNode.worldPosition == this.transform.position || !targetNode.IsWalkable())
             return;
         ForceDehighlight();

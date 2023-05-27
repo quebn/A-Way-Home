@@ -82,7 +82,7 @@ public class Node
 
     public void SetStatus(NodeStatus status = NodeStatus.None)
     {
-        if(this.status == status)
+        if(this.status == status || this.currentNodeType == NodeType.Terrain)
             return;
         this.status = status;
         NodeGrid.UpdateStatusTiles(this.gridPos, this.status);

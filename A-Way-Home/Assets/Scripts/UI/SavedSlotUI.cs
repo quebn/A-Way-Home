@@ -51,6 +51,7 @@ public class SavedSlotUI : MonoBehaviour
         }
         FileNameToBeDeleted = this.fileName.text;
         OptionsUI.Instance.confirmOverwriteWindow.SetActive(true);
+        OptionsUI.Instance.overwriteNameInput.text = this.fileName.text;
     }
 
     // Delete the exisiting file and replace it with the new save;

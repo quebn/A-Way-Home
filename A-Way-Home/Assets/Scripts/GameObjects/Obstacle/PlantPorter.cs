@@ -9,15 +9,11 @@ public class PlantPorter : Plant, ITrap
 {
     [SerializeField] private int damage;
     private static bool isTeleported = false;
-    private static HashSet<PlantPorter> porters = new HashSet<PlantPorter>();
     
     protected override void Initialize()
     {
         base.Initialize();
         SetNodes(this.worldPos, NodeType.Walkable, this);
-        Debug.Assert(porters != null);
-        if(!porters.Contains(this))
-            porters.Add(this);
     }
 
     public void OnTrapTrigger(Character character)
@@ -27,7 +23,7 @@ public class PlantPorter : Plant, ITrap
             isTeleported = false;
             return;
         }
-        Damage(hitpoints);
+        Remove();
         character.TriggerDeath();
     }
 
@@ -36,16 +32,14 @@ public class PlantPorter : Plant, ITrap
         isTeleported = true;
         Vector2 location = nodes[0].worldPosition;
         TeleportCharacter(location);
-        Damage(hitpoints);
-        RemoveOtherPorter(this.id);
+        RemoveAllPorters(this.id);
     }
 
-    private static void RemoveOtherPorter(string excludedID)
+    private static void RemoveAllPorters(string excludedID)
     {
-        foreach(PlantPorter porter in porters)
-            if(porter.id != excludedID)
-                porter.Remove();
-        porters = new HashSet<PlantPorter>();
+        PlantPorter[] plantPorters = GameObject.FindObjectsOfType<PlantPorter>(false);
+        for(int i = 0; i < plantPorters.Length; i++)
+                plantPorters[i].Remove();
     }
 
     private void TeleportCharacter(Vector2 location)

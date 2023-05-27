@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CactusSpawn : SpawnablePlant 
+public class CactusSpawn : SpawnablePlant, ITrap 
 {
     [SerializeField] private GameObject fruit;
 
@@ -45,5 +45,11 @@ public class CactusSpawn : SpawnablePlant
                 Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");
                 return destroy;
         }
+    }
+
+    public void OnTrapTrigger(Character character)
+    {
+        character.IncrementEnergy(heal);
+        Remove();
     }
 }

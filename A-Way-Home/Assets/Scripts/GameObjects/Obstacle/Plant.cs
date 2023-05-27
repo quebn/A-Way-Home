@@ -69,10 +69,7 @@ public class Plant : Obstacle , ILightning, IGrow
     {
         ForceDehighlight();
         if(hitpoints > 0)
-        {
             hitpoints = 0;
-            Debug.LogWarning("Plant Cleared with hitpoints above 0");
-        }
         animator.Play(CurrentAnimationName());
         audioSources[0].Play();
         ClearNodes();

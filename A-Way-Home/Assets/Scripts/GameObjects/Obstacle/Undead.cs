@@ -335,6 +335,8 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
     private IEnumerator PlayDeathAnimation()
     {
         ClearNodes();
+        PlayerActions.FinishProcess(this);
+        PlayerActions.FinishCommand(this);
         animator.Play("Death");
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
         this.gameObject.SetActive(false);

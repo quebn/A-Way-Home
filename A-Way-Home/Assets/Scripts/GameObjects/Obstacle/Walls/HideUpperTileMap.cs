@@ -5,7 +5,14 @@ using UnityEngine.Tilemaps;
 
 public class HideUpperTileMap : MonoBehaviour, IHoverable
 {
-    [SerializeField] private Tilemap tilemap; 
+
+    private Tilemap tilemap; 
+
+    private void Awake()
+    {
+        tilemap = GetComponent<Tilemap>();
+        Debug.Assert(tilemap != null);
+    }
 
     public void OnDehover()
     {

@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info:
-    name: spider
+    name: fire spider
     type: monster
     hp: 2
     isDeadly: 1
@@ -71,6 +71,7 @@ MonoBehaviour:
   animator: {fileID: 6965682223529230793}
   webPrefab: {fileID: 1667303046171096463, guid: 0be686f170210254e834025f0eaa1ea6, type: 3}
   tileRange: 4
+  light2D: {fileID: 5465909858479860103}
 --- !u!212 &5219851540385757064
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -156,7 +157,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5219851540385757066}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
   m_Name: 
@@ -260,7 +261,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 166560749831756116, guid: 6f679b61e1fa5954d87030fe8ae74588, type: 2}
   m_audioClip: {fileID: 8300000, guid: ba07a8b5700f7004e9d9f12f4b25f1ec, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
