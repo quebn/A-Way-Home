@@ -63,23 +63,19 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
         Debug.Assert(id != "", $"ERROR: {this.GetType().Name} ID is empty!");
     }
 
-    protected void SetNodes(Vector3 worldPos, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false)
+    protected void SetNodes(Vector3 worldPos, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false, bool retainType = false)
     {
-        // Initialize Node should:
-        //      - Set what and how many nodes are assigned to the obstacle;
-        //      - Set what are nodeType the node behaves as.
-        //      - Set the what obstacle the nodes contains. 
+
         nodes = new List<Node>();
         nodes = NodeGrid.GetNodes(worldPos, tileSize.x, tileSize.y);
-        Node.SetNodesObstacle(nodes, nodeType, obstacle, isPlatform);
-        // Debug.Log($"{this.gameObject.name} -> Nodes count{nodes.Count}");
+        Node.SetNodesObstacle(nodes, nodeType, obstacle, isPlatform, retainType);
     }
 
-    protected void ClearNodes(NodeType nodeType = NodeType.Walkable, bool isPlatform = false)
+    protected void ClearNodes(NodeType nodeType = NodeType.Walkable, bool isPlatform = false, bool isRetained = false)
     {
         if (nodes == null || nodes.Count == 0 || Node.GetNodesObstacle(nodes, isPlatform).Count == 0)
             return;
-        Node.SetNodesObstacle(nodes, nodeType, isPlatform: isPlatform);
+        Node.SetNodesObstacle(nodes, nodeType, isPlatform: isPlatform, retainType:isRetained);
         nodes = new List<Node>();
     }
 

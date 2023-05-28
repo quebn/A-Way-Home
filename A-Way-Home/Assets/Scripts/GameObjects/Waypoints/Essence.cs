@@ -7,7 +7,6 @@ public class Essence : MonoBehaviour, ISaveable
 {
     [SerializeField] private string ID;
     [SerializeField] private int energyRestored;
-    [SerializeField] private Animator animator;
     
     private HomePortal homePortal;
     private Vector3 position;
@@ -26,8 +25,6 @@ public class Essence : MonoBehaviour, ISaveable
     {
         position = NodeGrid.GetMiddle(this.transform.position);
         Debug.LogWarning($"Essence Position: {position}");
-        if(!GameData.levelData.essences.ContainsKey(ID))
-            GameData.levelData.essences.Add(ID, this.gameObject.activeSelf);
         count++;
 
     }
@@ -88,6 +85,8 @@ public class Essence : MonoBehaviour, ISaveable
 
     public void SaveData(LevelData levelData)
     {
+        if(!GameData.levelData.essences.ContainsKey(ID))
+            GameData.levelData.essences.Add(ID, this.gameObject.activeSelf);
         Debug.Assert(GameData.levelData.essences.ContainsKey(this.ID), $"ERROR: essences with id of {ID} should be in this dictionary.");
         GameData.levelData.essences[ID] = this.gameObject.activeSelf;
         Debug.Assert(GameData.levelData.essences[ID] == this.gameObject.activeSelf, $"ERROR: wrong active state.");

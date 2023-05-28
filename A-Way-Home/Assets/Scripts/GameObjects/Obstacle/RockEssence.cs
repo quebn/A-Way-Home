@@ -11,11 +11,13 @@ public class RockEssence : Obstacle, ITremor
     {
         base.Initialize();
         SetNodes(this.worldPos, NodeType.Obstacle, this);
+        if(hitpoints <= 0)
+            Remove();
     }
 
     public void OnTremor()
     {
-        Damage(1);
+        Damage(2);
     }
 
     public override void Remove()
@@ -34,5 +36,20 @@ public class RockEssence : Obstacle, ITremor
     {
         audioSources[0].Play();
         this.spriteRenderers[0].enabled = false;
+    }
+
+    public override void LoadData(LevelData levelData)
+    {
+        Debug.Assert(id != "", $"ERROR: {this.GetType().Name} id is empty string");
+        Debug.Assert(levelData.obstacles.ContainsKey(id), $"ERROR: {id} not found");
+        if(!levelData.obstacles.ContainsKey(id))
+                return;
+        // Debug.Log("Loading obstacle data");
+        this.hitpoints = levelData.obstacles[id].GetValue("hp");
+        this.gameObject.transform.position = levelData.obstacles[id].position;
+        Debug.Log($"Loaded Leveldata Obstacles :{levelData.obstacles[id].typeName} with hp: {levelData.obstacles[id].valuePairs["hp"]} -> {id}");
+        // if(hitpoints == 0)
+        //     gameObject.SetActive(false);
+        Debug.Assert(this.hitpoints == levelData.obstacles[id].GetValue("hp"), "ERROR: values doesnt match");
     }
 }

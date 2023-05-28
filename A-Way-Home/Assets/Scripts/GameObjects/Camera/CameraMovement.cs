@@ -8,7 +8,7 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private float zoomSpeed = 25f;
     [SerializeField] private float minZoom = 4.5f;
     [SerializeField] private float maxZoom = 8f;
-    [SerializeField] private float panSpeed = 10f;
+    [SerializeField] private float panSpeed = 20f;
     [SerializeField] private float panBorderThickness = 10f;
 
     // Privates

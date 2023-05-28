@@ -121,6 +121,7 @@ public static class GameEvent
 
     public static void GoToEndStoryScene()
     {
-        throw new NotImplementedException();
+        ScoreSystem.InitScoreData();
+        SceneManager.LoadScene("EndStory");
     }
 }

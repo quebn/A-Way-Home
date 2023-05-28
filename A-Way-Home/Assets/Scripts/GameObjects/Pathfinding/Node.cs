@@ -198,7 +198,7 @@ public class Node
                 SetColor(colorBlue);
                 break;
             case NodeType.Obstacle:
-                SetColor(colorRed);
+                SetColor(Character.instance.NodeInPath(this) ? colorGreen : colorRed);
                 break;
         }
     }
@@ -254,13 +254,16 @@ public class Node
         Obstacle obs = hasObstacle ? obstacle : platform; 
         obs.Dehighlight();
     }
-    public void SetObstacle(Obstacle obstacle, NodeType nodeType, bool isPlatform = false)
+
+    public void SetObstacle(Obstacle obstacle, NodeType nodeType, bool isPlatform = false, bool retainType = false)
     {
         if(isPlatform)
             this.platform = obstacle;
         else
             this.obstacle = obstacle;
-        this.currentNodeType = nodeType;
+        Debug.LogWarning($"Before: {this.currentNodeType.ToString()} -> Retain: {retainType}");
+        this.currentNodeType =  retainType ? this.currentNodeType : nodeType;
+        Debug.LogWarning($"After: {this.currentNodeType.ToString()}  -> Retain: {retainType}");
         UpdateColor();
     }
 
@@ -382,12 +385,12 @@ public class Node
                 nodeList[i].ToggleNode(toggle);
     }
 
-    public static void SetNodesObstacle(List<Node> nodeList, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false)
+    public static void SetNodesObstacle(List<Node> nodeList, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false, bool retainType = false)
     {
         if(nodeList == null ||nodeList.Count == 0)
             return;
-        foreach(Node node in nodeList)
-            node.SetObstacle(obstacle, nodeType, isPlatform);
+        for(int i = 0; i < nodeList.Count; i++)
+            nodeList[i].SetObstacle(obstacle, nodeType, isPlatform, retainType);
     }
 
     public static void ShockNode(Node node)
@@ -418,8 +421,8 @@ public class Node
     {
         if(nodeList == null ||nodeList.Count == 0)
             return;
-        foreach(Node node in nodeList)
-            node.currentNodeType = type;
+        for(int i = 0; i < nodeList.Count; i++)
+            nodeList[i].currentNodeType = type;
     }
 
     public static bool AreWalkable(List<Node> nodeList, NodeType nodeType, Type type, bool isChar)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class LightningRock : Obstacle, ILightning, ITremor
+public class LightningRock : Obstacle, ILightning, ITremor, ITrap
 {
     [SerializeField] private Animator animator;
     [SerializeField] Light2D light2d;
@@ -72,8 +72,13 @@ public class LightningRock : Obstacle, ILightning, ITremor
     public override void Remove()
     {
         ForceDehighlight();
+        int hp = hitpoints; 
         hitpoints = 0;
-        StartCoroutine(Explode());
+        this.spriteRenderers[0].enabled = false;
+        if(hp == 2)
+            StartCoroutine(Explode());
+        else
+            this.gameObject.SetActive(false);
     }
 
     public override void Damage(int value)
@@ -90,5 +95,10 @@ public class LightningRock : Obstacle, ILightning, ITremor
         ClearLightningField();
         audioSources[0].Play(); 
         animator.Play("Explosion");
+    }
+
+    public void OnTrapTrigger(Character character)
+    {
+        Remove();
     }
 }

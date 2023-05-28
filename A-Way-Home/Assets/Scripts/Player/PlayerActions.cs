@@ -198,7 +198,7 @@ public class PlayerActions : MonoBehaviour
         GrowAnimation(this.hoveredNodes[0].worldPosition, animatorTools[0]);
         if(hoveredNodes[0].currentType == NodeType.Water && !hoveredNodes[0].hasPlatform && !hoveredNodes[0].IsStatus(NodeStatus.Burning))
             GameObject.Instantiate(lilypad, hoveredNodes[0].worldPosition, Quaternion.identity);
-        else if(PlayerLevelData.Instance.stage == 3 && hoveredNodes[0].currentType == NodeType.Walkable && !hoveredNodes[0].hasObstacle && !hoveredNodes[0].IsStatus(NodeStatus.Burning))
+        else if(PlayerLevelData.Instance.stage == 3 && hoveredNodes[0].currentType == NodeType.Walkable && !hoveredNodes[0].hasObstacle && !hoveredNodes[0].IsStatus(NodeStatus.Burning) && !hoveredNodes[0].hasPlatform && hoveredNodes[0] != Character.instance.currentNode)
             GameObject.Instantiate(cactus, hoveredNodes[0].worldPosition, Quaternion.identity);
         else
             hoveredNodes[0].GrowObstacle();
@@ -378,7 +378,8 @@ public class PlayerActions : MonoBehaviour
             case NodeType.Walkable:
                 if(lilypadVisual.activeSelf)
                     lilypadVisual.SetActive(false);
-                if(PlayerLevelData.Instance.stage != 3 || hoveredNodes[0].hasObstacle){
+                if(PlayerLevelData.Instance.stage != 3 || hoveredNodes[0].hasObstacle || hoveredNodes[0].hasPlatform || hoveredNodes[0] == Character.instance.currentNode)
+                {
                     cactusVisual.SetActive(false);
                     return;
                 }

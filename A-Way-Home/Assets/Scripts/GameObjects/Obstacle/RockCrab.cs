@@ -190,6 +190,8 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
 
     public void OnTrapTrigger(Character character)
     {
+        if(hasShell)
+            animator.Play("RockCrabGreen_AttackRock");
         character.TriggerDeath();
     }
 

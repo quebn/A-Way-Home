@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FruitCoconut : Obstacle
+public class FruitCoconut : Obstacle, ITrap
 {
     [SerializeField] private Animator animator;
 
