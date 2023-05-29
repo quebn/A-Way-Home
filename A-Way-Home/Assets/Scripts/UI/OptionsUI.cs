@@ -12,7 +12,7 @@ public class OptionsUI : MonoBehaviour
     [SerializeField] private GameObject loadGameWindow;
     [SerializeField] private GameObject quitGameWindow;
     [SerializeField] private TMP_InputField fileNameInput;
-    [SerializeField] private TMP_InputField overwriteNameInput;
+    [SerializeField] public TMP_InputField overwriteNameInput;
 
     // Confirm delete windows
     public GameObject deleteConfirmSaveWindow;
@@ -58,6 +58,9 @@ public class OptionsUI : MonoBehaviour
     {
         GameEvent.UnpauseGame();
         SceneManager.LoadScene("MainMenu");
+        if(PlayerActions.Instance != null)
+            PlayerActions.Instance.SetCurrentTool(0);
+
     }
 
     public void QuitGame()

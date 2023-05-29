@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public enum EndGameType { None, GameOver, LevelClear, TryAgain, Restart}
 
@@ -18,13 +19,13 @@ public class GameEndUI : MonoBehaviour
 
     private void Start()
     {
-        GameData.levelData.score = ScoreSystem.CalculateScore();
         InitGameEndUI();
     }
 
     private void OnDisable()
     {
-        GameEvent.UnpauseGame();
+        if(GameEvent.isPaused)
+            GameEvent.UnpauseGame();
     }
 
     private void InitGameEndUI()
@@ -90,7 +91,10 @@ public class GameEndUI : MonoBehaviour
         switch(InGameUI.Instance.endGameType)
         {
             case EndGameType.GameOver:
-                OptionsUI.Instance.MainMenu();
+                GameEvent.UnpauseGame();
+                SceneManager.LoadScene("MainMenu");
+                if(PlayerActions.Instance != null)
+                    PlayerActions.Instance.SetCurrentTool(0);
                 break;
             case EndGameType.Restart:
                 InGameUI.Instance.endGameType = EndGameType.None;

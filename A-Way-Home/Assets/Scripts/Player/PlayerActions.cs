@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-using UnityEngine.Tilemaps;
-using System;
 
 [System.Serializable]
 public enum Tool { Inspect, Lightning, Grow, Command, Tremor}//, PlaceMode }
@@ -27,7 +25,7 @@ public class PlayerActions : MonoBehaviour
     private PlayerInput playerInput;
     private InputAction performAction; 
     private InputAction cancelAction;
-    private InputAction revealPath;
+    // private InputAction revealPath;
     private List<InputAction> tools;
     private InputAction start;
     private InputAction reset;
@@ -91,23 +89,8 @@ public class PlayerActions : MonoBehaviour
                     break;
                 return;
         }
-        // Character.UniqueSkill(hoveredNodes, currentTool);
         StartCoroutine(WaitForCommand());
     }
-
-    // private void PerformUniqueSkill()
-    // {
-    //     // Node skillNode;
-    //     switch(GameData.levelData.characterName)
-    //     {
-    //         case "Gaia":
-    //             break;
-    //         case "Terra":
-    //             break;
-    //         case "Fulmen":
-    //             break;
-    //     }
-    // }
 
     private void Tremor()
     {
@@ -213,7 +196,7 @@ public class PlayerActions : MonoBehaviour
         GrowAnimation(this.hoveredNodes[0].worldPosition, animatorTools[0]);
         if(hoveredNodes[0].currentType == NodeType.Water && !hoveredNodes[0].hasPlatform && !hoveredNodes[0].IsStatus(NodeStatus.Burning))
             GameObject.Instantiate(lilypad, hoveredNodes[0].worldPosition, Quaternion.identity);
-        else if(PlayerLevelData.Instance.stage == 3 && hoveredNodes[0].currentType == NodeType.Walkable && !hoveredNodes[0].hasObstacle && !hoveredNodes[0].IsStatus(NodeStatus.Burning))
+        else if(PlayerLevelData.Instance.stage == 3 && hoveredNodes[0].currentType == NodeType.Walkable && !hoveredNodes[0].hasObstacle && !hoveredNodes[0].IsStatus(NodeStatus.Burning) && !hoveredNodes[0].hasPlatform && hoveredNodes[0] != Character.instance.currentNode)
             GameObject.Instantiate(cactus, hoveredNodes[0].worldPosition, Quaternion.identity);
         else
             hoveredNodes[0].GrowObstacle();
@@ -393,7 +376,8 @@ public class PlayerActions : MonoBehaviour
             case NodeType.Walkable:
                 if(lilypadVisual.activeSelf)
                     lilypadVisual.SetActive(false);
-                if(PlayerLevelData.Instance.stage != 3 || hoveredNodes[0].hasObstacle){
+                if(PlayerLevelData.Instance.stage != 3 || hoveredNodes[0].hasObstacle || hoveredNodes[0].hasPlatform || hoveredNodes[0] == Character.instance.currentNode)
+                {
                     cactusVisual.SetActive(false);
                     return;
                 }
@@ -432,8 +416,11 @@ public class PlayerActions : MonoBehaviour
     {
         if (Character.instance.isMoving || !obstaclesDone)
             return;
-        Character.instance.GoHome();
         NodeGrid.DehighlightNodes(hoveredNodes);
+        if(GameData.levelData.moves == 0 && !Character.instance.hasPath)
+            Character.instance.TriggerDeath();
+        else
+            Character.instance.GoHome();
     }
 
     private void RestartLevel(InputAction.CallbackContext context)
@@ -442,13 +429,13 @@ public class PlayerActions : MonoBehaviour
             GameEvent.RestartGame();      
     }
 
-    private void RevealPath(InputAction.CallbackContext context)
-    {
-        if (GameEvent.isPaused)
-            return;
-        Debug.LogWarning("Unimplemented!");
-        // Character.instance.DisplayPath();
-    }
+    // private void RevealPath(InputAction.CallbackContext context)
+    // {
+    //     if (GameEvent.isPaused)
+    //         return;
+    //     Debug.LogWarning("Unimplemented!");
+    //     // Character.instance.DisplayPath();
+    // }
 
     public static bool IsMouseOverUI(){
         // IsPointerOverGameobject is having a warning when used in new input system 
@@ -467,7 +454,7 @@ public class PlayerActions : MonoBehaviour
         Debug.Assert(playerInput != null, "playerInput GetComponent failed!");
         performAction  = playerInput.actions["PerformAction"];
         cancelAction  = playerInput.actions["cancelAction"];
-        revealPath      = playerInput.actions["RevealPath"];
+        // revealPath      = playerInput.actions["RevealPath"];
         for(int i = 1; i <= toolCount; i++)
             tools.Add(playerInput.actions[$"Tool{i}"]);
         start           = playerInput.actions["Start"];
@@ -484,7 +471,7 @@ public class PlayerActions : MonoBehaviour
         // Debug.LogWarning("Subscribing Functions");
         performAction.started  += PerformAction;
         cancelAction.started += CancelAction;
-        revealPath.started      += RevealPath;
+        // revealPath.started      += RevealPath;
         foreach(InputAction tool in tools)
             tool.started += SetCurrentTool;
         start.started           += StartCharacter;
@@ -496,7 +483,7 @@ public class PlayerActions : MonoBehaviour
         // Debug.LogWarning("Unsubscribing Functions");
         performAction.started  -= PerformAction;
         cancelAction.started -= CancelAction;
-        revealPath.started      -= RevealPath;
+        // revealPath.started      -= RevealPath;
         foreach(InputAction tool in tools)
             tool.started -= SetCurrentTool;
         start.started           -= StartCharacter;

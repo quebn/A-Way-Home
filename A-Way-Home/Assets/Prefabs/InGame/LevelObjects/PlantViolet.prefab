@@ -139,20 +139,18 @@ MonoBehaviour:
     type: walkable
     hp: 1
     isDeadly: 0
-    heal: -5
+    heal: -3
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 253970091299312920}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 000000000100000002000000
   spriteRenderers:
   - {fileID: 3856496701694408760}
   audioSources:
   - {fileID: 628766177668236870}
   animator: {fileID: 3856496701694408761}
-  damage: 5
 --- !u!61 &3856496701694408743
 BoxCollider2D:
   m_ObjectHideFlags: 0

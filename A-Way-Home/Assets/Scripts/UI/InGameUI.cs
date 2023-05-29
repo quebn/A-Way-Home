@@ -91,7 +91,8 @@ public class InGameUI : MonoBehaviour
         this.characterNameTMP.text  = levelData.characterName;
         this.movesLeftTMP.text      = levelData.moves.ToString();
         this.livesLeftTMP.text      = levelData.lives.ToString();
-        character.SetMaxEnergy(levelData.characterEnergy);
+        this.energyValueUI          = levelData.characterEnergy;
+        // character.SetMaxEnergy(levelData.characterEnergy);
     }
 
     public void ShowCurrentPath()
@@ -138,6 +139,11 @@ public class InGameUI : MonoBehaviour
 
     public void PlayAction()
     {
-        Character.instance.GoHome();
+        if (Character.instance.isMoving)
+            return;
+        if(GameData.levelData.moves == 0 && !Character.instance.hasPath)
+            Character.instance.TriggerDeath();
+        else
+            Character.instance.GoHome();
     }
 }

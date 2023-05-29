@@ -62,7 +62,6 @@ MonoBehaviour:
   outlines:
   - {fileID: 4603818668603166105}
   isNotHoverable: 0
-  hitpoints: 2
   toolsInteractable: 000000000100000003000000
   spriteRenderers:
   - {fileID: 3444731568202295793}
@@ -72,6 +71,7 @@ MonoBehaviour:
   animator: {fileID: 3444731568202295806}
   webPrefab: {fileID: 1667303046171096463, guid: 0be686f170210254e834025f0eaa1ea6, type: 3}
   tileRange: 4
+  light2D: {fileID: 3198776482466707454}
 --- !u!212 &3444731568202295793
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -357,7 +357,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 166560749831756116, guid: 6f679b61e1fa5954d87030fe8ae74588, type: 2}
   m_audioClip: {fileID: 8300000, guid: 1cef672a99a8f614d8e065b00ac53167, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0

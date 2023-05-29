@@ -12,10 +12,13 @@ public class Home : MonoBehaviour
     [SerializeField] private bool isPortal = false;
     [SerializeField] private GameObject portal;
 
+    public bool portalActivated => isPortal;
+
     void Awake()
     {
         if(instance != this)
             instance = this;
+        this.transform.position = NodeGrid.GetMiddle(this.transform.position);
     }
 
     public void ActivateHome()

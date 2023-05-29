@@ -82,7 +82,7 @@ public class Node
 
     public void SetStatus(NodeStatus status = NodeStatus.None)
     {
-        if(this.status == status)
+        if(this.status == status || this.currentNodeType == NodeType.Terrain)
             return;
         this.status = status;
         NodeGrid.UpdateStatusTiles(this.gridPos, this.status);
@@ -98,12 +98,27 @@ public class Node
         return currentNodeType == NodeType.Walkable;
     }
 
-    public bool IsWalkable(NodeType nodeType, Type type)
+    public bool IsWalkable(NodeType nodeType, Type type, bool isChar = false)
     {
-        return (type == null || obstacle == null) ? 
-            currentNodeType == nodeType || IsWalkable() : 
-            IsObstacle(type) || IsWalkable();
+        return isChar 
+            ? CharacterCondition()
+            : (type == null || obstacle == null) 
+                ? currentNodeType == nodeType || IsWalkable() 
+                : IsObstacle(type) || IsWalkable();
     }
+
+    private bool CharacterCondition()
+    {
+        if(hasObstacle)
+        {
+            if(Character.IsName("Gaia") )
+                return obstacle.isWalkableByGaia || IsWalkable();
+            if(Character.IsName("Terra"))
+                return obstacle.isWalkableByTerra || IsWalkable();
+        }
+        return IsWalkable();
+    }
+
 
     public bool Is(NodeType nodeType, Type obstacleType)
     {
@@ -183,7 +198,7 @@ public class Node
                 SetColor(colorBlue);
                 break;
             case NodeType.Obstacle:
-                SetColor(colorRed);
+                SetColor(Character.instance.NodeInPath(this) ? colorGreen : colorRed);
                 break;
         }
     }
@@ -239,13 +254,14 @@ public class Node
         Obstacle obs = hasObstacle ? obstacle : platform; 
         obs.Dehighlight();
     }
-    public void SetObstacle(Obstacle obstacle, NodeType nodeType, bool isPlatform = false)
+
+    public void SetObstacle(Obstacle obstacle, NodeType nodeType, bool isPlatform = false, bool retainType = false)
     {
         if(isPlatform)
             this.platform = obstacle;
         else
             this.obstacle = obstacle;
-        this.currentNodeType = nodeType;
+        this.currentNodeType =  retainType ? this.currentNodeType : nodeType;
         UpdateColor();
     }
 
@@ -367,12 +383,12 @@ public class Node
                 nodeList[i].ToggleNode(toggle);
     }
 
-    public static void SetNodesObstacle(List<Node> nodeList, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false)
+    public static void SetNodesObstacle(List<Node> nodeList, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false, bool retainType = false)
     {
         if(nodeList == null ||nodeList.Count == 0)
             return;
-        foreach(Node node in nodeList)
-            node.SetObstacle(obstacle, nodeType, isPlatform);
+        for(int i = 0; i < nodeList.Count; i++)
+            nodeList[i].SetObstacle(obstacle, nodeType, isPlatform, retainType);
     }
 
     public static void ShockNode(Node node)
@@ -403,16 +419,16 @@ public class Node
     {
         if(nodeList == null ||nodeList.Count == 0)
             return;
-        foreach(Node node in nodeList)
-            node.currentNodeType = type;
+        for(int i = 0; i < nodeList.Count; i++)
+            nodeList[i].currentNodeType = type;
     }
 
-    public static bool CheckNodesType(List<Node> nodeList, NodeType nodeType, Type type)
+    public static bool AreWalkable(List<Node> nodeList, NodeType nodeType, Type type, bool isChar)
     {
         if(nodeList == null ||nodeList.Count == 0)
             return false;
-        foreach (Node node in nodeList)
-            if(node.IsWalkable(nodeType, type))
+        for(int i = 0; i < nodeList.Count; i++)
+            if(nodeList[i].IsWalkable(nodeType, type))
                 return true;
         return false;
     }

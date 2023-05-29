@@ -8,7 +8,7 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private float zoomSpeed = 25f;
     [SerializeField] private float minZoom = 4.5f;
     [SerializeField] private float maxZoom = 8f;
-    [SerializeField] private float panSpeed = 10f;
+    [SerializeField] private float panSpeed = 20f;
     [SerializeField] private float panBorderThickness = 10f;
 
     // Privates
@@ -31,8 +31,8 @@ public class CameraMovement : MonoBehaviour
         mainCamera = Camera.main;
         currentMouse = Mouse.current;
         mainCamera.transform.position = new Vector3(
-            PlayerLevelData.Instance.cameraCenterPos.x,
-            PlayerLevelData.Instance.cameraCenterPos.y,
+            PlayerLevelData.Instance.hasCollectedEssence ?Character.instance.currentPosition.x : PlayerLevelData.Instance.cameraCenterPos.x,
+            PlayerLevelData.Instance.hasCollectedEssence ?Character.instance.currentPosition.y : PlayerLevelData.Instance.cameraCenterPos.y,
             -10
         );
         zoom = mainCamera.orthographicSize;
@@ -51,7 +51,6 @@ public class CameraMovement : MonoBehaviour
     private void LateUpdate()
     {
         PanCamera();
-
     }
 
     private void PanCamera()

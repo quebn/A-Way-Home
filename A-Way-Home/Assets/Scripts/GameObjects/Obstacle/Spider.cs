@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand, ISelectable
 {
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject webPrefab;
     [SerializeField] private int tileRange;
+    [SerializeField] private Light2D light2D;
 
     private int currentTargetIndex;
     private Node targetNode;
@@ -36,6 +38,7 @@ public class Spider : Obstacle, IActionWaitProcess, ILightning, ITrap, ICommand,
     protected override void Initialize()
     {
         base.Initialize();
+        light2D.enabled = NodeGrid.isCovered;
         SetNodesGrids();
         Debug.Assert(walkableNodes.Count > 0);
     }

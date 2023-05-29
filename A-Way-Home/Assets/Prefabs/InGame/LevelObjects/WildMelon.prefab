@@ -54,20 +54,18 @@ MonoBehaviour:
     type: walkable
     hp: 1
     isDeadly: 0
-    heal: 5
+    heal: 1
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 8550269062029008574}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 000000000100000002000000
   spriteRenderers:
   - {fileID: 5647263681668000826}
   audioSources:
   - {fileID: 8638809629905978632}
   animator: {fileID: 5647263681668000829}
-  heal: 5
 --- !u!212 &5647263681668000826
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -108,7 +106,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 1826105703, guid: eee2a34728f2f744199c623e1cb9d73f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 3163593368646762250}
   - component: {fileID: 6184049509738850214}
   - component: {fileID: 3898900081555087039}
+  - component: {fileID: -8903613489057581540}
   m_Layer: 0
   m_Name: CoconutSpawn
   m_TagString: Untagged
@@ -142,12 +143,10 @@ MonoBehaviour:
   outlines:
   - {fileID: 6184049508807258503}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 0000000001000000
   spriteRenderers:
   - {fileID: 6184049509738850214}
   audioSources: []
-  heal: 5
   animator: {fileID: 3898900081555087039}
 --- !u!212 &6184049509738850214
 SpriteRenderer:
@@ -221,3 +220,29 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!61 &-8903613489057581540
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6184049509738850208}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.875, y: 0.875}
+    newSize: {x: 0.875, y: 0.875}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 0.5}
+  m_EdgeRadius: 0

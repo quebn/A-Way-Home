@@ -34,11 +34,17 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
     public virtual bool isMeltable => false;
     public virtual bool isTrampleable => false;
     public virtual bool isFragile => false;
+    public virtual bool isWalkableByGaia => false;
+    public virtual bool isWalkableByTerra => false;
+
+    public static int count = 0;
 
     private void Start()
     {
         Debug.Assert(spriteRenderers.Count != 0);
         Initialize();
+        count++;
+        // Debug.Log(count);
     }
 
     private void OnDisable()
@@ -57,23 +63,19 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
         Debug.Assert(id != "", $"ERROR: {this.GetType().Name} ID is empty!");
     }
 
-    protected void SetNodes(Vector3 worldPos, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false)
+    protected void SetNodes(Vector3 worldPos, NodeType nodeType, Obstacle obstacle = null, bool isPlatform = false, bool retainType = false)
     {
-        // Initialize Node should:
-        //      - Set what and how many nodes are assigned to the obstacle;
-        //      - Set what are nodeType the node behaves as.
-        //      - Set the what obstacle the nodes contains. 
+
         nodes = new List<Node>();
         nodes = NodeGrid.GetNodes(worldPos, tileSize.x, tileSize.y);
-        Node.SetNodesObstacle(nodes, nodeType, obstacle, isPlatform);
-        // Debug.Log($"{this.gameObject.name} -> Nodes count{nodes.Count}");
+        Node.SetNodesObstacle(nodes, nodeType, obstacle, isPlatform, retainType);
     }
 
-    protected void ClearNodes(NodeType nodeType = NodeType.Walkable, bool isPlatform = false)
+    protected void ClearNodes(NodeType nodeType = NodeType.Walkable, bool isPlatform = false, bool isRetained = false)
     {
         if (nodes == null || nodes.Count == 0 || Node.GetNodesObstacle(nodes, isPlatform).Count == 0)
             return;
-        Node.SetNodesObstacle(nodes, nodeType, isPlatform: isPlatform);
+        Node.SetNodesObstacle(nodes, nodeType, isPlatform: isPlatform, retainType:isRetained);
         nodes = new List<Node>();
     }
 
@@ -192,12 +194,12 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
     {
         Debug.Assert(id != "", $"ERROR: {this.GetType().Name} id is empty string");
         Debug.Assert(levelData.obstacles.ContainsKey(id), $"ERROR: {id} not found");
-        if(levelData.obstacles.ContainsKey(id))
-        {
-            Debug.Log("Loading obstacle data");
-            this.hitpoints = levelData.obstacles[id].GetValue("hp");
-            this.gameObject.transform.position = levelData.obstacles[id].position;
-        }
+        if(!levelData.obstacles.ContainsKey(id))
+                return;
+        // Debug.Log("Loading obstacle data");
+        this.hitpoints = levelData.obstacles[id].GetValue("hp");
+        this.gameObject.transform.position = levelData.obstacles[id].position;
+        Debug.Log($"Loaded Leveldata Obstacles :{levelData.obstacles[id].typeName} with hp: {levelData.obstacles[id].valuePairs["hp"]} -> {id}");
         if(hitpoints == 0)
             gameObject.SetActive(false);
         Debug.Assert(this.hitpoints == levelData.obstacles[id].GetValue("hp"), "ERROR: values doesnt match");

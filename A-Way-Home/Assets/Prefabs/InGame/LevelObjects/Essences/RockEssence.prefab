@@ -50,12 +50,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8a40c9ad13fa324791e752d902c8b9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info:
+    name: rock essence
+    type: obstacle
+    hp: 3
+    isDeadly: 0
+    heal: 0
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 7634976571578802926}
   isNotHoverable: 0
-  hitpoints: 2
   toolsInteractable: 0000000004000000
   spriteRenderers:
   - {fileID: 7634976571527699940}
@@ -77,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 
   energyRestored: 10
-  animator: {fileID: 0}
+  animator: {fileID: 9201421132266170297}
 --- !u!212 &7634976571527699940
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -55,13 +55,12 @@ MonoBehaviour:
     type: walkable
     hp: 1
     isDeadly: 0
-    heal: -10
+    heal: -7
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 5702594596001365188}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 0000000001000000
   spriteRenderers:
   - {fileID: 5702594594959731029}
@@ -581,7 +580,7 @@ SpriteRenderer:
   m_SortingLayerID: -1157385037
   m_SortingLayer: 2
   m_SortingOrder: 4
-  m_Sprite: {fileID: 1639821984, guid: a06a734eab1f87e409363e6a94ae00ab, type: 3}
+  m_Sprite: {fileID: 1642654546, guid: a06a734eab1f87e409363e6a94ae00ab, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

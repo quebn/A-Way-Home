@@ -14,6 +14,9 @@ public class LeaderboardSlotUI : MonoBehaviour
 
     private void Start()
     {
+        Debug.LogWarning($"--------------IMPORTANT-----------");
+        Debug.LogWarning($"Initializing Scores {slotIndexNumber}");
+        Debug.LogWarning($"--------------IMPORTANT-----------");
         InitData();
     }
 
@@ -37,9 +40,7 @@ public class LeaderboardSlotUI : MonoBehaviour
     {
         GameData.Instance.leaderboards.Sort();
         if (GameData.Instance.leaderboards[index] == null)
-        {
             return null;
-        }
         PlayerScoreData data = GameData.Instance.leaderboards[index]; 
         return data;
     }
@@ -50,5 +51,14 @@ public class LeaderboardSlotUI : MonoBehaviour
         this.playerName.text = data.playerName;
         this.characterName.text = data.charName;
         this.score.text = data.score.ToString();
+    }
+
+    public static void UpdateSlots()
+    {
+        LeaderboardSlotUI[] slots =  GameObject.FindObjectsOfType<LeaderboardSlotUI>();
+        if(slots == null || slots.Length == 0)
+            return;
+        for(int i = 0; i < slots.Length; i++)
+            slots[i].InitData();
     }
 }

@@ -93,17 +93,11 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable, IActionWaitProce
             return;
         audioSources[1].Play();
         FireNode.StartFire(fireNodeOrigin, fireDirectionDiff, 3);
-        // for(int i = 0; i < fireNodes.Count; i++)
-        //     fireNodes[i].fireNode.shouldBurn = true;
-        // FireNode.ContinueFire(fireNodeOrigin);
     }
 
     private void DestroyFire()
     {
         FireNode.StopFire(fireNodeOrigin);
-        // FireNode.PauseFire(fireNodeOrigin);
-        // for(int i = 0; i < fireNodes.Count; i++)
-        //     fireNodes[i].fireNode.shouldBurn = false;
     }
 
     private void InitFireNodes()

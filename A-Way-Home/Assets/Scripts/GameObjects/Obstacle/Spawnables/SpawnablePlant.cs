@@ -11,6 +11,7 @@ public class SpawnablePlant : Spawnable , ILightning, IGrow
     public override bool isFragile => true;
     public override bool isTrampleable => true;
     public override bool isMeltable => true;
+    public override bool isWalkableByGaia => true;
 
     protected const string youngling    = "Plant_Youngling";
     protected const string middle       = "Plant_Middle";

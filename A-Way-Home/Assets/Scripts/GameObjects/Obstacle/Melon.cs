@@ -9,6 +9,18 @@ public class Melon : Plant, ITrap
     {
         animator.Play(CurrentAnimationName());
         SetNodes(this.worldPos, NodeType.Walkable, this);
+        switch(hitpoints)
+        {
+            case 1:
+                heal = 1;
+                break;
+            case 2:
+                heal = 5;
+                break;
+            case 3:
+                heal = 10;
+                break;
+        }
     }
 
     public override void OnLightningHit(int damage)
@@ -18,18 +30,7 @@ public class Melon : Plant, ITrap
 
     public void OnTrapTrigger(Character character)
     {
-        switch(hitpoints)
-        {
-            case 1:
-                character.IncrementEnergy(1);
-                break;
-            case 2:
-                character.IncrementEnergy(heal);
-                break;
-            case 3:
-                character.IncrementEnergy(heal * 2);
-                break;
-        }
+        character.IncrementEnergy(heal);
         Remove();
     }
 
@@ -38,6 +39,18 @@ public class Melon : Plant, ITrap
         if(hitpoints > 2)
             return;
         hitpoints++;
+        switch(hitpoints)
+        {
+            case 1:
+                heal = 1;
+                break;
+            case 2:
+                heal = 5;
+                break;
+            case 3:
+                heal = 10;
+                break;
+        }
         animator.Play(CurrentAnimationName());
     }
 

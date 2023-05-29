@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -11,6 +12,8 @@ public class EndSceneUI : MonoBehaviour
     [SerializeField] private TMP_InputField playerNameInput;
     [SerializeField] private Image characterImage;
     [SerializeField] private TextMeshProUGUI characterName;
+    [SerializeField] private Animator animator;
+    [SerializeField] private TextMeshProUGUI message; 
     private bool isSaved;
 
     private void Start()
@@ -30,14 +33,20 @@ public class EndSceneUI : MonoBehaviour
 
     public void SaveToLeaderboard()
     {
-        if (isSaved)
-            return;
-        Debug.Log("Saved to Leaderboard");
-        if (playerNameInput.text == "")
+        if (String.IsNullOrWhiteSpace(playerNameInput.text))
         {
-            Debug.Log("Input is empty");
+            message.text = "Invalid Name Input!";
+            animator.Play("InputErrorMessage");
             return;
         }
+        if (isSaved){
+            message.text = "Score Already Saved!";
+            animator.Play("AlreadySavedMessage");
+            return;
+        }
+        message.text = "Score Saved to Leaderboards!";
+        animator.Play("SaveMessage");
+        Debug.Log("Saved to Leaderboard");
         ScoreSystem.SaveScoreData(playerNameInput.text);
         playerNameInput.text = "";
         isSaved = true;
@@ -51,6 +60,7 @@ public class EndSceneUI : MonoBehaviour
     public void Leaderboards()
     {
         leaderboards.SetActive(true);
+        LeaderboardSlotUI.UpdateSlots();
     }
 
     public void CloseLeaderboards()

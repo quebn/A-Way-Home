@@ -90,7 +90,6 @@ public class LevelData
 {
     // Character Data
     public string characterName;
-    //public byte[] characterImage;
     public int characterEnergy;
     public int characterRequiredEssence;
     public SerializedVector3 characterPosition;

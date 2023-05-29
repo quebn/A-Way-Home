@@ -67,7 +67,7 @@ public class PlantEnergy : Plant, ITrap
         if(hitpoints < 2)
             hitpoints = 0;
         animator.Play(CurrentAnimationName());
-        SetNodes(this.worldPos, isAdult && !Character.IsName("Gaia")? NodeType.Obstacle: NodeType.Walkable, this);
+        SetNodes(this.worldPos, isAdult ? NodeType.Obstacle: NodeType.Walkable, this);
         if(hitpoints <= 2)
             ClearLightField();
         if(hitpoints <= 0)
@@ -90,4 +90,10 @@ public class PlantEnergy : Plant, ITrap
         nodes[0].SetStatus(NodeStatus.None);
     }
 
+    public override void Remove()
+    {
+        if(isAdult)
+            ClearLightField();
+        base.Remove();
+    }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CactusSpawn : SpawnablePlant 
+public class CactusSpawn : SpawnablePlant, ITrap 
 {
     [SerializeField] private GameObject fruit;
 
@@ -13,7 +13,8 @@ public class CactusSpawn : SpawnablePlant
     protected override void OnSpawn()
     {
         base.OnSpawn();
-        SetNodes(this.worldPos, Character.IsName("Gaia") ? NodeType.Walkable : NodeType.Obstacle, this);
+        SetNodes(this.worldPos, NodeType.Obstacle, this);
+
     }
 
     public override void OnGrow()
@@ -44,5 +45,11 @@ public class CactusSpawn : SpawnablePlant
                 Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");
                 return destroy;
         }
+    }
+
+    public void OnTrapTrigger(Character character)
+    {
+        character.IncrementEnergy(heal);
+        Remove();
     }
 }

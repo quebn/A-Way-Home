@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,10 @@ public class TreeCoconut : TreeObstacle, ILightning, IActionWaitProcess
 {
     [SerializeField] private List<GameObject> logs;
     [SerializeField] private bool hasNut;
+    
     private bool isFalling = false;
+
+    protected override Action AfterCutDown => OnCutDown;
 
     public void OnLightningHit(int damage)
     {
@@ -20,11 +24,12 @@ public class TreeCoconut : TreeObstacle, ILightning, IActionWaitProcess
             PlayerActions.FinishProcess(this);
     }
 
-    protected override void OnCutDown()
+    private void OnCutDown()
     {
-        for(int i = 0 ; i < placeableNodes[currentCursorLocation].Count; i++)
+        int index = IsCursorRight() ? 1 : 0;
+        for(int i = 0 ; i < nodesPlaceable[index].Count; i++)
         {
-            Node node = placeableNodes[currentCursorLocation][i]; 
+            Node node = nodesPlaceable[index][i]; 
             if(LogNotPlaceable(node))
                 continue;
             GameObject.Instantiate(

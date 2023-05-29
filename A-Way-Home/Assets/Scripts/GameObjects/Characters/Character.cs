@@ -23,7 +23,7 @@ public class Character : MonoBehaviour, ISaveable
     public Node currentNode => NodeGrid.NodeWorldPointPos(this.currentPosition);
 
     public Sprite image => spriteRenderer.sprite;
-    public Essence currentEssence => Essence.list[currentPosition];
+    public Essence currentEssence => Essence.GetEssence(currentPosition);
     public Vector3 currentPosition => transform.position;
     public bool isHome => noEssenceRequired && currentPosition == Home.instance.transform.position;
     public bool destinationReached => Essence.GetCurrentDestinations().Contains(currentPosition) || currentPosition == Home.instance.transform.position;
@@ -74,6 +74,8 @@ public class Character : MonoBehaviour, ISaveable
         if(trap == null)
             return;
         trap.OnTrapTrigger(this);
+        if(energy <= 0)
+            TriggerDeath();
     }
 
     public void DamageAnimation()
@@ -86,40 +88,43 @@ public class Character : MonoBehaviour, ISaveable
     {
         // this.requiredEssence = levelData.characterRequiredEssence;
         IncrementEssence(levelData.characterRequiredEssence);
-        SetMaxEnergy(levelData.characterEnergy);
+        this.energy = levelData.characterEnergy;
+        InGameUI.Instance.energyValueUI = this.energy;
+        // SetMaxEnergy(levelData.characterEnergy);
         Debug.Assert(this.requiredEssence == levelData.characterRequiredEssence, "ERROR: Character essence needed value mismatch");
         Debug.Assert(this.energy == levelData.characterEnergy, "ERROR: Character energy value mismatch");
-        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {levelData.characterEnergy} energy and {levelData.characterRequiredEssence} required Essence");
-        Debug.LogWarning($"[{GameEvent.loadType.ToString()}]: Initialized Character with {this.energy} energy and {this.requiredEssence} required Essence");
+        Debug.Log($"[{GameEvent.loadType.ToString()}]: Initialized Character with {levelData.characterEnergy} energy and {levelData.characterRequiredEssence} required Essence");
+        Debug.Log($"[{GameEvent.loadType.ToString()}]: Initialized Character with {this.energy} energy and {this.requiredEssence} required Essence");
         Debug.Assert(currentNode != null);
-        StartCoroutine(GetPathOnInit());
         this.speed = 5f;
+        StartCoroutine(GetPathOnInit());
     } 
 
     private IEnumerator GetPathOnInit()
     {
-        int count = GameObject.FindObjectsOfType<Essence>(false).Length;
-        Debug.Log($"Essence Count: {count}");
-        // TO ADD: should also wait on obstacles to initializa on load.
-        while(Essence.list.Count < count)
-            yield return null;
+        int countEssence = GameObject.FindObjectsOfType<Essence>(false).Length;
+        int countObstacle = GameObject.FindObjectsOfType<Obstacle>(false).Length;
+        Debug.LogWarning($"Essence Count: {countEssence} -> {Essence.count}");
+        Debug.LogWarning($"Obstacle Count: {countObstacle} -> {Obstacle.count}");
+        yield return new WaitUntil(() => (Essence.count == countEssence && Obstacle.count == countObstacle && GameData.levelData.spawnCount == Spawnable.spawnCount));
         GetPath();
     }
 
     public List<Node> GetPath()
     {
+        Debug.LogWarning("-------------------Getting Char Path-----------------");
         List<Node> oldPath = path; 
         path = new List<Node>();
         if(requiredEssence != 0)
         {
             List<Vector3> destinations = Essence.GetCurrentDestinations();
-            path = Pathfinding.FindPath(currentPosition, destinations);
+            path = Pathfinding.FindPath(currentPosition, destinations, isChar:true);
             Debug.Log($"{requiredEssence} essence required! => {destinations.Count} Essence Found!");
         }
         else{
             Home.instance.ActivateHome();
             List<Vector3> homes = new List<Vector3>(){Home.instance.transform.position};
-            path = Pathfinding.FindPath(currentPosition, homes);
+            path = Pathfinding.FindPath(currentPosition, homes, isChar:true);
         }
         Node.ToggleNodes(oldPath, NodeGrid.nodesVisibility);
         if(path.Count <= 0)
@@ -134,10 +139,8 @@ public class Character : MonoBehaviour, ISaveable
 
     public void GoHome()
     {
-        if (path.Count <=0){
-            // TriggerDeath();
-            return ;
-        }
+        if (path.Count <=0 || isMoving || energy <= 0)
+            return;
         currentTargetNode = path[0];
         targetIndex = 0;
         isGoingHome = true;
@@ -156,6 +159,7 @@ public class Character : MonoBehaviour, ISaveable
     {
         if (currentPosition == currentTargetPos)
         {
+            AudioManager.instance.PlayAudio("Step");
             NodeStatusInteract(currentTargetNode);
             currentTargetNode.UpdateNodeColor();
             targetIndex++;
@@ -198,13 +202,13 @@ public class Character : MonoBehaviour, ISaveable
     protected bool EndConditions()
     {
         InGameUI.Instance.activatedCharacter = false;
+        if (energy <= 0)
+            return TriggerDeath();
         if (destinationReached)
         {
             Debug.LogWarning("Return True");
             return currentPosition == Home.instance.transform.position ? TriggerLevelComplete() : Consume(currentEssence);
         }
-        if (energy == 0)
-            return TriggerDeath();
         Debug.LogWarning("Return false");
         return false;
     }
@@ -222,8 +226,13 @@ public class Character : MonoBehaviour, ISaveable
 
     public bool TriggerLevelComplete()
     {
+        ScoreSystem.CalculateScore();
         AudioManager.instance.PlayAudio("LevelComplete");
         this.gameObject.SetActive(false);
+        if(Home.instance.portalActivated){
+            GameEvent.GoToEndStoryScene();
+            return true;
+        }
         GameEvent.UnlockNextStageLevel();
         GameEvent.SetEndWindowActive(EndGameType.LevelClear);
         return true;
@@ -257,7 +266,7 @@ public class Character : MonoBehaviour, ISaveable
             GameEvent.SetEndWindowActive(EndGameType.TryAgain);
     }
 
-    public int GetScore(int multiplier)
+    public float GetScore(float multiplier)
     {
         return this.energy * multiplier;  
     }
@@ -270,7 +279,7 @@ public class Character : MonoBehaviour, ISaveable
 
     public void IncrementEnergy(int increment)
     {
-        this.energy += increment;
+        this.energy += (increment + this.energy) < 0 ? -this.energy : increment;
         InGameUI.Instance.energyValueUI = this.energy;
     }
 

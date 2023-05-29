@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using System.Linq;
 using System;
 
 public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, ILightning, ISelectable
@@ -23,6 +22,8 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
     public override bool isFragile => !hasShell;
     public override bool isCorrosive => true;
     public override bool isMeltable => true;
+    public override bool isWalkableByTerra => true;
+
     public bool hasShell => hitpoints == 2;
     private bool hasPath => path.Count > 0;
 
@@ -54,10 +55,8 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
                 return;
         }   
         // Move one node away from origin
-        Vector2 currentPos = this.worldPos;
-        Vector2 targetPos = currentPos + (currentPos - lightningOrigin);
-        Node targetNode;
-        targetNode = NodeGrid.NodeWorldPointPos(targetPos);
+        Vector2 targetPos = this.worldPos + (this.worldPos - lightningOrigin);
+        Node targetNode = NodeGrid.NodeWorldPointPos(targetPos);
         if(targetNode.worldPosition == this.transform.position || !targetNode.IsWalkable())
             return;
         ForceDehighlight();
@@ -190,15 +189,9 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
 
     public void OnTrapTrigger(Character character)
     {
-        if(isWalking || !hasShell)
-        {
-            if(isWalking)
-            {
-                Stop();
-            }
-            character.TriggerDeath();
-            Remove();
-        }
+        if(hasShell)
+            animator.Play("RockCrabGreen_AttackRock");
+        character.TriggerDeath();
     }
 
     public void OnPlayerAction()
@@ -261,6 +254,8 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
 
     private void MoveLocation()
     {
+        if(nodes.Count == 0)
+            return;
         Debug.Assert(path != null && path.Count > 0);
         ForceDehighlight();
         isWalking = true;
@@ -351,7 +346,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         Debug.Assert(targetPositions.Count > 0, "ERROR: No Target!");
         path = type == null 
             ? Pathfinding.FindPath(this.worldPos, targetPositions, walkableGrid, nodeType)  
-            : Pathfinding.FindPath(this.worldPos, targetPositions, walkableGrid,nodeType, type: type);
+            : Pathfinding.FindPath(this.worldPos, targetPositions, walkableGrid, nodeType, type: type);
         return hasPath;
     }
 

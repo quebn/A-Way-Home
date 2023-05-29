@@ -137,22 +137,20 @@ MonoBehaviour:
   info:
     name: jungle berry
     type: walkable
-    hp: 1
+    hp: 5
     isDeadly: 0
-    heal: 5
+    heal: 3
   tileSize: {x: 1, y: 1}
   id: 
   outlines:
   - {fileID: 3239814429989956933}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 0000000001000000
   spriteRenderers:
   - {fileID: 8451063120667082302}
   audioSources:
   - {fileID: -278331533646690022}
   animator: {fileID: 8451063120667082303}
-  heal: 5
 --- !u!212 &8451063120667082302
 SpriteRenderer:
   m_ObjectHideFlags: 0
