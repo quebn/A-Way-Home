@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +7,8 @@ public class TreeMushroom : TreeObstacle, ILightning, IActionWaitProcess
     [SerializeField] private List<GameObject> logs;
     private bool isFalling = false;
     
+    protected override Action AfterCutDown => OnCutDown;
+
     public void OnLightningHit(int damage)
     {
         Debug.LogWarning(nodes[0].IsStatus(NodeStatus.Conductive));
@@ -20,12 +22,12 @@ public class TreeMushroom : TreeObstacle, ILightning, IActionWaitProcess
             PlayerActions.FinishProcess(this);
     }
 
-    protected override void OnCutDown()
+    private void OnCutDown()
     {
-        for(int i = 0 ; i < placeableNodes[currentCursorLocation].Count; i++)
+        int index = IsCursorRight()? 1 : 0;
+        for(int i = 0 ; i < nodesPlaceable[index].Count; i++)
         {
-            Node node = placeableNodes[currentCursorLocation][i]; 
-            // if(node.IsType(NodeType.Terrain) || (node.hasObstacle && !node.GetObstacle().isFragile) || node.hasPlatform || node == Character.instance.currentNode)
+            Node node = nodesPlaceable[index][i]; 
             if(LogNotPlaceable(node) || node.hasPlatform)
                 continue;
             GameObject.Instantiate(

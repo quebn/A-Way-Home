@@ -261,9 +261,7 @@ public class Node
             this.platform = obstacle;
         else
             this.obstacle = obstacle;
-        Debug.LogWarning($"Before: {this.currentNodeType.ToString()} -> Retain: {retainType}");
         this.currentNodeType =  retainType ? this.currentNodeType : nodeType;
-        Debug.LogWarning($"After: {this.currentNodeType.ToString()}  -> Retain: {retainType}");
         UpdateColor();
     }
 

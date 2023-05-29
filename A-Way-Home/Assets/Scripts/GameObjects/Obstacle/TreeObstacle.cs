@@ -1,4 +1,4 @@
-using System.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,15 +6,15 @@ using UnityEngine;
 public class TreeObstacle : Obstacle
 {
     [SerializeField] protected Animator animator;
-
-    protected float currentCursorLocation = 0;
-    protected Dictionary<float, List<Node>> placeableNodes;
+    protected List<List<Node>> nodesPlaceable;
 
     public override bool isCorrosive => true;
     public override bool isMeltable => true;
     public override bool isBurnable => isCutDown;
 
     protected bool isCutDown => hitpoints == 1;
+
+    protected virtual Action AfterCutDown => () => {};
 
     protected override void Initialize()
     {
@@ -41,46 +41,30 @@ public class TreeObstacle : Obstacle
             outlines[1].SetActive(false);
         yield return new WaitForSeconds(CutDownTreeAnimation());
         audioSources[1].Stop();
-        OnCutDown();
-    }
-
-    protected virtual void OnCutDown()
-    {
-        Debug.Assert(false, "ERROR: Should be implemented in subclasses");
+        AfterCutDown();
     }
 
     protected void SetPlaceableLocations()
     {
-        placeableNodes  = new Dictionary<float, List<Node>>(2);
-        for(float f = -1.5f; f < 3; f += 3){
+        nodesPlaceable = new List<List<Node>>();
+        for(float f = -1.5f; f < 3; f += 3)
+        {
             Vector2 pos = new Vector2(this.worldPos.x + f, this.worldPos.y);
-            placeableNodes.Add(pos.x, NodeGrid.GetNodes(pos, 2, 1));
+            nodesPlaceable.Add(NodeGrid.GetNodes(pos, 2, 1));
         }
     }
 
-    protected float GetCursorDirection()
+    protected bool IsCursorRight()
     {
         Vector2 mousePos = PlayerActions.Instance.mouseWorldPos;
-        return mousePos.x > this.worldPos.x ? worldPos.x + 1.5f : worldPos.x - 1.5f;
+        return mousePos.x > this.worldPos.x;
     }
 
     protected float CutDownTreeAnimation()
     {
-        CutDownTreeDefault();
         audioSources[1].Play();
-        if (currentCursorLocation > this.worldPos.x)
-            animator.Play("TreeFall_Right");
-        else if (currentCursorLocation < this.worldPos.x)
-            animator.Play("TreeFall_Left");
+        animator.Play(IsCursorRight() ? "TreeFall_Right" : "TreeFall_Left");
         return animator.GetCurrentAnimatorStateInfo(0).length;
-    }
-
-    protected void CutDownTreeDefault()
-    {
-        if(currentCursorLocation != 0)
-            return;
-        int index = UnityEngine.Random.Range(0, 1);
-        currentCursorLocation = placeableNodes.ElementAt(index).Key;
     }
 
     protected override void OnHighlight(Tool tool)
@@ -101,18 +85,16 @@ public class TreeObstacle : Obstacle
         if(!isCutDown && outlines[1].activeSelf)
             outlines[1].SetActive(false);
         base.OnDehighlight();
-        if(currentCursorLocation != 0)
-            Node.ToggleNodes(placeableNodes[currentCursorLocation], NodeGrid.nodesVisibility);
+        for(int i = 0; i < nodesPlaceable.Count; i++)
+            Node.ToggleNodes(nodesPlaceable[i], NodeGrid.nodesVisibility);
+
     }
 
     protected void HighlightPlaceableNodes()
     {
-        float xLocationCursor = GetCursorDirection(); 
-        Debug.Assert(placeableNodes.ContainsKey(xLocationCursor));
-        if(currentCursorLocation != 0)
-            Node.ToggleNodes(placeableNodes[currentCursorLocation], NodeGrid.nodesVisibility);
-        currentCursorLocation = xLocationCursor;
-        Node.RevealNodes(placeableNodes[currentCursorLocation], Node.colorRed, NodeType.Terrain);
+        for(int i = 0; i < nodesPlaceable.Count; i++)
+            Node.ToggleNodes(nodesPlaceable[i], NodeGrid.nodesVisibility);
+        Node.RevealNodes(nodesPlaceable[IsCursorRight()? 1 : 0], Node.colorRed, NodeType.Terrain);
     }
 
     protected virtual bool LogNotPlaceable(Node node)

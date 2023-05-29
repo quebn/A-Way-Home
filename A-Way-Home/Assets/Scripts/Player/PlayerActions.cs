@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-using UnityEngine.Tilemaps;
-using System;
 
 [System.Serializable]
 public enum Tool { Inspect, Lightning, Grow, Command, Tremor}//, PlaceMode }
@@ -27,7 +25,7 @@ public class PlayerActions : MonoBehaviour
     private PlayerInput playerInput;
     private InputAction performAction; 
     private InputAction cancelAction;
-    private InputAction revealPath;
+    // private InputAction revealPath;
     private List<InputAction> tools;
     private InputAction start;
     private InputAction reset;
@@ -431,13 +429,13 @@ public class PlayerActions : MonoBehaviour
             GameEvent.RestartGame();      
     }
 
-    private void RevealPath(InputAction.CallbackContext context)
-    {
-        if (GameEvent.isPaused)
-            return;
-        Debug.LogWarning("Unimplemented!");
-        // Character.instance.DisplayPath();
-    }
+    // private void RevealPath(InputAction.CallbackContext context)
+    // {
+    //     if (GameEvent.isPaused)
+    //         return;
+    //     Debug.LogWarning("Unimplemented!");
+    //     // Character.instance.DisplayPath();
+    // }
 
     public static bool IsMouseOverUI(){
         // IsPointerOverGameobject is having a warning when used in new input system 
@@ -456,7 +454,7 @@ public class PlayerActions : MonoBehaviour
         Debug.Assert(playerInput != null, "playerInput GetComponent failed!");
         performAction  = playerInput.actions["PerformAction"];
         cancelAction  = playerInput.actions["cancelAction"];
-        revealPath      = playerInput.actions["RevealPath"];
+        // revealPath      = playerInput.actions["RevealPath"];
         for(int i = 1; i <= toolCount; i++)
             tools.Add(playerInput.actions[$"Tool{i}"]);
         start           = playerInput.actions["Start"];
@@ -473,7 +471,7 @@ public class PlayerActions : MonoBehaviour
         // Debug.LogWarning("Subscribing Functions");
         performAction.started  += PerformAction;
         cancelAction.started += CancelAction;
-        revealPath.started      += RevealPath;
+        // revealPath.started      += RevealPath;
         foreach(InputAction tool in tools)
             tool.started += SetCurrentTool;
         start.started           += StartCharacter;
@@ -485,7 +483,7 @@ public class PlayerActions : MonoBehaviour
         // Debug.LogWarning("Unsubscribing Functions");
         performAction.started  -= PerformAction;
         cancelAction.started -= CancelAction;
-        revealPath.started      -= RevealPath;
+        // revealPath.started      -= RevealPath;
         foreach(InputAction tool in tools)
             tool.started -= SetCurrentTool;
         start.started           -= StartCharacter;
