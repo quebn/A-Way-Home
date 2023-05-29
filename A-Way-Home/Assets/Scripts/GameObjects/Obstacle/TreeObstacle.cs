@@ -14,7 +14,7 @@ public class TreeObstacle : Obstacle
 
     protected bool isCutDown => hitpoints == 1;
 
-    protected virtual Action AfterCutDown => () => {};
+    protected virtual Action<bool> AfterCutDown => (bool isRight) => {};
 
     protected override void Initialize()
     {
@@ -35,13 +35,13 @@ public class TreeObstacle : Obstacle
 
     protected IEnumerator CutDown()
     {
-        Debug.LogWarning("Cutting Down");
+        bool isRight = IsCursorRight();
         audioSources[0].Play();
         if(outlines[1].activeSelf)
             outlines[1].SetActive(false);
-        yield return new WaitForSeconds(CutDownTreeAnimation());
+        yield return new WaitForSeconds(CutDownTreeAnimation(isRight));
         audioSources[1].Stop();
-        AfterCutDown();
+        AfterCutDown(isRight);
     }
 
     protected void SetPlaceableLocations()
@@ -60,10 +60,10 @@ public class TreeObstacle : Obstacle
         return mousePos.x > this.worldPos.x;
     }
 
-    protected float CutDownTreeAnimation()
+    protected float CutDownTreeAnimation(bool isRight)
     {
         audioSources[1].Play();
-        animator.Play(IsCursorRight() ? "TreeFall_Right" : "TreeFall_Left");
+        animator.Play(isRight ? "TreeFall_Right" : "TreeFall_Left");
         return animator.GetCurrentAnimatorStateInfo(0).length;
     }
 

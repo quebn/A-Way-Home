@@ -14,7 +14,7 @@ public static class SaveSystem
         Debug.Log($"Deleting file named: '{filename}.save' in '{filePathDir}/SavedFiles/'. ");
         if (!File.Exists(path))
         {
-            Debug.LogError($"{filename}.save does not exist in path: {filePathDir}/SavedFiles/");
+            Debug.LogError($"{filename}.save does not exist in p    ath: {filePathDir}/SavedFiles/");
             return;
         }
         File.Delete(path);
@@ -68,6 +68,8 @@ public static class SaveSystem
         List<SaveFileData> savedFiles = new List<SaveFileData>();
         string path = $"{filePathDir}/SavedFiles/";
         Debug.Log($"Fetching all saved files from {path}");
+        if(!Directory.Exists(path))
+            Directory.CreateDirectory(path);
         string[] fileArray = Directory.GetFiles(path, "*.save");
         if (fileArray.Length == 0)
         {

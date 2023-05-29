@@ -98,9 +98,6 @@ public class NodeGrid : MonoBehaviour, ISaveable
                 Vector3 worldPoint = bottomLeft + Vector3.right * (x * diameter + nodeRadius) + Vector3.up * (y * diameter+ nodeRadius);
                 Gizmos.color = Color.blue;
                 Gizmos.DrawWireCube(worldPoint, new Vector3(diameter, diameter, 0));
-                if (enableValues)
-                    // UnityEditor.Handles.Label(new Vector3(worldPoint.x - .25f, worldPoint.y), $"{x}, {y}");
-                    UnityEditor.Handles.Label(new Vector3(worldPoint.x - .25f, worldPoint.y), $"{worldPoint.x}, {worldPoint.y}");
             }
         }
         Gizmos.color = Color.white;

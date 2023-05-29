@@ -8,7 +8,7 @@ public class TreeForest : TreeObstacle, ILightning, IActionWaitProcess
     [SerializeField] private List<GameObject> logs;
     private bool isFalling = false;
     private bool hasFruit => logs.Count == 3;
-    protected override Action AfterCutDown => OnCutDown;
+    protected override Action<bool> AfterCutDown => OnCutDown;
 
     public void OnLightningHit(int damage)
     {
@@ -22,9 +22,9 @@ public class TreeForest : TreeObstacle, ILightning, IActionWaitProcess
             PlayerActions.FinishProcess(this);
     }
 
-    private void OnCutDown()
+    private void OnCutDown(bool isRight)
     {
-        int index = IsCursorRight()? 1 : 0;
+        int index = isRight ? 1 : 0;
         for(int i = 0 ; i < nodesPlaceable[index].Count; i++)
         {
             Node node = nodesPlaceable[index][i]; 

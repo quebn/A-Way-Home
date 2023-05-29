@@ -39,6 +39,7 @@ public class OpeningUI : MonoBehaviour
 
     private void Start()
     {
+        Screen.fullScreen = GameData.Instance.isFullscreen;
         LoadAudioSettings();
         storyQueue = new Queue<GameObject>();
         for(int i = 0; i < texts.Length; i++)

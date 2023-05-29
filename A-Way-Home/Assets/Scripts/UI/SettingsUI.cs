@@ -92,7 +92,7 @@ public class SettingsUI : MonoBehaviour
 
     public void ToggleFullScreen()
     {
-        GameData.Instance.isFullscreen = !GameData.Instance.isFullscreen; 
+        GameData.Instance.isFullscreen = fullscreenToggle.isOn; 
         Screen.fullScreen = GameData.Instance.isFullscreen;
     }
 

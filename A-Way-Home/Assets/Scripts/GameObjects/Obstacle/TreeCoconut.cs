@@ -9,8 +9,7 @@ public class TreeCoconut : TreeObstacle, ILightning, IActionWaitProcess
     [SerializeField] private bool hasNut;
     
     private bool isFalling = false;
-
-    protected override Action AfterCutDown => OnCutDown;
+    protected override Action<bool> AfterCutDown => OnCutDown;
 
     public void OnLightningHit(int damage)
     {
@@ -24,9 +23,9 @@ public class TreeCoconut : TreeObstacle, ILightning, IActionWaitProcess
             PlayerActions.FinishProcess(this);
     }
 
-    private void OnCutDown()
+    private void OnCutDown(bool isRight)
     {
-        int index = IsCursorRight() ? 1 : 0;
+        int index = isRight ? 1 : 0;
         for(int i = 0 ; i < nodesPlaceable[index].Count; i++)
         {
             Node node = nodesPlaceable[index][i]; 
