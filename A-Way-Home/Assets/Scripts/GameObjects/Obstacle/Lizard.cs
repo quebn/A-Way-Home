@@ -18,7 +18,6 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable, IActionWaitProce
         SetNodes(this.worldPos, NodeType.Obstacle, this);
         InitFireNodes();
         Invoke("OnStartBreath", .5f);
-        // Invoke("OnStartBreath", WaitforFinishInit());
     }
 
 

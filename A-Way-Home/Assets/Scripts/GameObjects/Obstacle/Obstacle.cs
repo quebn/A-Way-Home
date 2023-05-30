@@ -44,7 +44,6 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
         Debug.Assert(spriteRenderers.Count != 0);
         Initialize();
         count++;
-        // Debug.Log(count);
     }
 
     private void OnDisable()

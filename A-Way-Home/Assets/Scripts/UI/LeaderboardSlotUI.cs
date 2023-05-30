@@ -12,34 +12,20 @@ public class LeaderboardSlotUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI characterName;
     [SerializeField] private TextMeshProUGUI score;
 
-    private void Start()
-    {
-        Debug.LogWarning($"--------------IMPORTANT-----------");
-        Debug.LogWarning($"Initializing Scores {slotIndexNumber}");
-        Debug.LogWarning($"--------------IMPORTANT-----------");
-        InitData();
-    }
-
     private void InitData ()
     {
-        if (GameData.Instance.leaderboards.Count <= slotIndexNumber)
-            return;
         PlayerScoreData data = GetRankingData(slotIndexNumber);
-        if (data != null)
-        {
-            this.noData.SetActive(false);
-            this.data.SetActive(true);
+        bool hasData = data != null;
+        this.noData.SetActive(!hasData);
+        this.data.SetActive(hasData);
+        if (hasData)
             SetValues(data);
-            return;
-        }
-        this.data.SetActive(false);
-        this.noData.SetActive(true);
     }
 
     private PlayerScoreData GetRankingData(int index)
     {
         GameData.Instance.leaderboards.Sort();
-        if (GameData.Instance.leaderboards[index] == null)
+        if (GameData.Instance.leaderboards == null || GameData.Instance.leaderboards.Count == 0 || GameData.Instance.leaderboards.Count <= slotIndexNumber)
             return null;
         PlayerScoreData data = GameData.Instance.leaderboards[index]; 
         return data;
@@ -53,7 +39,7 @@ public class LeaderboardSlotUI : MonoBehaviour
         this.score.text = data.score.ToString();
     }
 
-    public static void UpdateSlots()
+    public static void LoadLeaderbordsInfo()
     {
         LeaderboardSlotUI[] slots =  GameObject.FindObjectsOfType<LeaderboardSlotUI>();
         if(slots == null || slots.Length == 0)

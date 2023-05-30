@@ -16,7 +16,6 @@ public class Golem : Obstacle, ILightning, ICommand, ITremor, IActionWaitProcess
 
     private bool canMove => hitpoints  == 3;
 
-    // public override bool isCorrosive => true;
 
     protected override void Initialize()
     {

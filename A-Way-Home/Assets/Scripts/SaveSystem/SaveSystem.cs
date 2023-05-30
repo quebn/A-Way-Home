@@ -52,12 +52,12 @@ public static class SaveSystem
         string[] fileArray = Directory.GetFiles(path, "*.save");
         if (fileArray.Length == 0)
             return list;
-        foreach(string filename in fileArray)
+        for(int i = 0; i < fileArray.Length; i++)
         {
-            Debug.Log($"Accessing the file: {filename}");
-            SaveFileData fileData = GetSaveFileData(filename);
+            Debug.Log($"Accessing the file: {fileArray[i]}");
+            SaveFileData fileData = GetSaveFileData(fileArray[i]);
             if(fileData == null)
-                Debug.LogWarning($"{filename} is null");
+                Debug.LogWarning($"{fileArray[i]} is null");
             list.Add(fileData);
         }
         return list;
@@ -72,14 +72,11 @@ public static class SaveSystem
             Directory.CreateDirectory(path);
         string[] fileArray = Directory.GetFiles(path, "*.save");
         if (fileArray.Length == 0)
-        {
-            Debug.LogWarning("SavedFiles folder is Empty");
             return savedFiles;
-        }
-        foreach(string filename in fileArray)
+        for(int i = 0; i < fileArray.Length; i++)
         {
-            Debug.Log($"Accessing the file: {filename}");
-            SaveFileData fileData = GetSaveFileData(filename);
+            Debug.Log($"Accessing the file: {fileArray[i]}");
+            SaveFileData fileData = GetSaveFileData(fileArray[i]);
             savedFiles.Add(fileData);
         }
         Debug.Log($"Fetched {savedFiles.Count} saved file data!");

@@ -16,6 +16,7 @@ public class Mushroom : Obstacle, ILightning
 
     protected override void Initialize()
     {
+        base.Initialize();
         SetNodes(this.worldPos, NodeType.Walkable, this);
     }
 

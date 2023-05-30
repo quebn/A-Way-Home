@@ -13,11 +13,6 @@ public class Boulder : Obstacle, ILightning, ITremor
     {
         base.Initialize();
         SetNodes(this.worldPos, NodeType.Obstacle, this);
-    //     animator = GetComponent<Animator>();
-    //     spriteRenderer = GetComponent<SpriteRenderer>();
-    //     InitializeNodes(this.transform.position);
-    //     SetNodesType(NodeType.Obstacle, this);
-    //     hitpoints = 4;
     }
 
     public void OnLightningHit(int damage)

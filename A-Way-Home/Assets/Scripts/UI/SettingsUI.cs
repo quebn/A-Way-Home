@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -18,82 +19,82 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ambienceValue;
     [SerializeField] private TextMeshProUGUI sfxValue;
     [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] private Toggle leaderboardsToggle;
+    [SerializeField] private Toggle levelsToggle;
 
-    private void Start()
+    private void OnEnable()
     {
         InitValue();
     }
 
+    private void OnDisable()
+    {
+        audioMixer.SetFloat("master", GameData.Instance.isMuted ? -80 :  Mathf.Log10(GameData.Instance.master * .01f) * 20);
+    }
+
     private void InitValue()
     {
-        GameData data = GameData.Instance;
-        this.fullscreenToggle.isOn = data.isFullscreen;
-        this.muteToggle.isOn = data.isMuted;
-        this.masterSlider.value = data.master;
+        this.fullscreenToggle.isOn = GameData.Instance.isFullscreen;
+        this.muteToggle.isOn = GameData.Instance.isMuted;
+        this.masterSlider.value = GameData.Instance.master;
         this.masterValue.text = this.masterSlider.value.ToString();
-        this.bgmSlider.value = data.bgm;
+        this.bgmSlider.value = GameData.Instance.bgm;
         this.bgmValue.text = this.bgmSlider.value.ToString();
-        this.ambienceSlider.value = data.ambience;
+        this.ambienceSlider.value = GameData.Instance.ambience;
         this.ambienceValue.text = this.ambienceSlider.value.ToString();
-        this.sfxSlider.value = data.sfx;
+        this.sfxSlider.value = GameData.Instance.sfx;
         this.sfxValue.text = this.sfxSlider.value.ToString();
+        this.leaderboardsToggle.isOn = false;
+        this.levelsToggle.isOn = false;
     }
 
     public void ChangeMaster()
     {
-        GameData.Instance.master = (uint)masterSlider.value;
-        masterValue.text = GameData.Instance.master.ToString();
-        audioMixer.SetFloat("master", Mathf.Log10(GameData.Instance.master * .01f) * 20);
+        masterValue.text = masterSlider.value.ToString();
+
+        if(!muteToggle.isOn)
+            audioMixer.SetFloat("master", Mathf.Log10(masterSlider.value * .01f) * 20);
     }
 
     public void ChangeBGM()
     {
-        GameData.Instance.bgm = (uint)bgmSlider.value;
-        bgmValue.text = GameData.Instance.bgm.ToString();
-        audioMixer.SetFloat("bgm", Mathf.Log10(GameData.Instance.bgm * .01f) * 20);
-        // Debug.Log(GameData.Instance.bgm);
+        bgmValue.text = bgmSlider.value.ToString();
+        audioMixer.SetFloat("bgm", Mathf.Log10(bgmSlider.value * .01f) * 20);
     }
 
 
     public void ChangeAmbience()
     {
-        GameData.Instance.ambience = (uint)ambienceSlider.value;
-        ambienceValue.text = GameData.Instance.ambience.ToString();
-        audioMixer.SetFloat("ambience", Mathf.Log10(GameData.Instance.ambience * .01f) * 20);
+        ambienceValue.text = ambienceSlider.value.ToString();
+        audioMixer.SetFloat("ambience", Mathf.Log10(ambienceSlider.value * .01f) * 20);
     }
 
     public void ChangeSFX()
     {
-        GameData.Instance.sfx = (uint)sfxSlider.value;
-        sfxValue.text = GameData.Instance.sfx.ToString();
-        audioMixer.SetFloat("sfx", Mathf.Log10(GameData.Instance.sfx * .01f) * 20);
+        sfxValue.text = sfxSlider.value.ToString();
+        audioMixer.SetFloat("sfx", Mathf.Log10(sfxSlider.value * .01f) * 20);
     }
 
     public void ToggleAudio()
     {
-        GameData.Instance.isMuted = muteToggle.isOn;
-        Debug.Log(GameData.Instance.isMuted);
-        audioMixer.SetFloat("master", GameData.Instance.isMuted? -80 :  Mathf.Log10(GameData.Instance.master * .01f) * 20);
+        audioMixer.SetFloat("master", muteToggle.isOn ? -80 :  Mathf.Log10(masterSlider.value * .01f) * 20);
     }
 
     public void SaveSettings()
     {
-        GameData data = GameData.Instance;
-        data.isFullscreen = this.fullscreenToggle.isOn;
-        data.isMuted = this.muteToggle.isOn;
-        data.master = (uint)this.masterSlider.value;
-        data.bgm = (uint)this.bgmSlider.value;
-        data.ambience = (uint)this.ambienceSlider.value;
-        data.sfx = (uint)this.sfxSlider.value;
-        Debug.Log("Settings Saved!");
+        GameData.Instance.isFullscreen = this.fullscreenToggle.isOn;
+        GameData.Instance.isMuted = this.muteToggle.isOn;
+        GameData.Instance.master = (uint)this.masterSlider.value;
+        GameData.Instance.bgm = (uint)this.bgmSlider.value;
+        GameData.Instance.ambience = (uint)this.ambienceSlider.value;
+        GameData.Instance.sfx = (uint)this.sfxSlider.value;
+        if(levelsToggle.isOn)
+            GameData.Instance.unlockedLevels = new List<string>{"Stage1Level1"};
+        if(leaderboardsToggle.isOn)
+            GameData.Instance.leaderboards = new List<PlayerScoreData>();
+        Screen.fullScreen = GameData.Instance.isFullscreen;
         SaveSystem.SaveGameData();
         MainMenuUI.Instance.CloseSettingsWindow();
-    }
-
-    public void ToggleFullScreen()
-    {
-        GameData.Instance.isFullscreen = fullscreenToggle.isOn; 
-        Screen.fullScreen = GameData.Instance.isFullscreen;
     }
 
     public void RevertValues()
@@ -108,7 +109,8 @@ public class SettingsUI : MonoBehaviour
         this.ambienceValue.text = this.ambienceSlider.value.ToString();
         this.sfxSlider.value = 100;
         this.sfxValue.text = this.sfxSlider.value.ToString();
-
+        this.leaderboardsToggle.isOn = false;
+        this.levelsToggle.isOn = false;
         foreach (InputActionMap map in inputActions.actionMaps)
             map.RemoveAllBindingOverrides();
         PlayerPrefs.DeleteKey("rebinds");

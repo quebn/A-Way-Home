@@ -45,39 +45,35 @@ public class MainMenuUI : MonoBehaviour
 
     public void LoadGame()
     {
-        GameData.savedDataFiles =  SaveSystem.FetchAllSavedFileData();
         SetWindowActive(loadSelectionWindow);
-        Debug.Log("Pressed LoadGame Button");
+        SavedSlotUI.LoadAllSaveSlotsUI();
     }
 
     public void SelectLevel()
     {
         SetWindowActive(levelSelectionwindow);
-        Debug.Log("Pressed SelectLevel Button");
+        LevelSelectButtonUI.LoadUnlockedLevelsUI();
     }
     
     public void Settings()
     {
         SetWindowActive(settingsWindow);
-        Debug.Log("Pressed Settings Button");
     }
 
     public void HowtoPlay()
     {
         SetWindowActive(howtoPlayWindow);
-        Debug.Log("Pressed HowToPlay Button");
     }
 
     public void Leaderboards()
     {
         SetWindowActive(leaderboardsWindow);
-        Debug.Log("Pressed Leaderboards Button");
+        LeaderboardSlotUI.LoadLeaderbordsInfo();
     }
 
     public void CloseGame()
     {
         SetWindowActive(closeGameWindow);
-        Debug.Log("Pressed CloseGame Button");
     }
 
     public void SelectCharButton(int characterIndex)
@@ -115,7 +111,7 @@ public class MainMenuUI : MonoBehaviour
     {
         SaveSystem.DeleteFileData(SavedSlotUI.FileNameToBeDeleted);
         CancelDeleteSlot();
-        SavedSlotUI.UpdateSaveSlots();
+        SavedSlotUI.LoadAllSaveSlotsUI();
         Debug.Log("Saved Slot deleted!");
     }
 

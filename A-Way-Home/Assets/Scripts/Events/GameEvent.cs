@@ -85,13 +85,12 @@ public static class GameEvent
         }
     }
 
-    public static void LoadGame(int index)
+    public static void LoadGame(SaveFileData fileData)
     {
         if (isPaused)
             UnpauseGame();
         loadType = LevelLoadType.LoadGame;
-        GameData.levelData = GameData.savedDataFiles[index].levelData;
-        // GameData.loadedLevelData = GameData.savedDataFiles[index];
+        GameData.levelData = fileData.levelData;
         prefabLevelName = $"Stage{GameData.levelData.stage}Level{GameData.levelData.level}";
         SceneManager.LoadScene("LevelScene");
     }

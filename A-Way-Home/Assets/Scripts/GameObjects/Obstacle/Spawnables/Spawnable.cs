@@ -6,17 +6,17 @@ using UnityEngine;
 public class Spawnable : Obstacle
 {
     private bool finished = false;
+    protected bool isLoaded = false;
+
 
     public static int spawnCount = 0;
 
     protected override void Initialize()
     {
-        // Debug.Assert(!GameData.levelData.obstacles.ContainsKey(this.id));
         this.id = $"{GameData.levelData.spawnCount += 1}";
-        // Debug.Assert(GameData.levelData.obstacles[this.id].typeName == this.GetType().Name, "ERROR: type mismatch");
-        base.Initialize();
-        OnSpawn();
         finished = true;
+        OnSpawn();
+        base.Initialize();
         spawnCount++;
     }
 
@@ -34,6 +34,7 @@ public class Spawnable : Obstacle
 
     public override void LoadData(LevelData levelData)
     {
+        isLoaded = true;
         StartCoroutine(SpawnLoadData(levelData));
     }
 

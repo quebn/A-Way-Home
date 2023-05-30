@@ -26,6 +26,7 @@ public class OpeningUI : MonoBehaviour
 
     private void LoadAudioSettings()
     {
+        Debug.LogWarning(GameData.Instance.isMuted);
         if(GameData.Instance.isMuted)
             audioMixer.SetFloat("master", -80);
         else

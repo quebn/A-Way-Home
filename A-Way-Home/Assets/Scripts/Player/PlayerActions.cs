@@ -309,9 +309,9 @@ public class PlayerActions : MonoBehaviour
 
     private void Hover()
     {
+        OnHoverUpper();
         if(ActionsNotAllowed())
             return;
-        OnHoverUpper();
         hoveredNodes = hasSelectedObs? selectedObstacle.OnSelectedHover(mouseWorldPos, hoveredNodes) : HoverNodes(mouseWorldPos);;
     }
 

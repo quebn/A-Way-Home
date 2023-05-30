@@ -60,7 +60,7 @@ public class EndSceneUI : MonoBehaviour
     public void Leaderboards()
     {
         leaderboards.SetActive(true);
-        LeaderboardSlotUI.UpdateSlots();
+        LeaderboardSlotUI.LoadLeaderbordsInfo();
     }
 
     public void CloseLeaderboards()

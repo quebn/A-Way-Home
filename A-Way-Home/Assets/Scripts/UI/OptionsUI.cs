@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -13,18 +14,16 @@ public class OptionsUI : MonoBehaviour
     [SerializeField] private GameObject quitGameWindow;
     [SerializeField] private TMP_InputField fileNameInput;
     [SerializeField] public TMP_InputField overwriteNameInput;
+    [SerializeField] private GameObject SaveFileErrorMsg;
 
-    // Confirm delete windows
     public GameObject deleteConfirmSaveWindow;
     public GameObject deleteConfirmLoadWindow;
     public GameObject confirmOverwriteWindow;
 
-    // public InGameUI InGameUI;
-    private bool isActive;
+    private bool isActive => this.gameObject.activeSelf;
 
     private void Start()
     {
-        isActive = true;
         Debug.Assert(confirmOverwriteWindow != null, $"{confirmOverwriteWindow} is null");
         Debug.Assert(overwriteNameInput != null, $"{overwriteNameInput} is null");
         if (Instance == null)
@@ -42,15 +41,15 @@ public class OptionsUI : MonoBehaviour
 
     public void SaveGame()
     {
-        GameData.savedDataFiles = SaveSystem.FetchAllSavedFileData();
         SetWindowActive(saveGameWindow);
+        SavedSlotUI.LoadAllSaveSlotsUI();
         Debug.Log("Pressed SaveGame Button!");
     }
 
     public void LoadGame()
     {
-        GameData.savedDataFiles = SaveSystem.FetchAllSavedFileData();
         SetWindowActive(loadGameWindow);
+        SavedSlotUI.LoadAllSaveSlotsUI();
         Debug.Log("Pressed LoadGame Button");
     }
 
@@ -69,9 +68,32 @@ public class OptionsUI : MonoBehaviour
     }
     #endregion
     #region SaveGame window button functions
+
+    public void DisplayError()
+    {
+        if(SaveFileErrorMsg == null)
+            return;
+        Debug.LogWarning("SaveSlots Full");
+        StartCoroutine(Error());
+    }
+
+    private IEnumerator Error()
+    {
+        SaveFileErrorMsg.SetActive(true);
+        yield return new WaitForSecondsRealtime(3f);
+        SaveFileErrorMsg.SetActive(false);
+    }
+
     public void CreateNewSaveFile()
     {
+        int count = SaveSystem.FetchAllSavedFileData().Count; 
+        if(count >= 5)
+        {
+            DisplayError();
+            return;
+        }
         createNewFileWindow.SetActive(true);
+        fileNameInput.text = $"SaveFile{count+1}";
     }
 
     public void CloseSaveGameWindow()
@@ -81,7 +103,7 @@ public class OptionsUI : MonoBehaviour
 
     public void ConfirmNewSaveFile()
     {
-        if (GameData.savedDataFiles.Count > 5)
+        if (SaveSystem.FetchAllSavedFileData().Count == 5)
         {
             Debug.LogWarning("SavedSlots is full delete/overwrite an existing slot");
             return;
@@ -89,7 +111,7 @@ public class OptionsUI : MonoBehaviour
         SaveSystem.SaveLevelData(fileNameInput.text, PlayerLevelData.Instance);
         CloseNewSaveFile();
         Debug.Log($"Saved data as {fileNameInput.text}.save");
-        SavedSlotUI.UpdateSaveSlots();
+        SavedSlotUI.LoadAllSaveSlotsUI();
     }
 
     public void CloseNewSaveFile()
@@ -104,7 +126,7 @@ public class OptionsUI : MonoBehaviour
         SaveSystem.SaveLevelData(overwriteNameInput.text, PlayerLevelData.Instance);
         CloseConfirmOverwriteWindow();
         Debug.Log($"{SavedSlotUI.FileNameToBeDeleted} was overwritten by {overwriteNameInput.text}");
-        SavedSlotUI.UpdateSaveSlots();
+        SavedSlotUI.LoadAllSaveSlotsUI();
     }
 
     public void CloseConfirmOverwriteWindow()
@@ -138,7 +160,7 @@ public class OptionsUI : MonoBehaviour
     {
         SaveSystem.DeleteFileData(SavedSlotUI.FileNameToBeDeleted);
         CloseDeleteWindow(windoworigin);
-        SavedSlotUI.UpdateSaveSlots();
+        SavedSlotUI.LoadAllSaveSlotsUI();
     }
 
     public void CloseDeleteWindow(string windoworigin)
@@ -158,14 +180,12 @@ public class OptionsUI : MonoBehaviour
     {
         Debug.Assert(isActive, "Error: OptionsUI is not active!");
         window.SetActive(true);
-        isActive = false;
     }
 
     private void SetWindowInactive(GameObject window)
     {
-        Debug.Assert(!isActive, "Error: OptionsUI is active!");
+        Debug.Assert(isActive, "Error: OptionsUI is active!");
         window.SetActive(false);
-        isActive = true;
     }
     #endregion
 }

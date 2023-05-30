@@ -143,11 +143,11 @@ MonoBehaviour:
   outlines:
   - {fileID: 4311881086230687186}
   isNotHoverable: 0
-  hitpoints: 1
   toolsInteractable: 0000000001000000
   spriteRenderers:
   - {fileID: 7010660713218782333}
-  audioSources: []
+  audioSources:
+  - {fileID: -2684080083605366045}
 --- !u!212 &7010660713218782333
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -231,7 +231,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 05fdc77951c0c5c41a797b79baa645f0, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

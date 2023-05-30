@@ -21,40 +21,27 @@ public class SavedSlotUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI level;  
     [SerializeField] private TextMeshProUGUI date;  
     [SerializeField] private TextMeshProUGUI time;  
+    private SaveFileData saveFileData;
 
     public static string FileNameToBeDeleted;
-
-    private void Start()
-    {
-        GameData.saveSlotUIDict.Add(slotIndexNumber, this);
-        InitData();
-    }
-
-    private void OnDisable()
-    {
-        GameData.saveSlotUIDict.Remove(slotIndexNumber);
-    }
 
     public void LoadGame()
     {
         if (noData.activeSelf)
             return;
-        GameEvent.LoadGame(slotIndexNumber);
+        Debug.Assert(saveFileData != null, "ERROR: saveFileData is null");
+        GameEvent.LoadGame(saveFileData);
     }
 
     public void OverwriteFile()
     {
-        if (!this.hasData.activeSelf || GameData.savedDataFiles.Count < this.slotIndexNumber)
-        {
-            Debug.Log("No Data to be Overwritten!");
+        if (!this.hasData.activeSelf || SaveSystem.FetchAllSavedFileData().Count < this.slotIndexNumber)
             return;
-        }
         FileNameToBeDeleted = this.fileName.text;
         OptionsUI.Instance.confirmOverwriteWindow.SetActive(true);
         OptionsUI.Instance.overwriteNameInput.text = this.fileName.text;
     }
 
-    // Delete the exisiting file and replace it with the new save;
     public void DeleteButton(string buttonlocation)
     {
         switch(buttonlocation)
@@ -78,10 +65,10 @@ public class SavedSlotUI : MonoBehaviour
         Debug.Log($"{FileNameToBeDeleted} is to be deleted!");
     }
 
-    private void InitData()
+    private void InitData(List<SaveFileData> datas)
     {
-        int size = GameData.savedDataFiles.Count;
-        if (size == 0 || slotIndexNumber >= size )
+        Debug.LogWarning($"DataCount:{datas.Count} -> SlotNumber{this.slotIndexNumber}");
+        if(datas.Count == 0 || datas.Count <= this.slotIndexNumber)
         {
             if (this.hasData.activeSelf)
             {
@@ -91,9 +78,10 @@ public class SavedSlotUI : MonoBehaviour
             Debug.Log($"Slot number {slotIndexNumber + 1} is empty and has no data");
             return;
         }
+        this.saveFileData = datas[slotIndexNumber];
         this.noData.SetActive(false);
         this.hasData.SetActive(true);
-        SetValues(GameData.savedDataFiles[slotIndexNumber]);
+        SetValues(saveFileData);
     }
     
     private void SetValues(SaveFileData data)
@@ -112,11 +100,12 @@ public class SavedSlotUI : MonoBehaviour
         this.time.text = data.time;
     }
 
-    public static void UpdateSaveSlots()
+    public static void LoadAllSaveSlotsUI()
     {
-        Debug.Log("Saved slot list Updated");
-        GameData.savedDataFiles = SaveSystem.FetchAllSavedFileData();
-        for(int i = 0; i < GameData.saveSlotUIDict.Count; i++)
-            GameData.saveSlotUIDict[i].InitData();
+        List<SaveFileData> saveFileDatas = SaveSystem.FetchAllSavedFileData();
+        SavedSlotUI[] slots = GameObject.FindObjectsOfType<SavedSlotUI>();
+        Debug.LogWarning($"SLOTS COUNT -> {slots.Length}");
+        for(int i = 0; i < slots.Length; i++)
+            slots[i].InitData(saveFileDatas);
     }
 }

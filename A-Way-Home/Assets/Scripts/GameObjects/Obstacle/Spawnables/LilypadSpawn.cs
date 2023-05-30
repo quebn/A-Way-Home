@@ -8,6 +8,8 @@ public class LilypadSpawn : Spawnable, ILightning
     protected override void OnSpawn()
     {
         base.OnSpawn();
+        if(!isLoaded && audioSources.Count != 0)
+            audioSources[0].Play();
         SetNodes(this.worldPos, NodeType.Walkable, this , true);
     }
 
