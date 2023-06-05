@@ -2,6 +2,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectable, ICommand, ITremor
 {
@@ -37,6 +38,13 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         maxHitpoints = hitpoints;
         if(!canPhase)
             SetNodes(this.worldPos,NodeType.Obstacle, this);
+        StartCoroutine(GetPathOnInit());
+    }
+
+    private IEnumerator GetPathOnInit()
+    {
+        int countObstacle = GameObject.FindObjectsOfType<Obstacle>(false).Length;
+        yield return new WaitUntil(() => (Obstacle.count == countObstacle && GameData.levelData.spawnCount == Spawnable.spawnCount));
         TryGetPath();
     }
 
@@ -45,6 +53,13 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         if(canPhase)
             return;
         base.OnHighlight(tool);
+        Node.RevealNodes(path, Node.colorPurple);
+    }
+
+    protected override void OnDehighlight()
+    {
+        base.OnDehighlight();
+        Node.ToggleNodes(path, NodeGrid.nodesVisibility);
     }
 
     public void OnLightningHit(int damage)

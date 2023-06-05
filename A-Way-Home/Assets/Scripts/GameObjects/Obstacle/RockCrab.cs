@@ -57,8 +57,9 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         // Move one node away from origin
         Vector2 targetPos = this.worldPos + (this.worldPos - lightningOrigin);
         Node targetNode = NodeGrid.NodeWorldPointPos(targetPos);
-        if(targetNode.worldPosition == this.transform.position || !targetNode.IsWalkable())
+        if(targetNode.worldPosition == this.transform.position || !targetNode.IsWalkable() || IsDiagonal(lightningOrigin))
             return;
+        Debug.LogWarning(lightningOrigin - this.worldPos);
         ForceDehighlight();
         isWalking = true;
         audioSources[3].Play();
@@ -66,6 +67,12 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         ClearNodes();
         FireNode.ContinueFire(prevNode);
         StartCoroutine(StepToNode(targetNode));
+    }
+
+    private bool IsDiagonal(Vector2 lightningOrigin)
+    {
+        Vector2 diff = lightningOrigin - this.worldPos;
+        return diff.x == diff.y || diff.x + diff.y == 0;
     }
 
     private IEnumerator StepToNode(Node targetNode)

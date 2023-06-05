@@ -58,6 +58,14 @@ public class GameData
         InGameUI.Instance.playerMovesUI = levelData.moves;
     }
 
+    public static List<string> GetAllLevels()
+    {
+        return new List<string>{
+            "Stage1Level1", "Stage1Level2", "Stage1Level3", "Stage1Level4", "Stage1Level5", 
+            "Stage2Level1", "Stage2Level2", "Stage2Level3", "Stage2Level4", "Stage2Level5", 
+            "Stage3Level1", "Stage3Level2", "Stage3Level3", "Stage3Level4", "Stage3Level5"};
+    }
+
 }
 
 [System.Serializable]
