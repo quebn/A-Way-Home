@@ -50,8 +50,6 @@ public class Character : MonoBehaviour, ISaveable
         // Replace with Coroutine
         if (!isGoingHome && PlayerActions.finishedProcessing && PlayerActions.finishedCommand)
             InGameUI.Instance.TimeCountdown();
-        if(isGoingHome)
-            Step();
     }
 
     public void CanHighlight(bool condition)
@@ -145,14 +143,34 @@ public class Character : MonoBehaviour, ISaveable
         targetIndex = 0;
         isGoingHome = true;
         animator.SetBool("isWalk", true);
+        StartCoroutine(StartWalk());
     }
 
     public void Relocate(Vector2 location)
     {
         this.transform.position = location;
-        // currentNode = NodeGrid.NodeWorldPointPos(this.currentPosition); 
         GetPath();
         Debug.Log($"Relocated Character to {location}");
+    }
+
+    private IEnumerator StartWalk()
+    {
+        while(isMoving)
+        {
+            if (currentPosition == currentTargetPos)
+            {
+                AudioManager.instance.PlayAudio("Step");
+                NodeStatusInteract(currentTargetNode);
+                currentTargetNode.UpdateNodeColor();
+                targetIndex++;
+                if (EndConditions())
+                    yield break;
+                currentTargetNode = path[targetIndex];
+            }
+            Flip();
+            transform.position = Vector3.MoveTowards(currentPosition, currentTargetPos, speed * Time.deltaTime);
+            yield return null;
+        }
     }
 
     private void Step()
@@ -205,11 +223,7 @@ public class Character : MonoBehaviour, ISaveable
         if (energy <= 0)
             return TriggerDeath();
         if (destinationReached)
-        {
-            Debug.LogWarning("Return True");
             return currentPosition == Home.instance.transform.position ? TriggerLevelComplete() : Consume(currentEssence);
-        }
-        Debug.LogWarning("Return false");
         return false;
     }
 

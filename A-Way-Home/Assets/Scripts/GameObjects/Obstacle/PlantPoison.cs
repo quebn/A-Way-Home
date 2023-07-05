@@ -53,7 +53,7 @@ public class PlantPoison : Plant, ITrap
 
     public override void Damage(int damage)
     {
-        Debug.Log($"Plant Damage: {damage}");
+        DamageAnimation();
         hitpoints -= damage;
         if(hitpoints < 2)
             hitpoints = 0;

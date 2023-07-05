@@ -30,6 +30,9 @@ public class SettingsUI : MonoBehaviour
     private void OnDisable()
     {
         audioMixer.SetFloat("master", GameData.Instance.isMuted ? -80 :  Mathf.Log10(GameData.Instance.master * .01f) * 20);
+        audioMixer.SetFloat("bgm", Mathf.Log10(GameData.Instance.bgm * .01f) * 20);
+        audioMixer.SetFloat("ambience", Mathf.Log10(GameData.Instance.ambience * .01f) * 20);
+        audioMixer.SetFloat("sfx", Mathf.Log10(GameData.Instance.sfx * .01f) * 20);
     }
 
     private void InitValue()

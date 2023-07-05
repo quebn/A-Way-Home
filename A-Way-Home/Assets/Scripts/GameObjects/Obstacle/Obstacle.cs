@@ -204,7 +204,7 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
         Debug.Assert(this.hitpoints == levelData.obstacles[id].GetValue("hp"), "ERROR: values doesnt match");
     }
 
-    protected IEnumerator DamageAnim()
+    private IEnumerator DamageAnim()
     {
         for(int i = 0; i < spriteRenderers.Count; i++)
             spriteRenderers[i].color = Color.red;
@@ -215,10 +215,17 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
 
     public virtual void Damage(int value)
     {
-        StartCoroutine(DamageAnim());
+        DamageAnimation();
         hitpoints -= value > hitpoints ? hitpoints : value;
         if(hitpoints <= 0)
             Remove();
+    }
+
+    protected void DamageAnimation()
+    {
+        if(spriteRenderers == null || spriteRenderers.Count == 0)
+            return;
+        StartCoroutine(DamageAnim());
     }
 
     public virtual void Remove() //Trigger death but for all

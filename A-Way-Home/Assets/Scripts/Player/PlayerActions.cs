@@ -286,6 +286,7 @@ public class PlayerActions : MonoBehaviour
 
     public void SetCurrentTool(int index)
     {
+        NodeGrid.DehighlightNodes(hoveredNodes);
         if (index > 5 || index < 0 || index > PlayerLevelData.Instance.unlockedTools)
             return;
         Tool newTool = (Tool)index;
@@ -296,7 +297,6 @@ public class PlayerActions : MonoBehaviour
             lilypadVisual.SetActive(false);
         if(cactusVisual.activeSelf)
             cactusVisual.SetActive(false);
-        NodeGrid.DehighlightNodes(hoveredNodes);
         if(hasSelectedObs)
         {
             selectedObstacle.OnDeselect();

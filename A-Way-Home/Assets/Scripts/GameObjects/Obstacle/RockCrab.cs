@@ -227,6 +227,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
 
     public override void Damage(int value = 1)
     {
+        DamageAnimation();
         hitpoints -= value > hitpoints ? hitpoints : value;
         if(hitpoints == 1)
             audioSources[0].Play();

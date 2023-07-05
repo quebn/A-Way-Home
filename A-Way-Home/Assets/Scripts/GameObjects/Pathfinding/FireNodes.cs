@@ -62,11 +62,13 @@ public class FireNode
 
     public static bool IfBurnable(Node node)
     {
-        if(node.IsType(NodeType.Terrain) || node.IsType(NodeType.Water))
+        if(node.IsType(NodeType.Terrain) || node.IsType(NodeType.Water) || node.hasPlatform)
             return false;
         if(!node.hasObstacle)
             return true;
-        Debug.Assert(node.hasObstacle);
-        return node.GetObstacle().isBurnable;
+        bool isBurnable = node.GetObstacle().isBurnable; 
+        if(isBurnable)
+            node.GetObstacle().Remove();
+        return isBurnable;
     }
 }

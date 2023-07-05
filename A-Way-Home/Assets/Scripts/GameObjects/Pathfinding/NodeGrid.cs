@@ -351,8 +351,11 @@ public class NodeGrid : MonoBehaviour, ISaveable
         if(origin == currentTileOrigin)
         {
             if (currentNodes.Count > 0 && !currentNodes[0].IsType(NodeType.Terrain) && (tool == Tool.Lightning ? currentNodes[0].canLightning : true))
+            {
                 currentNodes[0].Highlight(PlayerActions.GetToolColor(tool), tool);
-            return currentNodes;
+                return currentNodes;
+            }
+            return new List<Node>(tileWidth * tileHeight);
         }
         DehighlightNodes(currentNodes);
         List<Node> nodes = new List<Node>(tileWidth * tileHeight);

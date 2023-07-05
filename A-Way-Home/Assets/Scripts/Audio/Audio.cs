@@ -25,5 +25,4 @@ public class Audio
         this.source.pitch = this.pitch;
         this.source.loop = this.loop;
     }
-
 }

@@ -20,6 +20,7 @@ public class WoodenInterior : Obstacle, ILightning
 
     public override void Damage(int value)
     {
+        DamageAnimation();
         if(hitpoints > 0)
             hitpoints -= value;
         if(hitpoints > 0)

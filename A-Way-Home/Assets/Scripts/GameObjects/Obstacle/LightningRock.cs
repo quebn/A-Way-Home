@@ -83,6 +83,7 @@ public class LightningRock : Obstacle, ILightning, ITremor, ITrap
 
     public override void Damage(int value)
     {
+        DamageAnimation();
         hitpoints -= value > hitpoints ? hitpoints : value;
         if(hitpoints <= 0)
             Remove();

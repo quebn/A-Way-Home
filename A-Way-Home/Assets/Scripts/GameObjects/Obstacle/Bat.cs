@@ -39,8 +39,7 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
 
     public void OnPlayerAction()
     {
-
-        if(isMoving)
+        if(isMoving || !this.gameObject.activeSelf)
            return;
         if(!wasInteracted)
             MoveHorizontal();
@@ -219,19 +218,6 @@ public class Bat : Obstacle, ITrap, ILightning, IActionWaitProcess, ISelectable,
         SetNodeGridRange();
         PlayerActions.FinishProcess(this);
         PlayerActions.FinishCommand(this);
-    }
-
-    private void SetRandomPosition()
-    {
-        targetPosition = new Vector3();
-        targetPosition = Node.GetRandomWorldPos(nodeGridRange, NodeType.Walkable, false);
-    }
-
-    private void TriggerDeath()
-    {
-        hitpoints = 0;
-        ClearNodes(isRetained: true);
-        this.gameObject.SetActive(false);
     }
 
     public void OnTrapTrigger(Character character)

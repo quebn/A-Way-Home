@@ -23,11 +23,12 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
     public override bool isMeltable => !canPhase;
     public override bool isCorrosive => !canPhase;
 
-    private int  xPositionDiff => (int)(currentTargetNode.worldPosition.x - this.worldPos.x);
-    private int  yPositionDiff => (int)(currentTargetNode.worldPosition.y - this.worldPos.y);
+    private int deathState => canRevive ? 1 : 0;
+    private int xPositionDiff => (int)(currentTargetNode.worldPosition.x - this.worldPos.x);
+    private int yPositionDiff => (int)(currentTargetNode.worldPosition.y - this.worldPos.y);
     private bool canMove => currentTargetIndex < travelSpeed;
     private bool isMoving {get => animator.GetBool("isMoving"); set => animator.SetBool("isMoving", value); }
-    private bool isImmobile => hitpoints <= 0;
+    private bool isImmobile => hitpoints <= 1 && canRevive;
     private bool hasPath => path.Count > 0;
 
     private static List<Node> gridNodes;
@@ -35,9 +36,11 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
     protected override void Initialize()
     {
         base.Initialize();
-        maxHitpoints = hitpoints;
+        maxHitpoints = 3;
         if(!canPhase)
             SetNodes(this.worldPos,NodeType.Obstacle, this);
+        if(hitpoints == 1 && canRevive)
+            animator.Play("Death");
         StartCoroutine(GetPathOnInit());
     }
 
@@ -53,7 +56,8 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         if(canPhase)
             return;
         base.OnHighlight(tool);
-        Node.RevealNodes(path, Node.colorPurple);
+        if(tool == Tool.Inspect && !isImmobile)
+            Node.RevealNodes(path, Node.colorPurple);
     }
 
     protected override void OnDehighlight()
@@ -278,6 +282,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         isMoving = false;
         if(!canPhase)
             SetNodes(currentTargetNode.worldPosition, NodeType.Obstacle, this);
+        TryGetPath();
         PlayerActions.FinishProcess(this);
         PlayerActions.FinishCommand(this);
 
@@ -300,15 +305,17 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
     {
         if(canPhase)
             return;
+        DamageAnimation();
         hitpoints -= damage;
         Debug.Log($"hitpoints:{hitpoints}");
-        if(hitpoints <= 0 )
+        if(hitpoints <= deathState )
             Remove(false, false);
     }
 
     public override void Remove()
     {
         ForceDehighlight();
+        OnDehighlight();
         audioSources[0].Play();
         TriggerDeath(true);
     }
@@ -338,7 +345,7 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
 
     private void Immobilized(bool forceClear)
     {
-        hitpoints = 0;
+        hitpoints = forceClear ? 0 : 1;
         if(forceClear)
             StartCoroutine(PlayDeathAnimation());
         else{

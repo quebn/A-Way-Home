@@ -63,6 +63,7 @@ public class Melon : Plant, ITrap
 
     public override void Damage(int damage = 0)
     {
+        DamageAnimation();
         hitpoints -= damage;
         animator.Play(CurrentAnimationName());
         if(hitpoints <= 0)
