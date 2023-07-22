@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,9 +12,7 @@ public class Golem : Obstacle, ILightning, ICommand, ITremor, IActionWaitProcess
     private bool isUp = true;
     private Node targetNode;
 
-
     private bool canMove => hitpoints  == 3;
-
 
     protected override void Initialize()
     {
@@ -82,7 +79,6 @@ public class Golem : Obstacle, ILightning, ICommand, ITremor, IActionWaitProcess
 
     private void SetTargetNode()
     {
-        // Check if upper node is walkable if not check under.
         Node node = NodeGrid.NodeWorldPointPos(this.transform.position + direction);
         if(node == nodes[0] || !node.IsWalkable() || node.hasObstacle)
         {

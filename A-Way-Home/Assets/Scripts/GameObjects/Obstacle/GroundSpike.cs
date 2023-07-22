@@ -80,10 +80,7 @@ public class GroundSpike : Obstacle, ITrap, ILightning
 
     private IEnumerator DeathAnimation()
     {
-        // this.animator.Play("SmallExplosion_Death");
-        // yield return new WaitForSeconds(this.animator.GetCurrentAnimatorStateInfo(0).length);
         yield return new WaitForSeconds(this.animator.GetCurrentAnimatorClipInfo(0).Length);
-        // yield return new WaitForSeconds(.6f);
         this.gameObject.SetActive(false);
     }
 

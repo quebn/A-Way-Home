@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class HideUpperTileMap : MonoBehaviour, IHoverable
 {
-
     private Tilemap tilemap; 
 
     private void Awake()

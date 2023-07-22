@@ -1,10 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Mushroom : Obstacle, ILightning
 {
-
     [SerializeField] protected Animator animator;
 
     public override bool isBurnable => true;
@@ -12,7 +10,6 @@ public class Mushroom : Obstacle, ILightning
     public override bool isFragile => true;
     public override bool isTrampleable => true;
     public override bool isMeltable => true;
-
 
     protected override void Initialize()
     {

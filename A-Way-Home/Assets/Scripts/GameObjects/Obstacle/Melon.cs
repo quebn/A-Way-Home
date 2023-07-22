@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Melon : Plant, ITrap
 {
-
     protected override void OnInitialize()
     {
         animator.Play(CurrentAnimationName());

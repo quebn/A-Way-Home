@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class WoodenInterior : Obstacle, ILightning
 {
     public override bool isBurnable => true;
@@ -33,5 +29,4 @@ public class WoodenInterior : Obstacle, ILightning
         audioSources[0].Play();
         base.Remove();
     }
-
 }

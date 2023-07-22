@@ -106,6 +106,4 @@ public class CameraMovement : MonoBehaviour
 
         return new Vector3(ClampedPos.x, ClampedPos.y, TargetPos.z);
     }
-
-
 }

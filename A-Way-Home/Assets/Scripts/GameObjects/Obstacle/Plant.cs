@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Plant : Obstacle , ILightning, IGrow
@@ -12,7 +11,6 @@ public class Plant : Obstacle , ILightning, IGrow
     public override bool isTrampleable => true;
     public override bool isMeltable => true;
     public override bool isWalkableByGaia => true;
-
 
     protected const string youngling    = "Plant_Youngling";
     protected const string middle       = "Plant_Middle";
@@ -62,7 +60,6 @@ public class Plant : Obstacle , ILightning, IGrow
     public override void LoadData(LevelData levelData)
     {
         base.LoadData(levelData);
-        Debug.Log("22222222222222222222222222");
     }
 
     public override void Remove()
@@ -107,5 +104,4 @@ public class Plant : Obstacle , ILightning, IGrow
                 return destroy;
         }
     }
-
 }

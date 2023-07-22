@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HomePortal : MonoBehaviour
@@ -7,7 +5,7 @@ public class HomePortal : MonoBehaviour
     [SerializeField] private Animator animator;
     private int foodRequired;
 
-    public void OpenPortal()//only open 
+    public void OpenPortal()
     {
         animator.Play("PortalGreen_Open");
     }

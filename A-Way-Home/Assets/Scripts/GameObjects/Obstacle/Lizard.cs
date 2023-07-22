@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +6,6 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable, IActionWaitProce
     [SerializeField] private Animator animator;
     [SerializeField] private Vector2 fireStartPosDiff;
     [SerializeField] private Vector2Int fireDirectionDiff;
-    // [SerializeField] private Vector2 mouthPosDiff;
     private List<Node> fireNodes;
     private Node fireNodeOrigin;
     private bool isBreathing => hitpoints % 2 == 0; 
@@ -19,7 +17,6 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable, IActionWaitProce
         InitFireNodes();
         Invoke("OnStartBreath", .5f);
     }
-
 
     public void OnPlayerAction()
     {
@@ -116,5 +113,4 @@ public class Lizard : Obstacle, ITremor, ICommand, ISelectable, IActionWaitProce
             currentFireNode = currentFireNode.fireNode.childNode;
         }
     }
-
 }

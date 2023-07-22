@@ -1,8 +1,6 @@
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectable, ICommand, ITremor
 {
@@ -202,16 +200,13 @@ public class Undead : Obstacle, ITrap, IActionWaitProcess, ILightning, ISelectab
         return hasPath;
     }
 
-
     private bool TryGetPath()
     {
         List<Vector3> targetPositions = new List<Vector3>();
         targetPositions.Add(Character.instance.currentPosition);
         path = !canPhase ? Pathfinding.FindPath(this.worldPos, targetPositions) : Pathfinding.FindPathPhased(this.worldPos, targetPositions, NodeGrid.Instance.grid);
-        // Debug.LogWarning($"Undead has Path:{hasPath} -> Path Couth:{path.Count}");
         return hasPath;
     }
-
 
     private IEnumerator FollowPath()
     {

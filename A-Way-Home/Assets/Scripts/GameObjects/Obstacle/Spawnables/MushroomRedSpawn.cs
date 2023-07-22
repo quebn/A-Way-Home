@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MushroomRedSpawn : Spawnable, ITrap, ILightning
@@ -53,5 +52,4 @@ public class MushroomRedSpawn : Spawnable, ITrap, ILightning
         ClearNodes();
         StartCoroutine(RemoveAnimation());
     }
-
 }

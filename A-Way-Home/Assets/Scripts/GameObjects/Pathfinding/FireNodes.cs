@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FireNode
@@ -11,10 +9,8 @@ public class FireNode
     public FireNode()
     {
         shouldBurn = false;
-        // this.node = node;
     }
 
-    //TODO: Add Block Fire and Continue Fire functions.
     public static void StartFire(Node node, Vector2Int direction, int count, bool burn = true)
     {
         if(count <= 0)

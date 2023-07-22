@@ -97,5 +97,4 @@ public class SpawnablePlant : Spawnable , ILightning, IGrow
                 return destroy;
         }
     }
-
 }

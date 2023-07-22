@@ -43,7 +43,6 @@ public class GameData
 
     public static void InitGameDataInstance()
     {
-        // characterSprites = new Dictionary<string, Sprite>(3);
         Instance = SaveSystem.LoadGameData();
         if (Instance == null)
             Instance = new GameData();

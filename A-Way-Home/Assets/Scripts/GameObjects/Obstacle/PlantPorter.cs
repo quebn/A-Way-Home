@@ -1,10 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-
-// TODO: Make other instance of plants porter o dissapear when one is eaten.
 public class PlantPorter : Plant, ITrap
 {
     [SerializeField] private int damage;
@@ -48,4 +43,3 @@ public class PlantPorter : Plant, ITrap
         Character.instance.IncrementEnergy(-damage);
     }
 }
-

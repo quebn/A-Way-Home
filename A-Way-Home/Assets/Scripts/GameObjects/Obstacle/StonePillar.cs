@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,6 +41,4 @@ public class StonePillar : Obstacle, ITremor, ILightning
     {
         this.gameObject.SetActive(false);
     }
-
-
 }

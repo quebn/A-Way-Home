@@ -63,5 +63,4 @@ public struct SerializedVector3
     {
         return new SerializedVector3(x.x, x.y, x.z);
     }
-
 }

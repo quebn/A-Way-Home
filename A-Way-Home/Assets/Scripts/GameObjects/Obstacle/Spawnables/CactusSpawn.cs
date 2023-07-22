@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CactusSpawn : SpawnablePlant, ITrap 
@@ -14,7 +12,6 @@ public class CactusSpawn : SpawnablePlant, ITrap
     {
         base.OnSpawn();
         SetNodes(this.worldPos, NodeType.Obstacle, this);
-
     }
 
     public override void OnGrow()

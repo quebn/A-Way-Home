@@ -13,8 +13,6 @@ public class Node
     public Vector2Int gridPos;
     public Node parent;
     public FireNode fireNode;
-    // public List<Node> childs;
-    // public Node child;
     public int gCost;
     public List<int> hCosts;
 
@@ -462,5 +460,4 @@ public class Node
             node = nodes[UnityEngine.Random.Range(0, grid.Count)];
         return node.worldPosition;
     }
-
 }

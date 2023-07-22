@@ -106,5 +106,4 @@ public class TreeObstacle : Obstacle
     {
         return (node.worldPosition.x == NodeGrid.GetMiddle(this.worldPos.x + 2f) || node.worldPosition.x == NodeGrid.GetMiddle(this.worldPos.x + -2f)) && node.IsWalkable(); 
     } 
-
 }

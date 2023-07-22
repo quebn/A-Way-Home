@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WildFruit : Plant, ITrap
@@ -17,7 +15,6 @@ public class WildFruit : Plant, ITrap
 
     public override void OnGrow()
     {
-        // hitpoints++;
         heal++;
         return;
     }

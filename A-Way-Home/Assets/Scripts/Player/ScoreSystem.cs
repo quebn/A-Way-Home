@@ -4,7 +4,6 @@ public static class ScoreSystem
 {
     private const float RemainingMovesMult = 5f;
     private const float CharEnergyMult = 10f; 
-    // public static PlayerLevelData playerLevelData;    
     public static LevelData scoreLevelData;
     public static string characterName;
     public static Sprite characterSprite;
@@ -12,8 +11,6 @@ public static class ScoreSystem
 
     public static void CalculateScore()
     {
-        // Debug.Assert(false, "TODO: Implement Calculate Score");
-        // int playerScore = ;
         float characterScore = Character.instance.GetScore(CharEnergyMult);
         Debug.LogWarning($"Char Energy: {characterScore} / {CharEnergyMult} -> {characterScore / CharEnergyMult}");
         float levelScore = PlayerLevelData.Instance.GetScore(RemainingMovesMult , 2);
@@ -36,7 +33,6 @@ public static class ScoreSystem
     {
         GameData.Instance.leaderboards.Add(new PlayerScoreData(characterName, playerName, scoreLevelData.score));
         SaveSystem.SaveGameData();
-        // GameData.Instance.leaderboards.Sort();
     }
 }
 

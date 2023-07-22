@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RockEssence : Obstacle, ITremor
@@ -44,12 +42,9 @@ public class RockEssence : Obstacle, ITremor
         Debug.Assert(levelData.obstacles.ContainsKey(id), $"ERROR: {id} not found");
         if(!levelData.obstacles.ContainsKey(id))
                 return;
-        // Debug.Log("Loading obstacle data");
         this.hitpoints = levelData.obstacles[id].GetValue("hp");
         this.gameObject.transform.position = levelData.obstacles[id].position;
         Debug.Log($"Loaded Leveldata Obstacles :{levelData.obstacles[id].typeName} with hp: {levelData.obstacles[id].valuePairs["hp"]} -> {id}");
-        // if(hitpoints == 0)
-        //     gameObject.SetActive(false);
         Debug.Assert(this.hitpoints == levelData.obstacles[id].GetValue("hp"), "ERROR: values doesnt match");
     }
 }

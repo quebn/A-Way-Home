@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class CactusFruit : Plant, ITrap
 {
-
     protected override void OnInitialize()
     {
         SetNodes(this.worldPos, NodeType.Walkable, this);

@@ -10,7 +10,6 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
     [SerializeField] protected string id;
     [SerializeField] protected List<GameObject> outlines;
     [SerializeField] protected bool isNotHoverable;
-    // [SerializeField] protected int hitpoints = 1;
     [SerializeField] protected List<Tool> toolsInteractable;
     [SerializeField] protected List<SpriteRenderer> spriteRenderers;
     [SerializeField] protected List<AudioSource> audioSources;
@@ -195,7 +194,6 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
         Debug.Assert(levelData.obstacles.ContainsKey(id), $"ERROR: {id} not found");
         if(!levelData.obstacles.ContainsKey(id))
                 return;
-        // Debug.Log("Loading obstacle data");
         this.hitpoints = levelData.obstacles[id].GetValue("hp");
         this.gameObject.transform.position = levelData.obstacles[id].position;
         Debug.Log($"Loaded Leveldata Obstacles :{levelData.obstacles[id].typeName} with hp: {levelData.obstacles[id].valuePairs["hp"]} -> {id}");
@@ -228,7 +226,7 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
         StartCoroutine(DamageAnim());
     }
 
-    public virtual void Remove() //Trigger death but for all
+    public virtual void Remove()
     {
         ForceDehighlight();
         hitpoints = 0;
@@ -258,7 +256,6 @@ public class Obstacle : MonoBehaviour, ISaveable, IInspect
     {
         this.transform.position = NodeGrid.GetMiddle(this.worldPos, tileSize.x, tileSize.y);
     }
-
 }
 
 public interface ISelectable

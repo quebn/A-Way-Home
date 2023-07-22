@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class WebSpawn : Spawnable, ILightning
 {
-
     public override bool isBurnable => true;
     public override bool isMeltable => true;
     public override bool isFragile => true;

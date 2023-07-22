@@ -60,12 +60,10 @@ public class InGameUI : MonoBehaviour
 
     private void Start()
     {
-        // Debug.Assert(Character.instance != null, "Character is null");
         InitCharacterUI(GameData.levelData, Character.instance);
         activatedCharacter = false;
         endGameType = EndGameType.None;
     }
-
 
     public void TimeCountdown()
     {
@@ -83,8 +81,6 @@ public class InGameUI : MonoBehaviour
         }
     }
 
-
-    // move to character initialization
     private void InitCharacterUI(LevelData levelData, Character character) 
     {
         this.characterImage.sprite  = character.image;
@@ -92,7 +88,6 @@ public class InGameUI : MonoBehaviour
         this.movesLeftTMP.text      = levelData.moves.ToString();
         this.livesLeftTMP.text      = levelData.lives.ToString();
         this.energyValueUI          = levelData.characterEnergy;
-        // character.SetMaxEnergy(levelData.characterEnergy);
     }
 
     public void ShowCurrentPath()
@@ -108,14 +103,12 @@ public class InGameUI : MonoBehaviour
         Debug.Log("Pressed Help Button!");
         GameEvent.PauseGame();
         this.howToPlayWindow.SetActive(true);
-        // Should Pause the game
     }
     
     public void CloseHowToPlay()
     {
         GameEvent.UnpauseGame();
         this.howToPlayWindow.SetActive(false);
-        // Should Pause the game
     }
 
     public void OptionsButton()
@@ -129,7 +122,6 @@ public class InGameUI : MonoBehaviour
     {
         PlayerActions.Instance.SetCurrentTool(toolIndex);
         // PlayerActions.Instance.currentManipulationType = (ManipulationType)toolindex;
-        // Debug.Log("Current Tool index: " + PlayerActions.Instance.currentManipulationType);
     }
 
     public void ReloadAction()

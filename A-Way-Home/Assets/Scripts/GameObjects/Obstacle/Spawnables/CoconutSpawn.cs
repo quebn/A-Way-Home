@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CoconutSpawn : Spawnable, ILightning, ITrap
 {
     [SerializeField] private Animator animator;
-
 
     public override bool isBurnable => true;
     public override bool isFragile => true;

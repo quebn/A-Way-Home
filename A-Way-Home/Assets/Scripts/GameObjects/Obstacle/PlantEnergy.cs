@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlantEnergy : Plant, ITrap
 {
     [SerializeField] private List<Sprite> sprites;
-    // [SerializeField] private SpriteRenderer spriteRendererer;
     private List<Node> lightNodes;
 
     protected override void OnHighlight(Tool tool)
@@ -20,15 +18,12 @@ public class PlantEnergy : Plant, ITrap
         switch(hitpoints)
         {
             case 4:
-                // spriteRendererer.sprite = sprites[2];
                 mainSpriteRenderer.sprite = sprites[2];
                 break;
             case 2:
-                // spriteRendererer.sprite = sprites[1];
                 mainSpriteRenderer.sprite = sprites[1];
                 break;
             case 1:
-                // spriteRendererer.sprite = sprites[0];
                 mainSpriteRenderer.sprite = sprites[0];
                 break;
             default:

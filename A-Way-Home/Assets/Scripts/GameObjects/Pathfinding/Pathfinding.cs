@@ -4,7 +4,6 @@ using UnityEngine;
 
 public static class Pathfinding
 {
-
     public static List<Node> FindPath(Vector3 startingPos, List<Vector3> targetPos, Dictionary<Vector2Int, Node> grid, NodeType walkableNodeType = NodeType.Walkable, Type type = null, bool isChar = false)
     {
         Debug.Assert(targetPos.Count > 0, "ERROR: No Target in list");

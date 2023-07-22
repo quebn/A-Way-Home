@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,7 +40,6 @@ public class MushroomYellow : Plant, ITrap
             case 0:
                 return destroy;
             default:
-                // Debug.Assert(hitpoints <= 0, $"Error: Unexpected hitpoint value reached: {hitpoints}");
                 return youngling;
         }
     }

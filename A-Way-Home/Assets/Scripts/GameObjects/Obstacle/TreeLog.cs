@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TreeLog : Obstacle, ILightning
 {
-
-    // public bool notSpawned;
     [SerializeField] private Animator animator;
  
     public override bool isBurnable => true;

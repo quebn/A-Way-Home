@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Bone : Obstacle, ILightning, ITremor
 {
-
     [SerializeField] private Animator animator;
 
     public void OnLightningHit(int damage)
@@ -22,7 +19,6 @@ public class Bone : Obstacle, ILightning, ITremor
         base.Initialize();
         SetNodes(this.worldPos, NodeType.Obstacle, this);
     }
-
 
     public override void Remove()
     {

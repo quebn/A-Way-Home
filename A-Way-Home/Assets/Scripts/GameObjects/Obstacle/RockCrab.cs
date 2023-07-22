@@ -5,7 +5,6 @@ using System;
 
 public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, ILightning, ISelectable
 {
-    // Should maybe eat Juvenile Plants
     [SerializeField] private Animator animator;
     [SerializeField] private int tileRange;
 
@@ -121,7 +120,6 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             wasInteracted = true;
             StartCoroutine(FollowPath());
         }
-        // Debug.LogWarning(hasPath ? "Crab has Path": "Crab has no Path");
         return hasPath;
     }
 
@@ -142,7 +140,7 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             return;
         gridNodes = new List<Node>();
         foreach(Node node in walkableGrid.Values)
-            if(node.IsWalkable())//&& !node.IsObstacle(typeof(Spider)))
+            if(node.IsWalkable())
                 gridNodes.Add(node);
         for(int i = 0 ; i < gridNodes.Count; i++)
             gridNodes[i].RevealNode();
@@ -187,7 +185,6 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
             return;
         node.GetObstacle().Dehighlight();
     }
-
 
     protected override void OnHighlight(Tool tool)
     {
@@ -384,5 +381,4 @@ public class RockCrab : Obstacle, ITrap, ITremor, ICommand, IActionWaitProcess, 
         animator.SetBool("hasShell", hasShell);
         Destroy(rock);
     }
-
 }

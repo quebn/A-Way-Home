@@ -1,13 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class Character : MonoBehaviour, ISaveable
 {
     public static Character instance;
-
     [SerializeField] protected SpriteRenderer spriteRenderer;
     [SerializeField] protected Animator animator;
     [SerializeField] protected GameObject higlightLight;
@@ -47,7 +44,6 @@ public class Character : MonoBehaviour, ISaveable
 
     private void Update()
     {
-        // Replace with Coroutine
         if (!isGoingHome && PlayerActions.finishedProcessing && PlayerActions.finishedCommand)
             InGameUI.Instance.TimeCountdown();
     }
@@ -84,11 +80,9 @@ public class Character : MonoBehaviour, ISaveable
 
     public void Initialize(LevelData levelData)
     {
-        // this.requiredEssence = levelData.characterRequiredEssence;
         IncrementEssence(levelData.characterRequiredEssence);
         this.energy = levelData.characterEnergy;
         InGameUI.Instance.energyValueUI = this.energy;
-        // SetMaxEnergy(levelData.characterEnergy);
         Debug.Assert(this.requiredEssence == levelData.characterRequiredEssence, "ERROR: Character essence needed value mismatch");
         Debug.Assert(this.energy == levelData.characterEnergy, "ERROR: Character energy value mismatch");
         Debug.Log($"[{GameEvent.loadType.ToString()}]: Initialized Character with {levelData.characterEnergy} energy and {levelData.characterRequiredEssence} required Essence");
@@ -232,7 +226,6 @@ public class Character : MonoBehaviour, ISaveable
         animator.SetBool("isWalk", false);
         essence.OnConsume(this);
         this.isGoingHome = false;
-        // this.currentNode = currentTargetNode;
         GetPath();
         Debug.Log($"Current Essence Needed: {this.requiredEssence}");
         return true;

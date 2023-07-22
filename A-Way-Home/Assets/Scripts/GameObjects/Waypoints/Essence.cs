@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,7 +29,6 @@ public class Essence : MonoBehaviour, ISaveable
 
     public void OnConsume(Character character)
     {
-        // list.Remove(this.worldPosition);
         AudioManager.instance.PlayAudio("Consume");
         character.IncrementEnergy(energyRestored);
         character.IncrementEssence(-1);

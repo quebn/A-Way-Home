@@ -1,13 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class Boulder : Obstacle, ILightning, ITremor
 {
-
     [SerializeField] private Animator animator;
-
 
     protected override void Initialize()
     {
@@ -18,7 +14,6 @@ public class Boulder : Obstacle, ILightning, ITremor
     public void OnLightningHit(int damage)
     {
         Damage(damage);
-        // Debug.LogWarning($"{this.gameObject.name} damage->{damage} >>>> hp->{hitpoints}");
     }
 
     public void OnTremor()

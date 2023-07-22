@@ -1,13 +1,10 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawnable : Obstacle
 {
     private bool finished = false;
     protected bool isLoaded = false;
-
 
     public static int spawnCount = 0;
 

@@ -84,7 +84,7 @@ public static class SaveSystem
     }
 
 
-    public static void SaveGameData()//should be implemented in every file saving functions
+    public static void SaveGameData()
     {
         string path = $"{filePathDir}/GameData.data";
         FileStream stream = new FileStream(path, FileMode.Create);

@@ -1,9 +1,5 @@
-using UnityEngine;
-using System.Collections.Generic;
-
 public class Rock : Obstacle, ILightning, ITremor, ITrap
 {
-
     public override bool isMeltable => true;
     public override bool isWalkableByTerra => true;
 

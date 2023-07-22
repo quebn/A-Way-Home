@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MushroomPurpleSpawn : Spawnable, ITrap, ILightning
@@ -22,7 +21,7 @@ public class MushroomPurpleSpawn : Spawnable, ITrap, ILightning
     public void OnTrapTrigger(Character character)
     {
         Remove();
-        character.IncrementEnergy(7);
+        character.IncrementEnergy(heal);
     }
 
     protected override void OnHighlight(Tool tool)
@@ -53,5 +52,4 @@ public class MushroomPurpleSpawn : Spawnable, ITrap, ILightning
         ClearNodes();
         StartCoroutine(RemoveAnimation());
     }
-
 }

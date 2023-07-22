@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -17,8 +16,8 @@ public class NodeGrid : MonoBehaviour, ISaveable
     [SerializeField] private bool canBeCovered  = false;
     [SerializeField] PolygonCollider2D obsCollider2D;
     
-    private AnimatedTile tileElectric;// => PlayerActions.statusTiles[0]; 
-    private AnimatedTile tileFire;// => PlayerActions.statusTiles[1]; 
+    private AnimatedTile tileElectric;
+    private AnimatedTile tileFire; 
     private AnimatedTile tilePoison;
     private Vector2Int gridSizeInt;
     private float nodeDiameter;
@@ -398,11 +397,11 @@ public class NodeGrid : MonoBehaviour, ISaveable
 
     public void LoadData(LevelData levelData)
     {
-        // if(!Character.IsName("Fulmen"))
-        //     return;
-        // List<SerializedVector3> list = levelData.conductivePositions;
-        // for(int i = 0; i < list.Count; i ++)
-        //     NodeWorldPointPos(list[i]).SetStatus(NodeStatus.Conductive);
+        if(!Character.IsName("Fulmen"))
+            return;
+        List<SerializedVector3> list = levelData.conductivePositions;
+        for(int i = 0; i < list.Count; i ++)
+            NodeWorldPointPos(list[i]).SetStatus(NodeStatus.Conductive);
     }
 
     public void LoadElectric()

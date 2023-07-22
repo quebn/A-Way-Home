@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -60,7 +59,6 @@ public class EndingUI : MonoBehaviour
         }
         SceneManager.LoadScene("EndScene");
     }
-
 
     private void Continue()
     {
